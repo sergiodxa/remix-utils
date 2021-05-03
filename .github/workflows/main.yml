@@ -21,6 +21,8 @@ jobs:
 
       - name: Install deps and build (with cache)
         uses: bahmutov/npm-install@v1
+        env:
+          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
 
       - name: Lint
         run: yarn lint
