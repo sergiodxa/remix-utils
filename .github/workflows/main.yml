@@ -26,9 +26,15 @@ jobs:
 
       - name: Lint
         run: yarn lint
+        env:
+          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
 
       - name: Test
         run: yarn test --ci --coverage --maxWorkers=2
+        env:
+          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
 
       - name: Build
         run: yarn build
+        env:
+          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
