@@ -1,4 +1,6 @@
-import type {
+import {
+  json as remixJson,
+  redirect,
   ActionFunction,
   HeadersFunction,
   LinksFunction,
@@ -7,14 +9,13 @@ import type {
   Request,
   ResponseInit,
   Response,
-} from "remix";
-import { json as remixJson, redirect } from "remix";
+} from 'remix';
 
 export function redirectBack(
   request: Request,
   { fallback, ...init }: ResponseInit & { fallback: string }
 ): Response {
-  return redirect(request.headers.get("Referer") ?? fallback, init);
+  return redirect(request.headers.get('Referer') ?? fallback, init);
 }
 
 export function parseBody(request: Request): Promise<URLSearchParams> {
@@ -36,4 +37,3 @@ export type ActionReturn = ReturnType<ActionFunction>;
 export type LinksReturn = ReturnType<LinksFunction>;
 export type MetaReturn = ReturnType<MetaFunction>;
 export type HeadersReturn = ReturnType<HeadersFunction>;
-
