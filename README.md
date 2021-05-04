@@ -2,7 +2,7 @@
 
 This package contains simple utility functions and types to use together with [Remix.run](https://remix.run).
 
-**To install it you need to have a valid Remix license**
+**This package requires Remmix which needs a paid license to install it**
 
 ## Installation
 
