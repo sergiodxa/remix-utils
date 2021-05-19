@@ -37,7 +37,24 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "author": "Sergio Xalambrí",
+  "author": {
+    "name": "Sergio Xalambrí",
+    "url": "https://sergiodxa.com",
+    "email": "hello@sergiodxa.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sergiodxa/remix-utils"
+  },
+  "keywords": [
+    "remix",
+    "remix.run",
+    "react",
+    "utils",
+    "request",
+    "response",
+    "redirect back"
+  ],
   "module": "dist/remix-utils.esm.js",
   "size-limit": [
     {
