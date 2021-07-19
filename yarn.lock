@@ -1126,10 +1126,10 @@
   resolved "https://registry.yarnpkg.com/@polka/url/-/url-1.0.0-next.12.tgz#431ec342a7195622f86688bbda82e3166ce8cb28"
   integrity sha512-6RglhutqrGFMO1MNUXp95RBuYIuc8wTnMAV5MUhLmjTOy78ncwOw7RgeQ/HeymkKXRhZd0s2DNrM1rL7unk3MQ==
 
-"@remix-run/node@^0.17.0":
-  version "0.17.0"
-  resolved "https://npm.remix.run/download/@remix-run/node/0.17.0/482d7fbe4fea1c1a8f09847ff16fb2573a064e4ab4da2b64f63966a2bf49e3a4#ef47447b990723a01c7e616b1c39790c6cc80c26"
-  integrity sha512-n5pHJnP9O/mE4kbBHpBr8p6asYDupv/NkFJucIpUC726S7KJHhFVqCRBPBJWIOiA3QZy0qLFB3aqHV0wGgXtQA==
+"@remix-run/node@^0.17.5":
+  version "0.17.5"
+  resolved "https://npm.remix.run/download/@remix-run/node/0.17.5/aa46f22b848493a2d62bac3ae6f4b1c372512a3100a381205d1b5ee15ebcc708#5b0d78164e6b82cb40c11608c91ef707e7c15cb0"
+  integrity sha512-9psZEQjtjHdU0t2wz+m5fd+BFUB8SveQe5DPmnXhRg3w3+q3bdJL+zFNmD/4d5pCtCD1AXSJthsJuPKR2p+G8w==
   dependencies:
     "@types/cookie" "^0.4.0"
     "@types/node-fetch" "^2.5.7"
@@ -1140,10 +1140,10 @@
     node-fetch "^2.6.1"
     react-router-dom "^6.0.0-beta.0"
 
-"@remix-run/react@^0.17.0":
-  version "0.17.0"
-  resolved "https://npm.remix.run/download/@remix-run/react/0.17.0/5f23fe66ad775ef22d9f77af797c43c0378c237d15e83be59ca6e8fd364746e1#e647191f371d24bf8749b392d775abba710c6565"
-  integrity sha512-EsFqWIUg4DV6DgSFBHOfPQ/LT16jFTYYF28Y9gATrTdLgCy5n9D7p2sUgh6bcJhLIpv9QMtXMxLR2NPBSxdZUA==
+"@remix-run/react@^0.17.5":
+  version "0.17.5"
+  resolved "https://npm.remix.run/download/@remix-run/react/0.17.5/02ccb3944097e1b35052f2d0acc0010a9e8c8758b20fa87fee9a8898018ccc51#d23ac53ad82a78ac534c2fe22d0fa741e050b43a"
+  integrity sha512-o4aAHSt+FDVkyUl9I2UOnh4vboUgDaRrvwQ+py5BcrylYIAz6CVkQPH2Nhmqi6GEcO+k001V6XiwbZvnw9tTHA==
   dependencies:
     history "^5.0.0"
     react-router-dom "^6.0.0-beta.0"
@@ -3930,6 +3930,15 @@ fs-extra@8.1.0:
     graceful-fs "^4.2.0"
     jsonfile "^4.0.0"
     universalify "^0.1.0"
+
+fs-extra@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-10.0.0.tgz#9ff61b655dde53fb34a82df84bb214ce802e17c1"
+  integrity sha512-C5owb14u9eJwizKGdchcDUQeFtlSHHthBk8pbX9Vc1PFZrLombudjDnNns88aYslCyF6IY5SUw3Roz6xShcEIQ==
+  dependencies:
+    graceful-fs "^4.2.0"
+    jsonfile "^6.0.1"
+    universalify "^2.0.0"
 
 fs-extra@^9.0.0:
   version "9.1.0"
@@ -7053,10 +7062,12 @@ regjsparser@^0.6.4:
   dependencies:
     jsesc "~0.5.0"
 
-remix@^0.17.0:
-  version "0.17.0"
-  resolved "https://registry.yarnpkg.com/remix/-/remix-0.17.0.tgz#dd30877bc0c4495184e00c9b12738099d27b8c96"
-  integrity sha512-O0OO8vfHzdOcMrYxaf/Bf31dX+CXc9Bdg2SfMYaVIDBczRp2SOR5n9WXc9yrbv/CVbOfZqDzu2LmI0vp6L/StQ==
+remix@^0.17.5:
+  version "0.17.5"
+  resolved "https://registry.yarnpkg.com/remix/-/remix-0.17.5.tgz#c0d50539aea64cba12b9418d03446c2a58d0ba3b"
+  integrity sha512-S/h5gI6YRjb6iDWTjvAmyf9oQrUbVcCFEzxf6s5uD+L3YacateAtmcri6rPuDVs+aqacNH0iBy04z7qIK+o5VA==
+  dependencies:
+    fs-extra "^10.0.0"
 
 remove-trailing-separator@^1.0.1:
   version "1.1.0"

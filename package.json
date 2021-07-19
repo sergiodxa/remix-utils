@@ -21,10 +21,10 @@
     "analyze": "size-limit --why"
   },
   "peerDependencies": {
-    "@remix-run/node": "^0.17.0",
-    "@remix-run/react": "^0.17.0",
+    "@remix-run/node": "^0.17.5",
+    "@remix-run/react": "^0.17.5",
     "react": "^17.0.2",
-    "remix": "^0.17.0"
+    "remix": "^0.17.5"
   },
   "husky": {
     "hooks": {
@@ -67,15 +67,15 @@
     }
   ],
   "devDependencies": {
+    "@remix-run/node": "^0.17.5",
+    "@remix-run/react": "^0.17.5",
     "@size-limit/preset-small-lib": "^4.10.2",
     "husky": "^6.0.0",
+    "react": "^17.0.2",
+    "remix": "^0.17.5",
     "size-limit": "^4.10.2",
     "tsdx": "^0.14.1",
     "tslib": "^2.2.0",
-    "typescript": "^4.2.4",
-    "@remix-run/node": "^0.17.0",
-    "@remix-run/react": "^0.17.0",
-    "react": "^17.0.2",
-    "remix": "^0.17.0"
+    "typescript": "^4.2.4"
   }
 }
