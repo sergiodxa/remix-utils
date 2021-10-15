@@ -1,10 +1,4 @@
-import {
-  json as remixJson,
-  redirect,
-  Request,
-  Response,
-  ResponseInit,
-} from 'remix';
+import { json as remixJson, redirect } from 'remix';
 
 /**
  * A wrapper of the `json` function from `remix` which accepts a generic for the

@@ -8,7 +8,7 @@ import {
 
 export type LoaderArgs = Parameters<LoaderFunction>[0];
 export type ActionArgs = Parameters<ActionFunction>[0];
-export type LinksArgs = Parameters<LinksFunction>[0];
+export type LinksArgs = Parameters<LinksFunction>;
 export type MetaArgs = Parameters<MetaFunction>[0];
 export type HeadersArgs = Parameters<HeadersFunction>[0];
 

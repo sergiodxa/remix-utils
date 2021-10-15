@@ -1,5 +1,3 @@
-import type { Request } from "remix";
-
 /**
  * Parse the body of a Request to an URLSearchParams instance.
  * @example

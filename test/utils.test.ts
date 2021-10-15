@@ -1,5 +1,7 @@
-import { Request } from 'remix';
+import { installGlobals } from '@remix-run/node';
 import { redirectBack, parseBody, json } from '../src';
+
+installGlobals();
 
 describe('redirectBack', () => {
   it('uses the referer if available', () => {

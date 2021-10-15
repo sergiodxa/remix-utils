@@ -1,6 +1,6 @@
 import { randomBytes } from 'crypto';
 import * as React from 'react';
-import { Request, Session } from 'remix';
+import { Session } from 'remix';
 import { parseBody, parseParams } from './parse-body';
 
 /**
