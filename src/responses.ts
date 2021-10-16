@@ -41,76 +41,76 @@ export function redirectBack(
 }
 
 /**
- * Create a response receiving a JSON object with the status code 400.
+ * Throws a response receiving a JSON object with the status code 400.
  * @example
  * async function loader({ request }: LoaderArgs): Promise<LoaderReturn> {
  *   let user = await getUser(request);
- *   return badRequest<RouteData>({ user });
+ *   badRequest<RouteData>({ user });
  * }
  */
 export function badRequest<Data = unknown>(
   data: Data,
   init?: Omit<ResponseInit, 'status'>
-) {
-  return json<Data>(data, { ...init, status: 400 });
+): never {
+  throw json<Data>(data, { ...init, status: 400 });
 }
 
 /**
- * Create a response receiving a JSON object with the status code 401.
+ * Throws a response receiving a JSON object with the status code 401.
  * @example
  * async function loader({ request }: LoaderArgs): Promise<LoaderReturn> {
  *   let user = await getUser(request);
- *   return unauthorized<RouteData>({ user });
+ *   unauthorized<RouteData>({ user });
  * }
  */
 export function unauthorized<Data = unknown>(
   data: Data,
   init?: Omit<ResponseInit, 'status'>
-) {
-  return json<Data>(data, { ...init, status: 401 });
+): never {
+  throw json<Data>(data, { ...init, status: 401 });
 }
 
 /**
- * Create a response receiving a JSON object with the status code 403.
+ * Throws a response receiving a JSON object with the status code 403.
  * @example
  * async function loader({ request }: LoaderArgs): Promise<LoaderReturn> {
  *   let user = await getUser(request);
- *   return forbidden<RouteData>({ user });
+ *   forbidden<RouteData>({ user });
  * }
  */
 export function forbidden<Data = unknown>(
   data: Data,
   init?: Omit<ResponseInit, 'status'>
-) {
-  return json<Data>(data, { ...init, status: 403 });
+): never {
+  throw json<Data>(data, { ...init, status: 403 });
 }
 
 /**
- * Create a response receiving a JSON object with the status code 404.
+ * Throws a response receiving a JSON object with the status code 404.
  * @example
  * async function loader({ request }: LoaderArgs): Promise<LoaderReturn> {
  *   let user = await getUser(request);
- *   return notFound<RouteData>({ user });
+ *   notFound<RouteData>({ user });
  * }
  */
 export function notFound<Data = unknown>(
   data: Data,
   init?: Omit<ResponseInit, 'status'>
-) {
-  return json<Data>(data, { ...init, status: 404 });
+): never {
+  throw json<Data>(data, { ...init, status: 404 });
 }
 
 /**
- * Create a response receiving a JSON object with the status code 500.
+ * Throws a response receiving a JSON object with the status code 500.
  * @example
  * async function loader({ request }: LoaderArgs): Promise<LoaderReturn> {
  *   let user = await getUser(request);
- *   return serverError<RouteData>({ user });
+ *   serverError<RouteData>({ user });
  * }
  */
 export function serverError<Data = unknown>(
   data: Data,
   init?: Omit<ResponseInit, 'status'>
-) {
-  return json<Data>(data, { ...init, status: 500 });
+): never {
+  throw json<Data>(data, { ...init, status: 500 });
 }
