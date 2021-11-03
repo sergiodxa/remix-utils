@@ -1,0 +1,36 @@
+name: Bump version
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Semver type of new version (major / minor / patch)'
+        required: true
+
+jobs:
+  bump-version:
+    name: Bump version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v2
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
+        env:
+          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
+      - name: Setup Git
+        run: |
+          git config user.name 'Sergio Xalambrí'
+          git config user.email 'hello@sergiodxa.com'
+      - name: bump version
+        run: npm version ${{ github.event.inputs.version }}
+
+      - name: Push latest version
+        run: git push origin main --follow-tags
