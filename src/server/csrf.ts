@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 import { Session } from "remix";
-import { parseBody, parseParams } from "./parse-body";
+import { bodyParser } from "./body-parser";
 import { unprocessableEntity } from "./responses";
 
 /**
@@ -43,9 +43,7 @@ export async function verifyAuthenticityToken(
   // We clone the request to ensure we don't modify the original request.
   // This allow us to parse the body of the request and let the original request
   // still be used and parsed without errors.
-  const params = await parseBody(request.clone());
-
-  let body = parseParams(params);
+  const params = await bodyParser.toParams(request.clone());
 
   // if the session doesn't have a csrf token, throw an error
   if (!session.has(sessionKey)) {
@@ -55,7 +53,7 @@ export async function verifyAuthenticityToken(
   }
 
   // if the body doesn't have a csrf token, throw an error
-  if (!body.sessionKey) {
+  if (!params.get(sessionKey)) {
     throw unprocessableEntity({
       message: "Can't verify CSRF token authenticity.",
     });
@@ -63,7 +61,7 @@ export async function verifyAuthenticityToken(
 
   // if the body csrf token doesn't match the session csrf token, throw an
   // error
-  if (body.sessionKey !== session.get("sessionKey")) {
+  if (params.get(sessionKey) !== session.get("sessionKey")) {
     throw unprocessableEntity({
       message: "Can't verify CSRF token authenticity.",
     });
