@@ -1,22 +1,18 @@
 # Remix Utils
 
-This package contains simple utility functions and types to use together with [Remix.run](https://remix.run).
-
-**This package requires Remix which needs a paid license to install it**
+This package contains simple utility functions to use with [Remix.run](https://remix.run).
 
 ## Installation
 
 ```bash
-npm install remix-utils
+npm install remix-utils remix @remix-run/node @remix-run/react react
 ```
-
-Remember you need to also install `remix`, `@remix-run/node`, `@remix-run/react` and `react`. For the first three you need a paid Remix license.
 
 ## API Reference
 
 ### ClientOnly
 
-The ClientOnly component lets you render a component only on the client side, avoiding it to be rendered the server side.
+The ClientOnly component lets you render the children element only on the client-side, avoiding rendering it the server-side.
 
 You can, optionally, provide a fallback component to be used on SSR.
 
@@ -32,7 +28,7 @@ export default function View() {
 }
 ```
 
-This component, is specially useful when you have some complex component that needs a browser environment to work, like a chart or a map, this way you can avoid rendering it server-side and instead use a simpler static version like a SVG or even an loading UI.
+This component is handy when you have some complex component that needs a browser environment to work, like a chart or a map. This way, you can avoid rendering it server-side and instead use a simpler static version like an SVG or even a loading UI.
 
 The rendering flow will be:
 
@@ -45,13 +41,13 @@ This component uses the `useHydrated` hook internally.
 
 ### CSRF
 
-The CSRF related functions let you implement a CSRF protection on your application.
+The CSRF related functions let you implement CSRF protection on your application.
 
 This part of Remix Utils needs packages from `remix-utils/server` and `remix-utils/react` to work.
 
 #### Generate the authenticity token
 
-In the server, we need to add to our `root` componet the following
+In the server, we need to add to our `root` component the following.
 
 ```ts
 import type { LoaderFunction } from "remix";
@@ -71,11 +67,11 @@ export let loader: LoaderFunction = async ({ request }) => {
 }
 ```
 
-The `createAuthenticityToken` function receives a session object and store the authenticity token there using the `csrf` key (you can pass the key name as second argument too). Finally you need to return the token in a `json` response and commit the session.
+The `createAuthenticityToken` function receives a session object and stores the authenticity token there using the `csrf` key (you can pass the key name as a second argument). Finally, you need to return the token in a `json` response and commit the session.
 
 #### Render the AuthenticityTokenProvider
 
-Now, in your root you need to read the authenticity token and render the `AuthenticityTokenProvider` component wrapping your code.
+You need to read the authenticity token and render the `AuthenticityTokenProvider` component wrapping your code in your root.
 
 ```tsx
 import { Outlet, useLoaderData } from "remix";
@@ -97,7 +93,7 @@ With this, your whole app can access the authenticity token generated in the roo
 
 #### Rendering a Form
 
-Now, when you create a form in some route you can use the `AuthenticityTokenInput` component to add the authenticity token to the form.
+When you create a form in some route, you can use the `AuthenticityTokenInput` component to add the authenticity token to the form.
 
 ```tsx
 import { Form } from "remix";
@@ -113,9 +109,9 @@ export default function SomeRoute() {
 }
 ```
 
-Note that the authenticity token is only really needed for form that mutates the data somehow, if you have a search form doing a GET request you don't need to add the authenticity token there.
+Note that the authenticity token is only really needed for a form that mutates the data somehow. If you have a search form making a GET request, you don't need to add the authenticity token there.
 
-This `AuthenticityTokenInput` will get the authenticity token from the `AuthenticityTokenProvider` component and add it to the form as the value of a hidden input with the name `csrf`, you can customize the name using the `name` prop.
+This `AuthenticityTokenInput` will get the authenticity token from the `AuthenticityTokenProvider` component and add it to the form as the value of a hidden input with the name `csrf`. You can customize the field name using the `name` prop.
 
 ```tsx
 <AuthenticityTokenInput name="customName" />
@@ -157,13 +153,13 @@ export let action: ActionFunction = async ({ request }) => {
 }
 ```
 
-In case the authenticity token is missing on the session, on the request body or they don't match the function will throw an Unprocessable Entity response that you can either catch and handle manually or let pass and render your CatchBoundary.
+Suppose the authenticity token is missing on the session, the request body, or doesn't match. In that case, the function will throw an Unprocessable Entity response that you can either catch and handle manually or let pass and render your CatchBoundary.
 
 ### Outlet & useParentData
 
-This wrapper of the Remix Outlet component let you pass an optional `data` prop, then using the `useParentData` hook you can access that data.
+This wrapper of the Remix Outlet component lets you pass an optional `data` prop, then using the `useParentData` hook, you can access that data.
 
-Useful to pass information from parent to child routes, example the authenticated user data.
+Helpful to pass information from parent to child routes, for example, the authenticated user data.
 
 ```tsx
 // parent route
@@ -186,9 +182,9 @@ export default function Child() {
 
 ### useHydrated
 
-This let you detect if your component is already hydrated, this means the JS of the component loaded client-side and React is working.
+This lets you detect if your component is already hydrated. This means the JS for the element loaded client-side and React is running.
 
-With useHydrated, you can render different things on the server and client, while ensuring the hydration will not have a mismatched HTML.
+With useHydrated, you can render different things on the server and client while ensuring the hydration will not have a mismatched HTML.
 
 ```ts
 import { useHydrated } from "remix-utils/react";
@@ -204,15 +200,15 @@ export function Component() {
 }
 ```
 
-When doing SSR the value of `isHydrated` will always be `false`. On the first client-side render `isHydrated` will still be false, and then it will change to `true`.
+When doing SSR, the value of `isHydrated` will always be `false`. The first client-side render `isHydrated` will still be false, and then it will change to `true`.
 
-After the first client-side render, future components rendered calling this hook will receive `true` as the value of `isHydrated`, this way your server fallback UI will never be rendered on a route transition.
+After the first client-side render, future components rendered calling this hook will receive `true` as the value of `isHydrated`. This way, your server fallback UI will never be rendered on a route transition.
 
 ### useShouldHydrate
 
-If you are building a Remix application where most routes are static and you want to avoid loading client-side JS you can use this hook, plus some conventions, to detect if one ore more of the active routes needs JS and only render the Scripts component in that case.
+If you are building a Remix application where most routes are static, and you want to avoid loading client-side JS, you can use this hook, plus some conventions, to detect if one or more active routes needs JS and only render the Scripts component in that case.
 
-In your document component you can call this hook to dynamically render the Scripts component if needed.
+In your document component, you can call this hook to dynamically render the Scripts component if needed.
 
 ```tsx
 import type { ReactNode } from "react";
@@ -245,7 +241,7 @@ export function Document({ children, title, }: DocumentProps) {
 }
 ```
 
-Now, in any route module you can export a `handle` object with the `hydrate` property as `true`.
+Now, you can export a `handle` object with the `hydrate` property as `true` in any route module.
 
 ```ts
 export let handle = { hydrate: true };
@@ -253,7 +249,7 @@ export let handle = { hydrate: true };
 
 This will mark the route as requiring JS hydration.
 
-In same cases, a route may need or not JS, based on the data the loader returned, as an example, if you have a component to purchase an product, but only authenticated users can see it, you don't need JS until the user is authenticated. In that case you can make `hydrate` be a function receiving your loader data.
+In some cases, a route may need JS based on the data the loader returned. For example, if you have a component to purchase a product, but only authenticated users can see it, you don't need JS until the user is authenticated. In that case, you can make `hydrate` be a function receiving your loader data.
 
 ```ts
 export let handle = {
@@ -263,15 +259,15 @@ export let handle = {
 };
 ```
 
-The `useShouldHydrate` hook will detect `hydrate` is a function and call it using the route data.
+The `useShouldHydrate` hook will detect `hydrate` as a function and call it using the route data.
 
 ### Body Parser
 
-These utilities let you parse the request body with a simple function call, you can parse it to a string, a URLSearchParams instance or an object.
+These utilities let you parse the request body with a simple function call. You can parse it to a string, a URLSearchParams instance, or an object.
 
 #### toString
 
-This functino receives the whole request and returns a promise with the body as a string.
+This function receives the whole request and returns a promise with the body as a string.
 
 ```ts
 import { bodyParser, redirectBack } from "remix-utils/server";
@@ -289,7 +285,7 @@ export let action: ActionFunction = async ({ request }) => {
 
 #### toSearchParams
 
-This function receives the whole request and returns a promise with an instance of `URLSearchParams`, and the body of the request already parsed.
+This function receives the whole request and returns a promise with an instance of `URLSearchParams`, and the request's body is already parsed.
 
 ```ts
 import { bodyParser, redirectBack } from "remix-utils/server";
@@ -313,9 +309,9 @@ return new URLSearchParams(body);
 
 #### toJSON
 
-This function receives the whole request and returns a promise with an unknown value, that value is going to be the body of the request.
+This function receives the whole request and returns a promise with an unknown value. That value is going to be the body of the request.
 
-The reason the result is typed as `unknown` is to force you to valida the object to ensure it's what you expect, this is because there's no way for TypeScript to know what the type of the body is since it's a completely dynamic value.
+The result is typed as `unknown` to force you to validate the object to ensure it's what you expect. This is because there's no way for TypeScript to know what the type of the body is since it's an entirely dynamic value.
 
 ```ts
 import { bodyParser, redirectBack } from "remix-utils/server";
@@ -343,13 +339,13 @@ return Object.fromEntries(params.entries()) as unknown;
 
 #### Typed JSON
 
-This function is a typed version of the `json` helper provided by Remix, it accepts a generic with the type of data you are going to send in the response.
+This function is a typed version of the `json` helper provided by Remix. It accepts a generic with the type of data you are going to send in the response.
 
-This helps ensure at the compiler lever that the data you are sending from your loader matches the provided type. It's more useful when you create a type or interface for your loader so you can share it between `json` and `useLoaderData` to help you avoid missing or extra parameters in the response.
+This helps ensure that the data you are sending from your loader matches the provided type at the compiler lever. It's more useful when you create an interface or type for your loader so you can share it between `json` and `useLoaderData` to help you avoid missing or extra parameters in the response.
 
-Again, this is not doing any kind of validation on the data you send, it's just a type checker.
+Again, this is not doing any kind of validation on the data you send. It's just a type checker.
 
-The generic extends JsonValue from [type-fest](https://github.com/sindresorhus/type-fest/blob/ff96fef37b84137e1600eebce108c2b797427c1f/source/basic.d.ts#L45), this limit the type of data you can send to anything that can be serializable so you are not going to be able to send BigInt, functions, Symbols, etc. If `JSON.stringify` fails trying to stringify the data, it will not be supported.
+The generic extends JsonValue from [type-fest](https://github.com/sindresorhus/type-fest/blob/ff96fef37b84137e1600eebce108c2b797427c1f/source/basic.d.ts#L45), this limit the type of data you can send to anything that can be serializable, so you are not going to be able to send BigInt, functions, Symbols, etc. If `JSON.stringify` fails to try to stringify that value, it will not be supported.
 
 ```tsx
 import { useLoaderData } from "remix";
@@ -376,9 +372,9 @@ export default function View() {
 
 #### Redirect Back
 
-This function is a wrapper of the `redirect` helper from Remix, contrarian to Remix's version this one receives the whole request object as first value and an object with the response init and a fallback URL.
+This function is a wrapper of the `redirect` helper from Remix, contrarian to Remix's version. This one receives the whole request object as the first value and an object with the response init and a fallback URL.
 
-The response created with this function will have the `Location` header pointing to the `Referer` header from the request, or if not available the fallback URL provided in the second argument.
+The response created with this function will have the `Location` header pointing to the `Referer` header from the request, or if not available, the fallback URL provided in the second argument.
 
 ```ts
 import { redirectBack } from "remix-utils/server";
@@ -389,7 +385,7 @@ export let action: ActionFunction = async ({ request }) => {
 }
 ```
 
-This helper is more useful when used in an generic action so you can send the user to the same URL it was before.
+This helper is more useful when used in a generic action to send the user to the same URL it was before.
 
 #### Bad Request
 
@@ -406,7 +402,7 @@ export action: ActionFunction = async () => {
 
 #### Unauthorized
 
-Helper function to create a Unauthorized (401) response with a JSON body.
+Helper function to create an Unauthorized (401) response with a JSON body.
 
 ```ts
 import { unauthorized } from "remix-utils/server";
@@ -446,7 +442,7 @@ export loader: LoaderFunction = async () => {
 
 #### Unprocessable Entity
 
-Helper function to create a Unprocessable Entity (422) response with a JSON body.
+Helper function to create an Unprocessable Entity (422) response with a JSON body.
 
 ```ts
 import { unprocessableEntity } from "remix-utils/server";
@@ -457,7 +453,7 @@ export loader: LoaderFunction = async () => {
 }
 ```
 
-This is used by the CSRF validation, you probably don't want to use it directly.
+This is used by the CSRF validation. You probably don't want to use it directly.
 
 #### Server Error
 
