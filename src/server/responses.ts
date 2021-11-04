@@ -20,7 +20,7 @@ import { JsonValue } from "type-fest";
  *   return <UserProfile user={user} />;
  * }
  */
-export function json<Data extends JsonValue>(
+export function json<Data extends JsonValue = unknown>(
   data: Data,
   init?: number | ResponseInit
 ) {
