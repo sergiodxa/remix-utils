@@ -16,26 +16,21 @@ jobs:
         uses: actions/checkout@v2
         with:
           ssh-key: ${{ secrets.DEPLOY_KEY }}
-
-      - name: Setup Node LTS
+      - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 'lts/*'
-
+          node-version: '16'
+          cache: 'npm'
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
         env:
           REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
-
       - name: Setup Git
         run: |
           git config user.name 'Sergio Xalambrí'
           git config user.email 'hello@sergiodxa.com'
-
-      - name: Bump package.json version
+      - name: bump version
         run: npm version ${{ github.event.inputs.version }}
-        env:
-          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
 
       - name: Push latest version
         run: git push origin main --follow-tags
