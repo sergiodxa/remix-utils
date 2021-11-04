@@ -343,7 +343,7 @@ return Object.fromEntries(params.entries()) as unknown;
 
 #### Typed JSON
 
-This function is a typed version of the `json` helper provided by Remix, it accepts a generic which defaults to `unknown` with the type of data you are going to send in the response.
+This function is a typed version of the `json` helper provided by Remix, it accepts a generic with the type of data you are going to send in the response.
 
 This helps ensure at the compiler lever that the data you are sending from your loader matches the provided type. It's more useful when you create a type or interface for your loader so you can share it between `json` and `useLoaderData` to help you avoid missing or extra parameters in the response.
 
