@@ -1,4 +1,4 @@
-import { useMatches } from 'remix';
+import { useMatches } from "remix";
 
 /**
  * Determine if at least one of the routes is asking to load JS and return a
@@ -21,13 +21,13 @@ import { useMatches } from 'remix';
  * };
  */
 export function useShouldHydrate() {
-  return useMatches().some(match => {
+  return useMatches().some((match) => {
     if (!match.handle) return false;
 
     let handle = match;
 
     // handle must be an object to continue
-    if (typeof handle !== 'object') return false;
+    if (typeof handle !== "object") return false;
     if (handle === null) return false;
     if (Array.isArray(handle)) return false;
 
@@ -39,7 +39,7 @@ export function useShouldHydrate() {
 
     if (!hydrate) return false;
 
-    if (typeof hydrate === 'function') return hydrate(match.data);
+    if (typeof hydrate === "function") return hydrate(match.data);
     return hydrate;
   });
 }

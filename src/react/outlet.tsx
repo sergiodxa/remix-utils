@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { Outlet as RROutlet } from 'react-router-dom';
+import { createContext, useContext } from "react";
+import { Outlet as RROutlet } from "react-router-dom";
 
 type OutletProps<Data> = { data?: Data };
 
-let context = React.createContext<unknown>(null);
+let context = createContext<unknown>(null);
 
 /**
  * Wrapper of the React Router Outlet component. This Outlet receives an
@@ -32,7 +32,7 @@ export function Outlet<Data = unknown>({ data }: OutletProps<Data>) {
  * ```
  */
 export function useParentData<ParentData>() {
-  let parentData = React.useContext(context) as ParentData | null;
-  if (!parentData) throw new Error('Missing parent data.');
+  let parentData = useContext(context) as ParentData | null;
+  if (!parentData) throw new Error("Missing parent data.");
   return parentData;
 }

@@ -1,27 +1,29 @@
-import {
-  json as remixJson,
-  redirect,
-  Request,
-  Response,
-  ResponseInit,
-} from 'remix';
+import { json as remixJson, redirect } from "remix";
+import { JsonValue } from "type-fest";
 
 /**
  * A wrapper of the `json` function from `remix` which accepts a generic for the
  * data to be serialized. This allows you to use the same type for `json` and
- * on `useRouteData` to ensure the type is always in sync.
+ * on `useLoaderData` to ensure the type is always in sync.
+ *
+ * The type must extend the JsonValue from type-fest, this means only JSON
+ * compatible types are allowed inside the data which will help you avoid trying
+ * to send functions or class instances.
  * @example
- * type RouteData = { user: { name: string } };
- * async function loader({ request }: LoaderArgs): Promise<LoaderReturn> {
+ * type LoaderData = { user: { name: string } };
+ * let action: ActionFunction = async ({ request }) => {
  *   let user = await getUser(request);
- *   return json<RouteData>({ user });
+ *   return json<LoaderData>({ user });
  * }
  * function View() {
- *   let { user } = useRouteData<RouteData>();
+ *   let { user } = useLoaderData<LoaderData>();
  *   return <UserProfile user={user} />;
  * }
  */
-export function json<Data = unknown>(data: Data, init?: number | ResponseInit) {
+export function json<Data extends JsonValue>(
+  data: Data,
+  init?: number | ResponseInit
+) {
   return remixJson(data, init);
 }
 
@@ -31,7 +33,7 @@ export function json<Data = unknown>(data: Data, init?: number | ResponseInit) {
  * URL in case the Referer couldn't be found, this fallback should be a URL you
  * may be ok the user to land to after an action even if it's not the same.
  * @example
- * async function action({ request }: ActionArgs): Promise<ActionReturn> {
+ * let action: ActionFunction = async ({ request }) => {
  *   await doSomething(request);
  *   // If the user was on `/search?query=something` we redirect to that URL
  *   // but if we couldn't we redirect to `/search`, which is an good enough
@@ -43,20 +45,20 @@ export function redirectBack(
   request: Request,
   { fallback, ...init }: ResponseInit & { fallback: string }
 ): Response {
-  return redirect(request.headers.get('Referer') ?? fallback, init);
+  return redirect(request.headers.get("Referer") ?? fallback, init);
 }
 
 /**
  * Create a response receiving a JSON object with the status code 400.
  * @example
- * async function loader({ request }: LoaderArgs): Promise<LoaderReturn> {
+ * let loader: LoaderFunction = async ({ request }) => {
  *   let user = await getUser(request);
- *   return badRequest<RouteData>({ user });
+ *   throw badRequest<BoundaryData>({ user });
  * }
  */
 export function badRequest<Data = unknown>(
   data: Data,
-  init?: Omit<ResponseInit, 'status'>
+  init?: Omit<ResponseInit, "status">
 ) {
   return json<Data>(data, { ...init, status: 400 });
 }
@@ -64,14 +66,14 @@ export function badRequest<Data = unknown>(
 /**
  * Create a response receiving a JSON object with the status code 401.
  * @example
- * async function loader({ request }: LoaderArgs): Promise<LoaderReturn> {
+ * let loader: LoaderFunction = async ({ request }) => {
  *   let user = await getUser(request);
- *   return unauthorized<RouteData>({ user });
+ *   throw unauthorized<BoundaryData>({ user });
  * }
  */
 export function unauthorized<Data = unknown>(
   data: Data,
-  init?: Omit<ResponseInit, 'status'>
+  init?: Omit<ResponseInit, "status">
 ) {
   return json<Data>(data, { ...init, status: 401 });
 }
@@ -79,14 +81,14 @@ export function unauthorized<Data = unknown>(
 /**
  * Create a response receiving a JSON object with the status code 403.
  * @example
- * async function loader({ request }: LoaderArgs): Promise<LoaderReturn> {
+ * let loader: LoaderFunction = async ({ request }) => {
  *   let user = await getUser(request);
- *   return forbidden<RouteData>({ user });
+ *   if (!user.idAdmin) throw forbidden<BoundaryData>({ user });
  * }
  */
 export function forbidden<Data = unknown>(
   data: Data,
-  init?: Omit<ResponseInit, 'status'>
+  init?: Omit<ResponseInit, "status">
 ) {
   return json<Data>(data, { ...init, status: 403 });
 }
@@ -94,29 +96,44 @@ export function forbidden<Data = unknown>(
 /**
  * Create a response receiving a JSON object with the status code 404.
  * @example
- * async function loader({ request }: LoaderArgs): Promise<LoaderReturn> {
+ * let loader: LoaderFunction = async ({ request, params }) => {
  *   let user = await getUser(request);
- *   return notFound<RouteData>({ user });
+ *   if (!db.exists(params.id)) throw notFound<BoundaryData>({ user });
  * }
  */
 export function notFound<Data = unknown>(
   data: Data,
-  init?: Omit<ResponseInit, 'status'>
+  init?: Omit<ResponseInit, "status">
 ) {
   return json<Data>(data, { ...init, status: 404 });
 }
 
 /**
+ * Create a response receiving a JSON object with the status code 422.
+ * @example
+ * let loader: LoaderFunction = async ({ request, params }) => {
+ *   let user = await getUser(request);
+ *   throw unprocessableEntity<BoundaryData>({ user });
+ * }
+ */
+export function unprocessableEntity<Data = unknown>(
+  data: Data,
+  init?: Omit<ResponseInit, "status">
+) {
+  return json<Data>(data, { ...init, status: 422 });
+}
+
+/**
  * Create a response receiving a JSON object with the status code 500.
  * @example
- * async function loader({ request }: LoaderArgs): Promise<LoaderReturn> {
+ * let loader: LoaderFunction = async ({ request }) => {
  *   let user = await getUser(request);
- *   return serverError<RouteData>({ user });
+ *   throw serverError<BoundaryData>({ user });
  * }
  */
 export function serverError<Data = unknown>(
   data: Data,
-  init?: Omit<ResponseInit, 'status'>
+  init?: Omit<ResponseInit, "status">
 ) {
   return json<Data>(data, { ...init, status: 500 });
 }

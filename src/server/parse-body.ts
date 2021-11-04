@@ -1,5 +1,3 @@
-import type { Request } from "remix";
-
 /**
  * Parse the body of a Request to an URLSearchParams instance.
  * @example
@@ -10,7 +8,7 @@ import type { Request } from "remix";
  * }
  */
 export function parseBody(request: Request): Promise<URLSearchParams> {
-  return request.text().then(body => new URLSearchParams(body));
+  return request.text().then((body) => new URLSearchParams(body));
 }
 
 /**

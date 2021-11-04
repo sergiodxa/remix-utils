@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { useHydrated } from './use-hydrated';
+import { ReactNode } from "react";
+import { useHydrated } from "./use-hydrated";
 
 type Props = {
-  children: React.ReactNode;
-  fallback?: React.ReactNode;
+  children: ReactNode;
+  fallback?: ReactNode;
 };
 
 /**
