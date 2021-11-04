@@ -395,7 +395,7 @@ Helper function to create a Bad Request (400) response with a JSON body.
 import { badRequest } from "remix-utils/server";
 import type { ActionFunction } from "remix";
 
-export action: ActionFunction = async () => {
+export let action: ActionFunction = async () => {
   throw badRequest({ message: "You forgot something in the form." });
 }
 ```
@@ -408,7 +408,7 @@ Helper function to create an Unauthorized (401) response with a JSON body.
 import { unauthorized } from "remix-utils/server";
 import type { LoaderFunction } from "remix";
 
-export loader: LoaderFunction = async () => {
+export let loader: LoaderFunction = async () => {
   // usually what you really want is to throw a redirect to the login page
   throw unauthorized({ message: "You need to login." });
 }
@@ -422,7 +422,7 @@ Helper function to create a Forbidden (403) response with a JSON body.
 import { forbidden } from "remix-utils/server";
 import type { LoaderFunction } from "remix";
 
-export loader: LoaderFunction = async () => {
+export let loader: LoaderFunction = async () => {
   throw forbidden({ message: "You don't have access for this." });
 }
 ```
@@ -435,7 +435,7 @@ Helper function to create a Not Found (404) response with a JSON body.
 import { notFound } from "remix-utils/server";
 import type { LoaderFunction } from "remix";
 
-export loader: LoaderFunction = async () => {
+export let loader: LoaderFunction = async () => {
   throw notFound({ message: "This doesn't exists." });
 }
 ```
@@ -448,7 +448,7 @@ Helper function to create an Unprocessable Entity (422) response with a JSON bod
 import { unprocessableEntity } from "remix-utils/server";
 import type { LoaderFunction } from "remix";
 
-export loader: LoaderFunction = async () => {
+export let loader: LoaderFunction = async () => {
   throw unprocessableEntity({ message: "This doesn't exists." });
 }
 ```
@@ -463,7 +463,7 @@ Helper function to create a Server Error (500) response with a JSON body.
 import { serverError } from "remix-utils/server";
 import type { LoaderFunction } from "remix";
 
-export loader: LoaderFunction = async () => {
+export let loader: LoaderFunction = async () => {
   throw serverError({ message: "Something unexpected happened." });
 }
 ```
