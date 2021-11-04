@@ -45,6 +45,120 @@ This component uses the `useHydrated` hook internally.
 
 ### CSRF
 
+The CSRF related functions let you implement a CSRF protection on your application.
+
+This part of Remix Utils needs packages from `remix-utils/server` and `remix-utils/react` to work.
+
+#### Generate the authenticity token
+
+In the server, we need to add to our `root` componet the following
+
+```ts
+import type { LoaderFunction } from "remix";
+import { createAuthenticityToken, json } from "remix-utils/server";
+import { getSession, commitSession } from "~/services/session.server";
+
+interface LoaderData {
+  csrf: string;
+}
+
+export let loader: LoaderFunction = async ({ request }) => {
+  let session = await getSession(request.headers.get("cookie"));
+  let token = createAuthenticityToken(session);
+  return json<LoaderData>({ csrf: token }, {
+    headers: await commitSession(session)
+  });
+}
+```
+
+The `createAuthenticityToken` function receives a session object and store the authenticity token there using the `csrf` key (you can pass the key name as second argument too). Finally you need to return the token in a `json` response and commit the session.
+
+#### Render the AuthenticityTokenProvider
+
+Now, in your root you need to read the authenticity token and render the `AuthenticityTokenProvider` component wrapping your code.
+
+```tsx
+import { Outlet, useLoaderData } from "remix";
+import { Document } from "~/components/document";
+
+export default function Root() {
+  let { csrf } = useLoaderData<LoaderData>();
+  return (
+    <AuthenticityTokenProvider value={csrf}>
+      <Document>
+        <Outlet />
+      </Document>
+    </AuthenticityTokenProvider>
+  );
+}
+```
+
+With this, your whole app can access the authenticity token generated in the root.
+
+#### Rendering a Form
+
+Now, when you create a form in some route you can use the `AuthenticityTokenInput` component to add the authenticity token to the form.
+
+```tsx
+import { Form } from "remix";
+import { AuthenticityTokenInput } from "remix-utils/react";
+
+export default function SomeRoute() {
+  return (
+    <Form method="post">
+      <AuthenticityTokenInput />
+      <input type="text" name="something" />
+    </Form>
+  );
+}
+```
+
+Note that the authenticity token is only really needed for form that mutates the data somehow, if you have a search form doing a GET request you don't need to add the authenticity token there.
+
+This `AuthenticityTokenInput` will get the authenticity token from the `AuthenticityTokenProvider` component and add it to the form as the value of a hidden input with the name `csrf`, you can customize the name using the `name` prop.
+
+```tsx
+<AuthenticityTokenInput name="customName" />
+```
+
+You should only customize the name if you also changed it on `createAuthenticityToken`.
+
+##### Alternative: Using `useAuthenticityToken` and `useFetcher`.
+
+If you need to use `useFetcher` (or `useSubmit`) instead of `Form` you can also get the authenticity token with the `useAuthenticityToken` hook.
+
+```tsx
+import { useFetcher } from "remix";
+import { useAuthenticityToken } from "remix-utils/react";
+
+export function useMarkAsRead() {
+  let fetcher = useFetcher();
+  let csrf = useAuthenticityToken();
+  return function submit(data) {
+    fetcher.submit({ csrf, ...data }, { action: "/action", method: "post" });
+  };
+}
+```
+
+#### Verify in the Action
+
+Finally, you need to verify the authenticity token in the action you received the request.
+
+```ts
+import type { ActionFunction } from "remix";
+import { verifyAuthenticityToken, redirectBack } from "remix-utils/server";
+import { getSession, commitSession } from "~/services/session.server";
+
+export let action: ActionFunction = async ({ request }) => {
+  let session = await getSession(request.headers.get("Cookie"));
+  await verifyAuthenticityToken(session);
+  // do something here
+  return redirectBack(request, { fallback: "/fallback"})
+}
+```
+
+In case the authenticity token is missing on the session, on the request body or they don't match the function will throw an Unprocessable Entity response that you can either catch and handle manually or let pass and render your CatchBoundary.
+
 ### Outlet & useParentData
 
 This wrapper of the Remix Outlet component let you pass an optional `data` prop, then using the `useParentData` hook you can access that data.
