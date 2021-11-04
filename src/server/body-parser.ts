@@ -1,15 +1,28 @@
 export let bodyParser = {
   /**
-   * Parse the body of a Request to an URLSearchParams instance.
+   * Parse the body of a Request to an string.
    * @example
    * async function action({ request }: ActionArgs): Promise<ActionReturn> {
-   *  const body = await bodyParser.toParams(request);
+   *  const body = await bodyParser.toString(request);
    *  await doSomething(body);
    *  return redirect("/target");
    * }
    */
-  async toParams(request: Request): Promise<URLSearchParams> {
-    const body = await request.text();
+  async toString(request: Request): Promise<string> {
+    return request.text();
+  },
+
+  /**
+   * Parse the body of a Request to an URLSearchParams instance.
+   * @example
+   * async function action({ request }: ActionArgs): Promise<ActionReturn> {
+   *  const body = await bodyParser.toSearchParams(request);
+   *  await doSomething(body);
+   *  return redirect("/target");
+   * }
+   */
+  async toSearchParams(request: Request): Promise<URLSearchParams> {
+    let body = await this.toString(request);
     return new URLSearchParams(body);
   },
 
@@ -28,7 +41,7 @@ export let bodyParser = {
    * }
    */
   async toJSON(request: Request): Promise<unknown> {
-    let params = await this.toParams(request);
+    let params = await this.toSearchParams(request);
     return Object.fromEntries(params.entries()) as unknown;
   },
 };

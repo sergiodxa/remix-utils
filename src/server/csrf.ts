@@ -43,7 +43,7 @@ export async function verifyAuthenticityToken(
   // We clone the request to ensure we don't modify the original request.
   // This allow us to parse the body of the request and let the original request
   // still be used and parsed without errors.
-  const params = await bodyParser.toParams(request.clone());
+  const params = await bodyParser.toSearchParams(request.clone());
 
   // if the session doesn't have a csrf token, throw an error
   if (!session.has(sessionKey)) {

@@ -23,7 +23,7 @@ describe("Server Utils", () => {
         method: "POST",
         body: new URLSearchParams({ framework: "Remix" }).toString(),
       });
-      const body = await bodyParser.toParams(request);
+      const body = await bodyParser.toSearchParams(request);
       expect(body).toBeInstanceOf(URLSearchParams);
       expect(body.get("framework")).toBe("Remix");
     });
