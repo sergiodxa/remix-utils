@@ -32,8 +32,10 @@ jobs:
           git config user.name 'Sergio Xalambrí'
           git config user.email 'hello@sergiodxa.com'
 
-      - name: Bump package.json versino
+      - name: Bump package.json version
         run: npm version ${{ github.event.inputs.version }}
+        env:
+          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
 
       - name: Push latest version
         run: git push origin main --follow-tags
