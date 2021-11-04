@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { Outlet as RROutlet } from "react-router-dom";
+import { Outlet as RemixOutlet } from "remix";
 
 type OutletProps<Data> = { data?: Data };
 
@@ -18,7 +18,7 @@ let context = createContext<unknown>(null);
 export function Outlet<Data = unknown>({ data }: OutletProps<Data>) {
   return (
     <context.Provider value={data}>
-      <RROutlet />
+      <RemixOutlet />
     </context.Provider>
   );
 }
