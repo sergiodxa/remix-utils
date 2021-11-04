@@ -1,0 +1,97 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Use Node 14
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
+        env:
+          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
+
+      - name: Build
+        run: npm run setup && npm run build
+        env:
+          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
+
+  typecheck:
+    name: Typechecker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Use Node 14
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
+        env:
+          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
+
+      - name: Typecheck
+        run: npm run setup && npm run typecheck
+        env:
+          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
+
+  test:
+    name: Unit and Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Use Node 14
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
+        env:
+          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
+
+      - name: Test
+        run: npm run setup && npm run test -- --ci --coverage --maxWorkers=2
+        env:
+          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
+
+  lint:
+    name: Linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Use Node 14
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
+        env:
+          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
+
+      - name: Build
+        run: npm run setup && npm run build
+        env:
+          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
+
+      - name: Lint
+        run: npm run lint
+        env:
+          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
