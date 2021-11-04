@@ -1,4 +1,11 @@
 *.log
 .DS_Store
 node_modules
-dist
+
+/react
+/react.js
+/react.d.ts
+
+/server
+/server.js
+/server.d.ts

@@ -2,41 +2,16 @@
   "name": "remix-utils",
   "version": "1.0.2",
   "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "src"
-  ],
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "test": "tsdx test",
-    "lint": "tsdx lint",
-    "prepare": "tsdx build",
-    "size": "size-limit",
-    "analyze": "size-limit --why"
-  },
-  "peerDependencies": {
-    "@remix-run/node": "^0.17.5",
-    "@remix-run/react": "^0.17.5",
-    "react": "^17.0.2",
-    "react-router-dom": "^6.0.0-beta.0",
-    "remix": "^0.17.5"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
+    "build": "tsc --project tsconfig.json",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "lint": "eslint --ext .ts,.tsx src/",
+    "test": "jest --config=config/jest.config.ts --passWithNoTests",
+    "setup": "remix setup",
+    "postinstall": "npm run setup"
   },
   "author": {
     "name": "Sergio Xalambrí",
@@ -54,31 +29,59 @@
     "utils",
     "request",
     "response",
-    "redirect back"
+    "csrf",
+    "redirect-back",
+    "outlet",
+    "client-only",
+    "hydrated",
+    "body parser"
   ],
-  "module": "dist/remix-utils.esm.js",
-  "size-limit": [
-    {
-      "path": "dist/remix-utils.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/remix-utils.esm.js",
-      "limit": "10 KB"
-    }
-  ],
-  "devDependencies": {
-    "@remix-run/node": "^0.17.5",
-    "@remix-run/react": "^0.17.5",
-    "@size-limit/preset-small-lib": "^4.10.2",
-    "@types/react": "^17.0.14",
-    "husky": "^6.0.0",
+  "peerDependencies": {
+    "@remix-run/node": "^0.20.1",
+    "@remix-run/react": "^0.20.1",
     "react": "^17.0.2",
-    "react-router-dom": "^6.0.0-beta.0",
-    "remix": "^0.17.5",
-    "size-limit": "^4.10.2",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.2.0",
+    "remix": "^0.20.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.0",
+    "@jest/types": "^27.2.5",
+    "@remix-run/dev": "^0.20.1",
+    "@remix-run/node": "^0.20.1",
+    "@remix-run/react": "^0.20.1",
+    "@size-limit/preset-small-lib": "^4.10.2",
+    "@testing-library/jest-dom": "^5.15.0",
+    "@testing-library/react": "^12.1.2",
+    "@types/react": "^17.0.14",
+    "@typescript-eslint/eslint-plugin": "^5.3.0",
+    "@typescript-eslint/parser": "^5.3.0",
+    "babel-jest": "^27.3.1",
+    "eslint": "^7.26.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-cypress": "^2.11.3",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-jest-dom": "^3.9.0",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-react": "^7.26.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-testing-library": "^4.3.0",
+    "eslint-plugin-unicorn": "^32.0.1",
+    "jest": "^27.3.1",
+    "jest-fetch-mock": "^3.0.3",
+    "react": "^17.0.2",
+    "react-router-dom": "^6.0.0-beta.6",
+    "remix": "^0.20.1",
+    "ts-node": "^10.4.0",
     "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "prettier": "^2.4.1",
+    "type-fest": "^2.5.2"
   }
 }
