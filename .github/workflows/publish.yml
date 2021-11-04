@@ -5,17 +5,25 @@ on:
     types: [published]
 
 jobs:
-  build:
+  publish-npm:
+    name: "Publish to npm"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+
       - uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: "lts/*"
           registry-url: https://registry.npmjs.org/
-      - run: yarn install
+
+      - run: npm install
         env:
           REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
+
+      - run: npm run build
+        env:
+          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
+
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
