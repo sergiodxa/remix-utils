@@ -1,11 +1,11 @@
-import { render } from '@testing-library/react';
+import { render } from "@testing-library/react";
 import {
   AuthenticityTokenInput,
   AuthenticityTokenProvider,
-} from '../src/react';
+} from "../src/react";
 
-describe('React Utils', () => {
-  describe('CSRF', () => {
+describe("React Utils", () => {
+  describe("CSRF", () => {
     render(
       <AuthenticityTokenProvider token="testing-token">
         <AuthenticityTokenInput />
