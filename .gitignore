@@ -2,10 +2,5 @@
 .DS_Store
 node_modules
 
-/react
-/react.js
-/react.d.ts
-
-/server
-/server.js
-/server.d.ts
+/browser
+/build

@@ -1,15 +1,12 @@
 {
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ESNext", "ESNext.Promise"],
+    "lib": ["DOM", "DOM.Iterable", "ES2019"],
     "esModuleInterop": true,
     "moduleResolution": "Node",
-    "target": "ESNext",
-    "module": "CommonJS",
+    "target": "ES2019",
     "strict": true,
     "skipLibCheck": true,
-    "outDir": "./",
     "declaration": true,
-    "declarationDir": "./",
     "jsx": "react-jsx"
   },
   "exclude": ["node_modules"],

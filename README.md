@@ -17,7 +17,7 @@ The ClientOnly component lets you render the children element only on the client
 You can, optionally, provide a fallback component to be used on SSR.
 
 ```tsx
-import { ClientOnly } from "remix-utils/react";
+import { ClientOnly } from "remix-utils";
 
 export default function View() {
   return (
@@ -43,7 +43,7 @@ This component uses the `useHydrated` hook internally.
 
 The CSRF related functions let you implement CSRF protection on your application.
 
-This part of Remix Utils needs packages from `remix-utils/server` and `remix-utils/react` to work.
+This part of Remix Utils needs packages from `remix-utils` and `remix-utils` to work.
 
 #### Generate the authenticity token
 
@@ -51,7 +51,7 @@ In the server, we need to add to our `root` component the following.
 
 ```ts
 import type { LoaderFunction } from "remix";
-import { createAuthenticityToken, json } from "remix-utils/server";
+import { createAuthenticityToken, json } from "remix-utils";
 import { getSession, commitSession } from "~/services/session.server";
 
 interface LoaderData {
@@ -61,10 +61,13 @@ interface LoaderData {
 export let loader: LoaderFunction = async ({ request }) => {
   let session = await getSession(request.headers.get("cookie"));
   let token = createAuthenticityToken(session);
-  return json<LoaderData>({ csrf: token }, {
-    headers: await commitSession(session)
-  });
-}
+  return json<LoaderData>(
+    { csrf: token },
+    {
+      headers: await commitSession(session),
+    }
+  );
+};
 ```
 
 The `createAuthenticityToken` function receives a session object and stores the authenticity token there using the `csrf` key (you can pass the key name as a second argument). Finally, you need to return the token in a `json` response and commit the session.
@@ -97,7 +100,7 @@ When you create a form in some route, you can use the `AuthenticityTokenInput` c
 
 ```tsx
 import { Form } from "remix";
-import { AuthenticityTokenInput } from "remix-utils/react";
+import { AuthenticityTokenInput } from "remix-utils";
 
 export default function SomeRoute() {
   return (
@@ -125,7 +128,7 @@ If you need to use `useFetcher` (or `useSubmit`) instead of `Form` you can also 
 
 ```tsx
 import { useFetcher } from "remix";
-import { useAuthenticityToken } from "remix-utils/react";
+import { useAuthenticityToken } from "remix-utils";
 
 export function useMarkAsRead() {
   let fetcher = useFetcher();
@@ -142,15 +145,15 @@ Finally, you need to verify the authenticity token in the action you received th
 
 ```ts
 import type { ActionFunction } from "remix";
-import { verifyAuthenticityToken, redirectBack } from "remix-utils/server";
+import { verifyAuthenticityToken, redirectBack } from "remix-utils";
 import { getSession, commitSession } from "~/services/session.server";
 
 export let action: ActionFunction = async ({ request }) => {
   let session = await getSession(request.headers.get("Cookie"));
   await verifyAuthenticityToken(session);
   // do something here
-  return redirectBack(request, { fallback: "/fallback"})
-}
+  return redirectBack(request, { fallback: "/fallback" });
+};
 ```
 
 Suppose the authenticity token is missing on the session, the request body, or doesn't match. In that case, the function will throw an Unprocessable Entity response that you can either catch and handle manually or let pass and render your CatchBoundary.
@@ -163,7 +166,7 @@ Helpful to pass information from parent to child routes, for example, the authen
 
 ```tsx
 // parent route
-import { Outlet } from "remix-utils/react";
+import { Outlet } from "remix-utils";
 
 export default function Parent() {
   return <Outlet data={{ something: "here" }} />;
@@ -172,7 +175,7 @@ export default function Parent() {
 
 ```tsx
 // child route
-import { useParentData } from "remix-utils/react";
+import { useParentData } from "remix-utils";
 
 export default function Child() {
   const data = useParentData();
@@ -187,7 +190,7 @@ This lets you detect if your component is already hydrated. This means the JS fo
 With useHydrated, you can render different things on the server and client while ensuring the hydration will not have a mismatched HTML.
 
 ```ts
-import { useHydrated } from "remix-utils/react";
+import { useHydrated } from "remix-utils";
 
 export function Component() {
   let isHydrated = useHydrated();
@@ -212,15 +215,15 @@ In your document component, you can call this hook to dynamically render the Scr
 
 ```tsx
 import type { ReactNode } from "react";
-import { Links, LiveReload, Meta, Scripts, } from "remix";
-import { useShouldHydrate } from "remix-utils/react";
+import { Links, LiveReload, Meta, Scripts } from "remix";
+import { useShouldHydrate } from "remix-utils";
 
 interface DocumentProps {
   children: ReactNode;
   title?: string;
 }
 
-export function Document({ children, title, }: DocumentProps) {
+export function Document({ children, title }: DocumentProps) {
   let shouldHydrate = useShouldHydrate();
   return (
     <html lang="en">
@@ -270,7 +273,7 @@ These utilities let you parse the request body with a simple function call. You 
 This function receives the whole request and returns a promise with the body as a string.
 
 ```ts
-import { bodyParser, redirectBack } from "remix-utils/server";
+import { bodyParser, redirectBack } from "remix-utils";
 import type { ActionFunction } from "remix";
 
 import { updateUser } from "../services/users";
@@ -280,7 +283,7 @@ export let action: ActionFunction = async ({ request }) => {
   body = new URLSearchParams(body);
   await updateUser(params.id, { username: body.get("username") });
   return redirectBack(request, { fallback: "/" });
-}
+};
 ```
 
 #### toSearchParams
@@ -288,7 +291,7 @@ export let action: ActionFunction = async ({ request }) => {
 This function receives the whole request and returns a promise with an instance of `URLSearchParams`, and the request's body is already parsed.
 
 ```ts
-import { bodyParser, redirectBack } from "remix-utils/server";
+import { bodyParser, redirectBack } from "remix-utils";
 import type { ActionFunction } from "remix";
 
 import { updateUser } from "../services/users";
@@ -297,7 +300,7 @@ export let action: ActionFunction = async ({ request, params }) => {
   const body = await bodyParser.toSearchParams(request);
   await updateUser(params.id, { username: body.get("username") });
   return redirectBack(request, { fallback: "/" });
-}
+};
 ```
 
 This is the same as doing:
@@ -314,7 +317,7 @@ This function receives the whole request and returns a promise with an unknown v
 The result is typed as `unknown` to force you to validate the object to ensure it's what you expect. This is because there's no way for TypeScript to know what the type of the body is since it's an entirely dynamic value.
 
 ```ts
-import { bodyParser, redirectBack } from "remix-utils/server";
+import { bodyParser, redirectBack } from "remix-utils";
 import type { ActionFunction } from "remix";
 import { hasUsername } from "../validations/users";
 import { updateUser } from "~/services/users";
@@ -325,7 +328,7 @@ export let action: ActionFunction = async ({ request }) => {
   // from this point you can do `body.username`
   await updateUser(params.id, { username: body.username });
   return redirectBack(request, { fallback: "/" });
-}
+};
 ```
 
 This is the same as doing:
@@ -350,7 +353,7 @@ The generic extends JsonValue from [type-fest](https://github.com/sindresorhus/t
 ```tsx
 import { useLoaderData } from "remix";
 import type { LoaderFunction } from "remix";
-import { json } from "remix-utils/server";
+import { json } from "remix-utils";
 
 import { getUser } from "../services/users";
 import type { User } from "../types";
@@ -359,10 +362,10 @@ interface LoaderData {
   user: User;
 }
 
-export let loader: LoaderFunction = async ({request}) => {
+export let loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
   return json<LoaderData>({ user });
-}
+};
 
 export default function View() {
   const { user } = useLoaderData<LoaderData>();
@@ -377,12 +380,12 @@ This function is a wrapper of the `redirect` helper from Remix, contrarian to Re
 The response created with this function will have the `Location` header pointing to the `Referer` header from the request, or if not available, the fallback URL provided in the second argument.
 
 ```ts
-import { redirectBack } from "remix-utils/server";
+import { redirectBack } from "remix-utils";
 import type { ActionFunction } from "remix";
 
 export let action: ActionFunction = async ({ request }) => {
   await redirectBack(request, { fallback: "/" });
-}
+};
 ```
 
 This helper is more useful when used in a generic action to send the user to the same URL it was before.
@@ -392,12 +395,12 @@ This helper is more useful when used in a generic action to send the user to the
 Helper function to create a Bad Request (400) response with a JSON body.
 
 ```ts
-import { badRequest } from "remix-utils/server";
+import { badRequest } from "remix-utils";
 import type { ActionFunction } from "remix";
 
 export let action: ActionFunction = async () => {
   throw badRequest({ message: "You forgot something in the form." });
-}
+};
 ```
 
 #### Unauthorized
@@ -405,13 +408,13 @@ export let action: ActionFunction = async () => {
 Helper function to create an Unauthorized (401) response with a JSON body.
 
 ```ts
-import { unauthorized } from "remix-utils/server";
+import { unauthorized } from "remix-utils";
 import type { LoaderFunction } from "remix";
 
 export let loader: LoaderFunction = async () => {
   // usually what you really want is to throw a redirect to the login page
   throw unauthorized({ message: "You need to login." });
-}
+};
 ```
 
 #### Forbidden
@@ -419,12 +422,12 @@ export let loader: LoaderFunction = async () => {
 Helper function to create a Forbidden (403) response with a JSON body.
 
 ```ts
-import { forbidden } from "remix-utils/server";
+import { forbidden } from "remix-utils";
 import type { LoaderFunction } from "remix";
 
 export let loader: LoaderFunction = async () => {
   throw forbidden({ message: "You don't have access for this." });
-}
+};
 ```
 
 #### Not Found
@@ -432,12 +435,12 @@ export let loader: LoaderFunction = async () => {
 Helper function to create a Not Found (404) response with a JSON body.
 
 ```ts
-import { notFound } from "remix-utils/server";
+import { notFound } from "remix-utils";
 import type { LoaderFunction } from "remix";
 
 export let loader: LoaderFunction = async () => {
   throw notFound({ message: "This doesn't exists." });
-}
+};
 ```
 
 #### Unprocessable Entity
@@ -445,12 +448,12 @@ export let loader: LoaderFunction = async () => {
 Helper function to create an Unprocessable Entity (422) response with a JSON body.
 
 ```ts
-import { unprocessableEntity } from "remix-utils/server";
+import { unprocessableEntity } from "remix-utils";
 import type { LoaderFunction } from "remix";
 
 export let loader: LoaderFunction = async () => {
   throw unprocessableEntity({ message: "This doesn't exists." });
-}
+};
 ```
 
 This is used by the CSRF validation. You probably don't want to use it directly.
@@ -460,12 +463,12 @@ This is used by the CSRF validation. You probably don't want to use it directly.
 Helper function to create a Server Error (500) response with a JSON body.
 
 ```ts
-import { serverError } from "remix-utils/server";
+import { serverError } from "remix-utils";
 import type { LoaderFunction } from "remix";
 
 export let loader: LoaderFunction = async () => {
   throw serverError({ message: "Something unexpected happened." });
-}
+};
 ```
 
 ## Author
