@@ -5,8 +5,13 @@
   "engines": {
     "node": ">=16"
   },
+  "browser": "./browser/index.js",
+  "main": "./build/index.js",
+  "sideEffects": false,
   "scripts": {
-    "build": "tsc --project tsconfig.json",
+    "build": "npm run build:browser && npm run build:main",
+    "build:browser": "tsc --project tsconfig.json --module ESNext --outDir ./browser",
+    "build:main": "tsc --project tsconfig.json --module CommonJS --outDir ./build",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "lint": "eslint --ext .ts,.tsx src/",
     "test": "jest --config=config/jest.config.ts --passWithNoTests",
