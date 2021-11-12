@@ -48,14 +48,14 @@ export async function verifyAuthenticityToken(
   // if the session doesn't have a csrf token, throw an error
   if (!session.has(sessionKey)) {
     throw unprocessableEntity({
-      message: "Can't verify CSRF token authenticity.",
+      message: "Can't find CSRF token in session.",
     });
   }
 
   // if the body doesn't have a csrf token, throw an error
   if (!params.get(sessionKey)) {
     throw unprocessableEntity({
-      message: "Can't verify CSRF token authenticity.",
+      message: "Can't find CSRF token in body.",
     });
   }
 
