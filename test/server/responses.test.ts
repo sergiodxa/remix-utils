@@ -13,7 +13,7 @@ import {
 let jsonContentType = "application/json; charset=utf-8";
 
 describe("Responses", () => {
-  describe("json", () => {
+  describe(json, () => {
     it("returns a response with the JSON data", async () => {
       const response = json({ framework: "Remix" } as const);
       const body = await response.json();
@@ -21,7 +21,7 @@ describe("Responses", () => {
     });
   });
 
-  describe("redirectBack", () => {
+  describe(redirectBack, () => {
     it("uses the referer if available", () => {
       const request = new Request("/", {
         headers: { Referer: "/referer" },
@@ -37,7 +37,7 @@ describe("Responses", () => {
     });
   });
 
-  describe("Not Modified", () => {
+  describe(notModified, () => {
     test("Should return Response with status 304", () => {
       let response = notModified();
       expect(response).toEqual(new Response("", { status: 304 }));
@@ -56,7 +56,7 @@ describe("Responses", () => {
     });
   });
 
-  describe("Bad Request", () => {
+  describe(badRequest, () => {
     test("Should return Response with status 404", () => {
       let response = badRequest({});
       expect(response).toEqual(
@@ -78,7 +78,7 @@ describe("Responses", () => {
     });
   });
 
-  describe("Unauthorized", () => {
+  describe(unauthorized, () => {
     test("Should return Response with status 401", () => {
       let response = unauthorized({});
       expect(response).toEqual(
@@ -100,7 +100,7 @@ describe("Responses", () => {
     });
   });
 
-  describe("Forbidden", () => {
+  describe(forbidden, () => {
     test("Should return Response with status 403", () => {
       let response = forbidden({});
       expect(response).toEqual(
@@ -122,7 +122,7 @@ describe("Responses", () => {
     });
   });
 
-  describe("Not Found", () => {
+  describe(notFound, () => {
     test("Should return Response with status 404", () => {
       let response = notFound({});
       expect(response).toEqual(
@@ -144,7 +144,7 @@ describe("Responses", () => {
     });
   });
 
-  describe("Unprocessable Entity", () => {
+  describe(unprocessableEntity, () => {
     test("Should return Response with status 422", () => {
       let response = unprocessableEntity({});
       expect(response).toEqual(
@@ -169,7 +169,7 @@ describe("Responses", () => {
     });
   });
 
-  describe("Server Error", () => {
+  describe(serverError, () => {
     test("Should return Response with status 500", () => {
       let response = serverError({});
       expect(response).toEqual(
