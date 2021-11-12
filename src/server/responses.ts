@@ -137,3 +137,15 @@ export function serverError<Data = unknown>(
 ) {
   return json<Data>(data, { ...init, status: 500 });
 }
+
+/**
+ * Create a response with only the status 304 and optional headers.
+ * This is useful when trying to implement conditional responses based on Etags.
+ * @example
+ * let loader: LoaderFunction = async ({ request }) => {
+ *   return notModified();
+ * }
+ */
+export function notModified(init?: Omit<ResponseInit, "status">) {
+  return new Response("", { ...init, status: 304 });
+}
