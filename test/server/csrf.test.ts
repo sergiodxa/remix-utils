@@ -1,8 +1,5 @@
 import { createCookieSessionStorage } from "remix";
-import {
-  createAuthenticityToken,
-  verifyAuthenticityToken,
-} from "../../src/server/csrf";
+import { createAuthenticityToken, verifyAuthenticityToken } from "../../src/";
 
 describe("CSRF Server", () => {
   let sessionStorage = createCookieSessionStorage({

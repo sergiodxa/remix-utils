@@ -8,7 +8,7 @@ import {
   serverError,
   unauthorized,
   unprocessableEntity,
-} from "../../src/server/responses";
+} from "../../src";
 
 let jsonContentType = "application/json; charset=utf-8";
 

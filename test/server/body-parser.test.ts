@@ -1,4 +1,4 @@
-import { bodyParser } from "../../src/server/body-parser";
+import { bodyParser } from "../../src";
 
 describe("Body Parser", () => {
   describe(bodyParser.toString, () => {
