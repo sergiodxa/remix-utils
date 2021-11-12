@@ -1,17 +1,26 @@
 import {
   badRequest,
   forbidden,
+  json,
   notFound,
   notModified,
   redirectBack,
   serverError,
   unauthorized,
   unprocessableEntity,
-} from "../../src/server";
+} from "../../src/server/responses";
 
 let jsonContentType = "application/json; charset=utf-8";
 
 describe("Responses", () => {
+  describe("json", () => {
+    it("returns a response with the JSON data", async () => {
+      const response = json({ framework: "Remix" } as const);
+      const body = await response.json();
+      expect(body.framework).toBe("Remix");
+    });
+  });
+
   describe("redirectBack", () => {
     it("uses the referer if available", () => {
       const request = new Request("/", {
