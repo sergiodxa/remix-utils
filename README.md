@@ -183,6 +183,18 @@ export default function Child() {
 }
 ```
 
+### RevalidateLink
+
+The RevalidateLink link components it's a simple wrapper of a Remix's Link, it receives the same props with the exception of the `to`, instead this component will render a Link to `.`.
+
+Because of linking to `.`, when clicked, this will tell Remix to fetch again the loaders of the current routes, but instead of creating a new entry on the browser's history stack, it will replace the current one, basically, it will refresh the page, but only reloading the data.
+
+If you don't have JS enabled, this will do a full page refresh instead, giving you the exact same behavior.
+
+```tsx
+<RevalidateLink className="refresh-btn-styles">Refresh</RevalidateLink>
+```
+
 ### useHydrated
 
 This lets you detect if your component is already hydrated. This means the JS for the element loaded client-side and React is running.
@@ -206,6 +218,32 @@ export function Component() {
 When doing SSR, the value of `isHydrated` will always be `false`. The first client-side render `isHydrated` will still be false, and then it will change to `true`.
 
 After the first client-side render, future components rendered calling this hook will receive `true` as the value of `isHydrated`. This way, your server fallback UI will never be rendered on a route transition.
+
+### useRevalidate
+
+This Hook gives you a function you can call to trigger a revalidation of the loaders in the current routes.
+
+The way this works is by navigating to `.` and adding `replace: true` to avoid creating a new entry on the history stack.
+
+> Check #RevalidateLink for more information and a component version of this feature that works without JS.
+
+This Hooks is mostly useful if you want to trigger the revalidation manually from an effect, examples of this are:
+
+- Set an interval to trigger the revalidation
+- Revalidate when the browser tab is focused again
+- Revalidate when the user is online again
+
+```ts
+import { useRevalidate } from "remix-utils";
+
+function useRevalidateOnInterval() {
+  let revalidate = useRevalidat();
+  useEffect(() => {
+    let interval = setInterval(revalidate, 5000);
+    return () => clearInterval(interval);
+  }, [revalidate]);
+}
+```
 
 ### useShouldHydrate
 
