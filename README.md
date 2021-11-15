@@ -183,6 +183,18 @@ export default function Child() {
 }
 ```
 
+### RevalidateLink
+
+The RevalidateLink link components it's a simple wrapper of a Remix's Link, it receives the same props with the exception of the `to`, instead this component will render a Link to `.`.
+
+Because of linking to `.`, when clicked, this will tell Remix to fetch again the loaders of the current routes, but instead of creating a new entry on the browser's history stack, it will replace the current one, basically, it will refresh the page, but only reloading the data.
+
+If you don't have JS enabled, this will do a full page refresh instead, giving you the exact same behavior.
+
+```tsx
+<RevalidateLink className="refresh-btn-styles">Refresh</RevalidateLink>
+```
+
 ### useHydrated
 
 This lets you detect if your component is already hydrated. This means the JS for the element loaded client-side and React is running.
