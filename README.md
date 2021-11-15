@@ -219,6 +219,32 @@ When doing SSR, the value of `isHydrated` will always be `false`. The first clie
 
 After the first client-side render, future components rendered calling this hook will receive `true` as the value of `isHydrated`. This way, your server fallback UI will never be rendered on a route transition.
 
+### useRevalidate
+
+This Hook gives you a function you can call to trigger a revalidation of the loaders in the current routes.
+
+The way this works is by navigating to `.` and adding `replace: true` to avoid creating a new entry on the history stack.
+
+> Check #RevalidateLink for more information and a component version of this feature that works without JS.
+
+This Hooks is mostly useful if you want to trigger the revalidation manually from an effect, examples of this are:
+
+- Set an interval to trigger the revalidation
+- Revalidate when the browser tab is focused again
+- Revalidate when the user is online again
+
+```ts
+import { useRevalidate } from "remix-utils";
+
+function useRevalidateOnInterval() {
+  let revalidate = useRevalidat();
+  useEffect(() => {
+    let interval = setInterval(revalidate, 5000);
+    return () => clearInterval(interval);
+  }, [revalidate]);
+}
+```
+
 ### useShouldHydrate
 
 If you are building a Remix application where most routes are static, and you want to avoid loading client-side JS, you can use this hook, plus some conventions, to detect if one or more active routes needs JS and only render the Scripts component in that case.
