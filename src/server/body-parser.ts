@@ -14,6 +14,7 @@ export let bodyParser = {
 
   /**
    * Parse the body of a Request to an URLSearchParams instance.
+   * @deprecated Use `request.formData()`
    * @example
    * async function action({ request }: ActionArgs): Promise<ActionReturn> {
    *  const body = await bodyParser.toSearchParams(request);
