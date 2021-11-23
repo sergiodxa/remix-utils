@@ -23,8 +23,6 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
-        env:
-          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
       - name: Setup Git
         run: |
           git config user.name 'Sergio Xalambrí'
