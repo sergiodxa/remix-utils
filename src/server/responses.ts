@@ -1,4 +1,4 @@
-import { json as remixJson, redirect } from "remix";
+import { json as remixJson, redirect } from "@remix-run/server-runtime";
 import { JsonValue } from "type-fest";
 
 /**

@@ -1,5 +1,5 @@
+import { Outlet as RemixOutlet } from "@remix-run/react";
 import { createContext, useContext } from "react";
-import { Outlet as RemixOutlet } from "remix";
 
 type OutletProps<Data> = { data?: Data };
 

@@ -1,4 +1,4 @@
-import { useMatches } from "remix";
+import { useMatches } from "@remix-run/react";
 
 /**
  * Determine if at least one of the routes is asking to load JS and return a
