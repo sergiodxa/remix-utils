@@ -17,13 +17,9 @@ jobs:
 
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
-        env:
-          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
 
       - name: Build
-        run: npm run setup && npm run build
-        env:
-          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
+        run: npm run build
 
   typecheck:
     name: Typechecker
@@ -39,13 +35,9 @@ jobs:
 
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
-        env:
-          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
 
       - name: Typecheck
-        run: npm run setup && npm run typecheck
-        env:
-          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
+        run: npm run typecheck
 
   test:
     name: Unit and Integration Tests
@@ -61,13 +53,9 @@ jobs:
 
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
-        env:
-          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
 
       - name: Test
-        run: npm run setup && npm run test -- --ci --coverage --maxWorkers=2
-        env:
-          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
+        run: npm run test -- --ci --coverage --maxWorkers=2
 
   lint:
     name: Linter
@@ -83,15 +71,9 @@ jobs:
 
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
-        env:
-          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
 
       - name: Build
-        run: npm run setup && npm run build
-        env:
-          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
+        run: npm run build
 
       - name: Lint
         run: npm run lint
-        env:
-          REMIX_TOKEN: ${{ secrets.REMIX_TOKEN }}
