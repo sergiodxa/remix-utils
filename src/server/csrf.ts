@@ -1,5 +1,5 @@
+import { Session } from "@remix-run/server-runtime";
 import { randomBytes } from "crypto";
-import { Session } from "remix";
 import { bodyParser } from "./body-parser";
 import { unprocessableEntity } from "./responses";
 

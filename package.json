@@ -14,9 +14,7 @@
     "build:main": "tsc --project tsconfig.json --module CommonJS --outDir ./build",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "lint": "eslint --ext .ts,.tsx src/",
-    "test": "jest --config=config/jest.config.ts --passWithNoTests",
-    "setup": "remix setup",
-    "postinstall": "npm run setup"
+    "test": "jest --config=config/jest.config.ts --passWithNoTests"
   },
   "author": {
     "name": "Sergio Xalambrí",
@@ -42,10 +40,9 @@
     "body parser"
   ],
   "peerDependencies": {
-    "@remix-run/node": "^0.20.1",
-    "@remix-run/react": "^0.20.1",
-    "react": "^17.0.2",
-    "remix": "^0.20.1"
+    "@remix-run/react": "^1.0.0",
+    "@remix-run/server-runtime": "^1.0.0",
+    "react": "^17.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -53,9 +50,9 @@
     "@babel/preset-react": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
     "@jest/types": "^27.2.5",
-    "@remix-run/dev": "^0.20.1",
-    "@remix-run/node": "^0.20.1",
-    "@remix-run/react": "^0.20.1",
+    "@remix-run/node": "^1.0.0",
+    "@remix-run/react": "^1.0.0",
+    "@remix-run/server-runtime": "^1.0.0",
     "@size-limit/preset-small-lib": "^4.10.2",
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^12.1.2",
@@ -81,7 +78,6 @@
     "jest-fetch-mock": "^3.0.3",
     "react": "^17.0.2",
     "react-router-dom": "^6.0.0-beta.6",
-    "remix": "^0.20.1",
     "ts-node": "^10.4.0",
     "typescript": "^4.2.4"
   },

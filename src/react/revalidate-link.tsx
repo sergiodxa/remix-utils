@@ -1,4 +1,4 @@
-import { Link, LinkProps } from "remix";
+import { Link, LinkProps } from "@remix-run/react";
 
 /**
  * Renders a link that will revalidate the current route.
