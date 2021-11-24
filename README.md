@@ -43,7 +43,7 @@ This component uses the `useHydrated` hook internally.
 
 The CSRF related functions let you implement CSRF protection on your application.
 
-This part of Remix Utils needs packages from `remix-utils` and `remix-utils` to work.
+This part of Remix Utils needs React and server-side code.
 
 #### Generate the authenticity token
 
