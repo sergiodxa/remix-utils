@@ -1,6 +1,5 @@
 import { Session } from "@remix-run/server-runtime";
 import { v4 as uuid } from "uuid";
-import { bodyParser } from "./body-parser";
 import { unprocessableEntity } from "./responses";
 
 /**
@@ -43,7 +42,7 @@ export async function verifyAuthenticityToken(
   // We clone the request to ensure we don't modify the original request.
   // This allow us to parse the body of the request and let the original request
   // still be used and parsed without errors.
-  const params = await bodyParser.toSearchParams(request.clone());
+  let formData = await request.clone().formData();
 
   // if the session doesn't have a csrf token, throw an error
   if (!session.has(sessionKey)) {
@@ -53,7 +52,7 @@ export async function verifyAuthenticityToken(
   }
 
   // if the body doesn't have a csrf token, throw an error
-  if (!params.get(sessionKey)) {
+  if (!formData.get(sessionKey)) {
     throw unprocessableEntity({
       message: "Can't find CSRF token in body.",
     });
@@ -61,7 +60,7 @@ export async function verifyAuthenticityToken(
 
   // if the body csrf token doesn't match the session csrf token, throw an
   // error
-  if (params.get(sessionKey) !== session.get(sessionKey)) {
+  if (formData.get(sessionKey) !== session.get(sessionKey)) {
     throw unprocessableEntity({
       message: "Can't verify CSRF token authenticity.",
     });
