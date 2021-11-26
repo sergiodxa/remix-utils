@@ -1,5 +1,5 @@
 import { Session } from "@remix-run/server-runtime";
-import { randomBytes } from "crypto";
+import { v4 as uuid } from "uuid";
 import { bodyParser } from "./body-parser";
 import { unprocessableEntity } from "./responses";
 
@@ -15,7 +15,7 @@ import { unprocessableEntity } from "./responses";
  * return json({ ...otherData, csrf: token }); // return the token in the data
  */
 export function createAuthenticityToken(session: Session, sessionKey = "csrf") {
-  let token = randomBytes(100).toString("base64");
+  let token = uuid();
   session.set(sessionKey, token);
   return token;
 }

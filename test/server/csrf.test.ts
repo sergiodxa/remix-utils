@@ -11,7 +11,7 @@ describe("CSRF Server", () => {
       let session = await sessionStorage.getSession();
       const token = createAuthenticityToken(session);
       expect(token).toBeDefined();
-      expect(token).toHaveLength(136);
+      expect(token).toHaveLength(36);
     });
 
     test("the returned token should be stored in the session as csrf", async () => {
