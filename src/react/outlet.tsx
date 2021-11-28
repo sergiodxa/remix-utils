@@ -7,7 +7,7 @@ let context = createContext<unknown>(null);
 
 /**
  * Wrapper of the React Router Outlet component. This Outlet receives an
- * optional `data` prop and wraps the RR Outlet in a React Context passing this
+ * optional `data` prop and wraps the Remix Outlet in a React Context passing this
  * data as value.
  *
  * ```tsx
@@ -27,8 +27,8 @@ export function Outlet<Data = unknown>({ data }: OutletProps<Data>) {
  * Get the data from the parent data. This needs to be rendered in a route with
  * a parent router rendering the Outlet component of Remix Utils.
  * ```tsx
- * let routeData = useLoaderData(); // get data from the route loader
- * let parentData = useParentData(); // get data from the parent route
+ * let loaderData = useLoaderData(); // get data from the loader
+ * let parentData = useParentData(); // get data from the parent
  * ```
  */
 export function useParentData<ParentData>() {
