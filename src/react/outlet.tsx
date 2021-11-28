@@ -11,7 +11,7 @@ let context = createContext<unknown>(null);
  * data as value.
  *
  * ```tsx
- * let data = useRouteData(); // get data from the current route
+ * let data = useLoaderData(); // get data from the current route
  * return <Outlet data={data} /> // pass data to the Outlet
  * ```
  */
@@ -27,7 +27,7 @@ export function Outlet<Data = unknown>({ data }: OutletProps<Data>) {
  * Get the data from the parent data. This needs to be rendered in a route with
  * a parent router rendering the Outlet component of Remix Utils.
  * ```tsx
- * let routeData = useRouteData(); // get data from the route loader
+ * let routeData = useLoaderData(); // get data from the route loader
  * let parentData = useParentData(); // get data from the parent route
  * ```
  */
