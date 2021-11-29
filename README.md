@@ -35,7 +35,7 @@ The rendering flow will be:
 - SSR: Always render the fallback.
 - CSR First Render: Always render the fallback.
 - CSR Update: Update to render the actual component.
-- CSR Futur Renders: Always render the actual component, don't bother to render the fallback.
+- CSR Future Renders: Always render the actual component, don't bother to render the fallback.
 
 This component uses the `useHydrated` hook internally.
 
@@ -141,7 +141,7 @@ export function useMarkAsRead() {
 
 #### Verify in the Action
 
-Finally, you need to verify the authenticity token in the action you received the request.
+Finally, you need to verify the authenticity token in the action that received the request.
 
 ```ts
 import type { ActionFunction } from "remix";
@@ -185,9 +185,9 @@ export default function Child() {
 
 ### RevalidateLink
 
-The RevalidateLink link components it's a simple wrapper of a Remix's Link, it receives the same props with the exception of the `to`, instead this component will render a Link to `.`.
+The RevalidateLink link component is a simple wrapper of Remix's Link component. It receives the same props with the exception of the `to` prop; instead, this component will render a Link to `.`.
 
-Because of linking to `.`, when clicked, this will tell Remix to fetch again the loaders of the current routes, but instead of creating a new entry on the browser's history stack, it will replace the current one, basically, it will refresh the page, but only reloading the data.
+By linking to `.`, when clicked, this will tell Remix to fetch again the loaders of the current routes, but instead of creating a new entry on the browser's history stack, it will replace the current one. Basically, it will refresh the page, but only reloading the data.
 
 If you don't have JS enabled, this will do a full page refresh instead, giving you the exact same behavior.
 
@@ -227,7 +227,7 @@ The way this works is by navigating to `.` and adding `replace: true` to avoid c
 
 > Check #RevalidateLink for more information and a component version of this feature that works without JS.
 
-This Hooks is mostly useful if you want to trigger the revalidation manually from an effect, examples of this are:
+This Hook is mostly useful if you want to trigger the revalidation manually from an effect, examples of this are:
 
 - Set an interval to trigger the revalidation
 - Revalidate when the browser tab is focused again
@@ -237,7 +237,7 @@ This Hooks is mostly useful if you want to trigger the revalidation manually fro
 import { useRevalidate } from "remix-utils";
 
 function useRevalidateOnInterval() {
-  let revalidate = useRevalidat();
+  let revalidate = useRevalidate();
   useEffect(() => {
     let interval = setInterval(revalidate, 5000);
     return () => clearInterval(interval);
@@ -294,7 +294,7 @@ In some cases, a route may need JS based on the data the loader returned. For ex
 
 ```ts
 export let handle = {
-  hydate(data: LoaderData) {
+  hydrate(data: LoaderData) {
     return data.user.isAuthenticated;
   },
 };
