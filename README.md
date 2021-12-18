@@ -160,6 +160,8 @@ Suppose the authenticity token is missing on the session, the request body, or d
 
 ### Outlet & useParentData
 
+> This features is not built-in into Remix so it's marked as deprecated here. The features will be removed in v3 of Remix Utils.
+
 This wrapper of the Remix Outlet component lets you pass an optional `data` prop, then using the `useParentData` hook, you can access that data.
 
 Helpful to pass information from parent to child routes, for example, the authenticated user data.
@@ -326,6 +328,8 @@ export let action: ActionFunction = async ({ request }) => {
 
 #### toSearchParams
 
+> A better version of this features is supported out of the box by Remix. It's recommended to use `await request.formData()` instead.
+
 This function receives the whole request and returns a promise with an instance of `URLSearchParams`, and the request's body is already parsed.
 
 ```ts
@@ -379,6 +383,8 @@ return Object.fromEntries(params.entries()) as unknown;
 ### Responses
 
 #### Typed JSON
+
+> This features is not built-in into Remix so it's marked as deprecated here. The features will be removed in v3 of Remix Utils.
 
 This function is a typed version of the `json` helper provided by Remix. It accepts a generic with the type of data you are going to send in the response.
 
