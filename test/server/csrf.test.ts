@@ -31,9 +31,11 @@ describe("CSRF Server", () => {
     test("should throw Unprocessable Entity if the csrf is not in the session", async () => {
       let session = await sessionStorage.getSession();
       let cookie = await sessionStorage.commitSession(session);
+
       let request = new Request("/", {
         method: "POST",
         headers: { cookie },
+        body: new FormData(),
       });
 
       try {
@@ -50,10 +52,13 @@ describe("CSRF Server", () => {
     test("should throw Unprocessable Entity if csrf is not in the body", async () => {
       let session = await sessionStorage.getSession();
       session.set("csrf", "token");
+
       let cookie = await sessionStorage.commitSession(session);
+
       let request = new Request("/", {
         method: "POST",
         headers: { cookie },
+        body: new FormData(),
       });
 
       try {
@@ -70,11 +75,16 @@ describe("CSRF Server", () => {
     test("should throw Unprocessable Entity if session and body csrf don't match", async () => {
       let session = await sessionStorage.getSession();
       session.set("csrf", "token");
+
       let cookie = await sessionStorage.commitSession(session);
+
+      let formData = new FormData();
+      formData.set("csrf", "wrong token");
+
       let request = new Request("/", {
         method: "POST",
         headers: { cookie },
-        body: new URLSearchParams({ csrf: "wrong token" }),
+        body: formData,
       });
 
       try {
