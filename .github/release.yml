@@ -12,6 +12,9 @@ changelog:
   - title: Bug Fixes
     labels:
     - bug
+  - title: Deprecations
+    labels:
+    - deprecated
   - title: Other Changes
     labels:
        - "*"
