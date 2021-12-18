@@ -1,9 +1,9 @@
 {
   "name": "remix-utils",
-  "version": "2.0.1",
+  "version": "2.2.0",
   "license": "MIT",
   "engines": {
-    "node": ">=16"
+    "node": ">=14"
   },
   "browser": "./browser/index.js",
   "main": "./build/index.js",
@@ -14,9 +14,7 @@
     "build:main": "tsc --project tsconfig.json --module CommonJS --outDir ./build",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "lint": "eslint --ext .ts,.tsx src/",
-    "test": "jest --config=config/jest.config.ts --passWithNoTests",
-    "setup": "remix setup",
-    "postinstall": "npm run setup"
+    "test": "jest --config=config/jest.config.ts --passWithNoTests"
   },
   "author": {
     "name": "Sergio Xalambrí",
@@ -42,10 +40,9 @@
     "body parser"
   ],
   "peerDependencies": {
-    "@remix-run/node": "^0.20.1",
-    "@remix-run/react": "^0.20.1",
-    "react": "^17.0.2",
-    "remix": "^0.20.1"
+    "@remix-run/react": "^1.1.1",
+    "@remix-run/server-runtime": "^1.1.1",
+    "react": "^17.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -53,13 +50,14 @@
     "@babel/preset-react": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
     "@jest/types": "^27.2.5",
-    "@remix-run/dev": "^0.20.1",
-    "@remix-run/node": "^0.20.1",
-    "@remix-run/react": "^0.20.1",
+    "@remix-run/node": "^1.1.1",
+    "@remix-run/react": "^1.1.1",
+    "@remix-run/server-runtime": "^1.1.1",
     "@size-limit/preset-small-lib": "^4.10.2",
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^12.1.2",
     "@types/react": "^17.0.14",
+    "@types/uuid": "^8.3.3",
     "@typescript-eslint/eslint-plugin": "^5.3.0",
     "@typescript-eslint/parser": "^5.3.0",
     "babel-jest": "^27.3.1",
@@ -79,14 +77,14 @@
     "eslint-plugin-unicorn": "^32.0.1",
     "jest": "^27.3.1",
     "jest-fetch-mock": "^3.0.3",
+    "prettier": "^2.5.1",
     "react": "^17.0.2",
     "react-router-dom": "^6.0.0-beta.6",
-    "remix": "^0.20.1",
     "ts-node": "^10.4.0",
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "prettier": "^2.4.1",
-    "type-fest": "^2.5.2"
+    "type-fest": "^2.5.2",
+    "uuid": "^8.3.2"
   }
 }

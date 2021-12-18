@@ -1,4 +1,4 @@
-import { useMatches } from "remix";
+import { useMatches } from "@remix-run/react";
 
 /**
  * Determine if at least one of the routes is asking to load JS and return a
@@ -24,7 +24,7 @@ export function useShouldHydrate() {
   return useMatches().some((match) => {
     if (!match.handle) return false;
 
-    let handle = match;
+    let { handle, data } = match;
 
     // handle must be an object to continue
     if (typeof handle !== "object") return false;
@@ -32,14 +32,14 @@ export function useShouldHydrate() {
     if (Array.isArray(handle)) return false;
 
     // get hydrate from handle (it may not exists)
-    let hydrate = match.handle.hydrate as
+    let hydrate = handle.hydrate as
       | undefined
       | boolean
       | ((data: unknown) => boolean);
 
     if (!hydrate) return false;
 
-    if (typeof hydrate === "function") return hydrate(match.data);
+    if (typeof hydrate === "function") return hydrate(data);
     return hydrate;
   });
 }
