@@ -24,7 +24,7 @@ export function useShouldHydrate() {
   return useMatches().some((match) => {
     if (!match.handle) return false;
 
-    let handle = match;
+    let { handle } = match;
 
     // handle must be an object to continue
     if (typeof handle !== "object") return false;
