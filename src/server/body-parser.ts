@@ -42,6 +42,10 @@ export let bodyParser = {
    * }
    */
   async toJSON(request: Request): Promise<unknown> {
+    if (request.headers.get("Content-Type") === "application/json") {
+      return request.json();
+    }
+
     let params = await this.toSearchParams(request);
     return Object.fromEntries(params.entries()) as unknown;
   },

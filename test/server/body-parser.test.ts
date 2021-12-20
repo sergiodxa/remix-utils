@@ -40,4 +40,18 @@ describe("Body Parser", () => {
       expect(body).toEqual({ a: "1", b: "2" });
     });
   });
+
+  describe(bodyParser.toJSON, () => {
+    test("should be able to parse stringify JSON body when content type is JSON", async () => {
+      let request = new Request("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ a: 1, b: 2 }),
+      });
+
+      let body = (await bodyParser.toJSON(request)) as { a: 1; b: 2 };
+
+      expect(body).toEqual({ a: 1, b: 2 });
+    });
+  });
 });
