@@ -158,6 +158,63 @@ export let action: ActionFunction = async ({ request }) => {
 
 Suppose the authenticity token is missing on the session, the request body, or doesn't match. In that case, the function will throw an Unprocessable Entity response that you can either catch and handle manually or let pass and render your CatchBoundary.
 
+### ExternalScripts
+
+If you need to load different external scripts on certain routes, you can use the `ExternalScripts` component together with the `ExternalScriptsFunction` type.
+
+In the route you want to load the script add a `handle` export with a scripts method, this method should implement the `ExternalScriptsFunction` type.
+
+```ts
+// create the scripts function with the correct type
+let scripts: ScriptsFunction = () => {
+  return [
+    {
+      src: "https://code.jquery.com/jquery-3.6.0.min.js",
+      integrity: "sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=",
+      crossOrigin: "anonymous",
+    },
+  ];
+};
+
+// and export it through the handle, you could also create it inline here
+// if you don't care about the type
+export let handle = { scripts };
+```
+
+Then, in the root route, add the `ExternalScripts` component together with the Remix Scripts component, usually inside a Document component.
+
+```tsx
+import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
+import { ExternalScripts } from "remix-utils";
+
+type Props = { children: React.ReactNode; title?: string };
+
+export function Document({ children, title }: Props) {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        {title ? <title>{title}</title> : null}
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        {children}
+        <ScrollRestoration />
+        <ExternalScripts />
+        <Scripts />
+        {process.env.NODE_ENV === "development" && <LiveReload />}
+      </body>
+    </html>
+  );
+}
+```
+
+Now, any script you defined in the ScriptsFunction will be added to the HTML together with a `<link rel="preload">` before it.
+
+> Tip: You could use it together with useShouldHydrate to disable Remix scripts in certain routes but still load scripts for analytics or small features that need JS but don't need the full app JS to be enabled.
+
 ### Outlet & useParentData
 
 > This features is not built-in into Remix so it's marked as deprecated here. The features will be removed in v3 of Remix Utils.
