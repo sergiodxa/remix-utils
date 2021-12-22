@@ -33,6 +33,7 @@ module.exports = {
     "no-unused-vars": "off",
     "no-var": "off",
     "prefer-const": "off",
+    "react/prop-types": "off",
     "react/button-has-type": "error",
     "react/function-component-definition": [
       "error",
