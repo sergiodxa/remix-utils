@@ -217,7 +217,7 @@ Now, any script you defined in the ScriptsFunction will be added to the HTML tog
 
 ### Outlet & useParentData
 
-> This features is not built-in into Remix so it's marked as deprecated here. The features will be removed in v3 of Remix Utils.
+> This feature is now built-in into Remix as `Outlet` & `useOutletContext` so it's marked as deprecated here. The feature will be removed in v3 of Remix Utils.
 
 This wrapper of the Remix Outlet component lets you pass an optional `data` prop, then using the `useParentData` hook, you can access that data.
 
@@ -256,7 +256,7 @@ If you don't have JS enabled, this will do a full page refresh instead, giving y
 
 ### useHydrated
 
-This lets you detect if your component is already hydrated. This means the JS for the element loaded client-side and React is running.
+This hook lets you detect if your component is already hydrated. This means the JS for the element loaded client-side and React is running.
 
 With useHydrated, you can render different things on the server and client while ensuring the hydration will not have a mismatched HTML.
 
@@ -280,7 +280,7 @@ After the first client-side render, future components rendered calling this hook
 
 ### useRevalidate
 
-This Hook gives you a function you can call to trigger a revalidation of the loaders in the current routes.
+This hook lets you trigger a revalidation of the loaders in the current routes.
 
 The way this works is by navigating to `.` and adding `replace: true` to avoid creating a new entry on the history stack.
 
@@ -429,7 +429,7 @@ export let action: ActionFunction = async ({ request }) => {
 
 #### toSearchParams
 
-> A better version of this features is supported out of the box by Remix. It's recommended to use `await request.formData()` instead.
+> A better version of this feature is supported out of the box by Remix. It's recommended to use `await request.formData()` instead.
 
 This function receives the whole request and returns a promise with an instance of `URLSearchParams`, and the request's body is already parsed.
 
@@ -485,7 +485,7 @@ return Object.fromEntries(params.entries()) as unknown;
 
 #### Typed JSON
 
-> This features is not built-in into Remix so it's marked as deprecated here. The features will be removed in v3 of Remix Utils.
+> This feature is now built-in into Remix so it's marked as deprecated here. The feature will be removed in v3 of Remix Utils.
 
 This function is a typed version of the `json` helper provided by Remix. It accepts a generic with the type of data you are going to send in the response.
 
@@ -520,7 +520,7 @@ export default function View() {
 
 #### Redirect Back
 
-This function is a wrapper of the `redirect` helper from Remix, contrarian to Remix's version. This one receives the whole request object as the first value and an object with the response init and a fallback URL.
+This function is a wrapper of the `redirect` helper from Remix. Unlike Remix's version, this one receives the whole request object as the first value and an object with the response init and a fallback URL.
 
 The response created with this function will have the `Location` header pointing to the `Referer` header from the request, or if not available, the fallback URL provided in the second argument.
 
@@ -533,7 +533,7 @@ export let action: ActionFunction = async ({ request }) => {
 };
 ```
 
-This helper is more useful when used in a generic action to send the user to the same URL it was before.
+This helper is most useful when used in a generic action to send the user to the same URL it was before.
 
 #### Bad Request
 
