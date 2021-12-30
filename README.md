@@ -158,11 +158,58 @@ export let action: ActionFunction = async ({ request }) => {
 
 Suppose the authenticity token is missing on the session, the request body, or doesn't match. In that case, the function will throw an Unprocessable Entity response that you can either catch and handle manually or let pass and render your CatchBoundary.
 
+### DynamicLinks
+
+If you need to create `<link />` tags based on the loader data instead of being static, you can use the `DynamicLinks` component together with the `DynamicLinksFunction` type.
+
+In the route you want to define dynamic links add `handle` export with a `dynamicLinks` method, this method should implement the `DynamicLinksFunction` type.
+
+```ts
+let dynamicLinks: DynamicLinksFunction<LoaderData> = async ({ data }) => {
+  if (!data.user) return [];
+  return [{ rel: "preload", href: data.user.avatar, as: "image" }];
+};
+```
+
+Then, in the root route, add the `DynamicLinks` component before the Remix's Links component, usually inside a Document component.
+
+```tsx
+import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
+import { DynamicLinks } from "remix-utils";
+
+type Props = { children: React.ReactNode; title?: string };
+
+export function Document({ children, title }: Props) {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        {title ? <title>{title}</title> : null}
+        <Meta />
+        <DynamicLinks />
+        <Links />
+      </head>
+      <body>
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+        {process.env.NODE_ENV === "development" && <LiveReload />}
+      </body>
+    </html>
+  );
+}
+```
+
+Now, any link you defined in the `DynamicLinksFunction` will be added to the HTML as any static link in your `LinksFunction`s.
+
+> Note: You can also put the `DynamicLinks` after the `Links` component, it's up to you what to prioritize, since static links are probably prefetched when you do `<Link prefetch>` you may want to put the `DynamicLinks` first to prioritize them.
+
 ### ExternalScripts
 
 If you need to load different external scripts on certain routes, you can use the `ExternalScripts` component together with the `ExternalScriptsFunction` type.
 
-In the route you want to load the script add a `handle` export with a scripts method, this method should implement the `ExternalScriptsFunction` type.
+In the route you want to load the script add a `handle` export with a `scripts` method, this method should implement the `ExternalScriptsFunction` type.
 
 ```ts
 // create the scripts function with the correct type
@@ -181,7 +228,7 @@ let scripts: ScriptsFunction = () => {
 export let handle = { scripts };
 ```
 
-Then, in the root route, add the `ExternalScripts` component together with the Remix Scripts component, usually inside a Document component.
+Then, in the root route, add the `ExternalScripts` component together with the Remix's Scripts component, usually inside a Document component.
 
 ```tsx
 import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
