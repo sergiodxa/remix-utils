@@ -12,7 +12,7 @@ type ReferrerPolicy =
 
 type CrossOrigin = "anonymous" | "use-credentials";
 
-type ExternalScript = {
+type ScriptDescriptor = {
   async?: boolean;
   crossOrigin?: CrossOrigin;
   defer?: boolean;
@@ -24,7 +24,7 @@ type ExternalScript = {
   type?: string;
 };
 
-export type ExternalScriptsFunction = () => ExternalScript[];
+export type ExternalScriptsFunction = () => ScriptDescriptor[];
 
 export function ExternalScripts() {
   let matches = useMatches();
