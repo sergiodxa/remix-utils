@@ -63,9 +63,7 @@ export let loader: LoaderFunction = async ({ request }) => {
   let token = createAuthenticityToken(session);
   return json<LoaderData>(
     { csrf: token },
-    {
-      headers: await commitSession(session),
-    }
+    { headers: { "Set-Cookie": await commitSession(session) } }
   );
 };
 ```
@@ -83,7 +81,7 @@ import { Document } from "~/components/document";
 export default function Root() {
   let { csrf } = useLoaderData<LoaderData>();
   return (
-    <AuthenticityTokenProvider value={csrf}>
+    <AuthenticityTokenProvider token={csrf}>
       <Document>
         <Outlet />
       </Document>
