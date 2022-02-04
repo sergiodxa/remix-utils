@@ -211,7 +211,7 @@ In the route you want to load the script add a `handle` export with a `scripts` 
 
 ```ts
 // create the scripts function with the correct type
-let scripts: ScriptsFunction = () => {
+let scripts: ExternalScriptsFunction = () => {
   return [
     {
       src: "https://code.jquery.com/jquery-3.6.0.min.js",
