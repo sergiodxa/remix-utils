@@ -5,6 +5,7 @@ import {
   json,
   notFound,
   notModified,
+  pdf,
   redirectBack,
   serverError,
   stylesheet,
@@ -261,6 +262,46 @@ describe("Responses", () => {
           headers: {
             "X-Test": "it worked",
             "Content-Type": "text/css; charset=utf-8",
+          },
+        })
+      );
+    });
+  });
+
+  describe(pdf, () => {
+    test("Should return Response with status 200", () => {
+      let blob = new Blob();
+      let response = pdf(blob);
+      expect(response).toEqual(
+        new Response(blob, {
+          status: 200,
+          headers: { "Content-Type": "application/pdf" },
+        })
+      );
+    });
+
+    test("Should allow defining the status as second options", () => {
+      let blob = new Blob();
+      let response = pdf(blob, 201);
+      expect(response).toEqual(
+        new Response(blob, {
+          status: 201,
+          headers: { "Content-Type": "application/pdf" },
+        })
+      );
+    });
+
+    test("Should allow changing the Response headers", () => {
+      let blob = new Blob();
+      let response = pdf(blob, {
+        headers: { "X-Test": "it worked" },
+      });
+      expect(response).toEqual(
+        new Response(blob, {
+          status: 200,
+          headers: {
+            "X-Test": "it worked",
+            "Content-Type": "application/pdf",
           },
         })
       );

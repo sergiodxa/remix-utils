@@ -695,6 +695,18 @@ export let loader: LoaderFunction = async ({ request }) => {
 };
 ```
 
+#### PDF
+
+Helper function to create a PDF file response with any header.
+
+This is useful to create PDF files based on data inside a Resource Route.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  return pdf(await generatePDF(request.formData()));
+};
+```
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)
@@ -702,3 +714,7 @@ export let loader: LoaderFunction = async ({ request }) => {
 ## License
 
 - MIT License
+
+```
+
+```
