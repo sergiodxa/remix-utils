@@ -7,6 +7,7 @@ import {
   notModified,
   redirectBack,
   serverError,
+  stylesheet,
   unauthorized,
   unprocessableEntity,
 } from "../../src";
@@ -223,6 +224,43 @@ describe("Responses", () => {
           headers: {
             "X-Test": "it worked",
             "Content-Type": "application/javascript; charset=utf-8",
+          },
+        })
+      );
+    });
+  });
+
+  describe(stylesheet, () => {
+    test("Should return Response with status 200", () => {
+      let response = stylesheet("body { color: red; }");
+      expect(response).toEqual(
+        new Response("body { color: red; }", {
+          status: 200,
+          headers: { "Content-Type": "text/css; charset=utf-8" },
+        })
+      );
+    });
+
+    test("Should allow defining the status as second options", () => {
+      let response = stylesheet("body { color: red; }", 201);
+      expect(response).toEqual(
+        new Response("body { color: red; }", {
+          status: 201,
+          headers: { "Content-Type": "text/css; charset=utf-8" },
+        })
+      );
+    });
+
+    test("Should allow changing the Response headers", () => {
+      let response = stylesheet("body { color: red; }", {
+        headers: { "X-Test": "it worked" },
+      });
+      expect(response).toEqual(
+        new Response("body { color: red; }", {
+          status: 200,
+          headers: {
+            "X-Test": "it worked",
+            "Content-Type": "text/css; charset=utf-8",
           },
         })
       );

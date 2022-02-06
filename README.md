@@ -683,6 +683,18 @@ export let loader: LoaderFunction = async ({ request }) => {
 };
 ```
 
+#### Stylesheet
+
+Helper function to create a CSS file response with any header.
+
+This is useful to create CSS files based on data inside a Resource Route.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  return stylesheet("body { color: red; }");
+};
+```
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)
