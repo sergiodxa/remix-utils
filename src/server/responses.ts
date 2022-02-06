@@ -237,3 +237,31 @@ export function pdf(
     headers,
   });
 }
+
+/**
+ * Create a response with a HTML file response.
+ * It receives a string with the HTML content and set the Content-Type header to
+ * `text/html; charset=utf-8` always.
+ *
+ * This is useful to dynamically create a HTML file from a Resource Route.
+ * @example
+ * export let loader: LoaderFunction = async ({ request }) => {
+ *   return html("<h1>Hello World</h1>");
+ * }
+ */
+export function html(
+  content: string,
+  init: number | ResponseInit = {}
+): Response {
+  let responseInit = typeof init === "number" ? { status: init } : init;
+
+  let headers = new Headers(responseInit.headers);
+  if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", "text/html; charset=utf-8");
+  }
+
+  return new Response(content, {
+    ...responseInit,
+    headers,
+  });
+}

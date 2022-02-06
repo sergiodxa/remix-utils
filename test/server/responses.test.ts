@@ -1,6 +1,7 @@
 import {
   badRequest,
   forbidden,
+  html,
   javascript,
   json,
   notFound,
@@ -302,6 +303,43 @@ describe("Responses", () => {
           headers: {
             "X-Test": "it worked",
             "Content-Type": "application/pdf",
+          },
+        })
+      );
+    });
+  });
+
+  describe(html, () => {
+    test("Should return Response with status 200", () => {
+      let response = html("<h1>Hello World</h1>");
+      expect(response).toEqual(
+        new Response("<h1>Hello World</h1>", {
+          status: 200,
+          headers: { "Content-Type": "text/html; charset=utf-8" },
+        })
+      );
+    });
+
+    test("Should allow defining the status as second options", () => {
+      let response = html("<h1>Hello World</h1>", 201);
+      expect(response).toEqual(
+        new Response("<h1>Hello World</h1>", {
+          status: 201,
+          headers: { "Content-Type": "text/html; charset=utf-8" },
+        })
+      );
+    });
+
+    test("Should allow changing the Response headers", () => {
+      let response = html("<h1>Hello World</h1>", {
+        headers: { "X-Test": "it worked" },
+      });
+      expect(response).toEqual(
+        new Response("<h1>Hello World</h1>", {
+          status: 200,
+          headers: {
+            "X-Test": "it worked",
+            "Content-Type": "text/html; charset=utf-8",
           },
         })
       );
