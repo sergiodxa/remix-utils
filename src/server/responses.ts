@@ -181,3 +181,31 @@ export function javascript(
     headers,
   });
 }
+
+/**
+ * Create a response with a CSS file response.
+ * It receives a string with the CSS content and set the Content-Type header to
+ * `text/css; charset=utf-8` always.
+ *
+ * This is useful to dynamically create a CSS file from a Resource Route.
+ * @example
+ * export let loader: LoaderFunction = async ({ request }) => {
+ *   return css("body { color: red; }");
+ * }
+ */
+export function stylesheet(
+  content: string,
+  init: number | ResponseInit = {}
+): Response {
+  let responseInit = typeof init === "number" ? { status: init } : init;
+
+  let headers = new Headers(responseInit.headers);
+  if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", "text/css; charset=utf-8");
+  }
+
+  return new Response(content, {
+    ...responseInit,
+    headers,
+  });
+}
