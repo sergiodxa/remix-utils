@@ -707,6 +707,18 @@ export let loader: LoaderFunction = async ({ request }) => {
 };
 ```
 
+#### HTML
+
+Helper function to create a HTML file response with any header.
+
+This is useful to create HTML files based on data inside a Resource Route.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  return html("<h1>Hello World</h1>");
+};
+```
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)
