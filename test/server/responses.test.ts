@@ -1,6 +1,7 @@
 import {
   badRequest,
   forbidden,
+  javascript,
   json,
   notFound,
   notModified,
@@ -186,6 +187,43 @@ describe("Responses", () => {
         new Response("{}", {
           status: 500,
           headers: { "X-Test": "it worked", "Content-Type": jsonContentType },
+        })
+      );
+    });
+  });
+
+  describe(javascript, () => {
+    test("Should return Response with status 200", () => {
+      let response = javascript("console.log('hello world');");
+      expect(response).toEqual(
+        new Response("console.log('hello world');", {
+          status: 200,
+          headers: { "Content-Type": "application/javascript; charset=utf-8" },
+        })
+      );
+    });
+
+    test("Should allow defining the status as second options", () => {
+      let response = javascript("console.log('hello world');", 201);
+      expect(response).toEqual(
+        new Response("console.log('hello world');", {
+          status: 201,
+          headers: { "Content-Type": "application/javascript; charset=utf-8" },
+        })
+      );
+    });
+
+    test("Should allow changing the Response headers", () => {
+      let response = javascript("console.log('hello world');", {
+        headers: { "X-Test": "it worked" },
+      });
+      expect(response).toEqual(
+        new Response("console.log('hello world');", {
+          status: 200,
+          headers: {
+            "X-Test": "it worked",
+            "Content-Type": "application/javascript; charset=utf-8",
+          },
         })
       );
     });

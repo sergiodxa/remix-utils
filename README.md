@@ -661,6 +661,28 @@ export let loader: LoaderFunction = async () => {
 };
 ```
 
+#### Not Modified
+
+Helper function to create a Not Modified (304) response without a body and any header.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  return notModified();
+};
+```
+
+#### JavaScript
+
+Helper function to create a JavaScript file response with any header.
+
+This is useful to create JS files based on data inside a Resource Route.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  return javascript("console.log('Hello World')");
+};
+```
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)

@@ -153,3 +153,31 @@ export function serverError<Data = unknown>(
 export function notModified(init?: Omit<ResponseInit, "status">) {
   return new Response("", { ...init, status: 304 });
 }
+
+/**
+ * Create a response with a JavaScript file response.
+ * It receives a string with the JavaScript content and set the Content-Type
+ * header to `application/javascript; charset=utf-8` always.
+ *
+ * This is useful to dynamically create a JS file from a Resource Route.
+ * @example
+ * export let loader: LoaderFunction = async ({ request }) => {
+ *   return javascript("console.log('Hello World')");
+ * }
+ */
+export function javascript(
+  content: string,
+  init: number | ResponseInit = {}
+): Response {
+  let responseInit = typeof init === "number" ? { status: init } : init;
+
+  let headers = new Headers(responseInit.headers);
+  if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/javascript; charset=utf-8");
+  }
+
+  return new Response(content, {
+    ...responseInit,
+    headers,
+  });
+}
