@@ -148,7 +148,7 @@ import { getSession, commitSession } from "~/services/session.server";
 
 export let action: ActionFunction = async ({ request }) => {
   let session = await getSession(request.headers.get("Cookie"));
-  await verifyAuthenticityToken(session);
+  await verifyAuthenticityToken(request, session);
   // do something here
   return redirectBack(request, { fallback: "/fallback" });
 };
