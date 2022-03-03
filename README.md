@@ -14,7 +14,7 @@ npm install remix-utils remix @remix-run/node @remix-run/react react
 
 The ClientOnly component lets you render the children element only on the client-side, avoiding rendering it the server-side.
 
-You can, optionally, provide a fallback component to be used on SSR.
+You can provide a fallback component to be used on SSR, and while optional, it's highly recommended to provide one to avoid content layout shift issues.
 
 ```tsx
 import { ClientOnly } from "remix-utils";
@@ -22,7 +22,7 @@ import { ClientOnly } from "remix-utils";
 export default function View() {
   return (
     <ClientOnly fallback={<SimplerStaticVersion />}>
-      <ComplexComponentNeedingBrowserEnvironment />
+      {() => <ComplexComponentNeedingBrowserEnvironment />}
     </ClientOnly>
   );
 }
