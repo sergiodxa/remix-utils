@@ -526,6 +526,36 @@ let body = await bodyParser.toSearchParams(request);
 return Object.fromEntries(params.entries()) as unknown;
 ```
 
+### getClientIPAddress
+
+This function receives a Request or Headers objects and will try to get the IP address of the client (the user) who originated the request.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  // using the request
+  let ipAddress = getClientIPAddress(request);
+  // or using the headers
+  let ipAddress = getClientIPAddress(request.headers);
+};
+```
+
+If it can't find he ipAddress the return value will be `null`. Remember to check if it was able to find it before using it.
+
+The function uses the following list of headers, in order of prefecence:
+
+- X-Client-IP
+- X-Forwarded-For
+- CF-Connecting-IP
+- Fastly-Client-Ip
+- True-Client-Ip
+- X-Real-IP
+- X-Cluster-Client-IP
+- X-Forwarded
+- Forwarded-For
+- Forwarded
+
+When a header is found that contains a valid IP address, it will return without checking the other headers.
+
 ### Responses
 
 #### Typed JSON
