@@ -7,6 +7,7 @@ import isIP from "is-ip";
 const headerNames = Object.freeze([
   "X-Client-IP",
   "X-Forwarded-For",
+  "Fly-Client-IP",
   "CF-Connecting-IP",
   "Fastly-Client-Ip",
   "True-Client-Ip",
@@ -25,6 +26,7 @@ const headerNames = Object.freeze([
  *
  * - X-Client-IP
  * - X-Forwarded-For
+ * - Fly-Client-IP
  * - CF-Connecting-IP
  * - Fastly-Client-Ip
  * - True-Client-Ip
