@@ -6,6 +6,7 @@ const INVALID_IP = "abc.def.ghi.jkl";
 const headerNames = Object.freeze([
   "X-Client-IP",
   "X-Forwarded-For",
+  "Fly-Client-IP",
   "CF-Connecting-IP",
   "Fastly-Client-Ip",
   "True-Client-Ip",
