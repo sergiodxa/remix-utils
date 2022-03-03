@@ -38,6 +38,12 @@ type Props =
  * ```
  */
 export function ClientOnly({ children, fallback = null }: Props) {
+  if (typeof children !== "function") {
+    console.warn(
+      "[remix-utils] ClientOnly: Pass a function as children to avoid issues with client-only imported components"
+    );
+  }
+
   return useHydrated() ? (
     <>{typeof children === "function" ? children() : children}</>
   ) : (
