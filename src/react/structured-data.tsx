@@ -25,6 +25,7 @@ function isHandleStructuredData(
   handle: unknown
 ): handle is HandleStructuredData {
   return (
+    handle !== undefined &&
     (handle as HandleStructuredData).structuredData !== undefined &&
     typeof (handle as HandleStructuredData).structuredData === "function"
   );
