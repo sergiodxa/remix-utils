@@ -1,10 +1,7 @@
 import { useMatches } from "@remix-run/react";
 import type { Thing, WithContext } from "schema-dts";
 
-export type StructuredDataDescriptor = {
-  key: string;
-  data: WithContext<Thing>;
-};
+export type StructuredDatum = WithContext<Thing>;
 
 /**
  * A convenience type for `export let handle =` to ensure the correct `handle` structure is used.
@@ -33,15 +30,32 @@ function isHandleStructuredData(
 
 export type StructuredDataFunction<T = unknown> = (
   data: T
-) => StructuredDataDescriptor[];
+) => StructuredDatum | StructuredDatum[];
 
 /**
- * Render script tags for structured data (https://developers.google.com/search/docs/advanced/structured-data/intro-structured-data)
+ * Render "application/ld+json" script tags for structured data (https://developers.google.com/search/docs/advanced/structured-data/intro-structured-data)
  * @example
  * // This route uses the data to render structured data (e.g. BreadcrumbList and BlogPosting)
- * export const handle = {
+ * export let handle = {
  *    structuredData: (data: LoaderData) => {
- *       return postToStructuredData(data.post);
+ *      let { post } = data;
+ *
+ *      let postSchema: WithContext<BlogPosting> = {
+ *        '@context': 'https://schema.org',
+ *        '@type': 'BlogPosting',
+ *        datePublished: post.published,
+ *        mainEntityOfPage: {
+ *          '@type': 'WebPage',
+ *          '@id': post.postUrl,
+ *        },
+ *        image: post.featuredImage,
+ *        author: {
+ *          '@type': 'Person',
+ *          name: post.authorName,
+ *        },
+ *      };
+ *
+ *      return postSchema;
  *    },
  * };
  */
@@ -57,19 +71,21 @@ export function StructuredData() {
     return [];
   });
 
+  if (structuredData.length === 0) {
+    return null;
+  }
+
+  const renderedScript =
+    structuredData.length === 1
+      ? JSON.stringify(structuredData[0])
+      : JSON.stringify(structuredData);
+
   return (
-    <>
-      {structuredData.map(({ key, data }) => {
-        return (
-          <script
-            key={key}
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(data),
-            }}
-          />
-        );
-      })}
-    </>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: renderedScript,
+      }}
+    />
   );
 }

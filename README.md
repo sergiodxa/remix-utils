@@ -263,7 +263,7 @@ Now, any script you defined in the ScriptsFunction will be added to the HTML tog
 
 ### StructuredData
 
-If you need to include structured data (JSON-LD) scripts on certain routes, you can use the `StructuredData` component together with the `StructuredDataFunction` type.
+If you need to include structured data (JSON-LD) scripts on certain routes, you can use the `StructuredData` component together with the `HandleStructuredData` type or `StructuredDataFunction` type.
 
 In the route you want to include the structured data, add a `handle` export with a `structuredData` method, this method should implement the `StructuredDataFunction` type.
 
@@ -271,12 +271,12 @@ In the route you want to include the structured data, add a `handle` export with
 import type { WithContext, BlogPosting } from 'schema-dts';
 
 // export the handle with the correct type:
-export let handle: HandleStructuredData = {
+export let handle: HandleStructuredData<LoaderData> = {
   structuredData: (data: LoaderData) => {
     try {
       let { post } = data;
       
-      let postSchemaScript: WithContext<BlogPosting> = {
+      let postSchema: WithContext<BlogPosting> = {
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',
         datePublished: post.published,
@@ -284,19 +284,15 @@ export let handle: HandleStructuredData = {
           '@type': 'WebPage',
           '@id': post.postUrl,
         },
-        image: post.featured_image,
+        image: post.featuredImage,
         author: {
           '@type': 'Person',
           name: post.authorName,
         },
       };
 
-      return [{
-        key: 'postSchemaScript',
-        type: 'application/ld+json',
-        data: postSchemaScript,
-      }];
-    } catch (e: any) {
+      return postSchema;
+    } catch (e: unknown) {
       console.error(e);
       return [];
     }
