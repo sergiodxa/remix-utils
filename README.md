@@ -10,6 +10,38 @@ npm install remix-utils remix @remix-run/node @remix-run/react react
 
 ## API Reference
 
+**Table of contents**
+
+* [ClientOnly](#clientonly)
+* [CSRF](#csrf)
+* [DynamicLinks](#dynamiclinks)
+* [ExternalScripts](#externalscripts)
+* [Outlet & useParentData](#outlet--useparentdata)
+* [RevalidateLink](#revalidatelink)
+* [useHydrated](#usehydrated)
+* [useRevalidate](#userevalidate)
+* [useRouteData](#useroutedata)
+* [useShouldHydrate](#useshouldhydrate)
+* [Body Parser](#body-parser)
+  * [toString](#tostring)
+  * [toSearchParams](#tosearchparams)
+  * [toJson](#tojson)
+* [getClientIPAddress](#getclientipaddress)
+* [Responses](#responses)
+  * [Typed JSON](#typed-json)
+  * [Redirect Back](#redirect-back)
+  * [Bad Request](#bad-request)
+  * [Unauthorized](#unauthorized)
+  * [Forbidden](#forbidden)
+  * [Not Found](#not-found)
+  * [Unprocessable Entity](#unprocessable-entity)
+  * [Server Error](#server-error)
+  * [Not Modified](#not-modified)
+  * [JavaScript](#javascript)
+  * [Stylesheet](#stylesheet)
+  * [PDF](#pdf)
+  * [HTML](#html)
+
 ### ClientOnly
 
 The ClientOnly component lets you render the children element only on the client-side, avoiding rendering it the server-side.
