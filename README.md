@@ -272,7 +272,7 @@ import type { WithContext, BlogPosting } from 'schema-dts';
 
 // export the handle with the correct type:
 export let handle: HandleStructuredData<LoaderData> = {
-  structuredData: (data: LoaderData) => {
+  structuredData(data: LoaderData) {
     try {
       let { post } = data;
       
@@ -330,7 +330,7 @@ export function Document({ children, title }: Props) {
 }
 ```
 
-Now, any structured data you defined in the StructuredDataFunction will be added to the HTML, in the body.
+Now, any structured data you defined in the `StructuredDataFunction` will be added to the HTML, in the body.
 
 ### Outlet & useParentData
 

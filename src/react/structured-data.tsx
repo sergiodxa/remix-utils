@@ -37,7 +37,7 @@ export type StructuredDataFunction<T = unknown> = (
  * @example
  * // This route uses the data to render structured data (e.g. BreadcrumbList and BlogPosting)
  * export let handle = {
- *    structuredData: (data: LoaderData) => {
+ *    structuredData(data: LoaderData) {
  *      let { post } = data;
  *
  *      let postSchema: WithContext<BlogPosting> = {
