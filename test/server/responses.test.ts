@@ -355,7 +355,7 @@ describe("Responses", () => {
     });
   });
 
-  describe.only(image, () => {
+  describe(image, () => {
     test.each([
       "image/webp",
       "image/bmp",
