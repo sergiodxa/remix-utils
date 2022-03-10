@@ -265,3 +265,39 @@ export function html(
     headers,
   });
 }
+
+export type ImageType =
+  | "image/jpeg"
+  | "image/png"
+  | "image/gif"
+  | "image/svg+xml"
+  | "image/webp"
+  | "image/bmp"
+  | "image/avif";
+
+/**
+ * Create a response with a image file response.
+ * It receives a Buffer, ArrayBuffer or ReadableStream with the image content
+ * and set the Content-Type header to the `type` parameter.
+ *
+ * This is useful to dynamically create a image file from a Resource Route.
+ * @example
+ * export let loader: LoaderFunction = async ({ request }) => {
+ *   return image(await takeScreenshot(), { type: "image/avif" });
+ * }
+ */
+export function image(
+  content: Buffer | ArrayBuffer | ReadableStream,
+  { type, ...init }: ResponseInit & { type: ImageType }
+): Response {
+  let headers = new Headers(init.headers);
+
+  if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", type);
+  }
+
+  return new Response(content, {
+    ...init,
+    headers,
+  });
+}

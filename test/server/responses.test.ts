@@ -2,6 +2,8 @@ import {
   badRequest,
   forbidden,
   html,
+  image,
+  ImageType,
   javascript,
   json,
   notFound,
@@ -15,6 +17,13 @@ import {
 } from "../../src";
 
 let jsonContentType = "application/json; charset=utf-8";
+
+function createResponse(type) {
+  return new Response("", {
+    status: 200,
+    headers: { "Content-Type": type },
+  });
+}
 
 describe("Responses", () => {
   describe(json, () => {
@@ -343,6 +352,23 @@ describe("Responses", () => {
           },
         })
       );
+    });
+  });
+
+  describe.only(image, () => {
+    test.each([
+      "image/webp",
+      "image/bmp",
+      "image/avif",
+      "image/svg+xml",
+      "image/png",
+      "image/jpeg",
+      "image/gif",
+    ] as ImageType[])("%s", (type) => {
+      let response = image(Buffer.from(""), {
+        type,
+      });
+      expect(response).toEqual(createResponse(type));
     });
   });
 });
