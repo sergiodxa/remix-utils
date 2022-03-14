@@ -1,7 +1,7 @@
 import { useMatches } from "@remix-run/react";
 import type { Thing, WithContext } from "schema-dts";
 
-export type StructuredDatum = WithContext<Thing>;
+export type StructuredDatum<TSchema extends Thing> = WithContext<TSchema>;
 
 /**
  * A convenience type for `export let handle =` to ensure the correct `handle` structure is used.
@@ -14,8 +14,11 @@ export type StructuredDatum = WithContext<Thing>;
  *    },
  * };
  */
-export type HandleStructuredData<T = unknown> = {
-  structuredData: StructuredDataFunction<T>;
+export type HandleStructuredData<
+  TLoaderData = unknown,
+  TSchema extends Thing = Thing
+> = {
+  structuredData: StructuredDataFunction<TLoaderData, TSchema>;
 };
 
 function isHandleStructuredData(
@@ -28,9 +31,12 @@ function isHandleStructuredData(
   );
 }
 
-export type StructuredDataFunction<T = unknown> = (
-  data: T
-) => StructuredDatum | StructuredDatum[];
+export type StructuredDataFunction<
+  TLoaderData = unknown,
+  TSchema extends Thing = Thing
+> = (
+  data: TLoaderData
+) => StructuredDatum<TSchema> | StructuredDatum<TSchema>[] | null;
 
 /**
  * Render "application/ld+json" script tags for structured data (https://developers.google.com/search/docs/advanced/structured-data/intro-structured-data)
@@ -65,7 +71,11 @@ export function StructuredData() {
     const { handle, data } = match;
 
     if (isHandleStructuredData(handle)) {
-      return handle.structuredData(data);
+      const result = handle.structuredData(data);
+
+      if (result) {
+        return result;
+      }
     }
 
     return [];
