@@ -332,6 +332,78 @@ Now, any script you defined in the ScriptsFunction will be added to the HTML tog
 
 > Tip: You could use it together with useShouldHydrate to disable Remix scripts in certain routes but still load scripts for analytics or small features that need JS but don't need the full app JS to be enabled.
 
+
+### StructuredData
+
+If you need to include structured data (JSON-LD) scripts on certain routes, you can use the `StructuredData` component together with the `HandleStructuredData` type or `StructuredDataFunction` type.
+
+In the route you want to include the structured data, add a `handle` export with a `structuredData` method, this method should implement the `StructuredDataFunction` type.
+
+```ts
+import type { WithContext, BlogPosting } from 'schema-dts';
+
+// export the handle with the correct type:
+export let handle: HandleStructuredData<LoaderData> = {
+  structuredData(data: LoaderData) {
+    try {
+      let { post } = data;
+      
+      let postSchema: WithContext<BlogPosting> = {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        datePublished: post.published,
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': post.postUrl,
+        },
+        image: post.featuredImage,
+        author: {
+          '@type': 'Person',
+          name: post.authorName,
+        },
+      };
+
+      return postSchema;
+    } catch (e: unknown) {
+      console.error(e);
+      return [];
+    }
+  },
+};
+```
+
+Then, in the root route, add the `StructuredData` component together with the Remix's Scripts component, usually inside a Document component.
+
+```tsx
+import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
+import { StructuredData } from "remix-utils";
+
+type Props = { children: React.ReactNode; title?: string };
+
+export function Document({ children, title }: Props) {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        {title ? <title>{title}</title> : null}
+        <Meta />
+        <Links />
+        <StructuredData />
+      </head>
+      <body>
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+        {process.env.NODE_ENV === "development" && <LiveReload />}
+      </body>
+    </html>
+  );
+}
+```
+
+Now, any structured data you defined in the `StructuredDataFunction` will be added to the HTML, in the head. You may choose to include the `<StructuredData />` in either the head or the body, both are valid.
+
 ### Outlet & useParentData
 
 > This feature is now built-in into Remix as `Outlet` & `useOutletContext` so it's marked as deprecated here. The feature will be removed in v3 of Remix Utils.

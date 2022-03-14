@@ -8,3 +8,4 @@ export * from "./react/use-hydrated";
 export * from "./react/use-revalidate";
 export * from "./react/use-route-data";
 export * from "./react/use-should-hydrate";
+export * from "./react/structured-data";
