@@ -8,7 +8,7 @@ const config: Config.InitialOptions = {
   rootDir: path.resolve("."),
   collectCoverageFrom: ["<rootDir>/src/**/*.ts"],
   setupFilesAfterEnv: ["<rootDir>/config/jest/setup.ts"],
-  testMatch: ["<rootDir>/test/**/*.test.ts"],
+  testMatch: ["<rootDir>/test/**/*.test.ts", "<rootDir>/test/**/*.test.tsx"],
   transform: {
     "\\.[jt]sx?$": [
       "babel-jest",
