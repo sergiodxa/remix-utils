@@ -317,12 +317,12 @@ export function Document({ children, title }: Props) {
         {title ? <title>{title}</title> : null}
         <Meta />
         <Links />
+        <StructuredData />
       </head>
       <body>
         {children}
         <ScrollRestoration />
         <Scripts />
-        <StructuredData />
         {process.env.NODE_ENV === "development" && <LiveReload />}
       </body>
     </html>
@@ -330,7 +330,7 @@ export function Document({ children, title }: Props) {
 }
 ```
 
-Now, any structured data you defined in the `StructuredDataFunction` will be added to the HTML, in the body.
+Now, any structured data you defined in the `StructuredDataFunction` will be added to the HTML, in the head. You may choose to include the `<StructuredData />` in either the head or the body, both are valid.
 
 ### Outlet & useParentData
 
