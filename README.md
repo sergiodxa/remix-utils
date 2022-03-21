@@ -332,7 +332,6 @@ Now, any script you defined in the ScriptsFunction will be added to the HTML tog
 
 > Tip: You could use it together with useShouldHydrate to disable Remix scripts in certain routes but still load scripts for analytics or small features that need JS but don't need the full app JS to be enabled.
 
-
 ### StructuredData
 
 If you need to include structured data (JSON-LD) scripts on certain routes, you can use the `StructuredData` component together with the `HandleStructuredData` type or `StructuredDataFunction` type.
@@ -340,25 +339,25 @@ If you need to include structured data (JSON-LD) scripts on certain routes, you 
 In the route you want to include the structured data, add a `handle` export with a `structuredData` method, this method should implement the `StructuredDataFunction` type.
 
 ```ts
-import type { WithContext, BlogPosting } from 'schema-dts';
+import type { WithContext, BlogPosting } from "schema-dts";
 
 // export the handle with the correct type:
 export let handle: HandleStructuredData<LoaderData> = {
   structuredData(data: LoaderData) {
     try {
       let { post } = data;
-      
+
       let postSchema: WithContext<BlogPosting> = {
-        '@context': 'https://schema.org',
-        '@type': 'BlogPosting',
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
         datePublished: post.published,
         mainEntityOfPage: {
-          '@type': 'WebPage',
-          '@id': post.postUrl,
+          "@type": "WebPage",
+          "@id": post.postUrl,
         },
         image: post.featuredImage,
         author: {
-          '@type': 'Person',
+          "@type": "Person",
           name: post.authorName,
         },
       };
@@ -700,6 +699,25 @@ The function uses the following list of headers, in order of prefecence:
 - Forwarded
 
 When a header is found that contains a valid IP address, it will return without checking the other headers.
+
+### isPrefetch
+
+This function let you identify if a request was created because of a prefetch triggered by using `<Link prefetch="intent">` or `<Link prefetch="render">`.
+
+This will let you implement a short cache only for prefetch requests so you [avoid the double data request](https://sergiodxa.com/articles/fix-double-data-request-when-prefetching-in-remix).
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  let data = await getData(request);
+  let headers = new Headers();
+
+  if (isPrefetch(request)) {
+    headers.set("Cache-Control", "private, max-age=5, smax-age=0");
+  }
+
+  return json(data, { headers });
+};
+```
 
 ### Responses
 
