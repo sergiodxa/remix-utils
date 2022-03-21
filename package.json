@@ -42,7 +42,8 @@
   "peerDependencies": {
     "@remix-run/react": "^1.1.1",
     "@remix-run/server-runtime": "^1.1.1",
-    "react": "^17.0.2"
+    "react": "^17.0.2",
+    "schema-dts": "^1.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -80,7 +81,6 @@
     "prettier": "^2.5.1",
     "react": "^17.0.2",
     "react-router-dom": "^6.0.0-beta.6",
-    "schema-dts": "^1.1.0",
     "ts-node": "^10.4.0",
     "typescript": "^4.2.4"
   },
