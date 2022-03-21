@@ -42,8 +42,7 @@
   "peerDependencies": {
     "@remix-run/react": "^1.1.1",
     "@remix-run/server-runtime": "^1.1.1",
-    "react": "^17.0.2",
-    "schema-dts": "^1.1.0"
+    "react": "^17.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -86,6 +85,7 @@
   },
   "dependencies": {
     "is-ip": "^3.1.0",
+    "schema-dts": "^1.1.0",
     "type-fest": "^2.5.2",
     "uuid": "^8.3.2"
   }
