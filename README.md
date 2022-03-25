@@ -10,6 +10,42 @@ npm install remix-utils remix @remix-run/node @remix-run/react react
 
 ## API Reference
 
+### promiseHash
+
+The `promiseHash` function is not directly related to Remix but it's a useful function when working with loaders and actions.
+
+This function is an object version of `Promise.all` which lets you pass an object with promises and get an object with the same keys with the resolved values.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  return json(
+    promiseHash({
+      user: getUser(request),
+      posts: getPosts(request),
+    })
+  );
+};
+```
+
+You can use nested `promiseHash` to get a nested object with resolved values.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  return json(
+    promiseHash({
+      user: getUser(request),
+      posts: promiseHash({
+        list: getPosts(request),
+        comments: promiseHash({
+          list: getComments(request),
+          likes: getLikes(request),
+        }),
+      }),
+    })
+  );
+};
+```
+
 ### ClientOnly
 
 The ClientOnly component lets you render the children element only on the client-side, avoiding rendering it the server-side.
