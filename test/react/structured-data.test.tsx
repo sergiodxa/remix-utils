@@ -5,7 +5,6 @@
 import { useMatches } from "@remix-run/react";
 import { render } from "@testing-library/react";
 import { BlogPosting } from "schema-dts";
-
 import { HandleStructuredData, StructuredData } from "../../src/react";
 
 jest.mock("@remix-run/react");
@@ -31,12 +30,12 @@ describe("React Utils", () => {
 
       render(<StructuredData />);
 
-      const scripts = window.document.querySelectorAll("script");
+      let scripts = window.document.querySelectorAll("script");
 
       expect(scripts).toHaveLength(0);
     });
 
-    const testLoaderData: TestPostData = {
+    let testLoaderData: TestPostData = {
       post: {
         title: "Structured Data in Remix",
         headline: "Use structured json+ld data in Remix",
@@ -47,7 +46,7 @@ describe("React Utils", () => {
     };
 
     describe("with a matched handle", () => {
-      const handle: HandleStructuredData<TestPostData, BlogPosting> = {
+      let handle: HandleStructuredData<TestPostData, BlogPosting> = {
         structuredData: ({ post }) => {
           if (!post) {
             return null;
@@ -72,11 +71,11 @@ describe("React Utils", () => {
 
       describe("and the structuredData fn returns null", () => {
         it("should render nothing", () => {
-          const testLoaderData: TestPostData = {
+          let testLoaderData: TestPostData = {
             post: null,
           };
 
-          const matches: ReturnType<typeof useMatches> = [
+          let matches: ReturnType<typeof useMatches> = [
             {
               data: testLoaderData,
               handle: handle,
@@ -91,7 +90,7 @@ describe("React Utils", () => {
 
           render(<StructuredData />);
 
-          const scripts = window.document.querySelectorAll("script");
+          let scripts = window.document.querySelectorAll("script");
 
           expect(scripts).toHaveLength(0);
         });
@@ -99,7 +98,7 @@ describe("React Utils", () => {
 
       describe("and the loader data contains a post", () => {
         it("should render a json+ld script tag with the stringified data", () => {
-          const matches: ReturnType<typeof useMatches> = [
+          let matches: ReturnType<typeof useMatches> = [
             {
               data: testLoaderData,
               handle: handle,
@@ -114,7 +113,7 @@ describe("React Utils", () => {
 
           render(<StructuredData />);
 
-          const scripts = window.document.querySelectorAll("script");
+          let scripts = window.document.querySelectorAll("script");
 
           expect(scripts).toHaveLength(1);
           expect(scripts[0].getAttribute("type")).toBe("application/ld+json");
@@ -126,7 +125,7 @@ describe("React Utils", () => {
     });
 
     describe("and the structuredData fn retuns multiple datums", () => {
-      const handle: HandleStructuredData<TestPostData> = {
+      let handle: HandleStructuredData<TestPostData> = {
         structuredData: ({ post }) => {
           if (!post) {
             return null;
@@ -170,7 +169,7 @@ describe("React Utils", () => {
       };
 
       it("should render a single json+ld script tag with a stringified array of  data", () => {
-        const matches: ReturnType<typeof useMatches> = [
+        let matches: ReturnType<typeof useMatches> = [
           {
             data: testLoaderData,
             handle: handle,
@@ -185,7 +184,7 @@ describe("React Utils", () => {
 
         render(<StructuredData />);
 
-        const scripts = window.document.querySelectorAll("script");
+        let scripts = window.document.querySelectorAll("script");
 
         expect(scripts).toHaveLength(1);
         expect(scripts[0].getAttribute("type")).toBe("application/ld+json");
