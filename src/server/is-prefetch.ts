@@ -1,3 +1,5 @@
+import { getHeaders } from "./get-headers";
+
 /**
  * Check if a specific Request is a prefetch request created by using
  * <Link prefetch="intent"> or <Link prefetch="render">.
@@ -12,13 +14,16 @@
  *   return json(data, { headers })
  * }
  */
-export function isPrefetch(request: Request) {
+export function isPrefetch(request: Request): boolean;
+export function isPrefetch(headers: Headers): boolean;
+export function isPrefetch(requestOrHeaders: Request | Headers): boolean {
+  let headers = getHeaders(requestOrHeaders);
   let purpose =
-    request.headers.get("Purpose") ||
-    request.headers.get("X-Purpose") ||
-    request.headers.get("Sec-Purpose") ||
-    request.headers.get("Sec-Fetch-Purpose") ||
-    request.headers.get("Moz-Purpose");
+    headers.get("Purpose") ||
+    headers.get("X-Purpose") ||
+    headers.get("Sec-Purpose") ||
+    headers.get("Sec-Fetch-Purpose") ||
+    headers.get("Moz-Purpose");
 
   return purpose?.toLowerCase() === "prefetch";
 }

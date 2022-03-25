@@ -1,4 +1,5 @@
 import { parseAcceptLanguage } from "intl-parse-accept-language";
+import { getHeaders } from "./get-headers";
 
 export type Locale = string | string[] | undefined;
 
@@ -20,10 +21,7 @@ export type Locale = string | string[] | undefined;
 export function getClientLocale(headers: Headers): Locale;
 export function getClientLocale(request: Request): Locale;
 export function getClientLocale(requestOrHeaders: Request | Headers): Locale {
-  let headers =
-    requestOrHeaders instanceof Headers
-      ? requestOrHeaders
-      : requestOrHeaders.headers;
+  let headers = getHeaders(requestOrHeaders);
 
   let acceptLanguage = headers.get("Accept-Language");
 

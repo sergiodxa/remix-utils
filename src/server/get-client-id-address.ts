@@ -1,4 +1,5 @@
 import isIP from "is-ip";
+import { getHeaders } from "./get-headers";
 
 /**
  * This is the list of headers, in order of preference, that will be used to
@@ -47,10 +48,7 @@ export function getClientIPAddress(request: Request): string | null;
 export function getClientIPAddress(
   requestOrHeaders: Request | Headers
 ): string | null {
-  let headers =
-    requestOrHeaders instanceof Headers
-      ? requestOrHeaders
-      : requestOrHeaders.headers;
+  let headers = getHeaders(requestOrHeaders);
 
   let ipAddress = headerNames
     .flatMap((headerName) => {
