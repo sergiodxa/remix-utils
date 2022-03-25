@@ -700,6 +700,39 @@ The function uses the following list of headers, in order of prefecence:
 
 When a header is found that contains a valid IP address, it will return without checking the other headers.
 
+### getClientLocale
+
+This function let you get the locale of the client (the user) who originated the request.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  // using the request
+  let locale = getClientLocale(request);
+  // or using the headers
+  let locale = getClientLocale(request.headers);
+};
+```
+
+The return value is a Locale type, which is `string | string[] | undefined`.
+
+The returned locale can be directly used on the Intl API when formatting dates, numbers, etc.
+
+```ts
+import { getClientLocale } from "remix-utils";
+export let loader: LoaderFunction = async ({ request }) => {
+  let locale = getClientLocale(request);
+  let nowDate = new Date();
+  let formatter = new Intl.DateTimeFormat(locale, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  return json({ now: formatter.format(nowDate) });
+};
+```
+
+The value could also be returned by the loader and used on the UI to ensure the user's locale is used on both server and client formatted dates.
+
 ### isPrefetch
 
 This function let you identify if a request was created because of a prefetch triggered by using `<Link prefetch="intent">` or `<Link prefetch="render">`.
@@ -919,7 +952,3 @@ export let loader: LoaderFunction = async ({ request }) => {
 ## License
 
 - MIT License
-
-```
-
-```
