@@ -1,65 +1,65 @@
 import { RouteData } from "@remix-run/react/routeData";
-import { useLocale } from "../../src";
+import { useLocales } from "../../src";
 import { fakeMatch } from "../helpers/fake-match";
 import { mockMatches } from "../helpers/mock-match";
 
 jest.mock("@remix-run/react");
 
-describe(useLocale, () => {
+describe(useLocales, () => {
   test("should return undefined if matches is empty", () => {
     mockMatches([]);
-    expect(useLocale()).toBeUndefined();
+    expect(useLocales()).toBeUndefined();
   });
 
   test("should retur undefined if matches is undefined", () => {
     mockMatches(undefined as []);
-    expect(useLocale()).toBeUndefined();
+    expect(useLocales()).toBeUndefined();
   });
 
   test("should return undefined if root match has no data", () => {
     mockMatches([fakeMatch()]);
-    expect(useLocale()).toBeUndefined();
+    expect(useLocales()).toBeUndefined();
   });
 
   test("should return undefined if root data is not an object", () => {
     mockMatches([fakeMatch("" as unknown as RouteData)]);
-    expect(useLocale()).toBeUndefined();
+    expect(useLocales()).toBeUndefined();
   });
 
   test("should return undefined if root data is null", () => {
     mockMatches([fakeMatch(null)]);
-    expect(useLocale()).toBeUndefined();
+    expect(useLocales()).toBeUndefined();
   });
 
   test("should return undefined if root data is an arry", () => {
     mockMatches([fakeMatch([])]);
-    expect(useLocale()).toBeUndefined();
+    expect(useLocales()).toBeUndefined();
   });
 
-  test("should return undefined if root data doesn't have locale", () => {
+  test("should return undefined if root data doesn't have locales", () => {
     mockMatches([fakeMatch({})]);
-    expect(useLocale()).toBeUndefined();
+    expect(useLocales()).toBeUndefined();
   });
 
-  test("should return undefined if locale is an array without only strings", () => {
-    mockMatches([fakeMatch({ locale: ["en", 123] })]);
-    expect(useLocale()).toBeUndefined();
+  test("should return undefined if locales is an array without only strings", () => {
+    mockMatches([fakeMatch({ locales: ["en", 123] })]);
+    expect(useLocales()).toBeUndefined();
   });
 
-  describe("should return the locale value", () => {
+  describe("should return the locales value", () => {
     test("Undefined", () => {
-      mockMatches([fakeMatch({ locale: undefined })]);
-      expect(useLocale()).toBeUndefined();
+      mockMatches([fakeMatch({ locales: undefined })]);
+      expect(useLocales()).toBeUndefined();
     });
 
     test("String", () => {
-      mockMatches([fakeMatch({ locale: "en" })]);
-      expect(useLocale()).toBe("en");
+      mockMatches([fakeMatch({ locales: "en" })]);
+      expect(useLocales()).toBe("en");
     });
 
     test("Array", () => {
-      mockMatches([fakeMatch({ locale: ["en"] })]);
-      expect(useLocale()).toEqual(["en"]);
+      mockMatches([fakeMatch({ locales: ["en"] })]);
+      expect(useLocales()).toEqual(["en"]);
     });
   });
 });

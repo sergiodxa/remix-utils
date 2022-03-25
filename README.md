@@ -502,30 +502,30 @@ When doing SSR, the value of `isHydrated` will always be `false`. The first clie
 
 After the first client-side render, future components rendered calling this hook will receive `true` as the value of `isHydrated`. This way, your server fallback UI will never be rendered on a route transition.
 
-### useLocale
+### useLocales
 
-This hooks lets you get the locale returned by the root loader. It follows a simple convention, your root loader return value should be an objet with the key `locale`.
+This hooks lets you get the locales returned by the root loader. It follows a simple convention, your root loader return value should be an objet with the key `locales`.
 
-You can combine it with `getClientLocal` to get the locale on the root loader and return that. The return value of `useLocale` is a `Locale` type which is `string | string[] | undefined`.
+You can combine it with `getClientLocal` to get the locales on the root loader and return that. The return value of `useLocales` is a `Locales` type which is `string | string[] | undefined`.
 
 ```ts
 // in the root loader
 export let loader: LoaderFunction = async ({ request }) => {
-  let locale = getClientLocale(request);
-  return json({ locale });
+  let locales = getClientLocales(request);
+  return json({ locales });
 };
 
 // in any route (including root!)
 export default function Screen() {
-  let locale = useLocale();
+  let locales = useLocales();
   let date = new Date();
   let dateTime = date.toISOString;
-  let formattedDate = date.toLocaleDateString(locale, options);
+  let formattedDate = date.toLocaleDateString(locales, options);
   return <time dateTime={dateTime}>{formattedDate}</time>;
 }
 ```
 
-The return type of `useLocale` is ready to be used with the Intl API.
+The return type of `useLocales` is ready to be used with the Intl API.
 
 ### useRevalidate
 
@@ -761,29 +761,29 @@ The function uses the following list of headers, in order of preference:
 
 When a header is found that contains a valid IP address, it will return without checking the other headers.
 
-### getClientLocale
+### getClientLocales
 
-This function let you get the locale of the client (the user) who originated the request.
+This function let you get the locales of the client (the user) who originated the request.
 
 ```ts
 export let loader: LoaderFunction = async ({ request }) => {
   // using the request
-  let locale = getClientLocale(request);
+  let locales = getClientLocales(request);
   // or using the headers
-  let locale = getClientLocale(request.headers);
+  let locales = getClientLocales(request.headers);
 };
 ```
 
-The return value is a Locale type, which is `string | string[] | undefined`.
+The return value is a Locales type, which is `string | string[] | undefined`.
 
-The returned locale can be directly used on the Intl API when formatting dates, numbers, etc.
+The returned locales can be directly used on the Intl API when formatting dates, numbers, etc.
 
 ```ts
-import { getClientLocale } from "remix-utils";
+import { getClientLocales } from "remix-utils";
 export let loader: LoaderFunction = async ({ request }) => {
-  let locale = getClientLocale(request);
+  let locales = getClientLocales(request);
   let nowDate = new Date();
-  let formatter = new Intl.DateTimeFormat(locale, {
+  let formatter = new Intl.DateTimeFormat(locales, {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -792,7 +792,7 @@ export let loader: LoaderFunction = async ({ request }) => {
 };
 ```
 
-The value could also be returned by the loader and used on the UI to ensure the user's locale is used on both server and client formatted dates.
+The value could also be returned by the loader and used on the UI to ensure the user's locales is used on both server and client formatted dates.
 
 ### isPrefetch
 
