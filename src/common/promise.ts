@@ -1,10 +1,11 @@
+import type { PromiseValue } from "type-fest";
 /**
  * @see https://twitter.com/buildsghost/status/1507109734519750680
  */
 export type PromiseHash = Record<string, Promise<unknown>>;
 
 export type AwaitedPromiseHash<Hash extends PromiseHash> = {
-  [Key in keyof Hash]: Awaited<Hash[Key]>;
+  [Key in keyof Hash]: PromiseValue<Hash[Key]>;
 };
 
 /**
