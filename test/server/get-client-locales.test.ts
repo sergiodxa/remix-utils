@@ -1,10 +1,10 @@
-import { getClientLocale } from "../../src";
+import { getClientLocales } from "../../src";
 
-describe(getClientLocale, () => {
+describe(getClientLocales, () => {
   test("should return undefined if no Accept-Language header is not present", () => {
     let request = new Request("/");
-    expect(getClientLocale(request)).toBeUndefined();
-    expect(getClientLocale(request.headers)).toBeUndefined();
+    expect(getClientLocales(request)).toBeUndefined();
+    expect(getClientLocales(request.headers)).toBeUndefined();
   });
 
   test("should return a string if there's only one locale", () => {
@@ -12,8 +12,8 @@ describe(getClientLocale, () => {
       "Accept-Language": "en-US",
     });
     let request = new Request("/", { headers });
-    expect(getClientLocale(request)).toBe("en-US");
-    expect(getClientLocale(request.headers)).toBe("en-US");
+    expect(getClientLocales(request)).toBe("en-US");
+    expect(getClientLocales(request.headers)).toBe("en-US");
   });
 
   test("should return undefined if there's no valid locale", () => {
@@ -21,8 +21,8 @@ describe(getClientLocale, () => {
       "Accept-Language": "*",
     });
     let request = new Request("/", { headers });
-    expect(getClientLocale(request)).toBeUndefined();
-    expect(getClientLocale(request.headers)).toBeUndefined();
+    expect(getClientLocales(request)).toBeUndefined();
+    expect(getClientLocales(request.headers)).toBeUndefined();
   });
 
   test("should return an array of locale sorted by quality", () => {
@@ -30,8 +30,8 @@ describe(getClientLocale, () => {
       "Accept-Language": "en-US,de;q=0.7, en;q=0.8",
     });
     let request = new Request("/", { headers });
-    expect(getClientLocale(request)).toEqual(["en-US", "en", "de"]);
-    expect(getClientLocale(request.headers)).toEqual(["en-US", "en", "de"]);
+    expect(getClientLocales(request)).toEqual(["en-US", "en", "de"]);
+    expect(getClientLocales(request.headers)).toEqual(["en-US", "en", "de"]);
   });
 
   test("can be used with Intl", () => {
@@ -40,7 +40,7 @@ describe(getClientLocale, () => {
     });
     let request = new Request("/", { headers });
 
-    let locale = getClientLocale(request);
+    let locale = getClientLocales(request);
 
     let date = new Date("1992-09-29T00:00:00.000Z");
 

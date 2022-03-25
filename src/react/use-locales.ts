@@ -1,29 +1,29 @@
 import { useMatches } from "@remix-run/react";
-import type { Locale } from "../server/get-client-locale";
+import type { Locales } from "../server/get-client-locales";
 
 /**
- * Get the locale returned by the loader of the root route.
+ * Get the locales returned by the loader of the root route.
  *
- * This is useful to return the locale of the user once in the root and access
+ * This is useful to return the locales of the user once in the root and access
  * it everywhere in the UI without having to pass it as a prop or create a
  * custom context object.
  *
  * @example
  * // in the root loader
  * export let loader: LoaderFunction = async ({ request }) => {
- *   let locale = getClientLocale(request);
- *   return json({ locale });
+ *   let locales = getClientLocales(request);
+ *   return json({ locales });
  * }
  * // in any route (including root!)
  * export default function Screen() {
- *   let locale = useLocale();
+ *   let locales = useLocales();
  *   let date = new Date();
  *   let dateTime = date.toISOString;
- *   let formattedDate = date.toLocaleDateString(locale, options)
+ *   let formattedDate = date.toLocaleDateString(locales, options)
  *   return <time dateTime={dateTime}>{formattedDate}</time>
  * }
  */
-export function useLocale(): Locale {
+export function useLocales(): Locales {
   let matches = useMatches();
 
   if (!matches) return undefined;
@@ -37,23 +37,23 @@ export function useLocale(): Locale {
 
   let { data } = rootMatch;
 
-  // check if data is an object and has locale
+  // check if data is an object and has locales
   if (typeof data !== "object") return undefined;
   if (data === null) return undefined;
   if (Array.isArray(data)) return undefined;
-  if (!("locale" in data)) return undefined;
+  if (!("locales" in data)) return undefined;
 
-  let { locale } = data;
+  let { locales } = data;
 
-  // check the type of value of locale
-  // locale could be a string
-  if (typeof locale === "string") return locale;
+  // check the type of value of locales
+  // it could be a string
+  if (typeof locales === "string") return locales;
   // or it could be an array of strings
   if (
-    Array.isArray(locale) &&
-    locale.every((value) => typeof value === "string")
+    Array.isArray(locales) &&
+    locales.every((value) => typeof value === "string")
   ) {
-    return locale;
+    return locales;
   }
   // finally, return undefined
   return undefined;
