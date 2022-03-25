@@ -684,7 +684,7 @@ export let loader: LoaderFunction = async ({ request }) => {
 
 If it can't find he ipAddress the return value will be `null`. Remember to check if it was able to find it before using it.
 
-The function uses the following list of headers, in order of prefecence:
+The function uses the following list of headers, in order of preference:
 
 - X-Client-IP
 - X-Forwarded-For
