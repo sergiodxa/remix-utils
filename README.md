@@ -534,7 +534,7 @@ The return value of `useDataRefresh` is an object with the following keys:
 
 This hook lets you access the data of any route in the current page. This can include child or parent routes.
 
-To use it, call `useRouteData` in your component and pass the route path as a string. As an example, if you had the following routes:
+To use it, call `useRouteData` in your component and pass the route ID as a string. As an example, if you had the following routes:
 
 ```
 routes/articles/$slug.tsx
@@ -542,34 +542,19 @@ routes/articles/index.tsx
 routes/articles.tsx
 ```
 
-Then you need to pass `useRouteData("/articles")` to get the data of `routes/articles.tsx` and `useRouteData("/articles/")` to get the data of `routes/articles/index.tsx`.
+Then you need to pass `useRouteData("routes/articles")` to get the data of `routes/articles.tsx`, `useRouteData("routes/articles/index")` to get the data of `routes/articles/index.tsx` and `routes/articles/$slug` to get the data of `routes/articles/$slug.tsx`.
+
+As you can see, the ID is the route file without the extension.
 
 ```ts
-let parentData = useRouteData("/articles");
-let indexData = useRouteData("/articles/");
-```
-
-If the pathname is dynamic as with the `routes/articles/$slug.tsx` route, you can attach and ID to the route using the `handle` export, and then use that ID in the `useRouteData` hook.
-
-```ts
-// inside routes/articles/$slug.tsx
-export let handle = { id: "article-show" }; // the ID can be anything
-```
-
-```tsx
-// inside any other route
-import { useRouteData } from "remix-utils";
-
-export default function Screen() {
-  let data = useRouteData("article-show");
-  // use data here
-}
+let parentData = useRouteData("routes/articles");
+let indexData = useRouteData("routes/articles/index");
 ```
 
 The `useRouteData` hook receives a generic to be used as the type of the route data. Because the route may not be found the return type is `Data | undefined`. This means if you do the following:
 
 ```ts
-let data = useRouteData<ArticleShowData>("article-show");
+let data = useRouteData<ArticleShowData>("routes/articles");
 ```
 
 The type of `data` will be `ArticleShowData | undefined`, so you will need to check if it's not undefined before being able to use it.
