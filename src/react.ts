@@ -2,7 +2,6 @@ export * from "./react/client-only";
 export * from "./react/csrf";
 export * from "./react/dynamic-links";
 export * from "./react/external-scripts";
-export * from "./react/revalidate-link";
 export * from "./react/structured-data";
 export * from "./react/use-data-refresh";
 export * from "./react/use-hydrated";
