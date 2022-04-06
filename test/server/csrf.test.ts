@@ -43,9 +43,11 @@ describe("CSRF Server", () => {
       } catch (error) {
         if (!(error instanceof Response)) throw error;
         expect(error.status).toBe(422);
-        expect(await error.json()).toEqual({
-          message: "Can't find CSRF token in session.",
-        });
+        expect(await error.json()).toEqual(
+          JSON.stringify({
+            message: "Can't find CSRF token in session.",
+          })
+        );
       }
     });
 
@@ -66,9 +68,11 @@ describe("CSRF Server", () => {
       } catch (error) {
         if (!(error instanceof Response)) throw error;
         expect(error.status).toBe(422);
-        expect(await error.json()).toEqual({
-          message: "Can't find CSRF token in body.",
-        });
+        expect(await error.json()).toEqual(
+          JSON.stringify({
+            message: "Can't find CSRF token in body.",
+          })
+        );
       }
     });
 
@@ -92,9 +96,11 @@ describe("CSRF Server", () => {
       } catch (error) {
         if (!(error instanceof Response)) throw error;
         expect(error.status).toBe(422);
-        expect(await error.json()).toEqual({
-          message: "Can't verify CSRF token authenticity.",
-        });
+        expect(await error.json()).toEqual(
+          JSON.stringify({
+            message: "Can't verify CSRF token authenticity.",
+          })
+        );
       }
     });
   });
