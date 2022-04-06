@@ -23,13 +23,13 @@ export function createAuthenticityToken(session: Session, sessionKey = "csrf") {
  * Verify if a request and session has a valid CSRF token.
  * @example
  * let action: ActionFunction = async ({ request }) => {
- *   let session = await getSession(request.headers.get("Cookie");
+ *   let session = await getSession(request.headers.get("Cookie"));
  *   await verifyAuthenticityToken(request, session);
  *   // the request is authenticated and you can do anything here
  * }
  * @example
  * let action: ActionFunction = async ({ request }) => {
- *   let session = await getSession(request.headers.get("Cookie");
+ *   let session = await getSession(request.headers.get("Cookie"));
  *   await verifyAuthenticityToken(request, session, "csrfToken");
  *   // the request is authenticated and you can do anything here
  * }
@@ -39,10 +39,15 @@ export async function verifyAuthenticityToken(
   session: Session,
   sessionKey = "csrf"
 ) {
+  if (request.bodyUsed) {
+    throw new Error(
+      "The body of the request was read before calling verifyAuthenticityToken. Ensure you clone it before reading it."
+    );
+  }
   // We clone the request to ensure we don't modify the original request.
   // This allow us to parse the body of the request and let the original request
   // still be used and parsed without errors.
-  let formData = await request.formData();
+  let formData = await request.clone().formData();
 
   // if the session doesn't have a csrf token, throw an error
   if (!session.has(sessionKey)) {

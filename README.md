@@ -10,11 +10,47 @@ npm install remix-utils remix @remix-run/node @remix-run/react react
 
 ## API Reference
 
+### promiseHash
+
+The `promiseHash` function is not directly related to Remix but it's a useful function when working with loaders and actions.
+
+This function is an object version of `Promise.all` which lets you pass an object with promises and get an object with the same keys with the resolved values.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  return json(
+    promiseHash({
+      user: getUser(request),
+      posts: getPosts(request),
+    })
+  );
+};
+```
+
+You can use nested `promiseHash` to get a nested object with resolved values.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  return json(
+    promiseHash({
+      user: getUser(request),
+      posts: promiseHash({
+        list: getPosts(request),
+        comments: promiseHash({
+          list: getComments(request),
+          likes: getLikes(request),
+        }),
+      }),
+    })
+  );
+};
+```
+
 ### ClientOnly
 
 The ClientOnly component lets you render the children element only on the client-side, avoiding rendering it the server-side.
 
-You can, optionally, provide a fallback component to be used on SSR.
+You can provide a fallback component to be used on SSR, and while optional, it's highly recommended to provide one to avoid content layout shift issues.
 
 ```tsx
 import { ClientOnly } from "remix-utils";
@@ -22,7 +58,7 @@ import { ClientOnly } from "remix-utils";
 export default function View() {
   return (
     <ClientOnly fallback={<SimplerStaticVersion />}>
-      <ComplexComponentNeedingBrowserEnvironment />
+      {() => <ComplexComponentNeedingBrowserEnvironment />}
     </ClientOnly>
   );
 }
@@ -38,6 +74,78 @@ The rendering flow will be:
 - CSR Future Renders: Always render the actual component, don't bother to render the fallback.
 
 This component uses the `useHydrated` hook internally.
+
+### CORS
+
+The CORS function let you implement CORS headers on your loaders and actions so you can use them as an API for other client-side applications.
+
+There are two main ways to use the `cors` function.
+
+1. Use it on each loader/action where you want to enable it.
+2. Use it globally on entry.server handleDataRequest export.
+
+If you want to use it on every loader/action, you can do it like this:
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  let data = await getData(request);
+  let response = json<LoaderData>(data);
+  return await cors(request, response);
+};
+```
+
+You could also do the `json` and `cors` call in one line.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  let data = await getData(request);
+  return await cors(request, json<LoaderData>(data));
+};
+```
+
+And because `cors` mutates the response, you can also call it and later return.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  let data = await getData(request);
+  let response = json<LoaderData>(data);
+  await cors(request, response); // this mutates the Response object
+  return response; // so you can return it here
+};
+```
+
+If you want to setup it globally once, you can do it like this in `entry.server`
+
+```ts
+export let handleDataRequest: HandleDataRequestFunction = async (
+  response,
+  { request }
+) => {
+  return await cors(request, response);
+};
+```
+
+#### Options
+
+Additionally, the `cors` function accepts a `options` object as a third optional argument. These are the options.
+
+- `origin`: Configures the **Access-Control-Allow-Origin** CORS header.
+  Possible values are:
+  - `true`: Enable CORS for any origin (same as "\*")
+  - `false`: Don't setup CORS
+  - `string`: Set to a specific origin, if set to "\*" it will allow any origin
+  - `RegExp`: Set to a RegExp to match against the origin
+  - `Array<string | RegExp>`: Set to an array of origins to match against the
+    string or RegExp
+  - `Function`: Set to a function that will be called with the request origin
+    and should return a boolean indicating if the origin is allowed or not.
+    The default value is `true`.
+- `methods`: Configures the **Access-Control-Allow-Methods** CORS header.
+  The default value is `["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"]`.
+- `allowedHeaders`: Configures the **Access-Control-Allow-Headers** CORS header.
+- `exposedHeaders`: Configures the **Access-Control-Expose-Headers** CORS header.
+- `credentials`: Configures the **Access-Control-Allow-Credentials** CORS header.
+- `maxAge`: Configures the **Access-Control-Max-Age** CORS header.
 
 ### CSRF
 
@@ -63,9 +171,7 @@ export let loader: LoaderFunction = async ({ request }) => {
   let token = createAuthenticityToken(session);
   return json<LoaderData>(
     { csrf: token },
-    {
-      headers: await commitSession(session),
-    }
+    { headers: { "Set-Cookie": await commitSession(session) } }
   );
 };
 ```
@@ -83,7 +189,7 @@ import { Document } from "~/components/document";
 export default function Root() {
   let { csrf } = useLoaderData<LoaderData>();
   return (
-    <AuthenticityTokenProvider value={csrf}>
+    <AuthenticityTokenProvider token={csrf}>
       <Document>
         <Outlet />
       </Document>
@@ -150,7 +256,7 @@ import { getSession, commitSession } from "~/services/session.server";
 
 export let action: ActionFunction = async ({ request }) => {
   let session = await getSession(request.headers.get("Cookie"));
-  await verifyAuthenticityToken(session);
+  await verifyAuthenticityToken(request, session);
   // do something here
   return redirectBack(request, { fallback: "/fallback" });
 };
@@ -158,46 +264,282 @@ export let action: ActionFunction = async ({ request }) => {
 
 Suppose the authenticity token is missing on the session, the request body, or doesn't match. In that case, the function will throw an Unprocessable Entity response that you can either catch and handle manually or let pass and render your CatchBoundary.
 
-### Outlet & useParentData
+### DynamicLinks
 
-This wrapper of the Remix Outlet component lets you pass an optional `data` prop, then using the `useParentData` hook, you can access that data.
+If you need to create `<link />` tags based on the loader data instead of being static, you can use the `DynamicLinks` component together with the `DynamicLinksFunction` type.
 
-Helpful to pass information from parent to child routes, for example, the authenticated user data.
+In the route you want to define dynamic links add `handle` export with a `dynamicLinks` method, this method should implement the `DynamicLinksFunction` type.
+
+```ts
+let dynamicLinks: DynamicLinksFunction<LoaderData> = async ({ data }) => {
+  if (!data.user) return [];
+  return [{ rel: "preload", href: data.user.avatar, as: "image" }];
+};
+```
+
+Then, in the root route, add the `DynamicLinks` component before the Remix's Links component, usually inside a Document component.
 
 ```tsx
-// parent route
-import { Outlet } from "remix-utils";
+import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
+import { DynamicLinks } from "remix-utils";
 
-export default function Parent() {
-  return <Outlet data={{ something: "here" }} />;
+type Props = { children: React.ReactNode; title?: string };
+
+export function Document({ children, title }: Props) {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        {title ? <title>{title}</title> : null}
+        <Meta />
+        <DynamicLinks />
+        <Links />
+      </head>
+      <body>
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+        {process.env.NODE_ENV === "development" && <LiveReload />}
+      </body>
+    </html>
+  );
 }
 ```
 
-```tsx
-// child route
-import { useParentData } from "remix-utils";
+Now, any link you defined in the `DynamicLinksFunction` will be added to the HTML as any static link in your `LinksFunction`s.
 
-export default function Child() {
-  const data = useParentData();
-  return <div>{data.something}</div>;
+> Note: You can also put the `DynamicLinks` after the `Links` component, it's up to you what to prioritize, since static links are probably prefetched when you do `<Link prefetch>` you may want to put the `DynamicLinks` first to prioritize them.
+
+### ExternalScripts
+
+If you need to load different external scripts on certain routes, you can use the `ExternalScripts` component together with the `ExternalScriptsFunction` type.
+
+In the route you want to load the script add a `handle` export with a `scripts` method, this method should implement the `ExternalScriptsFunction` type.
+
+```ts
+// create the scripts function with the correct type
+let scripts: ExternalScriptsFunction = () => {
+  return [
+    {
+      src: "https://code.jquery.com/jquery-3.6.0.min.js",
+      integrity: "sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=",
+      crossOrigin: "anonymous",
+    },
+  ];
+};
+
+// and export it through the handle, you could also create it inline here
+// if you don't care about the type
+export let handle = { scripts };
+```
+
+Then, in the root route, add the `ExternalScripts` component together with the Remix's Scripts component, usually inside a Document component.
+
+```tsx
+import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
+import { ExternalScripts } from "remix-utils";
+
+type Props = { children: React.ReactNode; title?: string };
+
+export function Document({ children, title }: Props) {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        {title ? <title>{title}</title> : null}
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        {children}
+        <ScrollRestoration />
+        <ExternalScripts />
+        <Scripts />
+        {process.env.NODE_ENV === "development" && <LiveReload />}
+      </body>
+    </html>
+  );
 }
 ```
 
-### RevalidateLink
+Now, any script you defined in the ScriptsFunction will be added to the HTML together with a `<link rel="preload">` before it.
 
-The RevalidateLink link component is a simple wrapper of Remix's Link component. It receives the same props with the exception of the `to` prop; instead, this component will render a Link to `.`.
+> Tip: You could use it together with useShouldHydrate to disable Remix scripts in certain routes but still load scripts for analytics or small features that need JS but don't need the full app JS to be enabled.
 
-By linking to `.`, when clicked, this will tell Remix to fetch again the loaders of the current routes, but instead of creating a new entry on the browser's history stack, it will replace the current one. Basically, it will refresh the page, but only reloading the data.
+### StructuredData
 
-If you don't have JS enabled, this will do a full page refresh instead, giving you the exact same behavior.
+If you need to include structured data (JSON-LD) scripts on certain routes, you can use the `StructuredData` component together with the `HandleStructuredData` type or `StructuredDataFunction` type.
+
+In the route you want to include the structured data, add a `handle` export with a `structuredData` method, this method should implement the `StructuredDataFunction` type.
+
+```ts
+import type { WithContext, BlogPosting } from "schema-dts";
+
+// export the handle with the correct type:
+export let handle: HandleStructuredData<LoaderData> = {
+  structuredData(data: LoaderData) {
+    try {
+      let { post } = data;
+
+      let postSchema: WithContext<BlogPosting> = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        datePublished: post.published,
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": post.postUrl,
+        },
+        image: post.featuredImage,
+        author: {
+          "@type": "Person",
+          name: post.authorName,
+        },
+      };
+
+      return postSchema;
+    } catch (e: unknown) {
+      console.error(e);
+      return [];
+    }
+  },
+};
+```
+
+Then, in the root route, add the `StructuredData` component together with the Remix's Scripts component, usually inside a Document component.
 
 ```tsx
-<RevalidateLink className="refresh-btn-styles">Refresh</RevalidateLink>
+import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
+import { StructuredData } from "remix-utils";
+
+type Props = { children: React.ReactNode; title?: string };
+
+export function Document({ children, title }: Props) {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        {title ? <title>{title}</title> : null}
+        <Meta />
+        <Links />
+        <StructuredData />
+      </head>
+      <body>
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+        {process.env.NODE_ENV === "development" && <LiveReload />}
+      </body>
+    </html>
+  );
+}
 ```
+
+Now, any structured data you defined in the `StructuredDataFunction` will be added to the HTML, in the head. You may choose to include the `<StructuredData />` in either the head or the body, both are valid.
+
+### useActionData
+
+Wrapper of the useActionData from Remix. It lets you pass a reviver function to convert values from the stringified JSON to any JS object.
+
+It also lets you pass a validator function to ensure the final value has the correct shape and get the type of the data correctly.
+
+```ts
+type ActionData = { user: { name: string; createdAt: Date } };
+
+let replacer: ReplacerFunction = (key: string, value: unknown) => {
+  if (typeof value !== "Date") return value;
+  return { __type: "Date", value: value.toISOString() };
+};
+
+let reviver: ReviverFunction = (key: string, value: unknown) => {
+  if (value.__type === "Date") return new Date(value.value);
+  return value;
+};
+
+let validator: ValidatorFunction = (data) => {
+  return schema.parse(data);
+};
+
+export let action: ActionFunction = async ({ request }) => {
+  let user = await createUser(request);
+  return created<ActionData>({ user }, { replacer });
+};
+
+export function Screen() {
+  let { user } = useActionData<ActionData>({ reviver, validator });
+  return <UserProfile user={user} />;
+}
+```
+
+### useLoaderData
+
+Wrapper of the useLoaderData from Remix. It lets you pass a reviver function to convert values from the stringified JSON to any JS object.
+
+It also lets you pass a validator function to ensure the final value has the correct shape and get the type of the data correctly.
+
+```ts
+type LoaderData = { user: { name: string; createdAt: Date } };
+
+let replacer: ReplacerFunction = (key: string, value: unknown) => {
+  if (typeof value !== "Date") return value;
+  return { __type: "Date", value: value.toISOString() };
+};
+
+let reviver: ReviverFunction = (key: string, value: unknown) => {
+  if (value.__type === "Date") return new Date(value.value);
+  return value;
+};
+
+let validator: ValidatorFunction = (data) => {
+  return schema.parse(data);
+};
+
+export let loader: LoaderFunction = async ({ request }) => {
+  let user = await getUser(request);
+  return json<LoaderData>({ user }, { replacer });
+};
+
+export function Screen() {
+  let { user } = useLoaderData<LoaderData>({ reviver, validator });
+  return <UserProfile user={user} />;
+}
+```
+
+### useDataRefresh
+
+This hook lets you trigger a refresh of the loaders in the current URL.
+
+The way this works is by sending a fetcher.submit to `/dev/null` to trigger all loaders to run..
+
+This Hook is mostly useful if you want to trigger the refresh manually from an effect, examples of this are:
+
+- Set an interval to trigger the refresh
+- Refresh when the browser tab is focused again
+- Refresh when the user is online again
+
+```ts
+import { useDataRefresh } from "remix-utils";
+
+function useDataRefreshOnInterval() {
+  let { refresh } = useDataRefresh();
+  useEffect(() => {
+    let interval = setInterval(refresh, 5000);
+    return () => clearInterval(interval);
+  }, [refresh]);
+}
+```
+
+The return value of `useDataRefresh` is an object with the following keys:
+
+- refresh: a function that trigger the refresh
+- type: a string which can be `init`, `refreshRedirect` or `refresh`
+- status: a string which can be `loading` or `idle`
 
 ### useHydrated
 
-This lets you detect if your component is already hydrated. This means the JS for the element loaded client-side and React is running.
+This hook lets you detect if your component is already hydrated. This means the JS for the element loaded client-side and React is running.
 
 With useHydrated, you can render different things on the server and client while ensuring the hydration will not have a mismatched HTML.
 
@@ -219,31 +561,59 @@ When doing SSR, the value of `isHydrated` will always be `false`. The first clie
 
 After the first client-side render, future components rendered calling this hook will receive `true` as the value of `isHydrated`. This way, your server fallback UI will never be rendered on a route transition.
 
-### useRevalidate
+### useLocales
 
-This Hook gives you a function you can call to trigger a revalidation of the loaders in the current routes.
+This hooks lets you get the locales returned by the root loader. It follows a simple convention, your root loader return value should be an objet with the key `locales`.
 
-The way this works is by navigating to `.` and adding `replace: true` to avoid creating a new entry on the history stack.
-
-> Check #RevalidateLink for more information and a component version of this feature that works without JS.
-
-This Hook is mostly useful if you want to trigger the revalidation manually from an effect, examples of this are:
-
-- Set an interval to trigger the revalidation
-- Revalidate when the browser tab is focused again
-- Revalidate when the user is online again
+You can combine it with `getClientLocal` to get the locales on the root loader and return that. The return value of `useLocales` is a `Locales` type which is `string | string[] | undefined`.
 
 ```ts
-import { useRevalidate } from "remix-utils";
+// in the root loader
+export let loader: LoaderFunction = async ({ request }) => {
+  let locales = getClientLocales(request);
+  return json({ locales });
+};
 
-function useRevalidateOnInterval() {
-  let revalidate = useRevalidate();
-  useEffect(() => {
-    let interval = setInterval(revalidate, 5000);
-    return () => clearInterval(interval);
-  }, [revalidate]);
+// in any route (including root!)
+export default function Screen() {
+  let locales = useLocales();
+  let date = new Date();
+  let dateTime = date.toISOString;
+  let formattedDate = date.toLocaleDateString(locales, options);
+  return <time dateTime={dateTime}>{formattedDate}</time>;
 }
 ```
+
+The return type of `useLocales` is ready to be used with the Intl API.
+
+### useRouteData
+
+This hook lets you access the data of any route in the current page. This can include child or parent routes.
+
+To use it, call `useRouteData` in your component and pass the route ID as a string. As an example, if you had the following routes:
+
+```
+routes/articles/$slug.tsx
+routes/articles/index.tsx
+routes/articles.tsx
+```
+
+Then you need to pass `useRouteData("routes/articles")` to get the data of `routes/articles.tsx`, `useRouteData("routes/articles/index")` to get the data of `routes/articles/index.tsx` and `routes/articles/$slug` to get the data of `routes/articles/$slug.tsx`.
+
+As you can see, the ID is the route file without the extension.
+
+```ts
+let parentData = useRouteData("routes/articles");
+let indexData = useRouteData("routes/articles/index");
+```
+
+The `useRouteData` hook receives a generic to be used as the type of the route data. Because the route may not be found the return type is `Data | undefined`. This means if you do the following:
+
+```ts
+let data = useRouteData<ArticleShowData>("routes/articles");
+```
+
+The type of `data` will be `ArticleShowData | undefined`, so you will need to check if it's not undefined before being able to use it.
 
 ### useShouldHydrate
 
@@ -302,118 +672,136 @@ export let handle = {
 
 The `useShouldHydrate` hook will detect `hydrate` as a function and call it using the route data.
 
-### Body Parser
+### getClientIPAddress
 
-These utilities let you parse the request body with a simple function call. You can parse it to a string, a URLSearchParams instance, or an object.
-
-#### toString
-
-This function receives the whole request and returns a promise with the body as a string.
+This function receives a Request or Headers objects and will try to get the IP address of the client (the user) who originated the request.
 
 ```ts
-import { bodyParser, redirectBack } from "remix-utils";
-import type { ActionFunction } from "remix";
-
-import { updateUser } from "../services/users";
-
-export let action: ActionFunction = async ({ request }) => {
-  let body = await bodyParser.toString(request);
-  body = new URLSearchParams(body);
-  await updateUser(params.id, { username: body.get("username") });
-  return redirectBack(request, { fallback: "/" });
+export let loader: LoaderFunction = async ({ request }) => {
+  // using the request
+  let ipAddress = getClientIPAddress(request);
+  // or using the headers
+  let ipAddress = getClientIPAddress(request.headers);
 };
 ```
 
-#### toSearchParams
+If it can't find he ipAddress the return value will be `null`. Remember to check if it was able to find it before using it.
 
-This function receives the whole request and returns a promise with an instance of `URLSearchParams`, and the request's body is already parsed.
+The function uses the following list of headers, in order of preference:
+
+- X-Client-IP
+- X-Forwarded-For
+- Fly-Client-IP
+- CF-Connecting-IP
+- Fastly-Client-Ip
+- True-Client-Ip
+- X-Real-IP
+- X-Cluster-Client-IP
+- X-Forwarded
+- Forwarded-For
+- Forwarded
+
+When a header is found that contains a valid IP address, it will return without checking the other headers.
+
+### getClientLocales
+
+This function let you get the locales of the client (the user) who originated the request.
 
 ```ts
-import { bodyParser, redirectBack } from "remix-utils";
-import type { ActionFunction } from "remix";
-
-import { updateUser } from "../services/users";
-
-export let action: ActionFunction = async ({ request, params }) => {
-  const body = await bodyParser.toSearchParams(request);
-  await updateUser(params.id, { username: body.get("username") });
-  return redirectBack(request, { fallback: "/" });
+export let loader: LoaderFunction = async ({ request }) => {
+  // using the request
+  let locales = getClientLocales(request);
+  // or using the headers
+  let locales = getClientLocales(request.headers);
 };
 ```
 
-This is the same as doing:
+The return value is a Locales type, which is `string | string[] | undefined`.
+
+The returned locales can be directly used on the Intl API when formatting dates, numbers, etc.
 
 ```ts
-let body = await bodyParser.toString(request);
-return new URLSearchParams(body);
-```
-
-#### toJSON
-
-This function receives the whole request and returns a promise with an unknown value. That value is going to be the body of the request.
-
-The result is typed as `unknown` to force you to validate the object to ensure it's what you expect. This is because there's no way for TypeScript to know what the type of the body is since it's an entirely dynamic value.
-
-```ts
-import { bodyParser, redirectBack } from "remix-utils";
-import type { ActionFunction } from "remix";
-import { hasUsername } from "../validations/users";
-import { updateUser } from "~/services/users";
-
-export let action: ActionFunction = async ({ request }) => {
-  const body = await bodyParser.toJSON(request);
-  hasUsername(body); // this should throw if body doesn't have username
-  // from this point you can do `body.username`
-  await updateUser(params.id, { username: body.username });
-  return redirectBack(request, { fallback: "/" });
+import { getClientLocales } from "remix-utils";
+export let loader: LoaderFunction = async ({ request }) => {
+  let locales = getClientLocales(request);
+  let nowDate = new Date();
+  let formatter = new Intl.DateTimeFormat(locales, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  return json({ now: formatter.format(nowDate) });
 };
 ```
 
-This is the same as doing:
+The value could also be returned by the loader and used on the UI to ensure the user's locales is used on both server and client formatted dates.
+
+### isPrefetch
+
+This function let you identify if a request was created because of a prefetch triggered by using `<Link prefetch="intent">` or `<Link prefetch="render">`.
+
+This will let you implement a short cache only for prefetch requests so you [avoid the double data request](https://sergiodxa.com/articles/fix-double-data-request-when-prefetching-in-remix).
 
 ```ts
-let body = await bodyParser.toSearchParams(request);
-return Object.fromEntries(params.entries()) as unknown;
+export let loader: LoaderFunction = async ({ request }) => {
+  let data = await getData(request);
+  let headers = new Headers();
+
+  if (isPrefetch(request)) {
+    headers.set("Cache-Control", "private, max-age=5, smax-age=0");
+  }
+
+  return json(data, { headers });
+};
 ```
 
 ### Responses
 
-#### Typed JSON
+#### json
 
-This function is a typed version of the `json` helper provided by Remix. It accepts a generic with the type of data you are going to send in the response.
+This function works together with useLoaderData. The function receives any value and returns a response with the value as JSON.
 
-This helps ensure that the data you are sending from your loader matches the provided type at the compiler lever. It's more useful when you create an interface or type for your loader so you can share it between `json` and `useLoaderData` to help you avoid missing or extra parameters in the response.
+The difference with the built-in `json` function in Remix is that this one lets you pass a replacer function which will be passed to JSON.stringify to let you control how your values are transformed to string.
 
-Again, this is not doing any kind of validation on the data you send. It's just a type checker.
-
-The generic extends JsonValue from [type-fest](https://github.com/sindresorhus/type-fest/blob/ff96fef37b84137e1600eebce108c2b797427c1f/source/basic.d.ts#L45), this limit the type of data you can send to anything that can be serializable, so you are not going to be able to send BigInt, functions, Symbols, etc. If `JSON.stringify` fails to try to stringify that value, it will not be supported.
+This is useful to support sending BigInt, Date, Error, or any custom class value which is not directly supported on the JSON format.
 
 ```tsx
-import { useLoaderData } from "remix";
+// ensure you import both json and useLoaderData from Remix Utils
+import { json, useLoaderData } from "remix-utils";
+import type { ReplacerFunction, ReviverFunction } from "remix-utils";
 import type { LoaderFunction } from "remix";
-import { json } from "remix-utils";
 
 import { getUser } from "../services/users";
 import type { User } from "../types";
 
-interface LoaderData {
-  user: User;
-}
+type LoaderData = { user: User };
 
-export let loader: LoaderFunction = async ({ request }) => {
-  const user = await getUser(request);
-  return json<LoaderData>({ user });
+let replacer: ReplacerFunction = (key: string, value: unknown) => {
+  if (typeof value !== "Date") return value;
+  return { __type: "Date", value: value.toISOString() };
 };
 
-export default function View() {
-  const { user } = useLoaderData<LoaderData>();
-  return <h1>Hello, {user.name}</h1>;
+let reviver: ReviverFunction = (key: string, value: unknown) => {
+  if (value.__type === "Date") return new Date(value.value);
+  return value;
+};
+
+export let loader: LoaderFunction = async ({ request }) => {
+  let user = await getUser(request);
+  return json<LoaderData>({ user }, { replacer });
+};
+
+export function Screen() {
+  let { user } = useLoaderData<LoaderData>({ reviver });
+  return <UserProfile user={user} />;
 }
 ```
 
+> Note: All helpers below use this json function, ensure you always import useLoaderData from Remix Utils
+
 #### Redirect Back
 
-This function is a wrapper of the `redirect` helper from Remix, contrarian to Remix's version. This one receives the whole request object as the first value and an object with the response init and a fallback URL.
+This function is a wrapper of the `redirect` helper from Remix. Unlike Remix's version, this one receives the whole request object as the first value and an object with the response init and a fallback URL.
 
 The response created with this function will have the `Location` header pointing to the `Referer` header from the request, or if not available, the fallback URL provided in the second argument.
 
@@ -426,7 +814,21 @@ export let action: ActionFunction = async ({ request }) => {
 };
 ```
 
-This helper is more useful when used in a generic action to send the user to the same URL it was before.
+This helper is most useful when used in a generic action to send the user to the same URL it was before.
+
+#### Created
+
+Helper function to create a Created (201) response with a JSON body.
+
+```ts
+import { created } from "remix-utils";
+import type { ActionFunction } from "remix";
+
+export let action: ActionFunction = async ({ request }) => {
+  let result = await doSomething(request);
+  return created(result);
+};
+```
 
 #### Bad Request
 
@@ -506,6 +908,64 @@ import type { LoaderFunction } from "remix";
 
 export let loader: LoaderFunction = async () => {
   throw serverError({ message: "Something unexpected happened." });
+};
+```
+
+#### Not Modified
+
+Helper function to create a Not Modified (304) response without a body and any header.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  return notModified();
+};
+```
+
+#### JavaScript
+
+Helper function to create a JavaScript file response with any header.
+
+This is useful to create JS files based on data inside a Resource Route.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  return javascript("console.log('Hello World')");
+};
+```
+
+#### Stylesheet
+
+Helper function to create a CSS file response with any header.
+
+This is useful to create CSS files based on data inside a Resource Route.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  return stylesheet("body { color: red; }");
+};
+```
+
+#### PDF
+
+Helper function to create a PDF file response with any header.
+
+This is useful to create PDF files based on data inside a Resource Route.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  return pdf(await generatePDF(request.formData()));
+};
+```
+
+#### HTML
+
+Helper function to create a HTML file response with any header.
+
+This is useful to create HTML files based on data inside a Resource Route.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  return html("<h1>Hello World</h1>");
 };
 ```
 

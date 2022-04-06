@@ -2,7 +2,12 @@ import { ReactNode } from "react";
 import { useHydrated } from "./use-hydrated";
 
 type Props = {
-  children: ReactNode;
+  /**
+   * You are encouraged to add a fallback that is the same dimensions
+   * as the client rendered children. This will avoid content layout
+   * shift which is disgusting
+   */
+  children(): ReactNode;
   fallback?: ReactNode;
 };
 
@@ -16,11 +21,11 @@ type Props = {
  * ```tsx
  * return (
  *   <ClientOnly fallback={<FakeChart />}>
- *     <Chart />
+ *     {() => <Chart />}
  *   </ClientOnly>
  * );
  * ```
  */
 export function ClientOnly({ children, fallback = null }: Props) {
-  return useHydrated() ? <>{children}</> : <>{fallback}</>;
+  return useHydrated() ? <>{children()}</> : <>{fallback}</>;
 }

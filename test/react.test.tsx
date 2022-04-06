@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { render } from "@testing-library/react";
 import {
   AuthenticityTokenInput,
@@ -6,10 +10,12 @@ import {
 
 describe("React Utils", () => {
   describe("CSRF", () => {
-    render(
-      <AuthenticityTokenProvider token="testing-token">
-        <AuthenticityTokenInput />
-      </AuthenticityTokenProvider>
-    );
+    it("should work", () => {
+      render(
+        <AuthenticityTokenProvider token="testing-token">
+          <AuthenticityTokenInput />
+        </AuthenticityTokenProvider>
+      );
+    });
   });
 });
