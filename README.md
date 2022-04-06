@@ -524,6 +524,12 @@ function useDataRefreshOnInterval() {
 }
 ```
 
+The return value of `useDataRefresh` is an object with the following keys:
+
+- refresh: a function that trigger the refresh
+- type: a string which can be `init`, `refreshRedirect` or `refresh`
+- status: a string which can be `loading` or `idle`
+
 ### useRouteData
 
 This hook lets you access the data of any route in the current page. This can include child or parent routes.
