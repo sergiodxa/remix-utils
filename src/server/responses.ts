@@ -55,6 +55,21 @@ export function json<Data>(data: Data, init?: number | ExtendedResponseInit) {
 }
 
 /**
+ * Create a response receiving a JSON object with the status code 201.
+ * @example
+ * export let action: ActionFunction = async ({ request }) => {
+ *   let result = await doSomething(request);
+ *   return created(result);
+ * }
+ */
+export function created<Data = unknown>(
+  data: Data,
+  init?: Omit<ExtendedResponseInit, "status">
+) {
+  return json(data, { ...init, status: 201 });
+}
+
+/**
  * Create a new Response with a redirect set to the URL the user was before.
  * It uses the Referer header to detect the previous URL. It asks for a fallback
  * URL in case the Referer couldn't be found, this fallback should be a URL you
