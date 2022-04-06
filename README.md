@@ -439,33 +439,6 @@ export function Document({ children, title }: Props) {
 
 Now, any structured data you defined in the `StructuredDataFunction` will be added to the HTML, in the head. You may choose to include the `<StructuredData />` in either the head or the body, both are valid.
 
-### Outlet & useParentData
-
-> This feature is now built-in into Remix as `Outlet` & `useOutletContext` so it's marked as deprecated here. The feature will be removed in v3 of Remix Utils.
-
-This wrapper of the Remix Outlet component lets you pass an optional `data` prop, then using the `useParentData` hook, you can access that data.
-
-Helpful to pass information from parent to child routes, for example, the authenticated user data.
-
-```tsx
-// parent route
-import { Outlet } from "remix-utils";
-
-export default function Parent() {
-  return <Outlet data={{ something: "here" }} />;
-}
-```
-
-```tsx
-// child route
-import { useParentData } from "remix-utils";
-
-export default function Child() {
-  const data = useParentData();
-  return <div>{data.something}</div>;
-}
-```
-
 ### RevalidateLink
 
 The RevalidateLink link component is a simple wrapper of Remix's Link component. It receives the same props with the exception of the `to` prop; instead, this component will render a Link to `.`.
