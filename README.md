@@ -500,29 +500,27 @@ export default function Screen() {
 
 The return type of `useLocales` is ready to be used with the Intl API.
 
-### useRevalidate
+### useDataRefresh
 
-This hook lets you trigger a revalidation of the loaders in the current routes.
+This hook lets you trigger a refresh of the loaders in the current URL.
 
-The way this works is by navigating to `.` and adding `replace: true` to avoid creating a new entry on the history stack.
+The way this works is by sending a fetcher.submit to `/dev/null` to trigger all loaders to run..
 
-> Check #RevalidateLink for more information and a component version of this feature that works without JS.
+This Hook is mostly useful if you want to trigger the refresh manually from an effect, examples of this are:
 
-This Hook is mostly useful if you want to trigger the revalidation manually from an effect, examples of this are:
-
-- Set an interval to trigger the revalidation
-- Revalidate when the browser tab is focused again
-- Revalidate when the user is online again
+- Set an interval to trigger the refresh
+- Refresh when the browser tab is focused again
+- Refresh when the user is online again
 
 ```ts
-import { useRevalidate } from "remix-utils";
+import { useDataRefresh } from "remix-utils";
 
-function useRevalidateOnInterval() {
-  let revalidate = useRevalidate();
+function useDataRefreshOnInterval() {
+  let { refresh } = useDataRefresh();
   useEffect(() => {
-    let interval = setInterval(revalidate, 5000);
+    let interval = setInterval(refresh, 5000);
     return () => clearInterval(interval);
-  }, [revalidate]);
+  }, [refresh]);
 }
 ```
 
