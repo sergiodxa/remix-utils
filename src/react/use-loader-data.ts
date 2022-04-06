@@ -40,7 +40,7 @@ export type UseLoaderDataArgs<Data> = {
  *   return schema.parse(data)
  * }
  *
- *  export let action: ActionFunction = async ({ request }) => {
+ *  export let loader: LoaderFunction = async ({ request }) => {
  *   let user = await getUser(request);
  *   return json<LoaderData>({ user }, { replacer });
  * }

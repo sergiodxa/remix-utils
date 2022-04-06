@@ -718,7 +718,7 @@ let reviver: ReviverFunction = (key: string, value: unknown) => {
   return value;
 };
 
-export let action: ActionFunction = async ({ request }) => {
+export let loader: LoaderFunction = async ({ request }) => {
   let user = await getUser(request);
   return json<LoaderData>({ user }, { replacer });
 };
@@ -728,6 +728,8 @@ export function Screen() {
   return <UserProfile user={user} />;
 }
 ```
+
+> Note: All helpers below use this json function, ensure you always import useLoaderData from Remix Utils
 
 #### Redirect Back
 
