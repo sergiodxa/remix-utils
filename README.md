@@ -689,38 +689,43 @@ export let loader: LoaderFunction = async ({ request }) => {
 
 ### Responses
 
-#### Typed JSON
+#### json
 
-> This feature is now built-in into Remix so it's marked as deprecated here. The feature will be removed in v3 of Remix Utils.
+This function works together with useLoaderData. The function receives any value and returns a response with the value as JSON.
 
-This function is a typed version of the `json` helper provided by Remix. It accepts a generic with the type of data you are going to send in the response.
+The difference with the built-in `json` function in Remix is that this one lets you pass a replacer function which will be passed to JSON.stringify to let you control how your values are transformed to string.
 
-This helps ensure that the data you are sending from your loader matches the provided type at the compiler lever. It's more useful when you create an interface or type for your loader so you can share it between `json` and `useLoaderData` to help you avoid missing or extra parameters in the response.
-
-Again, this is not doing any kind of validation on the data you send. It's just a type checker.
-
-The generic extends JsonValue from [type-fest](https://github.com/sindresorhus/type-fest/blob/ff96fef37b84137e1600eebce108c2b797427c1f/source/basic.d.ts#L45), this limit the type of data you can send to anything that can be serializable, so you are not going to be able to send BigInt, functions, Symbols, etc. If `JSON.stringify` fails to try to stringify that value, it will not be supported.
+This is useful to support sending BigInt, Date, Error, or any custom class value which is not directly supported on the JSON format.
 
 ```tsx
-import { useLoaderData } from "remix";
+// ensure you import both json and useLoaderData from Remix Utils
+import { json, useLoaderData } from "remix-utils";
+import type { ReplacerFunction, ReviverFunction } from "remix-utils";
 import type { LoaderFunction } from "remix";
-import { json } from "remix-utils";
 
 import { getUser } from "../services/users";
 import type { User } from "../types";
 
-interface LoaderData {
-  user: User;
-}
+type LoaderData = { user: User };
 
-export let loader: LoaderFunction = async ({ request }) => {
-  const user = await getUser(request);
-  return json<LoaderData>({ user });
+let replacer: ReplacerFunction = (key: string, value: unknown) => {
+  if (typeof value !== "Date") return value;
+  return { __type: "Date", value: value.toISOString() };
 };
 
-export default function View() {
-  const { user } = useLoaderData<LoaderData>();
-  return <h1>Hello, {user.name}</h1>;
+let reviver: ReviverFunction = (key: string, value: unknown) => {
+  if (value.__type === "Date") return new Date(value.value);
+  return value;
+};
+
+export let action: ActionFunction = async ({ request }) => {
+  let user = await getUser(request);
+  return json<LoaderData>({ user }, { replacer });
+};
+
+export function Screen() {
+  let { user } = useLoaderData<LoaderData>({ reviver });
+  return <UserProfile user={user} />;
 }
 ```
 
@@ -740,6 +745,20 @@ export let action: ActionFunction = async ({ request }) => {
 ```
 
 This helper is most useful when used in a generic action to send the user to the same URL it was before.
+
+#### Created
+
+Helper function to create a Created (201) response with a JSON body.
+
+```ts
+import { created } from "remix-utils";
+import type { ActionFunction } from "remix";
+
+export let action: ActionFunction = async ({ request }) => {
+  let result = await doSomething(request);
+  return created(result);
+};
+```
 
 #### Bad Request
 
