@@ -39,6 +39,11 @@ export async function verifyAuthenticityToken(
   session: Session,
   sessionKey = "csrf"
 ) {
+  if (request.bodyUsed) {
+    throw new Error(
+      "The body of the request was read before calling verifyAuthenticityToken. Ensure you clone it before reading it."
+    );
+  }
   // We clone the request to ensure we don't modify the original request.
   // This allow us to parse the body of the request and let the original request
   // still be used and parsed without errors.

@@ -1,26 +1,15 @@
 import { ReactNode } from "react";
 import { useHydrated } from "./use-hydrated";
 
-/**
- * @deprecated Pass a function as children to avoid issues with client only
- * imported components
- */
-type DeprecatedProps = {
-  children: ReactNode;
+type Props = {
+  /**
+   * You are encouraged to add a fallback that is the same dimensions
+   * as the client rendered children. This will avoid content layout
+   * shift which is disgusting
+   */
+  children(): ReactNode;
   fallback?: ReactNode;
 };
-
-type Props =
-  | DeprecatedProps
-  | {
-      /**
-       * You are encouraged to add a fallback that is the same dimensions
-       * as the client rendered children. This will avoid content layout
-       * shift which is disgusting
-       */
-      children: () => ReactNode;
-      fallback?: ReactNode;
-    };
 
 /**
  * Render the children only after the JS has loaded client-side. Use an optional
@@ -38,15 +27,5 @@ type Props =
  * ```
  */
 export function ClientOnly({ children, fallback = null }: Props) {
-  if (typeof children !== "function") {
-    console.warn(
-      "[remix-utils] ClientOnly: Pass a function as children to avoid issues with client-only imported components"
-    );
-  }
-
-  return useHydrated() ? (
-    <>{typeof children === "function" ? children() : children}</>
-  ) : (
-    <>{fallback}</>
-  );
+  return useHydrated() ? <>{children()}</> : <>{fallback}</>;
 }

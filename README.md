@@ -439,44 +439,103 @@ export function Document({ children, title }: Props) {
 
 Now, any structured data you defined in the `StructuredDataFunction` will be added to the HTML, in the head. You may choose to include the `<StructuredData />` in either the head or the body, both are valid.
 
-### Outlet & useParentData
+### useActionData
 
-> This feature is now built-in into Remix as `Outlet` & `useOutletContext` so it's marked as deprecated here. The feature will be removed in v3 of Remix Utils.
+Wrapper of the useActionData from Remix. It lets you pass a reviver function to convert values from the stringified JSON to any JS object.
 
-This wrapper of the Remix Outlet component lets you pass an optional `data` prop, then using the `useParentData` hook, you can access that data.
+It also lets you pass a validator function to ensure the final value has the correct shape and get the type of the data correctly.
 
-Helpful to pass information from parent to child routes, for example, the authenticated user data.
+```ts
+type ActionData = { user: { name: string; createdAt: Date } };
 
-```tsx
-// parent route
-import { Outlet } from "remix-utils";
+let replacer: ReplacerFunction = (key: string, value: unknown) => {
+  if (typeof value !== "Date") return value;
+  return { __type: "Date", value: value.toISOString() };
+};
 
-export default function Parent() {
-  return <Outlet data={{ something: "here" }} />;
+let reviver: ReviverFunction = (key: string, value: unknown) => {
+  if (value.__type === "Date") return new Date(value.value);
+  return value;
+};
+
+let validator: ValidatorFunction = (data) => {
+  return schema.parse(data);
+};
+
+export let action: ActionFunction = async ({ request }) => {
+  let user = await createUser(request);
+  return created<ActionData>({ user }, { replacer });
+};
+
+export function Screen() {
+  let { user } = useActionData<ActionData>({ reviver, validator });
+  return <UserProfile user={user} />;
 }
 ```
 
-```tsx
-// child route
-import { useParentData } from "remix-utils";
+### useLoaderData
 
-export default function Child() {
-  const data = useParentData();
-  return <div>{data.something}</div>;
+Wrapper of the useLoaderData from Remix. It lets you pass a reviver function to convert values from the stringified JSON to any JS object.
+
+It also lets you pass a validator function to ensure the final value has the correct shape and get the type of the data correctly.
+
+```ts
+type LoaderData = { user: { name: string; createdAt: Date } };
+
+let replacer: ReplacerFunction = (key: string, value: unknown) => {
+  if (typeof value !== "Date") return value;
+  return { __type: "Date", value: value.toISOString() };
+};
+
+let reviver: ReviverFunction = (key: string, value: unknown) => {
+  if (value.__type === "Date") return new Date(value.value);
+  return value;
+};
+
+let validator: ValidatorFunction = (data) => {
+  return schema.parse(data);
+};
+
+export let loader: LoaderFunction = async ({ request }) => {
+  let user = await getUser(request);
+  return json<LoaderData>({ user }, { replacer });
+};
+
+export function Screen() {
+  let { user } = useLoaderData<LoaderData>({ reviver, validator });
+  return <UserProfile user={user} />;
 }
 ```
 
-### RevalidateLink
+### useDataRefresh
 
-The RevalidateLink link component is a simple wrapper of Remix's Link component. It receives the same props with the exception of the `to` prop; instead, this component will render a Link to `.`.
+This hook lets you trigger a refresh of the loaders in the current URL.
 
-By linking to `.`, when clicked, this will tell Remix to fetch again the loaders of the current routes, but instead of creating a new entry on the browser's history stack, it will replace the current one. Basically, it will refresh the page, but only reloading the data.
+The way this works is by sending a fetcher.submit to `/dev/null` to trigger all loaders to run..
 
-If you don't have JS enabled, this will do a full page refresh instead, giving you the exact same behavior.
+This Hook is mostly useful if you want to trigger the refresh manually from an effect, examples of this are:
 
-```tsx
-<RevalidateLink className="refresh-btn-styles">Refresh</RevalidateLink>
+- Set an interval to trigger the refresh
+- Refresh when the browser tab is focused again
+- Refresh when the user is online again
+
+```ts
+import { useDataRefresh } from "remix-utils";
+
+function useDataRefreshOnInterval() {
+  let { refresh } = useDataRefresh();
+  useEffect(() => {
+    let interval = setInterval(refresh, 5000);
+    return () => clearInterval(interval);
+  }, [refresh]);
+}
 ```
+
+The return value of `useDataRefresh` is an object with the following keys:
+
+- refresh: a function that trigger the refresh
+- type: a string which can be `init`, `refreshRedirect` or `refresh`
+- status: a string which can be `loading` or `idle`
 
 ### useHydrated
 
@@ -527,37 +586,11 @@ export default function Screen() {
 
 The return type of `useLocales` is ready to be used with the Intl API.
 
-### useRevalidate
-
-This hook lets you trigger a revalidation of the loaders in the current routes.
-
-The way this works is by navigating to `.` and adding `replace: true` to avoid creating a new entry on the history stack.
-
-> Check #RevalidateLink for more information and a component version of this feature that works without JS.
-
-This Hook is mostly useful if you want to trigger the revalidation manually from an effect, examples of this are:
-
-- Set an interval to trigger the revalidation
-- Revalidate when the browser tab is focused again
-- Revalidate when the user is online again
-
-```ts
-import { useRevalidate } from "remix-utils";
-
-function useRevalidateOnInterval() {
-  let revalidate = useRevalidate();
-  useEffect(() => {
-    let interval = setInterval(revalidate, 5000);
-    return () => clearInterval(interval);
-  }, [revalidate]);
-}
-```
-
 ### useRouteData
 
 This hook lets you access the data of any route in the current page. This can include child or parent routes.
 
-To use it, call `useRouteData` in your component and pass the route path as a string. As an example, if you had the following routes:
+To use it, call `useRouteData` in your component and pass the route ID as a string. As an example, if you had the following routes:
 
 ```
 routes/articles/$slug.tsx
@@ -565,34 +598,19 @@ routes/articles/index.tsx
 routes/articles.tsx
 ```
 
-Then you need to pass `useRouteData("/articles")` to get the data of `routes/articles.tsx` and `useRouteData("/articles/")` to get the data of `routes/articles/index.tsx`.
+Then you need to pass `useRouteData("routes/articles")` to get the data of `routes/articles.tsx`, `useRouteData("routes/articles/index")` to get the data of `routes/articles/index.tsx` and `routes/articles/$slug` to get the data of `routes/articles/$slug.tsx`.
+
+As you can see, the ID is the route file without the extension.
 
 ```ts
-let parentData = useRouteData("/articles");
-let indexData = useRouteData("/articles/");
-```
-
-If the pathname is dynamic as with the `routes/articles/$slug.tsx` route, you can attach and ID to the route using the `handle` export, and then use that ID in the `useRouteData` hook.
-
-```ts
-// inside routes/articles/$slug.tsx
-export let handle = { id: "article-show" }; // the ID can be anything
-```
-
-```tsx
-// inside any other route
-import { useRouteData } from "remix-utils";
-
-export default function Screen() {
-  let data = useRouteData("article-show");
-  // use data here
-}
+let parentData = useRouteData("routes/articles");
+let indexData = useRouteData("routes/articles/index");
 ```
 
 The `useRouteData` hook receives a generic to be used as the type of the route data. Because the route may not be found the return type is `Data | undefined`. This means if you do the following:
 
 ```ts
-let data = useRouteData<ArticleShowData>("article-show");
+let data = useRouteData<ArticleShowData>("routes/articles");
 ```
 
 The type of `data` will be `ArticleShowData | undefined`, so you will need to check if it's not undefined before being able to use it.
@@ -653,82 +671,6 @@ export let handle = {
 ```
 
 The `useShouldHydrate` hook will detect `hydrate` as a function and call it using the route data.
-
-### Body Parser
-
-These utilities let you parse the request body with a simple function call. You can parse it to a string, a URLSearchParams instance, or an object.
-
-#### toString
-
-This function receives the whole request and returns a promise with the body as a string.
-
-```ts
-import { bodyParser, redirectBack } from "remix-utils";
-import type { ActionFunction } from "remix";
-
-import { updateUser } from "../services/users";
-
-export let action: ActionFunction = async ({ request }) => {
-  let body = await bodyParser.toString(request);
-  body = new URLSearchParams(body);
-  await updateUser(params.id, { username: body.get("username") });
-  return redirectBack(request, { fallback: "/" });
-};
-```
-
-#### toSearchParams
-
-> A better version of this feature is supported out of the box by Remix. It's recommended to use `await request.formData()` instead.
-
-This function receives the whole request and returns a promise with an instance of `URLSearchParams`, and the request's body is already parsed.
-
-```ts
-import { bodyParser, redirectBack } from "remix-utils";
-import type { ActionFunction } from "remix";
-
-import { updateUser } from "../services/users";
-
-export let action: ActionFunction = async ({ request, params }) => {
-  const body = await bodyParser.toSearchParams(request);
-  await updateUser(params.id, { username: body.get("username") });
-  return redirectBack(request, { fallback: "/" });
-};
-```
-
-This is the same as doing:
-
-```ts
-let body = await bodyParser.toString(request);
-return new URLSearchParams(body);
-```
-
-#### toJSON
-
-This function receives the whole request and returns a promise with an unknown value. That value is going to be the body of the request.
-
-The result is typed as `unknown` to force you to validate the object to ensure it's what you expect. This is because there's no way for TypeScript to know what the type of the body is since it's an entirely dynamic value.
-
-```ts
-import { bodyParser, redirectBack } from "remix-utils";
-import type { ActionFunction } from "remix";
-import { hasUsername } from "../validations/users";
-import { updateUser } from "~/services/users";
-
-export let action: ActionFunction = async ({ request }) => {
-  const body = await bodyParser.toJSON(request);
-  hasUsername(body); // this should throw if body doesn't have username
-  // from this point you can do `body.username`
-  await updateUser(params.id, { username: body.username });
-  return redirectBack(request, { fallback: "/" });
-};
-```
-
-This is the same as doing:
-
-```ts
-let body = await bodyParser.toSearchParams(request);
-return Object.fromEntries(params.entries()) as unknown;
-```
 
 ### getClientIPAddress
 
@@ -815,40 +757,47 @@ export let loader: LoaderFunction = async ({ request }) => {
 
 ### Responses
 
-#### Typed JSON
+#### json
 
-> This feature is now built-in into Remix so it's marked as deprecated here. The feature will be removed in v3 of Remix Utils.
+This function works together with useLoaderData. The function receives any value and returns a response with the value as JSON.
 
-This function is a typed version of the `json` helper provided by Remix. It accepts a generic with the type of data you are going to send in the response.
+The difference with the built-in `json` function in Remix is that this one lets you pass a replacer function which will be passed to JSON.stringify to let you control how your values are transformed to string.
 
-This helps ensure that the data you are sending from your loader matches the provided type at the compiler lever. It's more useful when you create an interface or type for your loader so you can share it between `json` and `useLoaderData` to help you avoid missing or extra parameters in the response.
-
-Again, this is not doing any kind of validation on the data you send. It's just a type checker.
-
-The generic extends JsonValue from [type-fest](https://github.com/sindresorhus/type-fest/blob/ff96fef37b84137e1600eebce108c2b797427c1f/source/basic.d.ts#L45), this limit the type of data you can send to anything that can be serializable, so you are not going to be able to send BigInt, functions, Symbols, etc. If `JSON.stringify` fails to try to stringify that value, it will not be supported.
+This is useful to support sending BigInt, Date, Error, or any custom class value which is not directly supported on the JSON format.
 
 ```tsx
-import { useLoaderData } from "remix";
+// ensure you import both json and useLoaderData from Remix Utils
+import { json, useLoaderData } from "remix-utils";
+import type { ReplacerFunction, ReviverFunction } from "remix-utils";
 import type { LoaderFunction } from "remix";
-import { json } from "remix-utils";
 
 import { getUser } from "../services/users";
 import type { User } from "../types";
 
-interface LoaderData {
-  user: User;
-}
+type LoaderData = { user: User };
 
-export let loader: LoaderFunction = async ({ request }) => {
-  const user = await getUser(request);
-  return json<LoaderData>({ user });
+let replacer: ReplacerFunction = (key: string, value: unknown) => {
+  if (typeof value !== "Date") return value;
+  return { __type: "Date", value: value.toISOString() };
 };
 
-export default function View() {
-  const { user } = useLoaderData<LoaderData>();
-  return <h1>Hello, {user.name}</h1>;
+let reviver: ReviverFunction = (key: string, value: unknown) => {
+  if (value.__type === "Date") return new Date(value.value);
+  return value;
+};
+
+export let loader: LoaderFunction = async ({ request }) => {
+  let user = await getUser(request);
+  return json<LoaderData>({ user }, { replacer });
+};
+
+export function Screen() {
+  let { user } = useLoaderData<LoaderData>({ reviver });
+  return <UserProfile user={user} />;
 }
 ```
+
+> Note: All helpers below use this json function, ensure you always import useLoaderData from Remix Utils
 
 #### Redirect Back
 
@@ -866,6 +815,20 @@ export let action: ActionFunction = async ({ request }) => {
 ```
 
 This helper is most useful when used in a generic action to send the user to the same URL it was before.
+
+#### Created
+
+Helper function to create a Created (201) response with a JSON body.
+
+```ts
+import { created } from "remix-utils";
+import type { ActionFunction } from "remix";
+
+export let action: ActionFunction = async ({ request }) => {
+  let result = await doSomething(request);
+  return created(result);
+};
+```
 
 #### Bad Request
 
