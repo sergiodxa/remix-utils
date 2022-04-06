@@ -1,4 +1,4 @@
-import { createCookieSessionStorage } from "@remix-run/server-runtime";
+import { createCookieSessionStorage } from "@remix-run/node";
 import { createAuthenticityToken, verifyAuthenticityToken } from "../../src/";
 
 describe("CSRF Server", () => {

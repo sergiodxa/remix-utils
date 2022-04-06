@@ -29,7 +29,7 @@ describe("Responses", () => {
   describe(json, () => {
     it("returns a response with the JSON data", async () => {
       const response = json({ framework: "Remix" } as const);
-      const body = await response.json();
+      const body = JSON.parse(await response.json());
       expect(body.framework).toBe("Remix");
     });
   });
@@ -73,7 +73,7 @@ describe("Responses", () => {
     test("Should return Response with status 404", () => {
       let response = badRequest({});
       expect(response).toEqual(
-        new Response("{}", {
+        new Response(JSON.stringify("{}"), {
           status: 400,
           headers: { "Content-Type": jsonContentType },
         })
@@ -83,7 +83,7 @@ describe("Responses", () => {
     test("Should allow changing the Response headers", () => {
       let response = badRequest({}, { headers: { "X-Test": "it worked" } });
       expect(response).toEqual(
-        new Response("{}", {
+        new Response(JSON.stringify("{}"), {
           status: 400,
           headers: { "X-Test": "it worked", "Content-Type": jsonContentType },
         })
@@ -95,7 +95,7 @@ describe("Responses", () => {
     test("Should return Response with status 401", () => {
       let response = unauthorized({});
       expect(response).toEqual(
-        new Response("{}", {
+        new Response(JSON.stringify("{}"), {
           status: 401,
           headers: { "Content-Type": jsonContentType },
         })
@@ -105,7 +105,7 @@ describe("Responses", () => {
     test("Should allow changing the Response headers", () => {
       let response = unauthorized({}, { headers: { "X-Test": "it worked" } });
       expect(response).toEqual(
-        new Response("{}", {
+        new Response(JSON.stringify("{}"), {
           status: 401,
           headers: { "X-Test": "it worked", "Content-Type": jsonContentType },
         })
@@ -117,7 +117,7 @@ describe("Responses", () => {
     test("Should return Response with status 403", () => {
       let response = forbidden({});
       expect(response).toEqual(
-        new Response("{}", {
+        new Response(JSON.stringify("{}"), {
           status: 403,
           headers: { "Content-Type": jsonContentType },
         })
@@ -127,7 +127,7 @@ describe("Responses", () => {
     test("Should allow changing the Response headers", () => {
       let response = forbidden({}, { headers: { "X-Test": "it worked" } });
       expect(response).toEqual(
-        new Response("{}", {
+        new Response(JSON.stringify("{}"), {
           status: 403,
           headers: { "X-Test": "it worked", "Content-Type": jsonContentType },
         })
@@ -139,7 +139,7 @@ describe("Responses", () => {
     test("Should return Response with status 404", () => {
       let response = notFound({});
       expect(response).toEqual(
-        new Response("{}", {
+        new Response(JSON.stringify("{}"), {
           status: 404,
           headers: { "Content-Type": jsonContentType },
         })
@@ -149,7 +149,7 @@ describe("Responses", () => {
     test("Should allow changing the Response headers", () => {
       let response = notFound({}, { headers: { "X-Test": "it worked" } });
       expect(response).toEqual(
-        new Response("{}", {
+        new Response(JSON.stringify("{}"), {
           status: 404,
           headers: { "X-Test": "it worked", "Content-Type": jsonContentType },
         })
@@ -161,7 +161,7 @@ describe("Responses", () => {
     test("Should return Response with status 422", () => {
       let response = unprocessableEntity({});
       expect(response).toEqual(
-        new Response("{}", {
+        new Response(JSON.stringify("{}"), {
           status: 422,
           headers: { "Content-Type": jsonContentType },
         })
@@ -174,7 +174,7 @@ describe("Responses", () => {
         { headers: { "X-Test": "it worked" } }
       );
       expect(response).toEqual(
-        new Response("{}", {
+        new Response(JSON.stringify("{}"), {
           status: 422,
           headers: { "X-Test": "it worked", "Content-Type": jsonContentType },
         })
@@ -186,7 +186,7 @@ describe("Responses", () => {
     test("Should return Response with status 500", () => {
       let response = serverError({});
       expect(response).toEqual(
-        new Response("{}", {
+        new Response(JSON.stringify("{}"), {
           status: 500,
           headers: { "Content-Type": jsonContentType },
         })
@@ -196,7 +196,7 @@ describe("Responses", () => {
     test("Should allow changing the Response headers", () => {
       let response = serverError({}, { headers: { "X-Test": "it worked" } });
       expect(response).toEqual(
-        new Response("{}", {
+        new Response(JSON.stringify("{}"), {
           status: 500,
           headers: { "X-Test": "it worked", "Content-Type": jsonContentType },
         })
