@@ -7,6 +7,9 @@ import { useCallback, useMemo } from "react";
  * This work by sending a `POST` request with a fetcher.submit to /dev/null in
  * order to force loaders to run again.
  *
+ * You need to create `app/routes/dev/null.ts` and define an action that
+ * returns null.
+ *
  * It returns also a type and state strings with the process of the refresh.
  *
  * @example
