@@ -511,7 +511,15 @@ export function Screen() {
 
 This hook lets you trigger a refresh of the loaders in the current URL.
 
-The way this works is by sending a fetcher.submit to `/dev/null` to trigger all loaders to run..
+The way this works is by sending a fetcher.submit to `/dev/null` to trigger all loaders to run.  
+
+You need to create `app/routes/dev/null.ts` and define an action that returns null.
+```ts
+// app/routes/dev/null.ts
+export function action() {
+  return null
+} 
+```
 
 This Hook is mostly useful if you want to trigger the refresh manually from an effect, examples of this are:
 
