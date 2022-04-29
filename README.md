@@ -511,14 +511,15 @@ export function Screen() {
 
 This hook lets you trigger a refresh of the loaders in the current URL.
 
-The way this works is by sending a fetcher.submit to `/dev/null` to trigger all loaders to run.  
+The way this works is by sending a fetcher.submit to `/dev/null` to trigger all loaders to run.
 
 You need to create `app/routes/dev/null.ts` and define an action that returns null.
+
 ```ts
 // app/routes/dev/null.ts
 export function action() {
-  return null
-} 
+  return null;
+}
 ```
 
 This Hook is mostly useful if you want to trigger the refresh manually from an effect, examples of this are:
@@ -544,6 +545,23 @@ The return value of `useDataRefresh` is an object with the following keys:
 - refresh: a function that trigger the refresh
 - type: a string which can be `init`, `refreshRedirect` or `refresh`
 - status: a string which can be `loading` or `idle`
+
+### useGlobalPendingState
+
+This hook lets you know if the global transition or if one of any active fetchers is either loading or submittin.
+
+```ts
+import { useGlobalPendingState } from "remix-utils";
+
+export function GlobalPendingUI() {
+  let globalState = useGlobalPendingState();
+
+  if (globalState === "idle") return null;
+  return <Spinner />;
+}
+```
+
+The return value of `useGlobalPendingState` is either `"idle"` or `"pending"`.
 
 ### useHydrated
 
