@@ -271,7 +271,7 @@ If you need to create `<link />` tags based on the loader data instead of being 
 In the route you want to define dynamic links add `handle` export with a `dynamicLinks` method, this method should implement the `DynamicLinksFunction` type.
 
 ```ts
-let dynamicLinks: DynamicLinksFunction<LoaderData> = async ({ data }) => {
+let dynamicLinks: DynamicLinksFunction<LoaderData> = ({ data }) => {
   if (!data.user) return [];
   return [{ rel: "preload", href: data.user.avatar, as: "image" }];
 };
