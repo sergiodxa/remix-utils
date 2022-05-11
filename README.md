@@ -46,6 +46,35 @@ export let loader: LoaderFunction = async ({ request }) => {
 };
 ```
 
+### cacheAssets
+
+This function lets you easily cache inside the [browser's Cache Storage](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage) every JS file built by Remix.
+
+To use it, open your `entry.client` file and add this:
+
+```ts
+import { cacheAssets } from "remix-utils";
+
+cacheAssests().catch((error) => {
+  // do something with the error, or not
+});
+```
+
+The function receives an optional options object with two options:
+
+- `cacheName` is the name of the [Cache object](https://developer.mozilla.org/en-US/docs/Web/API/Cache) to use, the default value is `assets`.
+- `buildPath` is the pathname prefix for all Remix built assets, the default value is `/build/` which is the default build path of Remix itself.
+
+It's important that if you changed your build path in `remix.config.js` you pass the same value to `cacheAssets` or it will not find your JS files.
+
+The `cacheName` can be left as is unless you're adding a Service Worker to your app and want to share the cache.
+
+```ts
+cacheAssests({ cacheName: "assets", buildPath: "/build/" }).catch((error) => {
+  // do something with the error, or not
+});
+```
+
 ### ClientOnly
 
 The ClientOnly component lets you render the children element only on the client-side, avoiding rendering it the server-side.
