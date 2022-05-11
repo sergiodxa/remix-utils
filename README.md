@@ -300,7 +300,7 @@ export function Document({ children, title }: Props) {
         {children}
         <ScrollRestoration />
         <Scripts />
-        {process.env.NODE_ENV === "development" && <LiveReload />}
+        <LiveReload />
       </body>
     </html>
   );
@@ -357,7 +357,7 @@ export function Document({ children, title }: Props) {
         <ScrollRestoration />
         <ExternalScripts />
         <Scripts />
-        {process.env.NODE_ENV === "development" && <LiveReload />}
+        <LiveReload />
       </body>
     </html>
   );
@@ -430,7 +430,7 @@ export function Document({ children, title }: Props) {
         {children}
         <ScrollRestoration />
         <Scripts />
-        {process.env.NODE_ENV === "development" && <LiveReload />}
+        <LiveReload />
       </body>
     </html>
   );
@@ -671,7 +671,7 @@ export function Document({ children, title }: DocumentProps) {
       <body>
         {children}
         {shouldHydrate && <Scripts />}
-        {process.env.NODE_ENV === "development" && <LiveReload />}
+        <LiveReload />
       </body>
     </html>
   );
