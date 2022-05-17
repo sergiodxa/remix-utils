@@ -55,7 +55,7 @@ To use it, open your `entry.client` file and add this:
 ```ts
 import { cacheAssets } from "remix-utils";
 
-cacheAssests().catch((error) => {
+cacheAssets().catch((error) => {
   // do something with the error, or not
 });
 ```
