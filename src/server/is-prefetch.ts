@@ -23,7 +23,8 @@ export function isPrefetch(requestOrHeaders: Request | Headers): boolean {
     headers.get("X-Purpose") ||
     headers.get("Sec-Purpose") ||
     headers.get("Sec-Fetch-Purpose") ||
-    headers.get("Moz-Purpose");
+    headers.get("Moz-Purpose") ||
+    headers.get("X-Moz");
 
   return purpose?.toLowerCase() === "prefetch";
 }
