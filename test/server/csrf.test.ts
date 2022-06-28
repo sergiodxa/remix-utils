@@ -103,5 +103,26 @@ describe("CSRF Server", () => {
         );
       }
     });
+
+    test.each([
+      [undefined, "csrf"],
+      ["xsrf", "xsrf"],
+    ])("should validate request if session and body csrf match", async (sessionKey, expected) => {
+      let session = await sessionStorage.getSession();
+      session.set(expected, "token");
+
+      let cookie = await sessionStorage.commitSession(session);
+
+      let formData = new FormData();
+      formData.set(expected, "token");
+
+      let request = new Request("/", {
+        method: "POST",
+        headers: { cookie },
+        body: formData,
+      });
+
+      await verifyAuthenticityToken(request, session, sessionKey);
+    });
   });
 });
