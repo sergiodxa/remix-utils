@@ -1,4 +1,4 @@
-import { createCookieSessionStorage } from "@remix-run/node";
+import { createCookieSessionStorage, unstable_parseMultipartFormData, UploadHandler } from "@remix-run/node";
 import { createAuthenticityToken, verifyAuthenticityToken } from "../../src/";
 
 describe("CSRF Server", () => {
@@ -102,6 +102,57 @@ describe("CSRF Server", () => {
           })
         );
       }
+    });
+
+    test.each([
+      [undefined, "csrf"],
+      ["xsrf", "xsrf"],
+    ])("should validate request if session and body csrf match", async (sessionKey, expected) => {
+      let session = await sessionStorage.getSession();
+      session.set(expected, "token");
+
+      let cookie = await sessionStorage.commitSession(session);
+
+      let formData = new FormData();
+      formData.set(expected, "token");
+
+      let request = new Request("/", {
+        method: "POST",
+        headers: { cookie },
+        body: formData,
+      });
+
+      await verifyAuthenticityToken(request, session, sessionKey);
+    });
+
+    afterEach(() => jest.restoreAllMocks());
+
+    test("should validate request with File if session and body csrf match", async () => {
+      jest.spyOn(console, 'warn');
+      const uploadHandler = <UploadHandler>(part => Promise.resolve(`${part.filename} contents`));
+
+      let session = await sessionStorage.getSession();
+      session.set("csrf", "token");
+
+      let cookie = await sessionStorage.commitSession(session);
+
+      let formData = new FormData();
+      formData.set("csrf", "token");
+      formData.set("upload", new Blob(["blob"]), "blob.ext");
+
+      let request = new Request("/", {
+        method: "POST",
+        headers: { cookie },
+        body: formData,
+      });
+
+      await verifyAuthenticityToken(
+        await unstable_parseMultipartFormData(request, uploadHandler),
+        session);
+
+      // Tried to parse multipart file upload for field "upload" but no uploadHandler was provided.
+      // Read more here: https://remix.run/api/remix#parseMultipartFormData-node
+      expect(console.warn).toHaveBeenCalledTimes(0);
     });
   });
 });
