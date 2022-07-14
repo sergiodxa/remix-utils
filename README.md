@@ -113,33 +113,13 @@ There are two main ways to use the `cors` function.
 1. Use it on each loader/action where you want to enable it.
 2. Use it globally on entry.server handleDataRequest export.
 
-If you want to use it on every loader/action, you can do it like this:
+If you want to use it on each loader/action, you can do it like this:
 
 ```ts
 export let loader: LoaderFunction = async ({ request }) => {
   let data = await getData(request);
   let response = json<LoaderData>(data);
   return await cors(request, response);
-};
-```
-
-You could also do the `json` and `cors` call in one line.
-
-```ts
-export let loader: LoaderFunction = async ({ request }) => {
-  let data = await getData(request);
-  return await cors(request, json<LoaderData>(data));
-};
-```
-
-And because `cors` mutates the response, you can also call it and later return.
-
-```ts
-export let loader: LoaderFunction = async ({ request }) => {
-  let data = await getData(request);
-  let response = json<LoaderData>(data);
-  await cors(request, response); // this mutates the Response object
-  return response; // so you can return it here
 };
 ```
 
@@ -151,6 +131,16 @@ export let handleDataRequest: HandleDataRequestFunction = async (
   { request }
 ) => {
   return await cors(request, response);
+};
+```
+
+Keep in mind you still need to update each response like this:
+
+```ts
+export let loader: LoaderFunction = async (args) => {
+  let data = await getData(request);
+  let response = json<LoaderData>(data);
+  return handleDataRequest(response, args);
 };
 ```
 
