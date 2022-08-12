@@ -7,6 +7,43 @@ This package contains simple utility functions to use with [Remix.run](https://r
 ```bash
 npm install remix-utils remix @remix-run/node @remix-run/react react
 ```
+- [promisehash](#promisehash)
+- [cacheAssets](#cacheassets)
+- [ClientOnly](#clientonly)
+- [Cors](#cors)
+- [CSRF](#csrf)
+- [DynamicLinks](#dynamiclinks)
+- [ExternalScripts](#externalscripts)
+- [StructuredData](#structureddata)
+- [useActionData](#useactiondata)
+- [useLoaderData](#useloaderdata)
+- [useDataRefresh](#usedatarefresh)
+- [useGlobalPendingState](#useglobalpendingstate)
+- [useHydrated](#usehydrated)
+- [useLocales](#uselocales)
+- [useRouteData](#useroutedata)
+- [useShouldHydrate](#useshouldhydrate)
+- [getClientIPAddress](#getclientipaddress)
+- [getClientLocales](#getclientlocales)
+- [isPrefetch](#isprefetch)
+- [Responses](#responses)
+  - [json](#json)
+  - [Redirect Back](#redirect-back)
+  - [Created](#created)
+  - [Bad Request](#bad-request)
+  - [Unauthorized](#unauthorized)
+  - [Forbidden](#forbidden)
+  - [Not Found]($not-found)
+  - [Unprocessable Entity](#unprocessable-entity)
+  - [Server Error](#server-error)
+  - [Not Modified](#not-modified)
+  - [JavaScript](#javascript)
+  - [Stylesheet](#stylesheet)
+  - [PDF](#pdf)
+  - [HTML](#html)
+
+
+  
 
 ## API Reference
 
