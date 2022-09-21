@@ -1,4 +1,8 @@
-import { createCookieSessionStorage, unstable_parseMultipartFormData, UploadHandler } from "@remix-run/node";
+import {
+  createCookieSessionStorage,
+  unstable_parseMultipartFormData,
+  UploadHandler
+} from "@remix-run/node";
 import { createAuthenticityToken, verifyAuthenticityToken } from "../../src/";
 
 describe("CSRF Server", () => {
@@ -24,6 +28,16 @@ describe("CSRF Server", () => {
       let session = await sessionStorage.getSession();
       const token = createAuthenticityToken(session, "newKey");
       expect(session.get("newKey")).toBe(token);
+    });
+
+    test("should only generate new token if not already in the session", async () => {
+      let session = await sessionStorage.getSession();
+      let initialToken = createAuthenticityToken(session);
+      let cookie = await sessionStorage.commitSession(session);
+
+      let requestSession = await sessionStorage.getSession(cookie);
+      let newToken = createAuthenticityToken(requestSession);
+      expect(newToken).toBe(initialToken);
     });
   });
 
@@ -107,29 +121,34 @@ describe("CSRF Server", () => {
     test.each([
       [undefined, "csrf"],
       ["xsrf", "xsrf"],
-    ])("should validate request if session and body csrf match", async (sessionKey, expected) => {
-      let session = await sessionStorage.getSession();
-      session.set(expected, "token");
+    ])(
+      "should validate request if session and body csrf match",
+      async (sessionKey, expected) => {
+        let session = await sessionStorage.getSession();
+        session.set(expected, "token");
 
-      let cookie = await sessionStorage.commitSession(session);
+        let cookie = await sessionStorage.commitSession(session);
 
-      let formData = new FormData();
-      formData.set(expected, "token");
+        let formData = new FormData();
+        formData.set(expected, "token");
 
-      let request = new Request("/", {
-        method: "POST",
-        headers: { cookie },
-        body: formData,
-      });
+        let request = new Request("/", {
+          method: "POST",
+          headers: { cookie },
+          body: formData,
+        });
 
-      await verifyAuthenticityToken(request, session, sessionKey);
-    });
+        await verifyAuthenticityToken(request, session, sessionKey);
+      }
+    );
 
     afterEach(() => jest.restoreAllMocks());
 
     test("should validate request with File if session and body csrf match", async () => {
-      jest.spyOn(console, 'warn');
-      const uploadHandler = <UploadHandler>(part => Promise.resolve(`${part.filename} contents`));
+      jest.spyOn(console, "warn");
+      const uploadHandler = <UploadHandler>(
+        ((part) => Promise.resolve(`${part.filename} contents`))
+      );
 
       let session = await sessionStorage.getSession();
       session.set("csrf", "token");
@@ -148,7 +167,8 @@ describe("CSRF Server", () => {
 
       await verifyAuthenticityToken(
         await unstable_parseMultipartFormData(request, uploadHandler),
-        session);
+        session
+      );
 
       // Tried to parse multipart file upload for field "upload" but no uploadHandler was provided.
       // Read more here: https://remix.run/api/remix#parseMultipartFormData-node
