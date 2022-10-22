@@ -14,8 +14,8 @@ import { unprocessableEntity } from "./responses";
  * return json({ ...otherData, csrf: token }); // return the token in the data
  */
 export function createAuthenticityToken(session: Session, sessionKey = "csrf") {
-  let token = session.get(sessionKey)
-  if (token) return token
+  let token = session.get(sessionKey);
+  if (token) return token;
   token = uuid();
   session.set(sessionKey, token);
   return token;
@@ -56,7 +56,8 @@ export async function verifyAuthenticityToken(
   // We clone the request to ensure we don't modify the original request.
   // This allow us to parse the body of the request and let the original request
   // still be used and parsed without errors.
-  let formData = data instanceof FormData ? data : await data.clone().formData();
+  let formData =
+    data instanceof FormData ? data : await data.clone().formData();
 
   // if the session doesn't have a csrf token, throw an error
   if (!session.has(sessionKey)) {
