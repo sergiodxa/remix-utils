@@ -1,58 +1,4 @@
-import { json as remixJson, redirect } from "@remix-run/server-runtime";
-
-export type ReplacerFunction = (key: string, value: unknown) => unknown;
-
-export type ExtendedResponseInit = ResponseInit & {
-  replacer?: ReplacerFunction | undefined;
-};
-
-/**
- * @description
- * A wrapper of the `json` function from `remix` which lets you pass a replacer
- * function in the second argument.
- *
- * This helper, will call JSON.stringify against your data with the replacer if
- * defined to let you configure how the data is serialized.
- *
- * @example
- * type LoaderData = { user: { name: string, createdAt: Date } };
- *
- * let replacer: ReplacerFunction = (key: string, value: unknown) => {
- *   if (typeof value !== "Date") return value;
- *   return { __type: "Date", value: value.toISOString() };
- * }
- *
- * let reviver: ReviverFunction = (key: string, value: unknown) => {
- *   if (value.__type === "Date") return new Date(value.value);
- *   return value;
- * }
- *
- * let validator: ValidatorFunction = data => {
- *   return schema.parse(data)
- * }
- *
- *  export let action: ActionFunction = async ({ request }) => {
- *   let user = await getUser(request);
- *   return json<LoaderData>({ user }, { replacer });
- * }
- *
- * export function Screen() {
- *   let { user } = useLoaderData<LoaderData>({ reviver, validator });
- *   return <UserProfile user={user} />;
- * }
- */
-export function json<Data>(data: Data, init?: number | ExtendedResponseInit) {
-  if (typeof init === "number") {
-    return remixJson<string>(JSON.stringify(data), init);
-  }
-
-  if (typeof init === "undefined") {
-    return remixJson<string>(JSON.stringify(data));
-  }
-
-  let { replacer, ...rest } = init;
-  return remixJson<string>(JSON.stringify(data, replacer), rest);
-}
+import { json, redirect } from "@remix-run/server-runtime";
 
 /**
  * Create a response receiving a JSON object with the status code 201.
@@ -64,7 +10,7 @@ export function json<Data>(data: Data, init?: number | ExtendedResponseInit) {
  */
 export function created<Data = unknown>(
   data: Data,
-  init?: Omit<ExtendedResponseInit, "status">
+  init?: Omit<ResponseInit, "status">
 ) {
   return json(data, { ...init, status: 201 });
 }
@@ -100,7 +46,7 @@ export function redirectBack(
  */
 export function badRequest<Data = unknown>(
   data: Data,
-  init?: Omit<ExtendedResponseInit, "status">
+  init?: Omit<ResponseInit, "status">
 ) {
   return json<Data>(data, { ...init, status: 400 });
 }
@@ -115,7 +61,7 @@ export function badRequest<Data = unknown>(
  */
 export function unauthorized<Data = unknown>(
   data: Data,
-  init?: Omit<ExtendedResponseInit, "status">
+  init?: Omit<ResponseInit, "status">
 ) {
   return json<Data>(data, { ...init, status: 401 });
 }
@@ -130,7 +76,7 @@ export function unauthorized<Data = unknown>(
  */
 export function forbidden<Data = unknown>(
   data: Data,
-  init?: Omit<ExtendedResponseInit, "status">
+  init?: Omit<ResponseInit, "status">
 ) {
   return json<Data>(data, { ...init, status: 403 });
 }
@@ -145,7 +91,7 @@ export function forbidden<Data = unknown>(
  */
 export function notFound<Data = unknown>(
   data: Data,
-  init?: Omit<ExtendedResponseInit, "status">
+  init?: Omit<ResponseInit, "status">
 ) {
   return json<Data>(data, { ...init, status: 404 });
 }
@@ -160,7 +106,7 @@ export function notFound<Data = unknown>(
  */
 export function unprocessableEntity<Data = unknown>(
   data: Data,
-  init?: Omit<ExtendedResponseInit, "status">
+  init?: Omit<ResponseInit, "status">
 ) {
   return json<Data>(data, { ...init, status: 422 });
 }
@@ -175,7 +121,7 @@ export function unprocessableEntity<Data = unknown>(
  */
 export function serverError<Data = unknown>(
   data: Data,
-  init?: Omit<ExtendedResponseInit, "status">
+  init?: Omit<ResponseInit, "status">
 ) {
   return json<Data>(data, { ...init, status: 500 });
 }

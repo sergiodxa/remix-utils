@@ -1,5 +1,5 @@
 import { RouteData } from "@remix-run/react/routeData";
 
 export function fakeMatch(data?: RouteData) {
-  return { data, pathname: "/", handle: {}, params: {} };
+  return { id: "routes/index", data, pathname: "/", handle: {}, params: {} };
 }

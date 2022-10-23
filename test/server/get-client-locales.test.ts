@@ -7,13 +7,13 @@ describe(getClientLocales, () => {
     expect(getClientLocales(request.headers)).toBeUndefined();
   });
 
-  test("should return a string if there's only one locale", () => {
+  test.only("should return a string if there's only one locale", () => {
     let headers = new Headers({
       "Accept-Language": "en-US",
     });
     let request = new Request("/", { headers });
-    expect(getClientLocales(request)).toBe("en-US");
-    expect(getClientLocales(request.headers)).toBe("en-US");
+    expect(getClientLocales(request)).toEqual(["en-US"]);
+    expect(getClientLocales(request.headers)).toEqual(["en-US"]);
   });
 
   test("should return undefined if there's no valid locale", () => {
