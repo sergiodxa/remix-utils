@@ -2,6 +2,7 @@ import {
   useActionData as useRemixActionData,
   useLoaderData as useRemixLoaderData,
 } from "@remix-run/react";
+import { useEffect, useMemo, useRef } from "react";
 
 /**
  * Define how to bring back a value from the stringified JSON to JS objects.
@@ -58,14 +59,21 @@ export type UseActionDataArgs<Data> = {
  *   return <UserProfile user={user} />;
  * }
  */
-export function useLoaderData<Data>({
-  reviver,
-  validator,
-}: UseLoaderDataArgs<Data>) {
+export function useLoaderData<Data>(args: UseLoaderDataArgs<Data>) {
   let loaderData = useRemixLoaderData<string>();
-  let parsedValue = JSON.parse(loaderData, reviver);
-  if (!validator) return parsedValue as Data;
-  return validator(parsedValue);
+  let reviver = useRef(args.reviver);
+  let validator = useRef(args.validator);
+
+  useEffect(() => {
+    reviver.current = args.reviver;
+    validator.current = args.validator;
+  }, [args.reviver, args.validator]);
+
+  return useMemo(() => {
+    let parsedValue = JSON.parse(loaderData, reviver.current);
+    if (!validator.current) return parsedValue as Data;
+    return validator.current(parsedValue);
+  }, [loaderData]);
 }
 
 /**
@@ -102,13 +110,20 @@ export function useLoaderData<Data>({
  *   return <UserProfile user={user} />;
  * }
  */
-export function useActionData<Data>({
-  reviver,
-  validator,
-}: UseActionDataArgs<Data>) {
+export function useActionData<Data>(args: UseActionDataArgs<Data>) {
   let actionData = useRemixActionData<string>();
-  if (!actionData) return;
-  let parsedValue = JSON.parse(actionData, reviver);
-  if (!validator) return parsedValue as Data;
-  return validator(parsedValue);
+  let reviver = useRef(args.reviver);
+  let validator = useRef(args.validator);
+
+  useEffect(() => {
+    reviver.current = args.reviver;
+    validator.current = args.validator;
+  }, [args.reviver, args.validator]);
+
+  return useMemo(() => {
+    if (!actionData) return;
+    let parsedValue = JSON.parse(actionData, reviver.current);
+    if (!validator.current) return parsedValue as Data;
+    return validator.current(parsedValue);
+  }, [actionData]);
 }

@@ -577,7 +577,7 @@ The return value of `useDataRefresh` is an object with the following keys:
 
 ### useGlobalPendingState
 
-This hook lets you know if the global transition or if one of any active fetchers is either loading or submittin.
+This hook lets you know if the global transition or if one of any active fetchers is either loading or submitting.
 
 ```ts
 import { useGlobalPendingState } from "remix-utils";
