@@ -1,7 +1,7 @@
 import { parseAcceptLanguage } from "intl-parse-accept-language";
 import { getHeaders } from "./get-headers";
 
-export type Locales = string | string[] | undefined;
+export type Locales = string[] | undefined;
 
 /**
  * Get the client's locales from the Accept-Language header.
@@ -35,8 +35,6 @@ export function getClientLocales(requestOrHeaders: Request | Headers): Locales {
 
   // if there are no locales found, return undefined
   if (locales.length === 0) return undefined;
-  // if there is only one locale, return it
-  if (locales.length === 1) return locales[0];
   // if there are multiple locales, return the array
   return locales;
 }
