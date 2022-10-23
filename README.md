@@ -468,74 +468,6 @@ export function Document({ children, title }: Props) {
 
 Now, any structured data you defined in the `StructuredDataFunction` will be added to the HTML, in the head. You may choose to include the `<StructuredData />` in either the head or the body, both are valid.
 
-### useActionData
-
-Wrapper of the useActionData from Remix. It lets you pass a reviver function to convert values from the stringified JSON to any JS object.
-
-It also lets you pass a validator function to ensure the final value has the correct shape and get the type of the data correctly.
-
-```ts
-type ActionData = { user: { name: string; createdAt: Date } };
-
-let replacer: ReplacerFunction = (key: string, value: unknown) => {
-  if (typeof value !== "Date") return value;
-  return { __type: "Date", value: value.toISOString() };
-};
-
-let reviver: ReviverFunction = (key: string, value: unknown) => {
-  if (value.__type === "Date") return new Date(value.value);
-  return value;
-};
-
-let validator: ValidatorFunction = (data) => {
-  return schema.parse(data);
-};
-
-export let action: ActionFunction = async ({ request }) => {
-  let user = await createUser(request);
-  return created<ActionData>({ user }, { replacer });
-};
-
-export function Screen() {
-  let { user } = useActionData<ActionData>({ reviver, validator });
-  return <UserProfile user={user} />;
-}
-```
-
-### useLoaderData
-
-Wrapper of the useLoaderData from Remix. It lets you pass a reviver function to convert values from the stringified JSON to any JS object.
-
-It also lets you pass a validator function to ensure the final value has the correct shape and get the type of the data correctly.
-
-```ts
-type LoaderData = { user: { name: string; createdAt: Date } };
-
-let replacer: ReplacerFunction = (key: string, value: unknown) => {
-  if (typeof value !== "Date") return value;
-  return { __type: "Date", value: value.toISOString() };
-};
-
-let reviver: ReviverFunction = (key: string, value: unknown) => {
-  if (value.__type === "Date") return new Date(value.value);
-  return value;
-};
-
-let validator: ValidatorFunction = (data) => {
-  return schema.parse(data);
-};
-
-export let loader: LoaderFunction = async ({ request }) => {
-  let user = await getUser(request);
-  return json<LoaderData>({ user }, { replacer });
-};
-
-export function Screen() {
-  let { user } = useLoaderData<LoaderData>({ reviver, validator });
-  return <UserProfile user={user} />;
-}
-```
-
 ### useDataRefresh
 
 This hook lets you trigger a refresh of the loaders in the current URL.
@@ -811,48 +743,6 @@ export let loader: LoaderFunction = async ({ request }) => {
 ```
 
 ### Responses
-
-#### json
-
-This function works together with useLoaderData. The function receives any value and returns a response with the value as JSON.
-
-The difference with the built-in `json` function in Remix is that this one lets you pass a replacer function which will be passed to JSON.stringify to let you control how your values are transformed to string.
-
-This is useful to support sending BigInt, Date, Error, or any custom class value which is not directly supported on the JSON format.
-
-```tsx
-// ensure you import both json and useLoaderData from Remix Utils
-import { json, useLoaderData } from "remix-utils";
-import type { ReplacerFunction, ReviverFunction } from "remix-utils";
-import type { LoaderFunction } from "remix";
-
-import { getUser } from "../services/users";
-import type { User } from "../types";
-
-type LoaderData = { user: User };
-
-let replacer: ReplacerFunction = (key: string, value: unknown) => {
-  if (typeof value !== "Date") return value;
-  return { __type: "Date", value: value.toISOString() };
-};
-
-let reviver: ReviverFunction = (key: string, value: unknown) => {
-  if (value.__type === "Date") return new Date(value.value);
-  return value;
-};
-
-export let loader: LoaderFunction = async ({ request }) => {
-  let user = await getUser(request);
-  return json<LoaderData>({ user }, { replacer });
-};
-
-export function Screen() {
-  let { user } = useLoaderData<LoaderData>({ reviver });
-  return <UserProfile user={user} />;
-}
-```
-
-> Note: All helpers below use this json function, ensure you always import useLoaderData from Remix Utils
 
 #### Redirect Back
 
