@@ -54,7 +54,7 @@ describe(useLocales, () => {
 
     test("String", () => {
       mockMatches([fakeMatch({ locales: "en" })]);
-      expect(useLocales()).toBe("en");
+      expect(useLocales()).toBe(undefined);
     });
 
     test("Array", () => {

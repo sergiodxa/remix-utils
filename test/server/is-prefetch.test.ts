@@ -7,7 +7,7 @@ describe(isPrefetch, () => {
     "Sec-Purpose",
     "Sec-Fetch-Purpose",
     "Moz-Purpose",
-    "X-Moz"
+    "X-Moz",
   ])("should return true when %s is set to prefetch", (header) => {
     let request = new Request("https://example.com/", {
       headers: { [header]: "prefetch" },

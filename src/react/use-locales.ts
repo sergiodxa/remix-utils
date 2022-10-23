@@ -47,7 +47,6 @@ export function useLocales(): Locales {
 
   // check the type of value of locales
   // it could be a string
-  if (typeof locales === "string") return locales;
   // or it could be an array of strings
   if (
     Array.isArray(locales) &&
