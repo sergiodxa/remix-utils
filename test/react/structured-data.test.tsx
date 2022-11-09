@@ -1,9 +1,9 @@
 /**
  * @jest-environment jsdom
  */
-
 import { useMatches } from "@remix-run/react";
 import { render } from "@testing-library/react";
+import * as React from "react";
 import { BlogPosting } from "schema-dts";
 import { HandleStructuredData, StructuredData } from "../../src/react";
 
@@ -47,7 +47,7 @@ describe("React Utils", () => {
 
     describe("with a matched handle", () => {
       let handle: HandleStructuredData<TestPostData, BlogPosting> = {
-        structuredData: ({ post }) => {
+        structuredData: ({ data: { post } }) => {
           if (!post) {
             return null;
           }
@@ -77,6 +77,7 @@ describe("React Utils", () => {
 
           let matches: ReturnType<typeof useMatches> = [
             {
+              id: "route-id",
               data: testLoaderData,
               handle: handle,
               params: { slug: "structured-data" },
@@ -100,6 +101,7 @@ describe("React Utils", () => {
         it("should render a json+ld script tag with the stringified data", () => {
           let matches: ReturnType<typeof useMatches> = [
             {
+              id: "route-id",
               data: testLoaderData,
               handle: handle,
               params: { slug: "structured-data" },
@@ -118,7 +120,21 @@ describe("React Utils", () => {
           expect(scripts).toHaveLength(1);
           expect(scripts[0].getAttribute("type")).toBe("application/ld+json");
           expect(scripts[0].innerHTML).toBe(
-            JSON.stringify(handle.structuredData(testLoaderData))
+            JSON.stringify(
+              handle.structuredData({
+                id: "route-id",
+                data: testLoaderData,
+                params: { slug: "structured-data" },
+                location: {
+                  hash: "",
+                  key: "location-key",
+                  pathname: "/blog/post/structured-data",
+                  search: "",
+                  state: undefined,
+                },
+                parentsData: [],
+              })
+            )
           );
         });
       });
@@ -126,7 +142,7 @@ describe("React Utils", () => {
 
     describe("and the structuredData fn retuns multiple datums", () => {
       let handle: HandleStructuredData<TestPostData> = {
-        structuredData: ({ post }) => {
+        structuredData: ({ data: { post } }) => {
           if (!post) {
             return null;
           }
@@ -171,6 +187,7 @@ describe("React Utils", () => {
       it("should render a single json+ld script tag with a stringified array of  data", () => {
         let matches: ReturnType<typeof useMatches> = [
           {
+            id: "route-id",
             data: testLoaderData,
             handle: handle,
             params: { slug: "structured-data" },
@@ -189,7 +206,21 @@ describe("React Utils", () => {
         expect(scripts).toHaveLength(1);
         expect(scripts[0].getAttribute("type")).toBe("application/ld+json");
         expect(scripts[0].innerHTML).toBe(
-          JSON.stringify(handle.structuredData(testLoaderData))
+          JSON.stringify(
+            handle.structuredData({
+              id: "route-id",
+              data: testLoaderData,
+              params: { slug: "structured-data" },
+              location: {
+                hash: "",
+                key: "location-key",
+                pathname: "/blog/post/structured-data",
+                search: "",
+                state: undefined,
+              },
+              parentsData: [],
+            })
+          )
         );
       });
     });

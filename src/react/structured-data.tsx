@@ -1,7 +1,10 @@
-import { useMatches } from "@remix-run/react";
+import { useLocation, useMatches } from "@remix-run/react";
+import { AppData } from "@remix-run/server-runtime";
 import type { Thing, WithContext } from "schema-dts";
+import { HandleConventionArguments } from "./handle-conventions";
 
-export type StructuredDatum<TSchema extends Thing> = WithContext<TSchema>;
+export type StructuredDatum<StructuredDataSchema extends Thing> =
+  WithContext<StructuredDataSchema>;
 
 /**
  * A convenience type for `export let handle =` to ensure the correct `handle` structure is used.
@@ -9,16 +12,16 @@ export type StructuredDatum<TSchema extends Thing> = WithContext<TSchema>;
  * @example
  * // This route uses the data to render structured data (e.g. BreadcrumbList and BlogPosting)
  * export let handle: HandleStructuredData<LoaderData> = {
- *    structuredData: (data) => {
+ *    structuredData({ id, data, params }) => {
  *       return [{...}]
  *    },
  * };
  */
 export type HandleStructuredData<
-  TLoaderData = unknown,
-  TSchema extends Thing = Thing
+  LoaderData extends AppData = AppData,
+  StructuredDataSchema extends Thing = Thing
 > = {
-  structuredData: StructuredDataFunction<TLoaderData, TSchema>;
+  structuredData: StructuredDataFunction<LoaderData, StructuredDataSchema>;
 };
 
 function isHandleStructuredData(
@@ -31,22 +34,25 @@ function isHandleStructuredData(
   );
 }
 
-export type StructuredDataFunction<
-  TLoaderData = unknown,
-  TSchema extends Thing = Thing
-> = (
-  data: TLoaderData
-) => StructuredDatum<TSchema> | StructuredDatum<TSchema>[] | null;
+export interface StructuredDataFunction<
+  Data extends AppData = AppData,
+  StructuredDataSchema extends Thing = Thing
+> {
+  (args: HandleConventionArguments<Data>):
+    | StructuredDatum<StructuredDataSchema>
+    | StructuredDatum<StructuredDataSchema>[]
+    | null;
+}
 
 /**
  * Render "application/ld+json" script tags for structured data (https://developers.google.com/search/docs/advanced/structured-data/intro-structured-data)
  * @example
  * // This route uses the data to render structured data (e.g. BreadcrumbList and BlogPosting)
- * export let handle = {
- *    structuredData(data: LoaderData) {
+ * export let handle: HandleStructuredData<LoaderData, BlogPosting> = {
+ *    structuredData({ data }) {
  *      let { post } = data;
  *
- *      let postSchema: WithContext<BlogPosting> = {
+ *      return {
  *        '@context': 'https://schema.org',
  *        '@type': 'BlogPosting',
  *        datePublished: post.published,
@@ -60,22 +66,22 @@ export type StructuredDataFunction<
  *          name: post.authorName,
  *        },
  *      };
- *
- *      return postSchema;
  *    },
  * };
  */
 export function StructuredData() {
-  const matches = useMatches();
-  const structuredData = matches.flatMap((match) => {
-    const { handle, data } = match;
+  let location = useLocation();
 
-    if (isHandleStructuredData(handle)) {
-      const result = handle.structuredData(data);
-
-      if (result) {
-        return result;
-      }
+  let structuredData = useMatches().flatMap((match, index, matches) => {
+    if (isHandleStructuredData(match.handle)) {
+      let result = match.handle.structuredData({
+        id: match.id,
+        data: match.data,
+        params: match.params,
+        location,
+        parentsData: matches.slice(0, index).map((match) => match.data),
+      });
+      if (result) return result;
     }
 
     return [];
@@ -85,7 +91,7 @@ export function StructuredData() {
     return null;
   }
 
-  const renderedScript =
+  let renderedScript =
     structuredData.length === 1
       ? JSON.stringify(structuredData[0])
       : JSON.stringify(structuredData);
