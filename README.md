@@ -338,7 +338,8 @@ export function Document({ children, title }: Props) {
 
 Now, any link you defined in the `DynamicLinksFunction` will be added to the HTML as any static link in your `LinksFunction`s.
 
-> Note: You can also put the `DynamicLinks` after the `Links` component, it's up to you what to prioritize, since static links are probably prefetched when you do `<Link prefetch>` you may want to put the `DynamicLinks` first to prioritize them.
+> **Note**
+> You can also put the `DynamicLinks` after the `Links` component, it's up to you what to prioritize, since static links are probably prefetched when you do `<Link prefetch>` you may want to put the `DynamicLinks` first to prioritize them.
 
 ### ExternalScripts
 
@@ -912,6 +913,73 @@ This is useful to create HTML files based on data inside a Resource Route.
 export let loader: LoaderFunction = async ({ request }) => {
   return html("<h1>Hello World</h1>");
 };
+```
+
+### TypedCookies
+
+Cookie objects in Remix allows any type, the typed cookies from Remix Utils lets you use Zod to parse the cookie values and ensure they conform to a schema.
+
+```ts
+import { createCookie } from "remix";
+import { createTypedCookie } from "remix-utils";
+import { z } from "zod";
+
+let cookie = createCookie("returnTo", cookieOptions);
+let schema = z.string().url();
+
+// pass the cookie and the schema
+let typedCookie = createTypedCookie({ cookie, schema });
+
+// this will be a string and also a URL
+let returnTo = await typedCookie.parse(request.headers.get("Cookie"));
+
+// this will not pass the schema validation and throw a ZodError
+await cookie.serialize("a random string that's not a URL");
+// this will make TS yell because it's not a string, if you ignore it it will
+// throw a ZodError
+await cookie.serialize(123);
+```
+
+You could also use typed cookies with any sessionStorage mechanism from Remix.
+
+```ts
+let cookie = createCookie("session", cookieOptions);
+let schema = z.object({ token: z.string() });
+
+let sessionStorage = createCookieSessionStorage({
+  cookie: createTypedCookie({ cookie, schema }),
+});
+
+// if this works then the correct data is stored in   the session
+let session = sessionStorage.getSession(request.headers.get("Cookie"));
+
+session.unset("token"); // remove a required key from the session
+
+// this will throw a ZodError because the session is missing the required key
+await sessionStorage.commitSession(session);
+```
+
+Now Zod will ensure the data you try to save to the session is valid removing any extra field and throwing if you don't set the correct data in the session.
+
+> **Note**
+> The session object is not really typed so doing session.get will not return the correct type, you can do `schema.parse(session.data)` to get the typed version of the session data.
+
+You can also use async refinements in your schemas because typed cookies uses parseAsync method from Zod.
+
+```ts
+let cookie = createCookie("session", cookieOptions);
+
+let schema = z.object({
+  token: z.string().refine(async (token) => {
+    let user = await getUserByToken(token);
+    return user !== null;
+  }, "INVALID_TOKEN"),
+});
+
+let sessionTypedCookie = createTypedCookie({ cookie, schema });
+
+// this will throw if the token stored in the cookie is not valid anymore in the DB
+sessionTypedCookie.parse(request.headers.get("Cookie"));
 ```
 
 ## Author
