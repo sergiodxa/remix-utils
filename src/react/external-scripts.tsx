@@ -1,4 +1,6 @@
 import { useMatches } from "@remix-run/react";
+import type { AppData } from "@remix-run/server-runtime";
+import type { Params } from "react-router-dom";
 
 type ReferrerPolicy =
   | "no-referrer-when-downgrade"
@@ -24,14 +26,16 @@ type ScriptDescriptor = {
   type?: string;
 };
 
-export type ExternalScriptsFunction = () => ScriptDescriptor[];
+export interface ExternalScriptsFunction<Data extends AppData = AppData> {
+  (args: { id: string; data: Data; params: Params }): ScriptDescriptor[];
+}
 
 export function ExternalScripts() {
   let matches = useMatches();
   let scripts = matches.flatMap((match) => {
     let scripts = match.handle?.scripts as ExternalScriptsFunction | undefined;
-    if (typeof scripts === "function") return scripts();
-    return [];
+    if (typeof scripts !== "function") return [];
+    return scripts({ id: match.id, data: match.data, params: match.params });
   });
 
   return (

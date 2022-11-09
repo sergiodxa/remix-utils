@@ -1,15 +1,16 @@
 import { useMatches } from "@remix-run/react";
 import type { AppData, LinkDescriptor } from "@remix-run/server-runtime";
+import type { Params } from "react-router-dom";
 
 export interface DynamicLinksFunction<Data extends AppData = AppData> {
-  (args: { data: Data }): LinkDescriptor[];
+  (args: { id: string; data: Data; params: Params }): LinkDescriptor[];
 }
 
 export function DynamicLinks() {
   let links: LinkDescriptor[] = useMatches().flatMap((match) => {
     let fn = match.handle?.dynamicLinks;
     if (typeof fn !== "function") return [];
-    return fn({ data: match.data });
+    return fn({ id: match.id, data: match.data, params: match.params });
   });
 
   return (
