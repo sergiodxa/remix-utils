@@ -309,6 +309,8 @@ let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
   data,
   params,
+  location,
+  parentsData,
 }) => {
   if (!data.user) return [];
   return [{ rel: "preload", href: data.user.avatar, as: "image" }];
@@ -367,6 +369,8 @@ let scripts: ExternalScriptsFunction<SerializeFrom<typeof loader>> = ({
   id,
   data,
   params,
+  location,
+  parentsData,
 }) => {
   return [
     {
@@ -430,7 +434,7 @@ import type { WithContext, BlogPosting } from "schema-dts";
 let structuredData: StructuredDataFunction<
   SerializeFrom<typeof loader>,
   BlogPosting
-> = ({ id, data, params }) => {
+> = ({ id, data, params, location, parentsData }) => {
   let { post } = data;
 
   return {
