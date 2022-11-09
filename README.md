@@ -48,6 +48,9 @@ export let loader: LoaderFunction = async ({ request }) => {
 
 ### cacheAssets
 
+> **Note**
+> This can only be run inside `entry.client`.
+
 This function lets you easily cache inside the [browser's Cache Storage](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage) every JS file built by Remix.
 
 To use it, open your `entry.client` file and add this:
