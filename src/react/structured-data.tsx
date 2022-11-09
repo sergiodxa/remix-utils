@@ -1,7 +1,7 @@
-import { useMatches } from "@remix-run/react";
+import { useLocation, useMatches } from "@remix-run/react";
 import { AppData } from "@remix-run/server-runtime";
-import type { Params } from "react-router-dom";
 import type { Thing, WithContext } from "schema-dts";
+import { HandleConventionArguments } from "./handle-conventions";
 
 export type StructuredDatum<StructuredDataSchema extends Thing> =
   WithContext<StructuredDataSchema>;
@@ -38,7 +38,7 @@ export interface StructuredDataFunction<
   Data extends AppData = AppData,
   StructuredDataSchema extends Thing = Thing
 > {
-  (args: { id: string; data: Data; params: Params }):
+  (args: HandleConventionArguments<Data>):
     | StructuredDatum<StructuredDataSchema>
     | StructuredDatum<StructuredDataSchema>[]
     | null;
@@ -70,12 +70,17 @@ export interface StructuredDataFunction<
  * };
  */
 export function StructuredData() {
-  let matches = useMatches();
-  let structuredData = matches.flatMap((match) => {
-    let { handle, data, id, params } = match;
+  let location = useLocation();
 
-    if (isHandleStructuredData(handle)) {
-      let result = handle.structuredData({ id, data, params });
+  let structuredData = useMatches().flatMap((match, index, matches) => {
+    if (isHandleStructuredData(match.handle)) {
+      let result = match.handle.structuredData({
+        id: match.id,
+        data: match.data,
+        params: match.params,
+        location,
+        parentsData: matches.slice(0, index).map((match) => match.data),
+      });
       if (result) return result;
     }
 

@@ -1,6 +1,6 @@
-import { useMatches } from "@remix-run/react";
+import { useLocation, useMatches } from "@remix-run/react";
 import type { AppData } from "@remix-run/server-runtime";
-import type { Params } from "react-router-dom";
+import { HandleConventionArguments } from "./handle-conventions";
 
 type ReferrerPolicy =
   | "no-referrer-when-downgrade"
@@ -27,15 +27,24 @@ type ScriptDescriptor = {
 };
 
 export interface ExternalScriptsFunction<Data extends AppData = AppData> {
-  (args: { id: string; data: Data; params: Params }): ScriptDescriptor[];
+  (args: HandleConventionArguments<Data>): ScriptDescriptor[];
 }
 
 export function ExternalScripts() {
-  let matches = useMatches();
-  let scripts = matches.flatMap((match) => {
+  let location = useLocation();
+
+  let scripts = useMatches().flatMap((match, index, matches) => {
     let scripts = match.handle?.scripts as ExternalScriptsFunction | undefined;
     if (typeof scripts !== "function") return [];
-    return scripts({ id: match.id, data: match.data, params: match.params });
+    let result = scripts({
+      id: match.id,
+      data: match.data,
+      params: match.params,
+      location,
+      parentsData: matches.slice(0, index).map((match) => match.data),
+    });
+    if (Array.isArray(result)) return result;
+    return [];
   });
 
   return (
