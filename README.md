@@ -303,10 +303,20 @@ If you need to create `<link />` tags based on the loader data instead of being 
 In the route you want to define dynamic links add `handle` export with a `dynamicLinks` method, this method should implement the `DynamicLinksFunction` type.
 
 ```ts
-let dynamicLinks: DynamicLinksFunction<LoaderData> = ({ data }) => {
+// create the dynamicLinks function with the correct type
+// note: loader type is optional
+let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
+  id,
+  data,
+  params,
+}) => {
   if (!data.user) return [];
   return [{ rel: "preload", href: data.user.avatar, as: "image" }];
 };
+
+// and export it through the handle, you could also create it inline here
+// if you don't care about the type
+export let handle = { dynamicLinks };
 ```
 
 Then, in the root route, add the `DynamicLinks` component before the Remix's Links component, usually inside a Document component.
@@ -352,7 +362,12 @@ In the route you want to load the script add a `handle` export with a `scripts` 
 
 ```ts
 // create the scripts function with the correct type
-let scripts: ExternalScriptsFunction = () => {
+// note: loader type is optional
+let scripts: ExternalScriptsFunction<SerializeFrom<typeof loader>> = ({
+  id,
+  data,
+  params,
+}) => {
   return [
     {
       src: "https://code.jquery.com/jquery-3.6.0.min.js",
@@ -410,34 +425,33 @@ In the route you want to include the structured data, add a `handle` export with
 ```ts
 import type { WithContext, BlogPosting } from "schema-dts";
 
-// export the handle with the correct type:
-export let handle: HandleStructuredData<LoaderData> = {
-  structuredData(data: LoaderData) {
-    try {
-      let { post } = data;
+// create the structuredData function with the correct type
+// note: loader type is optional
+let structuredData: StructuredDataFunction<
+  SerializeFrom<typeof loader>,
+  BlogPosting
+> = ({ id, data, params }) => {
+  let { post } = data;
 
-      let postSchema: WithContext<BlogPosting> = {
-        "@context": "https://schema.org",
-        "@type": "BlogPosting",
-        datePublished: post.published,
-        mainEntityOfPage: {
-          "@type": "WebPage",
-          "@id": post.postUrl,
-        },
-        image: post.featuredImage,
-        author: {
-          "@type": "Person",
-          name: post.authorName,
-        },
-      };
-
-      return postSchema;
-    } catch (e: unknown) {
-      console.error(e);
-      return [];
-    }
-  },
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    datePublished: post.published,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": post.postUrl,
+    },
+    image: post.featuredImage,
+    author: {
+      "@type": "Person",
+      name: post.authorName,
+    },
+  };
 };
+
+// and export it through the handle, you could also create it inline here
+// if you don't care about the type or using the `HandleStructuredData` type
+export let handle = { structuredData };
 ```
 
 Then, in the root route, add the `StructuredData` component together with the Remix's Scripts component, usually inside a Document component.
