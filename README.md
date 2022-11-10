@@ -936,7 +936,7 @@ export let loader: LoaderFunction = async ({ request }) => {
 };
 ```
 
-### TypedCookies
+### Typed Cookies
 
 Cookie objects in Remix allows any type, the typed cookies from Remix Utils lets you use Zod to parse the cookie values and ensure they conform to a schema.
 
@@ -971,7 +971,7 @@ let sessionStorage = createCookieSessionStorage({
   cookie: createTypedCookie({ cookie, schema }),
 });
 
-// if this works then the correct data is stored in   the session
+// if this works then the correct data is stored in the session
 let session = sessionStorage.getSession(request.headers.get("Cookie"));
 
 session.unset("token"); // remove a required key from the session
@@ -999,8 +999,71 @@ let schema = z.object({
 
 let sessionTypedCookie = createTypedCookie({ cookie, schema });
 
-// this will throw if the token stored in the cookie is not valid anymore in the DB
+// this will throw if the token stored in the cookie is not valid anymore
 sessionTypedCookie.parse(request.headers.get("Cookie"));
+```
+
+### Typed Sessions
+
+Session objects in Remix allows any type, the typed sessions from Remix Utils lets you use Zod to parse the session data and ensure they conform to a schema.
+
+```ts
+import { createCookieSessionStorage } from "remix";
+import { createTypedSessionStorage } from "remix-utils";
+import { z } from "zod";
+
+let schema = z.object({
+  token: z.string().optiona(),
+  count: z.number().default(1),
+});
+
+// you can use a Remix's Cookie container or a Remix Utils's Typed Cookie container
+let sessionStorage = createCookieSessionStorage({ cookie });
+
+// pass the session storage and the schema
+let typedSessionStorage = createTypedSessionStorage({ sessionStorage, schema });
+```
+
+Now you can use typedSessionStorage as a drop-in replacement for your normal sessionStorage.
+
+```ts
+let session = typedSessionStorage.getSession(request.headers.get("Cookie"));
+
+session.get("token"); // this will be a string or undefined
+session.get("count"); // this will be a number
+session.get("random"); // this will make TS yell because it's not in the schema
+
+session.has("token"); // this will be a boolean
+session.has("count"); // this will be a boolean
+
+// this will make TS yell because it's not a string, if you ignore it it will
+// throw a ZodError
+session.set("token", 123);
+```
+
+Now Zod will ensure the data you try to save to the session is valid by not allowing you to get, set or unset data.
+
+> **Note**
+> Remember that you either need to mark fields as optional or set a default value in the schema, otherwise it will be impossible to call getSession to get a new session object.
+
+You can also use async refinements in your schemas because typed sesions uses parseAsync method from Zod.
+
+```ts
+let schema = z.object({
+  token: z
+    .string()
+    .optional()
+    .refine(async (token) => {
+      if (!token) return true; // handle optionallity
+      let user = await getUserByToken(token);
+      return user !== null;
+    }, "INVALID_TOKEN"),
+});
+
+let typedSessionStorage = createTypedSessionStorage({ sessionStorage, schema });
+
+// this will throw if the token stored in the session is not valid anymore
+typedSessionStorage.getSession(request.headers.get("Cookie"));
 ```
 
 ## Author
