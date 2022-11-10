@@ -4,9 +4,9 @@ import {
   isCookie,
 } from "@remix-run/node";
 import { z, ZodError } from "zod";
-import { createTypedCookie } from "../../src";
+import { createTypedCookie, isTypedCookie } from "../../src";
 
-describe("TypedCookie", () => {
+describe("Typed Cookie", () => {
   let cookie = createCookie("name", { secrets: ["secret"] });
   let typedCookie = createTypedCookie({
     cookie,
@@ -68,5 +68,10 @@ describe("TypedCookie", () => {
     expect(() =>
       typedCookie.serialize({ token: "a-b-c" })
     ).rejects.toThrowError(ZodError);
+  });
+
+  test("pass isTypedCookie", async () => {
+    expect(isTypedCookie(typedCookie)).toBe(true);
+    expect(isTypedCookie(cookie)).toBe(false);
   });
 });

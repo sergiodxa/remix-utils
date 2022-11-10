@@ -2,11 +2,13 @@ import {
   Cookie,
   CookieParseOptions,
   CookieSerializeOptions,
+  isCookie,
 } from "@remix-run/server-runtime";
 import type { z } from "zod";
 
 export interface TypedCookie<Schema extends z.ZodTypeAny> extends Cookie {
   isTyped: true;
+
   parse(
     cookieHeader: string,
     options?: CookieParseOptions
@@ -46,4 +48,18 @@ export function createTypedCookie<Schema extends z.ZodTypeAny>({
       return cookie.serialize(parsedValue, options);
     },
   };
+}
+
+/**
+ * Returns true if an object is a Remix Utils Typed Cookie container.
+ *
+ * @see https://github.com/sergiodxa/remix-utils#typed-cookies
+ */
+export function isTypedCookie<Schema extends z.ZodTypeAny>(
+  value: unknown
+): value is TypedCookie<Schema> {
+  return (
+    isCookie(value) &&
+    (value as unknown as { isTyped: boolean }).isTyped === true
+  );
 }
