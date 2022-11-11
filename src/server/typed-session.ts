@@ -37,7 +37,7 @@ export interface TypedSession<Schema extends z.ZodTypeAny> {
    */
   get<Key extends keyof z.infer<Schema>>(
     key: Key
-  ): Promise<z.infer<Schema>[Key] | null>;
+  ): z.infer<Schema>[Key] | null;
   /**
    * Sets a value in the session for the given `name`.
    */
