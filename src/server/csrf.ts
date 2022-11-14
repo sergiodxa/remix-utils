@@ -13,7 +13,7 @@ import { unprocessableEntity } from "./responses";
  * let token = createAuthenticityToken(session, "csrfToken");
  * return json({ ...otherData, csrf: token }); // return the token in the data
  */
-export function createAuthenticityToken(session: Session, sessionKey = "csrf") {
+export function createAuthenticityToken(session: Session, sessionKey = "csrf"): string {
   let token = session.get(sessionKey);
   if (token) return token;
   token = uuid();
