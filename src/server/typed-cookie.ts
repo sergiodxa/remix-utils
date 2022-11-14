@@ -27,6 +27,15 @@ export function createTypedCookie<Schema extends z.ZodTypeAny>({
   cookie: Cookie;
   schema: Schema;
 }): TypedCookie<Schema> {
+  if (schema._def.typeName === "ZodObject") {
+    let flashSchema: z.ZodRawShape = {};
+    for (let key in (schema as unknown as z.AnyZodObject).shape) {
+      flashSchema[flash(key)] = (schema as unknown as z.AnyZodObject).shape[
+        key
+      ].optional();
+    }
+  }
+
   return {
     isTyped: true,
     get name() {
@@ -41,10 +50,10 @@ export function createTypedCookie<Schema extends z.ZodTypeAny>({
     async parse(cookieHeader, options) {
       if (!cookieHeader) return null;
       let value = await cookie.parse(cookieHeader, options);
-      return await schema.parseAsync(value);
+      return await parseSchemaWithFlashKeys(schema, value);
     },
     async serialize(value, options) {
-      let parsedValue = await schema.parseAsync(value);
+      let parsedValue = await parseSchemaWithFlashKeys(schema, value);
       return cookie.serialize(parsedValue, options);
     },
   };
@@ -62,4 +71,26 @@ export function isTypedCookie<Schema extends z.ZodTypeAny>(
     isCookie(value) &&
     (value as unknown as { isTyped: boolean }).isTyped === true
   );
+}
+
+function flash<Key extends string>(name: Key): `__flash_${Key}__` {
+  return `__flash_${name}__`;
+}
+
+function parseSchemaWithFlashKeys<Schema extends z.ZodTypeAny>(
+  schema: Schema,
+  value: z.infer<Schema>
+): Promise<z.infer<Schema>> {
+  // if the Schema is not a ZodObject, we use it directly
+  if (schema._def.typeName !== "ZodObject") return schema.parseAsync(value);
+
+  // but if it's a ZodObject, we need to add support for flash keys, so we
+  // get the shape of the schema, create a flash key for each key, and then we
+  // extend the original schema with the flash schema and parse the value
+  let objectSchema = schema as unknown as z.AnyZodObject;
+  let flashSchema: z.ZodRawShape = {};
+  for (let key in objectSchema.shape) {
+    flashSchema[flash(key)] = objectSchema.shape[key].optional();
+  }
+  return objectSchema.extend(flashSchema).parseAsync(value);
 }

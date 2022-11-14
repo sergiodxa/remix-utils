@@ -7,7 +7,7 @@ describe(getClientLocales, () => {
     expect(getClientLocales(request.headers)).toBeUndefined();
   });
 
-  test.only("should return a string if there's only one locale", () => {
+  test("should return a string if there's only one locale", () => {
     let headers = new Headers({
       "Accept-Language": "en-US",
     });

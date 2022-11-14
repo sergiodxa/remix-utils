@@ -5,7 +5,7 @@ import {
   Session,
   SessionStorage,
 } from "@remix-run/server-runtime";
-import type { z } from "zod";
+import { z } from "zod";
 
 export interface TypedSession<Schema extends z.ZodTypeAny> {
   /**
@@ -35,9 +35,7 @@ export interface TypedSession<Schema extends z.ZodTypeAny> {
   /**
    * Returns the value for the given `name` in this session.
    */
-  get<Key extends keyof z.infer<Schema>>(
-    key: Key
-  ): z.infer<Schema>[Key] | null;
+  get<Key extends keyof z.infer<Schema>>(key: Key): z.infer<Schema>[Key] | null;
   /**
    * Sets a value in the session for the given `name`.
    */
@@ -89,11 +87,13 @@ export function createTypedSessionStorage<Schema extends z.AnyZodObject>({
       return await createTypedSession({ session, schema });
     },
     async commitSession(session, options?) {
-      await schema.parseAsync(session.data); // check if session.data is valid
+      // check if session.data is valid
+      await schema.parseAsync(session.data);
       return await sessionStorage.commitSession(session as Session, options);
     },
     async destroySession(session) {
-      await schema.parseAsync(session.data); // check if session.data is valid
+      // check if session.data is valid
+      await schema.parseAsync(session.data);
       return await sessionStorage.destroySession(session as Session);
     },
   };
@@ -106,36 +106,23 @@ async function createTypedSession<Schema extends z.AnyZodObject>({
   session: Session;
   schema: Schema;
 }): Promise<TypedSession<Schema>> {
-  // parse data so session.data is typed
-  let data = await schema.parseAsync(session.data);
-
-  // remove keys from session that are not valid and re-set others
-  for (let key in session.data) {
-    if (data[key] === undefined) session.unset(key);
-    else if (data[key] !== session.data[key]) session.set(key, data[key]);
-    else continue;
+  // get a raw shape version of the schema but converting all the keys to their
+  // flash versions.
+  let flashSchema: z.ZodRawShape = {};
+  for (let key in schema.shape) {
+    flashSchema[flash(key)] = schema.shape[key].optional();
   }
 
-  // add any default keys that don't exist in the internal session
-  for (let key in data) session.set(key, data[key]);
-
-  // Checks the the key is a valid key of the schema
-  function safeKey(key: keyof z.infer<Schema>) {
-    return schema.keyof().parse(key);
-  }
-
-  function safeValue<Key extends keyof z.infer<Schema>>(
-    key: Key,
-    value: z.infer<Schema>[Key]
-  ) {
-    return schema.shape[key].parse(value);
-  }
+  // parse session.data to add default values and remove invalid ones
+  // we use strict mode here so we can throw an error if the session data
+  // contains any invalid key, which is a sign that the session data is
+  // corrupted.
+  let data = await schema.extend(flashSchema).strict().parseAsync(session.data);
 
   return {
     get isTyped() {
       return true;
     },
-
     get id() {
       return session.id;
     },
@@ -143,22 +130,32 @@ async function createTypedSession<Schema extends z.AnyZodObject>({
       return data;
     },
     has(name) {
-      return session.has(String(safeKey(name)));
+      let key = String(safeKey(schema, name));
+      return key in data || flash(key) in data;
     },
     get(name) {
-      let value = session.get(String(safeKey(name)));
-      return safeValue(safeKey(name), value);
+      let key = String(safeKey(schema, name));
+      if (key in data) return data[key];
+      let flashKey = flash(key);
+      if (flashKey in data) {
+        let value = data[flashKey];
+        delete data[flashKey];
+        return value;
+      }
+      return;
     },
     set(name, value) {
-      data[safeKey(name)] = safeValue(safeKey(name), value);
-      session.set(String(safeKey(name)), data[safeKey(name)]);
+      let key = String(safeKey(schema, name));
+      data[key] = value;
     },
     flash(name, value) {
-      data[safeKey(name)] = safeValue(safeKey(name), value);
-      session.flash(String(safeKey(name)), data[safeKey(name)]);
+      let key = String(safeKey(schema, name));
+      let flashKey = flash(key);
+      data[flashKey] = value;
     },
     unset(name) {
-      session.unset(String(safeKey(name)));
+      let key = String(safeKey(schema, name));
+      delete data[key];
     },
   };
 }
@@ -175,4 +172,16 @@ export function isTypedSession<Schema extends z.AnyZodObject>(
     isSession(value) &&
     (value as unknown as { isTyped: boolean }).isTyped === true
   );
+}
+
+function flash<Key extends string>(name: Key): `__flash_${Key}__` {
+  return `__flash_${name}__`;
+}
+
+// checks that the key is a valid key of the schema
+function safeKey<Schema extends z.AnyZodObject>(
+  schema: Schema,
+  key: keyof z.infer<Schema>
+) {
+  return schema.keyof().parse(key);
 }

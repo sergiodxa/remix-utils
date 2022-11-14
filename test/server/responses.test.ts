@@ -17,7 +17,7 @@ import {
 
 let jsonContentType = "application/json; charset=utf-8";
 
-function createResponse(type) {
+function createResponse(type: string) {
   return new Response("", {
     status: 200,
     headers: { "Content-Type": type },
@@ -60,7 +60,7 @@ describe("Responses", () => {
     });
   });
 
-  describe.only(badRequest, () => {
+  describe(badRequest, () => {
     test("Should return Response with status 404", () => {
       let response = badRequest({});
       expect(response).toEqual(
