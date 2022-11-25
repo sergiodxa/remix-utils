@@ -1098,10 +1098,10 @@ Then, inside any component, you can use the `useEventSource` hook to connect to 
 ```tsx
 import { useEventSource } from "remix-utils";
 
+const options = { event: "time" }
+
 function Counter() {
-  let time = useEventSource("/sse/time", {
-    event: "time",
-  });
+  let time = useEventSource("/sse/time", options);
 
   if (!time) return null;
 
