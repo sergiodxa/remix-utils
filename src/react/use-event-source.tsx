@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 type EventSourceOptions = {
   init?: EventSourceInit;
-  event: string;
+  event?: string;
 };
 
 /**
@@ -13,13 +13,13 @@ type EventSourceOptions = {
  */
 export function useEventSource(
   url: string | URL,
-  options?: EventSourceOptions
+  { event = "message", init }: EventSourceOptions = {}
 ) {
   const [data, setData] = useState<string | null>(null);
 
   useEffect(() => {
-    const eventSource = new EventSource(url, options?.init);
-    eventSource.addEventListener(options?.event ?? "message", handler);
+    const eventSource = new EventSource(url, init);
+    eventSource.addEventListener(event ?? "message", handler);
 
     function handler(event: MessageEvent) {
       setData(event.data || "UNKNOWN_EVENT_DATA");
@@ -29,7 +29,7 @@ export function useEventSource(
       eventSource.removeEventListener("message", handler);
       eventSource.close();
     };
-  }, [url, options]);
+  }, [url, event, init]);
 
   return data;
 }
