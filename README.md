@@ -1066,6 +1066,59 @@ let typedSessionStorage = createTypedSessionStorage({ sessionStorage, schema });
 typedSessionStorage.getSession(request.headers.get("Cookie"));
 ```
 
+### Server-Sent Events
+
+Server-Sent Events are a way to send data from the server to the client without the need for the client to request it. This is useful for things like chat applications, live updates, and more.
+
+There are two utils provided to help with the usage inside Remix:
+
+- `eventStream`
+- `useEventSource`
+
+The `eventStream` function is used to create a new event stream response needed to send events to the client.
+
+```ts
+import { eventStream } from "remix-utils";
+
+export async function loader({ request }: LoaderArgs) {
+  return eventStream(request.signal, function setup(send) {
+    let timer = setInterval(() => {
+      send({ event: "time", data: new Date().toISOString() });
+    }, 1000);
+
+    return function clear() {
+      clearInterval(timer);
+    };
+  });
+}
+```
+
+Then, inside any component, you can use the `useEventSource` hook to connect to the event stream.
+
+```tsx
+import { useEventSource } from "remix-utils";
+
+function Counter() {
+  let time = useEventSource("/sse/time", {
+    event: "time",
+  });
+
+  if (!time) return null;
+
+  return (
+    <time dateTime={time}>
+      {new Date(time).toLocaleTimeString("en", {
+        minute: "2-digit",
+        second: "2-digit",
+        hour: "2-digit",
+      })}
+    </time>
+  );
+}
+```
+
+The `event` name in bothe the event stream and the hook is optional, in which case it will default to `message`, if defined you must use the same event name in both sides, this also allows you to emit different events from the same event stream.
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)

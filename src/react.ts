@@ -6,6 +6,7 @@ export * from "./react/external-scripts";
 export * from "./react/matches-type";
 export * from "./react/structured-data";
 export * from "./react/use-data-refresh";
+export * from "./react/use-event-source";
 export * from "./react/use-global-pending-state";
 export * from "./react/use-hydrated";
 export * from "./react/use-locales";
