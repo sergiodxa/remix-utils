@@ -26,7 +26,7 @@ export function useEventSource(
     }
 
     return () => {
-      eventSource.removeEventListener("message", handler);
+      eventSource.removeEventListener(event ?? "message", handler);
       eventSource.close();
     };
   }, [url, event, init]);
