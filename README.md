@@ -1098,10 +1098,8 @@ Then, inside any component, you can use the `useEventSource` hook to connect to 
 ```tsx
 import { useEventSource } from "remix-utils";
 
-const options = { event: "time" }
-
 function Counter() {
-  let time = useEventSource("/sse/time", options);
+  let time = useEventSource("/sse/time", { event: "time" });
 
   if (!time) return null;
 
@@ -1118,6 +1116,65 @@ function Counter() {
 ```
 
 The `event` name in both the event stream and the hook is optional, in which case it will default to `message`, if defined you must use the same event name in both sides, this also allows you to emit different events from the same event stream.
+
+### Rolling Cookies
+
+Rolling cookies allows you to prolong the expiration of a cookie by updating the expiration date of every cookie.
+
+The `rollingCookie` function is prepared to be used in `entry.server` exported function to update the expiration date of a cookie if no loader set it.
+
+For document request you can use it on the `handleRequest` function:
+
+```ts
+import { rollingCookie } from "remix-utils";
+
+import { sessionCookie } from "~/session.server";
+
+export default function handleRequest(
+  request: Request,
+  responseStatusCode: number,
+  responseHeaders: Headers,
+  remixContext: EntryContext
+) {
+  await rollingCookie(sessionCookie, request, responseHeaders);
+
+  return isbot(request.headers.get("user-agent"))
+    ? handleBotRequest(
+        request,
+        responseStatusCode,
+        responseHeaders,
+        remixContext
+      )
+    : handleBrowserRequest(
+        request,
+        responseStatusCode,
+        responseHeaders,
+        remixContext
+      );
+}
+```
+
+And for data request you can do it on the `handleDataRequest` function:
+
+```ts
+export let handleDataRequest: HandleDataRequestFunction = async (
+  response: Response,
+  { request }
+) => {
+  let cookieValue = await sessionCookie.parse(
+    responseHeaders.get("set-cookie")
+  );
+  if (!cookieValue) {
+    cookieValue = await sessionCookie.parse(request.headers.get("cookie"));
+    responseHeaders.append(
+      "Set-Cookie",
+      await sessionCookie.serialize(cookieValue)
+    );
+  }
+
+  return response;
+};
+```
 
 ## Author
 
