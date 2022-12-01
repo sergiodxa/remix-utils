@@ -10,7 +10,7 @@ export interface TypedCookie<Schema extends z.ZodTypeAny> extends Cookie {
   isTyped: true;
 
   parse(
-    cookieHeader: string,
+    cookieHeader: string | null,
     options?: CookieParseOptions
   ): Promise<z.infer<Schema> | null>;
 
@@ -82,7 +82,9 @@ function parseSchemaWithFlashKeys<Schema extends z.ZodTypeAny>(
   value: z.infer<Schema>
 ): Promise<z.infer<Schema>> {
   // if the Schema is not a ZodObject, we use it directly
-  if (schema._def.typeName !== "ZodObject") return schema.parseAsync(value);
+  if (schema._def.typeName !== "ZodObject") {
+    return schema.nullable().parseAsync(value);
+  }
 
   // but if it's a ZodObject, we need to add support for flash keys, so we
   // get the shape of the schema, create a flash key for each key, and then we
