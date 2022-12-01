@@ -1176,6 +1176,8 @@ export let handleDataRequest: HandleDataRequestFunction = async (
 };
 ```
 
+> **Note**: [Read more about rolling cookies in Remix](https://sergiodxa.com/articles/add-rolling-sessions-to-remix).
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)
