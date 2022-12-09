@@ -1,4 +1,4 @@
-import type { RouteData } from "@remix-run/react/routeData";
+import { RouteData } from "@remix-run/react/dist/routeData";
 import type { AppData } from "@remix-run/server-runtime";
 import type { Location, Params } from "react-router-dom";
 
