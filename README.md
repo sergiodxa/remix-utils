@@ -1178,6 +1178,75 @@ export let handleDataRequest: HandleDataRequestFunction = async (
 
 > **Note**: [Read more about rolling cookies in Remix](https://sergiodxa.com/articles/add-rolling-sessions-to-remix).
 
+### Named actions
+
+It's common to need to handle more than one action in the same route, there are many options here like [sending the form to a resource route](https://sergiodxa.com/articles/multiple-forms-per-route-in-remix#using-resource-routes) or using an [action reducer](https://sergiodxa.com/articles/multiple-forms-per-route-in-remix#the-action-reducer-pattern), the `namedAction` function uses some conventions to implement the action reducer pattern.
+
+```tsx
+import { namedAction } from "remix-utils";
+
+export async function action({ request }: ActionArgs) {
+  return namedAction(request, {
+    async create() {
+      // do create
+    },
+    async update() {
+      // do update
+    },
+    async delete() {
+      // do delete
+    },
+  });
+}
+
+export default function Component() {
+  return (
+    <>
+      <Form method="post" action="?/create">
+        ...
+      </Form>
+
+      <Form method="post" action="?/update">
+        ...
+      </Form>
+
+      <Form method="post" action="?/delete">
+        ...
+      </Form>
+    </>
+  );
+}
+```
+
+This function can follow many conventions
+
+You can pass a FormData object to the `namedAction`, then it will try to
+
+- Find a field named `/something` and use it as the action name removing the `/`
+- Find a field named `intent` and use the value as the action name
+- Find a field named `action` and use the value as the action name
+- Find a field named `_action_` and use the value as the action name
+
+You can pass an URLSearchParams object to the `namedAction`, then it will try to
+
+- Find a query parameter named `/something` and use it as the action name removing the `/`
+- Find a query parameter named `intent` and use the value as the action name
+- Find a query parameter named `action` and use the value as the action name
+- Find a query parameter named `_action_` and use the value as the action name
+
+You can pass an URL object to the `namedAction`, it will behave as with a URLSearchParams object.
+
+You can pass a Request object to the `namedAction`, then it will try to
+
+- Call `new URL(request.url)` and use it as the URL object
+- Call `request.formData()` and use it as the FormData object
+
+If, in any case, the action name is not found, the `actionName` then the library will try to call an action named `default`, similar to a `switch` in JavaScript.
+
+If the `default` is not defined it will throw a ReferenceError with the message `Action "${name}" not found`.
+
+If the library couldn't found the name at all, it will throw a ReferenceError with the message `Action name not found`
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)
