@@ -1225,14 +1225,14 @@ You can pass a FormData object to the `namedAction`, then it will try to
 - Find a field named `/something` and use it as the action name removing the `/`
 - Find a field named `intent` and use the value as the action name
 - Find a field named `action` and use the value as the action name
-- Find a field named `_action_` and use the value as the action name
+- Find a field named `_action` and use the value as the action name
 
 You can pass an URLSearchParams object to the `namedAction`, then it will try to
 
 - Find a query parameter named `/something` and use it as the action name removing the `/`
 - Find a query parameter named `intent` and use the value as the action name
 - Find a query parameter named `action` and use the value as the action name
-- Find a query parameter named `_action_` and use the value as the action name
+- Find a query parameter named `_action` and use the value as the action name
 
 You can pass an URL object to the `namedAction`, it will behave as with a URLSearchParams object.
 
