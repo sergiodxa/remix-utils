@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/consistent-function-scoping */
 import { ActionFunction, json } from "@remix-run/server-runtime";
 import { namedAction } from "../../src";
 
@@ -20,9 +21,9 @@ describe(namedAction.name, () => {
       });
     };
 
-    await expect(action({ request, params: {}, context: {} })).resolves.toEqual(
-      json("created")
-    );
+    let response = await action({ request, params: {}, context: {} });
+
+    await expect(response.json()).resolves.toEqual("created");
   });
 
   test("FormData - Convention intent", async () => {
@@ -43,9 +44,8 @@ describe(namedAction.name, () => {
       });
     };
 
-    await expect(action({ request, params: {}, context: {} })).resolves.toEqual(
-      json("updated")
-    );
+    let response = await action({ request, params: {}, context: {} });
+    await expect(response.json()).resolves.toEqual("updated");
   });
 
   test("FormData - Convention action", async () => {
@@ -66,9 +66,8 @@ describe(namedAction.name, () => {
       });
     };
 
-    await expect(action({ request, params: {}, context: {} })).resolves.toEqual(
-      json("deleted")
-    );
+    let response = await action({ request, params: {}, context: {} });
+    await expect(response.json()).resolves.toEqual("deleted");
   });
 
   test("FormData - Convention _action", async () => {
@@ -89,9 +88,8 @@ describe(namedAction.name, () => {
       });
     };
 
-    await expect(action({ request, params: {}, context: {} })).resolves.toEqual(
-      json("deleted")
-    );
+    let response = await action({ request, params: {}, context: {} });
+    await expect(response.json()).resolves.toEqual("deleted");
   });
 
   test("URLSearchParams - Convention /", async () => {
@@ -108,9 +106,8 @@ describe(namedAction.name, () => {
       });
     };
 
-    await expect(action({ request, params: {}, context: {} })).resolves.toEqual(
-      json("deleted")
-    );
+    let response = await action({ request, params: {}, context: {} });
+    await expect(response.json()).resolves.toEqual("deleted");
   });
 
   test("URLSearchParams - Convention intent", async () => {
@@ -127,9 +124,8 @@ describe(namedAction.name, () => {
       });
     };
 
-    await expect(action({ request, params: {}, context: {} })).resolves.toEqual(
-      json("updated")
-    );
+    let response = await action({ request, params: {}, context: {} });
+    await expect(response.json()).resolves.toEqual("updated");
   });
 
   test("URLSearchParams - Convention action", async () => {
@@ -146,9 +142,8 @@ describe(namedAction.name, () => {
       });
     };
 
-    await expect(action({ request, params: {}, context: {} })).resolves.toEqual(
-      json("updated")
-    );
+    let response = await action({ request, params: {}, context: {} });
+    await expect(response.json()).resolves.toEqual("updated");
   });
 
   test("URLSearchParams - Convention _action", async () => {
@@ -165,9 +160,8 @@ describe(namedAction.name, () => {
       });
     };
 
-    await expect(action({ request, params: {}, context: {} })).resolves.toEqual(
-      json("updated")
-    );
+    let response = await action({ request, params: {}, context: {} });
+    await expect(response.json()).resolves.toEqual("updated");
   });
 
   test("URL", async () => {
@@ -185,9 +179,8 @@ describe(namedAction.name, () => {
       });
     };
 
-    await expect(action({ request, params: {}, context: {} })).resolves.toEqual(
-      json("updated")
-    );
+    let response = await action({ request, params: {}, context: {} });
+    await expect(response.json()).resolves.toEqual("updated");
   });
 
   test("Request - URL", async () => {
@@ -203,9 +196,8 @@ describe(namedAction.name, () => {
       });
     };
 
-    await expect(action({ request, params: {}, context: {} })).resolves.toEqual(
-      json("created")
-    );
+    let response = await action({ request, params: {}, context: {} });
+    await expect(response.json()).resolves.toEqual("created");
   });
 
   test("Request - FormData", async () => {
@@ -225,9 +217,8 @@ describe(namedAction.name, () => {
       });
     };
 
-    await expect(action({ request, params: {}, context: {} })).resolves.toEqual(
-      json("updated")
-    );
+    let response = await action({ request, params: {}, context: {} });
+    await expect(response.json()).resolves.toEqual("updated");
   });
 
   test("Default", async () => {
@@ -244,9 +235,8 @@ describe(namedAction.name, () => {
       });
     };
 
-    await expect(action({ request, params: {}, context: {} })).resolves.toEqual(
-      json("default")
-    );
+    let response = await action({ request, params: {}, context: {} });
+    await expect(response.json()).resolves.toEqual("default");
   });
 
   test("Error - No action with name", async () => {
