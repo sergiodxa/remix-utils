@@ -17,13 +17,6 @@ import {
 
 let jsonContentType = "application/json; charset=utf-8";
 
-function createResponse(type: string) {
-  return new Response(Uint8Array.from([]), {
-    status: 200,
-    headers: { "Content-Type": type },
-  });
-}
-
 describe("Responses", () => {
   describe(redirectBack, () => {
     it("uses the referer if available", () => {
