@@ -11,6 +11,7 @@ import {
   createTypedCookie,
   createTypedSessionStorage,
   isTypedSession,
+  TypedSessionStorage,
 } from "../../src";
 
 let cookie = createCookie("session", { secrets: ["secret"] });
@@ -28,6 +29,13 @@ let typedSessionStorage = createTypedSessionStorage({
   sessionStorage,
   schema,
 });
+
+declare module "@remix-run/server-runtime" {
+  interface AppLoadContext {
+    sessionStorage: TypedSessionStorage<typeof schema>;
+    key: keyof z.infer<typeof schema>;
+  }
+}
 
 let loader: LoaderFunction = async ({ request, context }) => {
   let session = await context.sessionStorage.getSession(
@@ -53,8 +61,8 @@ let action: ActionFunction = async ({ request, context }) => {
   let formData = await request.formData();
 
   context.flash
-    ? session.flash(context.key, formData.get(context.key))
-    : session.set(context.key, formData.get(context.key));
+    ? session.flash(context.key, formData.get(context.key) as string)
+    : session.set(context.key, formData.get(context.key) as string);
 
   let headers = new Headers();
   headers.set(
@@ -115,7 +123,7 @@ describe("Typed Sessions", () => {
     let headers = new Headers();
     headers.set("Cookie", initialCookie);
 
-    let response = await action({
+    let actionResponse = await action({
       request: new Request("http://remix.utils", {
         method: "POST",
         body: formData,
@@ -134,15 +142,21 @@ describe("Typed Sessions", () => {
     headers.delete("Cookie");
     headers.set("Set-Cookie", await typedSessionStorage.commitSession(session));
 
-    await expect(
-      loader({
-        request: new Request("http://remix.utils", {
-          headers: { Cookie: response.headers.get("Set-Cookie") },
-        }),
-        params: {},
-        context: { sessionStorage: typedSessionStorage, key: "message" },
-      })
-    ).resolves.toEqual(json({ value: "normal value" }, { headers }));
+    let response: Response = await loader({
+      request: new Request("http://remix.utils", {
+        headers: { Cookie: actionResponse.headers.get("Set-Cookie") },
+      }),
+      params: {},
+      context: { sessionStorage: typedSessionStorage, key: "message" },
+    });
+
+    await expect(response.json()).resolves.toEqual({
+      value: "normal value",
+    });
+
+    expect(response.headers.get("Set-Cookie")).toEqual(
+      headers.get("Set-Cookie")
+    );
   });
 
   test("use session.flash", async () => {
@@ -155,7 +169,7 @@ describe("Typed Sessions", () => {
     let headers = new Headers();
     headers.set("Set-Cookie", initialCookie);
 
-    let response = await action({
+    let actionResponse = await action({
       request: new Request("http://remix.utils", {
         method: "POST",
         body: formData,
@@ -170,17 +184,23 @@ describe("Typed Sessions", () => {
     });
 
     session = await typedSessionStorage.getSession(
-      response.headers.get("Set-Cookie")
+      actionResponse.headers.get("Set-Cookie")
     );
 
-    await expect(
-      loader({
-        request: new Request("http://remix.utils", {
-          headers: { Cookie: response.headers.get("Set-Cookie") },
-        }),
-        params: {},
-        context: { sessionStorage: typedSessionStorage, key: "message" },
-      })
-    ).resolves.toEqual(json({ value: "flash value" }, { headers }));
+    let response: Response = await loader({
+      request: new Request("http://remix.utils", {
+        headers: { Cookie: actionResponse.headers.get("Set-Cookie") },
+      }),
+      params: {},
+      context: { sessionStorage: typedSessionStorage, key: "message" },
+    });
+
+    await expect(response.json()).resolves.toEqual({
+      value: "flash value",
+    });
+
+    expect(response.headers.get("Set-Cookie")).toEqual(
+      headers.get("Set-Cookie")
+    );
   });
 });
