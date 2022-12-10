@@ -2,7 +2,7 @@ import { getClientLocales } from "../../src";
 
 describe(getClientLocales, () => {
   test("should return undefined if no Accept-Language header is not present", () => {
-    let request = new Request("/");
+    let request = new Request("http://remix.utils/");
     expect(getClientLocales(request)).toBeUndefined();
     expect(getClientLocales(request.headers)).toBeUndefined();
   });
@@ -11,7 +11,7 @@ describe(getClientLocales, () => {
     let headers = new Headers({
       "Accept-Language": "en-US",
     });
-    let request = new Request("/", { headers });
+    let request = new Request("http://remix.utils/", { headers });
     expect(getClientLocales(request)).toEqual(["en-US"]);
     expect(getClientLocales(request.headers)).toEqual(["en-US"]);
   });
@@ -20,7 +20,7 @@ describe(getClientLocales, () => {
     let headers = new Headers({
       "Accept-Language": "*",
     });
-    let request = new Request("/", { headers });
+    let request = new Request("http://remix.utils/", { headers });
     expect(getClientLocales(request)).toBeUndefined();
     expect(getClientLocales(request.headers)).toBeUndefined();
   });
@@ -29,7 +29,7 @@ describe(getClientLocales, () => {
     let headers = new Headers({
       "Accept-Language": "en-US,de;q=0.7, en;q=0.8",
     });
-    let request = new Request("/", { headers });
+    let request = new Request("http://remix.utils/", { headers });
     expect(getClientLocales(request)).toEqual(["en-US", "en", "de"]);
     expect(getClientLocales(request.headers)).toEqual(["en-US", "en", "de"]);
   });
@@ -38,7 +38,7 @@ describe(getClientLocales, () => {
     let headers = new Headers({
       "Accept-Language": "en-US,de;q=0.7, en;q=0.8",
     });
-    let request = new Request("/", { headers });
+    let request = new Request("http://remix.utils/", { headers });
 
     let locale = getClientLocales(request);
 
