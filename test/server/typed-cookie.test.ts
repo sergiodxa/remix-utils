@@ -189,7 +189,7 @@ describe("Typed Cookie", () => {
     ).resolves.toEqual(null);
   });
 
-  test.only("can store undefined", async () => {
+  test("can store undefined", async () => {
     let typedCookie = createTypedCookie({
       cookie,
       schema: z.undefined(),
