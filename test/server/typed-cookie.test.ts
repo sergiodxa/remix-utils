@@ -65,7 +65,7 @@ describe("Typed Cookie", () => {
 
     let typedCookie = createTypedCookie({ cookie, schema });
 
-    expect(() =>
+    await expect(() =>
       typedCookie.serialize({ token: "a-b-c" })
     ).rejects.toThrowError(ZodError);
   });
@@ -109,12 +109,18 @@ describe("Typed Cookie", () => {
       schema: z.function().args(z.string()).returns(z.string()),
     });
 
-    await expect(async () =>
+    await expect(
       typedCookie.parse(await typedCookie.serialize((a: string) => a))
     ).rejects.toThrowError(
-      new TypeError(
-        "The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received undefined"
-      )
+      new ZodError([
+        {
+          code: "invalid_type",
+          expected: "function",
+          received: "object",
+          path: [],
+          message: "Expected function, received object",
+        },
+      ])
     );
   });
 
@@ -183,16 +189,24 @@ describe("Typed Cookie", () => {
     ).resolves.toEqual(null);
   });
 
-  test("can't store undefined", async () => {
+  test.only("can store undefined", async () => {
     let typedCookie = createTypedCookie({
       cookie,
       schema: z.undefined(),
     });
 
-    expect(() => typedCookie.serialize(void 0)).rejects.toThrowError(
-      new TypeError(
-        "The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received undefined"
-      )
+    await expect(
+      typedCookie.parse(await typedCookie.serialize(void 0))
+    ).rejects.toThrowError(
+      new ZodError([
+        {
+          code: "invalid_type",
+          expected: "undefined",
+          received: "object",
+          path: [],
+          message: "Expected undefined, received object",
+        },
+      ])
     );
   });
 });

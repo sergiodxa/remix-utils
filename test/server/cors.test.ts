@@ -1,8 +1,8 @@
 import { cors } from "../../src";
 
 function createRequest(headers: Headers = new Headers()) {
-  headers.set("Origin", "http://localhost:3000");
-  return new Request("/test", { method: "OPTIONS", headers });
+  headers.set("Origin", "http://remix.utils");
+  return new Request("http://remix.utils/test", { method: "OPTIONS", headers });
 }
 
 describe(cors, () => {
@@ -15,7 +15,9 @@ describe(cors, () => {
 
   describe("Access-Control-Allow-Origin", () => {
     test("No request origin", async () => {
-      let request = new Request("/test", { method: "OPTIONS" });
+      let request = new Request("http://remix.utils/test", {
+        method: "OPTIONS",
+      });
       let response = new Response("", { status: 200 });
       await cors(request, response);
       expect(response.headers.get("Access-Control-Allow-Origin")).toBe(null);
@@ -39,10 +41,10 @@ describe(cors, () => {
       let request = createRequest();
       let response = new Response("", { status: 200 });
 
-      await cors(request, response, { origin: "http://localhost:3000" });
+      await cors(request, response, { origin: "http://remix.utils" });
 
       expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-        "http://localhost:3000"
+        "http://remix.utils"
       );
     });
 
@@ -51,7 +53,7 @@ describe(cors, () => {
       let response = new Response("", { status: 200 });
       await cors(request, response, { origin: true });
       expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-        "http://localhost:3000"
+        "http://remix.utils"
       );
     });
 
@@ -67,13 +69,13 @@ describe(cors, () => {
       });
 
       expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-        "http://localhost:3000"
+        "http://remix.utils"
       );
-      expect(response.headers.get("Vary").includes("Origin")).toBeTruthy();
+      expect(response.headers.get("Vary")?.includes("Origin")).toBeTruthy();
     });
 
     test("Use origin function receiving null", async () => {
-      let request = new Request("/test");
+      let request = new Request("http://remix.utils/test");
 
       let response = new Response("", { status: 200 });
 
@@ -89,18 +91,18 @@ describe(cors, () => {
     test("Allow based on RegExp", async () => {
       let request = createRequest();
       let response = new Response("", { status: 200 });
-      await cors(request, response, { origin: /^http:\/\/localhost:3000/ });
+      await cors(request, response, { origin: /^http:\/\/remix.utils/ });
       expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-        "http://localhost:3000"
+        "http://remix.utils"
       );
     });
 
     test("Allow a list of origins", async () => {
       let request = createRequest();
       let response = new Response("", { status: 200 });
-      await cors(request, response, { origin: ["http://localhost:3000"] });
+      await cors(request, response, { origin: ["http://remix.utils"] });
       expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-        "http://localhost:3000"
+        "http://remix.utils"
       );
     });
 

@@ -5,7 +5,7 @@ This package contains simple utility functions to use with [Remix.run](https://r
 ## Installation
 
 ```bash
-npm install remix-utils remix @remix-run/node @remix-run/react react
+npm install remix-utils
 ```
 
 ## API Reference
