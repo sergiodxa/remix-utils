@@ -8,7 +8,7 @@ export async function rollingCookie<Schema extends z.ZodTypeAny>(
   responseHeaders: Headers
 ) {
   let value = await cookie.parse(responseHeaders.get("Set-Cookie"));
-  if (value) return;
+  if (value !== null) return;
   value = await cookie.parse(request.headers.get("Cookie"));
   if (!value) return;
   responseHeaders.append("Set-Cookie", await cookie.serialize(value));
