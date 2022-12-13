@@ -529,6 +529,32 @@ The return value of `useDataRefresh` is an object with the following keys:
 - type: a string which can be `init`, `refreshRedirect` or `refresh`
 - status: a string which can be `loading` or `idle`
 
+### useGlobalTransitionStates
+
+This hook lets you know if the value of `transition.state` and every `fetcher.state` in the app.
+
+```ts
+import { useGlobalTransitionStates } from "remix-utils";
+
+export function GlobalPendingUI() {
+  let states = useGlobalTransitionStates();
+
+  if (state.includes("loading")) {
+    // The app is loading.
+  }
+
+  if (state.includes("submitting")) {
+    // The app is submitting.
+  }
+
+  // The app is idle
+}
+```
+
+The return value of `useGlobalTransitionStates` is either `"idle"` or `"pending"`.
+
+> **Note** This is used by the hooks below to determine if the app is loading, submitting or both (pending).
+
 ### useGlobalPendingState
 
 This hook lets you know if the global transition or if one of any active fetchers is either loading or submitting.
@@ -545,6 +571,10 @@ export function GlobalPendingUI() {
 ```
 
 The return value of `useGlobalPendingState` is either `"idle"` or `"pending"`.
+
+> **Note**: This hook combines the `useGlobalSubmittingState` and `useGlobalLoadingState` hooks to determine if the app is pending.
+
+> **Note**: The `pending` state is a combination of the `loading` and `submitting` states introduced by this hook.
 
 ### useGlobalSubmittingState
 
