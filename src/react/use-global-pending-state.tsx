@@ -1,12 +1,9 @@
 import { useTransition, useFetchers } from "@remix-run/react";
 import { useMemo } from "react";
 
-type State = "idle" | "submitting" | "loading";
-
 /**
  * This is a helper hook that returns the state of every fetcher active on
  * the app and combine it with the state of the global transition.
- * @returns State[]
  * @example
  * let states = useGlobalTransitionStates();
  * if (state.includes("loading")) {
@@ -25,7 +22,7 @@ export function useGlobalTransitionStates() {
    * This gets the state of every fetcher active on the app and combine it with
    * the state of the global transition (Link and Form).
    */
-  return useMemo<State[]>(
+  return useMemo(
     function getGlobalTransitionStates() {
       return [transition.state, ...fetchers.map((fetcher) => fetcher.state)];
     },
