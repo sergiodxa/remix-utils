@@ -28,3 +28,26 @@ export function useGlobalPendingState() {
     [transition.state, fetchers]
   );
 }
+
+/**
+ * Let you know if the app is submitting some request, either global transition
+ * or some fetcher transition.
+ * @returns "idle" | "submitting"
+ */
+export function useGlobalSubmittingState() {
+  let transition = useTransition();
+  let fetchers = useFetchers();
+
+  return useMemo<"idle" | "submitting">(
+    function getGlobalState() {
+      let states = [
+        transition.state,
+        ...fetchers.map((fetcher) => fetcher.state),
+      ];
+      if (states.every((state) => state !== "submitting")) return "idle";
+      return "submitting";
+    },
+    [transition.state, fetchers]
+  );
+}
+
