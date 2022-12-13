@@ -551,7 +551,7 @@ export function GlobalPendingUI() {
 }
 ```
 
-The return value of `useGlobalTransitionStates` is either `"idle"` or `"pending"`.
+The return value of `useGlobalTransitionStates` can be `"idle"`, `"loading"` or `"submitting"`
 
 > **Note** This is used by the hooks below to determine if the app is loading, submitting or both (pending).
 
