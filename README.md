@@ -563,6 +563,23 @@ export function GlobalPendingUI() {
 
 The return value of `useGlobalSubmittingState` is either `"idle"` or `"submitting"`.
 
+### useGlobalLoadingState
+
+This hook lets you know if the global transition or if one of any active fetchers is loading.
+
+```ts
+import { useGlobalLoadingState } from "remix-utils";
+
+export function GlobalPendingUI() {
+  let globalState = useGlobalLoadingState();
+
+  if (globalState === "idle") return null;
+  return <Spinner />;
+}
+```
+
+The return value of `useGlobalLoadingState` is either `"idle"` or `"loading"`.
+
 ### useHydrated
 
 This hook lets you detect if your component is already hydrated. This means the JS for the element loaded client-side and React is running.

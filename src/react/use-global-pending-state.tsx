@@ -51,3 +51,24 @@ export function useGlobalSubmittingState() {
   );
 }
 
+/**
+ * Let you know if the app is loading some request, either global transition
+ * or some fetcher transition.
+ * @returns "idle" | "loading"
+ */
+export function useGlobalLoadingState() {
+  let transition = useTransition();
+  let fetchers = useFetchers();
+
+  return useMemo<"idle" | "loading">(
+    function getGlobalState() {
+      let states = [
+        transition.state,
+        ...fetchers.map((fetcher) => fetcher.state),
+      ];
+      if (states.every((state) => state !== "loading")) return "idle";
+      return "loading";
+    },
+    [transition.state, fetchers]
+  );
+}
