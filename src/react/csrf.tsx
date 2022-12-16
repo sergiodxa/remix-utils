@@ -15,7 +15,7 @@ let context = createContext<string | null>(null);
  * Save the Authenticity Token into context
  * Example: In the `root` add `<AuthenticityTokenProvider>`
  * ```tsx
- * let { csrf } = useLoaderData<{ csrf: string }>();
+ * let { csrf } = useLoaderData<typeof loader>();
  * return (
  *   <AuthenticityTokenProvider token={csrf}>
  *     <Document>

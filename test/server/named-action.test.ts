@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/consistent-function-scoping */
-import { ActionFunction, json } from "@remix-run/server-runtime";
+import { ActionArgs, json } from "@remix-run/server-runtime";
 import { namedAction } from "../../src";
 
 describe(namedAction.name, () => {
@@ -12,7 +12,7 @@ describe(namedAction.name, () => {
       body: formData,
     });
 
-    let action: ActionFunction = async ({ request }) => {
+    let action = async ({ request }: ActionArgs) => {
       let formData = await request.formData();
       return await namedAction(formData, {
         async create() {
@@ -35,7 +35,7 @@ describe(namedAction.name, () => {
       body: formData,
     });
 
-    let action: ActionFunction = async ({ request }) => {
+    let action = async ({ request }: ActionArgs) => {
       let formData = await request.formData();
       return await namedAction(formData, {
         async update() {
@@ -57,7 +57,7 @@ describe(namedAction.name, () => {
       body: formData,
     });
 
-    let action: ActionFunction = async ({ request }) => {
+    let action = async ({ request }: ActionArgs) => {
       let formData = await request.formData();
       return await namedAction(formData, {
         async delete() {
@@ -79,7 +79,7 @@ describe(namedAction.name, () => {
       body: formData,
     });
 
-    let action: ActionFunction = async ({ request }) => {
+    let action = async ({ request }: ActionArgs) => {
       let formData = await request.formData();
       return await namedAction(formData, {
         async delete() {
@@ -97,7 +97,7 @@ describe(namedAction.name, () => {
       method: "POST",
     });
 
-    let action: ActionFunction = async ({ request }) => {
+    let action = async ({ request }: ActionArgs) => {
       let url = new URL(request.url);
       return await namedAction(url, {
         async delete() {
@@ -115,7 +115,7 @@ describe(namedAction.name, () => {
       method: "POST",
     });
 
-    let action: ActionFunction = async ({ request }) => {
+    let action = async ({ request }: ActionArgs) => {
       let url = new URL(request.url);
       return await namedAction(url, {
         async update() {
@@ -133,7 +133,7 @@ describe(namedAction.name, () => {
       method: "POST",
     });
 
-    let action: ActionFunction = async ({ request }) => {
+    let action = async ({ request }: ActionArgs) => {
       let url = new URL(request.url);
       return await namedAction(url, {
         async update() {
@@ -151,7 +151,7 @@ describe(namedAction.name, () => {
 
     let request = new Request(url, { method: "POST" });
 
-    let action: ActionFunction = async ({ request }) => {
+    let action = async ({ request }: ActionArgs) => {
       let url = new URL(request.url);
       return await namedAction(url, {
         async update() {
@@ -171,7 +171,7 @@ describe(namedAction.name, () => {
       method: "POST",
     });
 
-    let action: ActionFunction = async ({ request }) => {
+    let action = async ({ request }: ActionArgs) => {
       return await namedAction(request, {
         async update() {
           return json("updated");
@@ -188,7 +188,7 @@ describe(namedAction.name, () => {
       method: "POST",
     });
 
-    let action: ActionFunction = async ({ request }) => {
+    let action = async ({ request }: ActionArgs) => {
       return await namedAction(request, {
         async create() {
           return json("created");
@@ -209,7 +209,7 @@ describe(namedAction.name, () => {
       body: formData,
     });
 
-    let action: ActionFunction = async ({ request }) => {
+    let action = async ({ request }: ActionArgs) => {
       return await namedAction(request, {
         async update() {
           return json("updated");
@@ -227,7 +227,7 @@ describe(namedAction.name, () => {
       body: new FormData(),
     });
 
-    let action: ActionFunction = async ({ request }) => {
+    let action = async ({ request }: ActionArgs) => {
       return await namedAction(request, {
         async default() {
           return json("default");
@@ -246,7 +246,7 @@ describe(namedAction.name, () => {
     });
 
     // eslint-disable-next-line unicorn/consistent-function-scoping
-    let action: ActionFunction = async ({ request }) => {
+    let action = async ({ request }: ActionArgs) => {
       return await namedAction(request, {
         async create() {
           return json("created");
@@ -266,7 +266,7 @@ describe(namedAction.name, () => {
     });
 
     // eslint-disable-next-line unicorn/consistent-function-scoping
-    let action: ActionFunction = async ({ request }) => {
+    let action = async ({ request }: ActionArgs) => {
       return await namedAction(request, {
         async create() {
           return json("created");

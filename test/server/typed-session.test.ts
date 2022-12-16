@@ -1,10 +1,10 @@
 import {
-  ActionFunction,
+  ActionArgs,
   createCookie,
   createCookieSessionStorage,
   isSession,
   json,
-  LoaderFunction,
+  LoaderArgs,
 } from "@remix-run/node";
 import { z } from "zod";
 import {
@@ -37,7 +37,7 @@ declare module "@remix-run/server-runtime" {
   }
 }
 
-let loader: LoaderFunction = async ({ request, context }) => {
+let loader = async ({ context, request }: LoaderArgs) => {
   let session = await context.sessionStorage.getSession(
     request.headers.get("Cookie")
   );
@@ -53,7 +53,7 @@ let loader: LoaderFunction = async ({ request, context }) => {
   return json({ value }, { headers });
 };
 
-let action: ActionFunction = async ({ request, context }) => {
+let action = async ({ context, request }: ActionArgs) => {
   let session = await context.sessionStorage.getSession(
     request.headers.get("Cookie")
   );

@@ -17,7 +17,7 @@ The `promiseHash` function is not directly related to Remix but it's a useful fu
 This function is an object version of `Promise.all` which lets you pass an object with promises and get an object with the same keys with the resolved values.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   return json(
     promiseHash({
       user: getUser(request),
@@ -30,7 +30,7 @@ export let loader: LoaderFunction = async ({ request }) => {
 You can use nested `promiseHash` to get a nested object with resolved values.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   return json(
     promiseHash({
       user: getUser(request),
@@ -119,7 +119,7 @@ There are two main ways to use the `cors` function.
 If you want to use it on every loader/action, you can do it like this:
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   let data = await getData(request);
   let response = json<LoaderData>(data);
   return await cors(request, response);
@@ -129,7 +129,7 @@ export let loader: LoaderFunction = async ({ request }) => {
 You could also do the `json` and `cors` call in one line.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   let data = await getData(request);
   return await cors(request, json<LoaderData>(data));
 };
@@ -138,7 +138,7 @@ export let loader: LoaderFunction = async ({ request }) => {
 And because `cors` mutates the response, you can also call it and later return.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   let data = await getData(request);
   let response = json<LoaderData>(data);
   await cors(request, response); // this mutates the Response object
@@ -190,7 +190,7 @@ This part of Remix Utils needs React and server-side code.
 In the server, we need to add to our `root` component the following.
 
 ```ts
-import type { LoaderFunction } from "remix";
+import type { LoaderArgs } from "remix";
 import { createAuthenticityToken, json } from "remix-utils";
 import { getSession, commitSession } from "~/services/session.server";
 
@@ -198,7 +198,7 @@ interface LoaderData {
   csrf: string;
 }
 
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   let session = await getSession(request.headers.get("cookie"));
   let token = createAuthenticityToken(session);
   return json<LoaderData>(
@@ -219,7 +219,7 @@ import { Outlet, useLoaderData } from "remix";
 import { Document } from "~/components/document";
 
 export default function Root() {
-  let { csrf } = useLoaderData<LoaderData>();
+  let { csrf } = useLoaderData<typeof loader>();
   return (
     <AuthenticityTokenProvider token={csrf}>
       <Document>
@@ -282,11 +282,11 @@ export function useMarkAsRead() {
 Finally, you need to verify the authenticity token in the action that received the request.
 
 ```ts
-import type { ActionFunction } from "remix";
+import type { ActionArgs } from "remix";
 import { verifyAuthenticityToken, redirectBack } from "remix-utils";
 import { getSession, commitSession } from "~/services/session.server";
 
-export let action: ActionFunction = async ({ request }) => {
+export let action = async ({ request }: ActionArgs) => {
   let session = await getSession(request.headers.get("Cookie"));
   await verifyAuthenticityToken(request, session);
   // do something here
@@ -642,7 +642,7 @@ You can combine it with `getClientLocal` to get the locales on the root loader a
 
 ```ts
 // in the root loader
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   let locales = getClientLocales(request);
   return json({ locales });
 };
@@ -750,7 +750,7 @@ The `useShouldHydrate` hook will detect `hydrate` as a function and call it usin
 This function receives a Request or Headers objects and will try to get the IP address of the client (the user) who originated the request.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   // using the request
   let ipAddress = getClientIPAddress(request);
   // or using the headers
@@ -781,7 +781,7 @@ When a header is found that contains a valid IP address, it will return without 
 This function let you get the locales of the client (the user) who originated the request.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   // using the request
   let locales = getClientLocales(request);
   // or using the headers
@@ -795,7 +795,7 @@ The returned locales can be directly used on the Intl API when formatting dates,
 
 ```ts
 import { getClientLocales } from "remix-utils";
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   let locales = getClientLocales(request);
   let nowDate = new Date();
   let formatter = new Intl.DateTimeFormat(locales, {
@@ -816,7 +816,7 @@ This function let you identify if a request was created because of a prefetch tr
 This will let you implement a short cache only for prefetch requests so you [avoid the double data request](https://sergiodxa.com/articles/fix-double-data-request-when-prefetching-in-remix).
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   let data = await getData(request);
   let headers = new Headers();
 
@@ -838,9 +838,9 @@ The response created with this function will have the `Location` header pointing
 
 ```ts
 import { redirectBack } from "remix-utils";
-import type { ActionFunction } from "remix";
+import type { ActionArgs } from "remix";
 
-export let action: ActionFunction = async ({ request }) => {
+export let action = async ({ request }: ActionArgs) => {
   await redirectBack(request, { fallback: "/" });
 };
 ```
@@ -853,9 +853,9 @@ Helper function to create a Created (201) response with a JSON body.
 
 ```ts
 import { created } from "remix-utils";
-import type { ActionFunction } from "remix";
+import type { ActionArgs } from "remix";
 
-export let action: ActionFunction = async ({ request }) => {
+export let action = async ({ request }: ActionArgs) => {
   let result = await doSomething(request);
   return created(result);
 };
@@ -867,9 +867,8 @@ Helper function to create a Bad Request (400) response with a JSON body.
 
 ```ts
 import { badRequest } from "remix-utils";
-import type { ActionFunction } from "remix";
 
-export let action: ActionFunction = async () => {
+export let action = async () => {
   throw badRequest({ message: "You forgot something in the form." });
 };
 ```
@@ -880,9 +879,8 @@ Helper function to create an Unauthorized (401) response with a JSON body.
 
 ```ts
 import { unauthorized } from "remix-utils";
-import type { LoaderFunction } from "remix";
 
-export let loader: LoaderFunction = async () => {
+export let loader = async () => {
   // usually what you really want is to throw a redirect to the login page
   throw unauthorized({ message: "You need to login." });
 };
@@ -894,9 +892,8 @@ Helper function to create a Forbidden (403) response with a JSON body.
 
 ```ts
 import { forbidden } from "remix-utils";
-import type { LoaderFunction } from "remix";
 
-export let loader: LoaderFunction = async () => {
+export let loader = async () => {
   throw forbidden({ message: "You don't have access for this." });
 };
 ```
@@ -907,9 +904,9 @@ Helper function to create a Not Found (404) response with a JSON body.
 
 ```ts
 import { notFound } from "remix-utils";
-import type { LoaderFunction } from "remix";
+import type { LoaderArgs } from "remix";
 
-export let loader: LoaderFunction = async () => {
+export let loader = async () => {
   throw notFound({ message: "This doesn't exists." });
 };
 ```
@@ -920,9 +917,9 @@ Helper function to create an Unprocessable Entity (422) response with a JSON bod
 
 ```ts
 import { unprocessableEntity } from "remix-utils";
-import type { LoaderFunction } from "remix";
+import type { LoaderArgs } from "remix";
 
-export let loader: LoaderFunction = async () => {
+export let loader = async () => {
   throw unprocessableEntity({ message: "This doesn't exists." });
 };
 ```
@@ -935,9 +932,9 @@ Helper function to create a Server Error (500) response with a JSON body.
 
 ```ts
 import { serverError } from "remix-utils";
-import type { LoaderFunction } from "remix";
+import type { LoaderArgs } from "remix";
 
-export let loader: LoaderFunction = async () => {
+export let loader = async () => {
   throw serverError({ message: "Something unexpected happened." });
 };
 ```
@@ -947,7 +944,7 @@ export let loader: LoaderFunction = async () => {
 Helper function to create a Not Modified (304) response without a body and any header.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   return notModified();
 };
 ```
@@ -959,7 +956,7 @@ Helper function to create a JavaScript file response with any header.
 This is useful to create JS files based on data inside a Resource Route.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   return javascript("console.log('Hello World')");
 };
 ```
@@ -971,7 +968,7 @@ Helper function to create a CSS file response with any header.
 This is useful to create CSS files based on data inside a Resource Route.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   return stylesheet("body { color: red; }");
 };
 ```
@@ -983,7 +980,7 @@ Helper function to create a PDF file response with any header.
 This is useful to create PDF files based on data inside a Resource Route.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   return pdf(await generatePDF(request.formData()));
 };
 ```
@@ -995,7 +992,7 @@ Helper function to create a HTML file response with any header.
 This is useful to create HTML files based on data inside a Resource Route.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   return html("<h1>Hello World</h1>");
 };
 ```

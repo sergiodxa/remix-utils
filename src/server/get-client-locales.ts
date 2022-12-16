@@ -10,7 +10,7 @@ export type Locales = string[] | undefined;
  * value.
  *
  * @example
- * export let loader: LoaderFunction = async ({ request }) => {
+ * export let loader = async ({ request }: LoaderArgs) => {
  *   let locales = getClientLocales(request)
  *   let date = new Date().toLocaleDateString(locales, {
  *     "day": "numeric",
