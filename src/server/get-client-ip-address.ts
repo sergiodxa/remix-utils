@@ -17,7 +17,7 @@ const headerNames = Object.freeze([
   "X-Forwarded",
   "Forwarded-For",
   "Forwarded",
-  "DO-Connecting-IP", /** Digital ocean app platform */
+  "DO-Connecting-IP" /** Digital ocean app platform */,
 ] as const);
 
 /**
@@ -59,7 +59,7 @@ export function getClientIPAddress(
         return parseForwardedHeader(value);
       }
       if (!value?.includes(",")) return value;
-      return value.split(",").map(ip => ip.trim());
+      return value.split(",").map((ip) => ip.trim());
     })
     .find((ip) => {
       if (ip === null) return false;
