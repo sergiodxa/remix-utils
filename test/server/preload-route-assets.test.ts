@@ -1,3 +1,4 @@
+import type { EntryContext } from "@remix-run/server-runtime";
 import { preloadRouteAssets } from "../../src";
 
 describe(preloadRouteAssets.name, () => {
