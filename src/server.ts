@@ -9,3 +9,4 @@ export * from "./server/responses";
 export * from "./server/rolling-cookie";
 export * from "./server/typed-cookie";
 export * from "./server/typed-session";
+export * from "./server/preload-route-assets";
