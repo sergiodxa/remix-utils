@@ -110,7 +110,7 @@ export function preloadLinkedAssets(context: EntryContext, headers: Headers) {
  *   });
  * }
  */
-function preloadModuleAssets(context: EntryContext, headers: Headers) {
+export function preloadModuleAssets(context: EntryContext, headers: Headers) {
   let urls: string[] = [
     context.manifest.url,
     context.manifest.entry.module,
