@@ -250,6 +250,34 @@ export function html(
   });
 }
 
+/**
+ * Create a response with a XML file response.
+ * It receives a string with the XML content and set the Content-Type header to
+ * `application/xml; charset=utf-8` always.
+ *
+ * This is useful to dynamically create a XML file from a Resource Route.
+ * @example
+ * export let loader: LoaderFunction = async ({ request }) => {
+ *   return xml("<?xml version='1.0'?><catalog></catalog>");
+ * }
+ */
+export function xml(
+  content: string,
+  init: number | ResponseInit = {}
+): Response {
+  let responseInit = typeof init === "number" ? { status: init } : init;
+
+  let headers = new Headers(responseInit.headers);
+  if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/xml; charset=utf-8");
+  }
+
+  return new Response(content, {
+    ...responseInit,
+    headers,
+  });
+}
+
 export type ImageType =
   | "image/jpeg"
   | "image/png"
