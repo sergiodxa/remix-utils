@@ -5,31 +5,17 @@ describe(preloadRouteAssets.name, () => {
   let context: EntryContext = {
     manifest: {
       url: "/manifest.js",
-      routes: {},
-      version: "latest",
-      entry: {
-        imports: ["/chunk-1.js", "/chunk-2.js"],
-        module: "/entry.client.js",
-      },
-    },
-    matches: [
-      {
-        params: {},
-        pathname: "/",
-        route: {
+      routes: {
+        root: {
           hasAction: false,
           hasCatchBoundary: false,
           hasErrorBoundary: false,
           hasLoader: false,
           id: "root",
+          module: "/root.js",
           imports: ["/chunk-3.js", "/chunk-4.js"],
-          module: "/routes/root.js",
         },
-      },
-      {
-        params: {},
-        pathname: "/",
-        route: {
+        "routes/index": {
           hasAction: false,
           hasCatchBoundary: false,
           hasErrorBoundary: false,
@@ -39,8 +25,12 @@ describe(preloadRouteAssets.name, () => {
           module: "/routes/index.js",
         },
       },
-    ],
-    routeData: {},
+      version: "latest",
+      entry: {
+        imports: ["/chunk-1.js", "/chunk-2.js"],
+        module: "/entry.client.js",
+      },
+    },
     routeModules: {
       root: {
         default() {
@@ -57,14 +47,41 @@ describe(preloadRouteAssets.name, () => {
         links: undefined,
       },
     },
-    appState: {
-      catchBoundaryRouteId: "catchBoundary",
-      loaderBoundaryRouteId: "loaderBoundary",
-      renderBoundaryRouteId: "renderBoundary",
-      trackBoundaries: false,
-      trackCatchBoundaries: false,
-    },
     future: { v2_meta: false },
+    staticHandlerContext: {
+      actionData: {},
+      actionHeaders: {},
+      basename: "/",
+      errors: {},
+      loaderData: {},
+      loaderHeaders: {},
+      location: {
+        hash: "hash",
+        key: "key",
+        pathname: "/",
+        search: "",
+        state: null,
+      },
+      matches: [
+        {
+          params: {},
+          pathname: "/",
+          pathnameBase: "/",
+          route: {
+            id: "root",
+          },
+        },
+        {
+          params: {},
+          pathname: "/",
+          pathnameBase: "/",
+          route: {
+            id: "routes/index",
+          },
+        },
+      ],
+      statusCode: 200,
+    },
   };
 
   test("should add the Link headers", () => {
@@ -73,7 +90,7 @@ describe(preloadRouteAssets.name, () => {
     preloadRouteAssets(context, headers);
 
     expect(headers.get("link")).toMatchInlineSnapshot(
-      `"</styles.css>; rel=preload; as=style, </manifest.js>; rel=preload; as=script; crossorigin=anonymous, </entry.client.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-1.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-2.js>; rel=preload; as=script; crossorigin=anonymous, </routes/root.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-3.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-4.js>; rel=preload; as=script; crossorigin=anonymous, </routes/index.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-5.js>; rel=preload; as=script; crossorigin=anonymous"`
+      `"</styles.css>; rel=preload; as=style, </manifest.js>; rel=preload; as=script; crossorigin=anonymous, </entry.client.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-1.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-2.js>; rel=preload; as=script; crossorigin=anonymous, </root.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-3.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-4.js>; rel=preload; as=script; crossorigin=anonymous, </routes/index.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-5.js>; rel=preload; as=script; crossorigin=anonymous"`
     );
   });
 
@@ -82,7 +99,7 @@ describe(preloadRouteAssets.name, () => {
     headers.set("Link", "</custom.js>; rel=preload; as=script");
     preloadRouteAssets(context, headers);
     expect(headers.get("link")).toMatchInlineSnapshot(
-      `"</custom.js>; rel=preload; as=script, </styles.css>; rel=preload; as=style, </manifest.js>; rel=preload; as=script; crossorigin=anonymous, </entry.client.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-1.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-2.js>; rel=preload; as=script; crossorigin=anonymous, </routes/root.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-3.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-4.js>; rel=preload; as=script; crossorigin=anonymous, </routes/index.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-5.js>; rel=preload; as=script; crossorigin=anonymous"`
+      `"</custom.js>; rel=preload; as=script, </styles.css>; rel=preload; as=style, </manifest.js>; rel=preload; as=script; crossorigin=anonymous, </entry.client.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-1.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-2.js>; rel=preload; as=script; crossorigin=anonymous, </root.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-3.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-4.js>; rel=preload; as=script; crossorigin=anonymous, </routes/index.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-5.js>; rel=preload; as=script; crossorigin=anonymous"`
     );
   });
 });

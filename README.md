@@ -17,20 +17,20 @@ The `promiseHash` function is not directly related to Remix but it's a useful fu
 This function is an object version of `Promise.all` which lets you pass an object with promises and get an object with the same keys with the resolved values.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return json(
     promiseHash({
       user: getUser(request),
       posts: getPosts(request),
     })
   );
-};
+}
 ```
 
 You can use nested `promiseHash` to get a nested object with resolved values.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return json(
     promiseHash({
       user: getUser(request),
@@ -43,7 +43,7 @@ export let loader: LoaderFunction = async ({ request }) => {
       }),
     })
   );
-};
+}
 ```
 
 ### cacheAssets
@@ -87,7 +87,7 @@ You can provide a fallback component to be used on SSR, and while optional, it's
 ```tsx
 import { ClientOnly } from "remix-utils";
 
-export default function View() {
+export default function Component() {
   return (
     <ClientOnly fallback={<SimplerStaticVersion />}>
       {() => <ComplexComponentNeedingBrowserEnvironment />}
@@ -119,31 +119,31 @@ There are two main ways to use the `cors` function.
 If you want to use it on every loader/action, you can do it like this:
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   let data = await getData(request);
   let response = json<LoaderData>(data);
   return await cors(request, response);
-};
+}
 ```
 
 You could also do the `json` and `cors` call in one line.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   let data = await getData(request);
   return await cors(request, json<LoaderData>(data));
-};
+}
 ```
 
 And because `cors` mutates the response, you can also call it and later return.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   let data = await getData(request);
   let response = json<LoaderData>(data);
   await cors(request, response); // this mutates the Response object
   return response; // so you can return it here
-};
+}
 ```
 
 If you want to setup it globally once, you can do it like this in `entry.server`
@@ -198,14 +198,14 @@ interface LoaderData {
   csrf: string;
 }
 
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   let session = await getSession(request.headers.get("cookie"));
   let token = createAuthenticityToken(session);
   return json<LoaderData>(
     { csrf: token },
     { headers: { "Set-Cookie": await commitSession(session) } }
   );
-};
+}
 ```
 
 The `createAuthenticityToken` function receives a session object and stores the authenticity token there using the `csrf` key (you can pass the key name as a second argument). Finally, you need to return the token in a `json` response and commit the session.
@@ -218,7 +218,7 @@ You need to read the authenticity token and render the `AuthenticityTokenProvide
 import { Outlet, useLoaderData } from "remix";
 import { Document } from "~/components/document";
 
-export default function Root() {
+export default function Component() {
   let { csrf } = useLoaderData<LoaderData>();
   return (
     <AuthenticityTokenProvider token={csrf}>
@@ -240,7 +240,7 @@ When you create a form in some route, you can use the `AuthenticityTokenInput` c
 import { Form } from "remix";
 import { AuthenticityTokenInput } from "remix-utils";
 
-export default function SomeRoute() {
+export default function Component() {
   return (
     <Form method="post">
       <AuthenticityTokenInput />
@@ -286,12 +286,12 @@ import type { ActionFunction } from "remix";
 import { verifyAuthenticityToken, redirectBack } from "remix-utils";
 import { getSession, commitSession } from "~/services/session.server";
 
-export let action: ActionFunction = async ({ request }) => {
+export async function action({ request }: ActionArgs) {
   let session = await getSession(request.headers.get("Cookie"));
   await verifyAuthenticityToken(request, session);
   // do something here
   return redirectBack(request, { fallback: "/fallback" });
-};
+}
 ```
 
 Suppose the authenticity token is missing on the session, the request body, or doesn't match. In that case, the function will throw an Unprocessable Entity response that you can either catch and handle manually or let pass and render your CatchBoundary.
@@ -490,45 +490,6 @@ export function Document({ children, title }: Props) {
 
 Now, any structured data you defined in the `StructuredDataFunction` will be added to the HTML, in the head. You may choose to include the `<StructuredData />` in either the head or the body, both are valid.
 
-### useDataRefresh
-
-This hook lets you trigger a refresh of the loaders in the current URL.
-
-The way this works is by sending a fetcher.submit to `/dev/null` to trigger all loaders to run.
-
-You need to create `app/routes/dev/null.ts` and define an action that returns null.
-
-```ts
-// app/routes/dev/null.ts
-export function action() {
-  return null;
-}
-```
-
-This Hook is mostly useful if you want to trigger the refresh manually from an effect, examples of this are:
-
-- Set an interval to trigger the refresh
-- Refresh when the browser tab is focused again
-- Refresh when the user is online again
-
-```ts
-import { useDataRefresh } from "remix-utils";
-
-function useDataRefreshOnInterval() {
-  let { refresh } = useDataRefresh();
-  useEffect(() => {
-    let interval = setInterval(refresh, 5000);
-    return () => clearInterval(interval);
-  }, [refresh]);
-}
-```
-
-The return value of `useDataRefresh` is an object with the following keys:
-
-- refresh: a function that trigger the refresh
-- type: a string which can be `init`, `refreshRedirect` or `refresh`
-- status: a string which can be `loading` or `idle`
-
 ### useGlobalTransitionStates
 
 This hook lets you know if the value of `transition.state` and every `fetcher.state` in the app.
@@ -642,13 +603,13 @@ You can combine it with `getClientLocal` to get the locales on the root loader a
 
 ```ts
 // in the root loader
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   let locales = getClientLocales(request);
   return json({ locales });
-};
+}
 
 // in any route (including root!)
-export default function Screen() {
+export default function Component() {
   let locales = useLocales();
   let date = new Date();
   let dateTime = date.toISOString;
@@ -658,35 +619,6 @@ export default function Screen() {
 ```
 
 The return type of `useLocales` is ready to be used with the Intl API.
-
-### useRouteData
-
-This hook lets you access the data of any route in the current page. This can include child or parent routes.
-
-To use it, call `useRouteData` in your component and pass the route ID as a string. As an example, if you had the following routes:
-
-```
-routes/articles/$slug.tsx
-routes/articles/index.tsx
-routes/articles.tsx
-```
-
-Then you need to pass `useRouteData("routes/articles")` to get the data of `routes/articles.tsx`, `useRouteData("routes/articles/index")` to get the data of `routes/articles/index.tsx` and `routes/articles/$slug` to get the data of `routes/articles/$slug.tsx`.
-
-As you can see, the ID is the route file without the extension.
-
-```ts
-let parentData = useRouteData("routes/articles");
-let indexData = useRouteData("routes/articles/index");
-```
-
-The `useRouteData` hook receives a generic to be used as the type of the route data. Because the route may not be found the return type is `Data | undefined`. This means if you do the following:
-
-```ts
-let data = useRouteData<ArticleShowData>("routes/articles");
-```
-
-The type of `data` will be `ArticleShowData | undefined`, so you will need to check if it's not undefined before being able to use it.
 
 ### useShouldHydrate
 
@@ -750,12 +682,12 @@ The `useShouldHydrate` hook will detect `hydrate` as a function and call it usin
 This function receives a Request or Headers objects and will try to get the IP address of the client (the user) who originated the request.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   // using the request
   let ipAddress = getClientIPAddress(request);
   // or using the headers
   let ipAddress = getClientIPAddress(request.headers);
-};
+}
 ```
 
 If it can't find he ipAddress the return value will be `null`. Remember to check if it was able to find it before using it.
@@ -781,12 +713,12 @@ When a header is found that contains a valid IP address, it will return without 
 This function let you get the locales of the client (the user) who originated the request.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   // using the request
   let locales = getClientLocales(request);
   // or using the headers
   let locales = getClientLocales(request.headers);
-};
+}
 ```
 
 The return value is a Locales type, which is `string | string[] | undefined`.
@@ -795,7 +727,7 @@ The returned locales can be directly used on the Intl API when formatting dates,
 
 ```ts
 import { getClientLocales } from "remix-utils";
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   let locales = getClientLocales(request);
   let nowDate = new Date();
   let formatter = new Intl.DateTimeFormat(locales, {
@@ -804,7 +736,7 @@ export let loader: LoaderFunction = async ({ request }) => {
     day: "numeric",
   });
   return json({ now: formatter.format(nowDate) });
-};
+}
 ```
 
 The value could also be returned by the loader and used on the UI to ensure the user's locales is used on both server and client formatted dates.
@@ -816,7 +748,7 @@ This function let you identify if a request was created because of a prefetch tr
 This will let you implement a short cache only for prefetch requests so you [avoid the double data request](https://sergiodxa.com/articles/fix-double-data-request-when-prefetching-in-remix).
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   let data = await getData(request);
   let headers = new Headers();
 
@@ -825,7 +757,7 @@ export let loader: LoaderFunction = async ({ request }) => {
   }
 
   return json(data, { headers });
-};
+}
 ```
 
 ### Responses
@@ -840,9 +772,9 @@ The response created with this function will have the `Location` header pointing
 import { redirectBack } from "remix-utils";
 import type { ActionFunction } from "remix";
 
-export let action: ActionFunction = async ({ request }) => {
+export async function action({ request }: ActionArgs) {
   await redirectBack(request, { fallback: "/" });
-};
+}
 ```
 
 This helper is most useful when used in a generic action to send the user to the same URL it was before.
@@ -855,10 +787,10 @@ Helper function to create a Created (201) response with a JSON body.
 import { created } from "remix-utils";
 import type { ActionFunction } from "remix";
 
-export let action: ActionFunction = async ({ request }) => {
+export async function action({ request }: ActionArgs) {
   let result = await doSomething(request);
   return created(result);
-};
+}
 ```
 
 #### Bad Request
@@ -869,9 +801,9 @@ Helper function to create a Bad Request (400) response with a JSON body.
 import { badRequest } from "remix-utils";
 import type { ActionFunction } from "remix";
 
-export let action: ActionFunction = async () => {
+export async function action() {
   throw badRequest({ message: "You forgot something in the form." });
-};
+}
 ```
 
 #### Unauthorized
@@ -882,10 +814,10 @@ Helper function to create an Unauthorized (401) response with a JSON body.
 import { unauthorized } from "remix-utils";
 import type { LoaderFunction } from "remix";
 
-export let loader: LoaderFunction = async () => {
+export async function loader() {
   // usually what you really want is to throw a redirect to the login page
   throw unauthorized({ message: "You need to login." });
-};
+}
 ```
 
 #### Forbidden
@@ -896,9 +828,9 @@ Helper function to create a Forbidden (403) response with a JSON body.
 import { forbidden } from "remix-utils";
 import type { LoaderFunction } from "remix";
 
-export let loader: LoaderFunction = async () => {
+export async function loader() {
   throw forbidden({ message: "You don't have access for this." });
-};
+}
 ```
 
 #### Not Found
@@ -909,9 +841,9 @@ Helper function to create a Not Found (404) response with a JSON body.
 import { notFound } from "remix-utils";
 import type { LoaderFunction } from "remix";
 
-export let loader: LoaderFunction = async () => {
+export async function loader() {
   throw notFound({ message: "This doesn't exists." });
-};
+}
 ```
 
 #### Unprocessable Entity
@@ -922,9 +854,9 @@ Helper function to create an Unprocessable Entity (422) response with a JSON bod
 import { unprocessableEntity } from "remix-utils";
 import type { LoaderFunction } from "remix";
 
-export let loader: LoaderFunction = async () => {
+export async function loader() {
   throw unprocessableEntity({ message: "This doesn't exists." });
-};
+}
 ```
 
 This is used by the CSRF validation. You probably don't want to use it directly.
@@ -937,9 +869,9 @@ Helper function to create a Server Error (500) response with a JSON body.
 import { serverError } from "remix-utils";
 import type { LoaderFunction } from "remix";
 
-export let loader: LoaderFunction = async () => {
+export async function loader() {
   throw serverError({ message: "Something unexpected happened." });
-};
+}
 ```
 
 #### Not Modified
@@ -947,9 +879,9 @@ export let loader: LoaderFunction = async () => {
 Helper function to create a Not Modified (304) response without a body and any header.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return notModified();
-};
+}
 ```
 
 #### JavaScript
@@ -959,9 +891,9 @@ Helper function to create a JavaScript file response with any header.
 This is useful to create JS files based on data inside a Resource Route.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return javascript("console.log('Hello World')");
-};
+}
 ```
 
 #### Stylesheet
@@ -971,9 +903,9 @@ Helper function to create a CSS file response with any header.
 This is useful to create CSS files based on data inside a Resource Route.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return stylesheet("body { color: red; }");
-};
+}
 ```
 
 #### PDF
@@ -983,9 +915,9 @@ Helper function to create a PDF file response with any header.
 This is useful to create PDF files based on data inside a Resource Route.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return pdf(await generatePDF(request.formData()));
-};
+}
 ```
 
 #### HTML
@@ -995,9 +927,9 @@ Helper function to create a HTML file response with any header.
 This is useful to create HTML files based on data inside a Resource Route.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return html("<h1>Hello World</h1>");
-};
+}
 ```
 
 #### XML
@@ -1007,9 +939,9 @@ Helper function to create a XML file response with any header.
 This is useful to create XML files based on data inside a Resource Route.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return xml("<?xml version='1.0'?><catalog></catalog>");
-};
+}
 ```
 
 #### TXT
@@ -1019,12 +951,12 @@ Helper function to create a TXT file response with any header.
 This is useful to create TXT files based on data inside a Resource Route.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return txt(`
     User-agent: *
     Allow: /
   `);
-};
+}
 ```
 
 ### Typed Cookies
@@ -1221,7 +1153,7 @@ import { rollingCookie } from "remix-utils";
 
 import { sessionCookie } from "~/session.server";
 
-export default function handleRequest(
+export default function Component(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
@@ -1350,7 +1282,7 @@ All functions follows the same signature:
 
 ```ts
 // entry.server.tsx
-export default function handleRequest(
+export default function Component(
   request: Request,
   statusCode: number,
   headers: Headers,
@@ -1377,6 +1309,100 @@ The `preloadRouteAssets` is a combination of both `preloadLinkedAssets` and `pre
 The `preloadLinkedAssets` function will preload any link with `rel: "preload"` added with the Remix's `LinkFunction`, so you can configure assets to preload in your route and send them in the headers automatically. It will additionally preload any linked stylesheet file (with `rel: "stylesheet"`) even if not preloaded so it will load faster.
 
 The `preloadModuleAssets` function will preload all the JS files Remix adds to the page when hydrating it, Remix already renders a `<link rel="modulepreload">` for each now before the `<script type="module">` used to start the application, this will use Link headers to preload those assets.
+
+### Safe Redirects
+
+When performing a redirect, if the URL is user provided we can't trust it, if you do you're opening a vulnerability to phishing scam by allowing bad actors to redirect the user to malicious websites.
+
+```
+https://remix.utills/?redirectTo=https://malicious.app
+```
+
+To help you prevent this Remix Utils gives you a `safeRedirect` function which can be used to check if the URL is "safe".
+
+> **Note**: In this context, safe means the URL starts with `/` but not `//`, this means the URL is a pathname inside the same app and not an external link.
+
+```ts
+export async function loader({ request }: LoaderArgs) {
+  let { searchParams } = new URL(request.url);
+  let redirectTo = searchParams.get("redirectTo");
+  return redirect(safeRedirect(redirectTo, "/home"));
+}
+```
+
+The second argumento of `safeRedirect` is the default redirect which by when not configured is `/`, this lets you tell `safeRedirect` where to redirect the user if the value is not safe.
+
+### JSON Hash Response
+
+When returning a `json` from a `loader` function, you may need to get data from different DB queries or API requests, typically you would something like this
+
+```ts
+export async function loader({ params }: LoaderData) {
+  let postId = z.string().parse(params.postId);
+  let [post, comments] = await Promise.all([getPost(), getComments()]);
+  return json({ post, comments });
+
+  async function getPost() {
+    /* … */
+  }
+  async function getComments() {
+    /* … */
+  }
+}
+```
+
+The `jsonHash` function lets you define those functions directly in the `json`, reducing the need to create extra functions and variables.
+
+```ts
+export async function loader({ params }: LoaderData) {
+  let postId = z.string().parse(params.postId);
+  return jsonHash({
+    async post() {
+      // Implement me
+    },
+    async comments() {
+      // Implement me
+    },
+  });
+}
+```
+
+It also calls your functions using `Promise.all` so you can be sure the data is retrieved in parallel.
+
+Additionally, you can pass non-async functions, values and promises.
+
+```ts
+export async function loader({ params }: LoaderData) {
+  let postId = z.string().parse(params.postId);
+  return jsonHash({
+    postId, // value
+    comments: getComments(), // Promise
+    slug() {
+      // Non-async function
+      return postId.split("-").at(1); // get slug from postId param
+    },
+    async post() {
+      // Async function
+      // Implement me
+    },
+  });
+
+  async function getComments() {
+    /* … */
+  }
+}
+```
+
+The result of `jsonHash` is a `TypedResponse` and it's correctly typed so using it with `typeof loader` works flawlessly.
+
+```ts
+export default function Component() {
+  // all correctly typed
+  let { postId, comments, slug, post } = useLoaderData<typeof loader>();
+
+  // more code…
+}
+```
 
 ## Author
 

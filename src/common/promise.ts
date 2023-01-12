@@ -1,27 +1,26 @@
-import type { PromiseValue } from "type-fest";
 /**
  * @see https://twitter.com/buildsghost/status/1507109734519750680
  */
 export type PromiseHash = Record<string, Promise<unknown>>;
 
 export type AwaitedPromiseHash<Hash extends PromiseHash> = {
-  [Key in keyof Hash]: PromiseValue<Hash[Key]>;
+  [Key in keyof Hash]: Awaited<Hash[Key]>;
 };
 
 /**
  * Get a hash of promises and await them all.
  * Then return the same hash with the resolved values.
  * @example
- * export let loader: LoaderFunction = async ({ request }) => {
+ * export async function loader({ request }: LoaderArgs) {
  *   return json(
  *     promiseHash({
  *       user: getUser(request),
  *       posts: getPosts(request),
  *     })
  *   );
- * };
+ * }
  * @example
- * export let loader: LoaderFunction = async ({ request }) => {
+ * export async function loader({ request }: LoaderArgs) {
  *   return json(
  *     promiseHash({
  *       user: getUser(request),
@@ -34,7 +33,7 @@ export type AwaitedPromiseHash<Hash extends PromiseHash> = {
  *       }),
  *     })
  *   );
- * };
+ * }
  */
 export async function promiseHash<Hash extends PromiseHash>(
   hash: Hash
