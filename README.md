@@ -1305,6 +1305,78 @@ export async function loader({ request }: LoaderArgs) {
 
 The second argumento of `safeRedirect` is the default redirect which by when not configured is `/`, this lets you tell `safeRedirect` where to redirect the user if the value is not safe.
 
+### JSON Hash Response
+
+When returning a `json` from a `loader` function, you may need to get data from different DB queries or API requests, typically you would something like this
+
+```ts
+export async function loader({ params }: LoaderData) {
+  let postId = z.string().parse(params.postId);
+  let [post, comments] = await Promise.all([getPost(), getComments()]);
+  return json({ post, comments });
+
+  async function getPost() {
+    /* … */
+  }
+  async function getComments() {
+    /* … */
+  }
+}
+```
+
+The `jsonHash` function lets you define those functions directly in the `json`, reducing the need to create extra functions and variables.
+
+```ts
+export async function loader({ params }: LoaderData) {
+  let postId = z.string().parse(params.postId);
+  return jsonHash({
+    async post() {
+      // Implement me
+    },
+    async comments() {
+      // Implement me
+    },
+  });
+}
+```
+
+It also calls your functions using `Promise.all` so you can be sure the data is retrieved in parallel.
+
+Additionally, you can pass non-async functions, values and promises.
+
+```ts
+export async function loader({ params }: LoaderData) {
+  let postId = z.string().parse(params.postId);
+  return jsonHash({
+    postId, // value
+    comments: getComments(), // Promise
+    slug() {
+      // Non-async function
+      return postId.split("-").at(1); // get slug from postId param
+    },
+    async post() {
+      // Async function
+      // Implement me
+    },
+  });
+
+  async function getComments() {
+    /* … */
+  }
+}
+```
+
+The result of `jsonHash` is a `TypedResponse` and it's correctly typed so using it with `typeof loader` works flawlessly.
+
+```ts
+export default function Component() {
+  // all correctly typed
+  let { postId, comments, slug, post } = useLoaderData<typeof loader>();
+
+  // more code…
+}
+```
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)

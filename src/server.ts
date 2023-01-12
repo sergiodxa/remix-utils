@@ -6,6 +6,7 @@ export * from "./server/get-client-locales";
 export * from "./server/is-prefetch";
 export * from "./server/named-action";
 export * from "./server/preload-route-assets";
+export * from "./server/json-hash";
 export * from "./server/responses";
 export * from "./server/rolling-cookie";
 export * from "./server/safe-redirect";
