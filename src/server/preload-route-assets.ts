@@ -59,7 +59,7 @@ export function preloadRouteAssets(context: EntryContext, headers: Headers) {
  * }
  */
 export function preloadLinkedAssets(context: EntryContext, headers: Headers) {
-  let links = context.matches
+  let links = context.staticHandlerContext.matches
     .flatMap((match) => {
       let route = context.routeModules[match.route.id];
       if (route.links instanceof Function) return route.links();
@@ -117,8 +117,9 @@ export function preloadModuleAssets(context: EntryContext, headers: Headers) {
     ...context.manifest.entry.imports,
   ];
 
-  for (let match of context.matches) {
-    urls.push(match.route.module, ...(match.route.imports ?? []));
+  for (let match of context.staticHandlerContext.matches) {
+    let route = context.manifest.routes[match.route.id];
+    urls.push(route.module, ...(route.imports ?? []));
   }
 
   for (let url of urls) {
