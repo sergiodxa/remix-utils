@@ -190,7 +190,6 @@ This part of Remix Utils needs React and server-side code.
 In the server, we need to add to our `root` component the following.
 
 ```ts
-import type { LoaderFunction } from "remix";
 import { createAuthenticityToken, json } from "remix-utils";
 import { getSession, commitSession } from "~/services/session.server";
 
@@ -215,7 +214,7 @@ The `createAuthenticityToken` function receives a session object and stores the 
 You need to read the authenticity token and render the `AuthenticityTokenProvider` component wrapping your code in your root.
 
 ```tsx
-import { Outlet, useLoaderData } from "remix";
+import { Outlet, useLoaderData } from "@remix-run/react";
 import { Document } from "~/components/document";
 
 export default function Component() {
@@ -237,7 +236,7 @@ With this, your whole app can access the authenticity token generated in the roo
 When you create a form in some route, you can use the `AuthenticityTokenInput` component to add the authenticity token to the form.
 
 ```tsx
-import { Form } from "remix";
+import { Form } from "@remix-run/react";
 import { AuthenticityTokenInput } from "remix-utils";
 
 export default function Component() {
@@ -281,8 +280,7 @@ export function useMarkAsRead() {
 
 Finally, you need to verify the authenticity token in the action that received the request.
 
-```ts
-import type { ActionFunction } from "remix";
+```t
 import { verifyAuthenticityToken, redirectBack } from "remix-utils";
 import { getSession, commitSession } from "~/services/session.server";
 
@@ -628,7 +626,7 @@ In your document component, you can call this hook to dynamically render the Scr
 
 ```tsx
 import type { ReactNode } from "react";
-import { Links, LiveReload, Meta, Scripts } from "remix";
+import { Links, LiveReload, Meta, Scripts } from "@remix-run/react";
 import { useShouldHydrate } from "remix-utils";
 
 interface DocumentProps {
@@ -770,7 +768,6 @@ The response created with this function will have the `Location` header pointing
 
 ```ts
 import { redirectBack } from "remix-utils";
-import type { ActionFunction } from "remix";
 
 export async function action({ request }: ActionArgs) {
   await redirectBack(request, { fallback: "/" });
@@ -785,7 +782,6 @@ Helper function to create a Created (201) response with a JSON body.
 
 ```ts
 import { created } from "remix-utils";
-import type { ActionFunction } from "remix";
 
 export async function action({ request }: ActionArgs) {
   let result = await doSomething(request);
@@ -799,7 +795,6 @@ Helper function to create a Bad Request (400) response with a JSON body.
 
 ```ts
 import { badRequest } from "remix-utils";
-import type { ActionFunction } from "remix";
 
 export async function action() {
   throw badRequest({ message: "You forgot something in the form." });
@@ -812,7 +807,6 @@ Helper function to create an Unauthorized (401) response with a JSON body.
 
 ```ts
 import { unauthorized } from "remix-utils";
-import type { LoaderFunction } from "remix";
 
 export async function loader() {
   // usually what you really want is to throw a redirect to the login page
@@ -826,7 +820,6 @@ Helper function to create a Forbidden (403) response with a JSON body.
 
 ```ts
 import { forbidden } from "remix-utils";
-import type { LoaderFunction } from "remix";
 
 export async function loader() {
   throw forbidden({ message: "You don't have access for this." });
@@ -839,7 +832,6 @@ Helper function to create a Not Found (404) response with a JSON body.
 
 ```ts
 import { notFound } from "remix-utils";
-import type { LoaderFunction } from "remix";
 
 export async function loader() {
   throw notFound({ message: "This doesn't exists." });
@@ -852,7 +844,6 @@ Helper function to create an Unprocessable Entity (422) response with a JSON bod
 
 ```ts
 import { unprocessableEntity } from "remix-utils";
-import type { LoaderFunction } from "remix";
 
 export async function loader() {
   throw unprocessableEntity({ message: "This doesn't exists." });
@@ -867,7 +858,6 @@ Helper function to create a Server Error (500) response with a JSON body.
 
 ```ts
 import { serverError } from "remix-utils";
-import type { LoaderFunction } from "remix";
 
 export async function loader() {
   throw serverError({ message: "Something unexpected happened." });
@@ -964,7 +954,7 @@ export async function loader({ request }: LoaderArgs) {
 Cookie objects in Remix allows any type, the typed cookies from Remix Utils lets you use Zod to parse the cookie values and ensure they conform to a schema.
 
 ```ts
-import { createCookie } from "remix";
+import { createCookie } from "@remix-run/node";
 import { createTypedCookie } from "remix-utils";
 import { z } from "zod";
 
@@ -1031,7 +1021,7 @@ sessionTypedCookie.parse(request.headers.get("Cookie"));
 Session objects in Remix allows any type, the typed sessions from Remix Utils lets you use Zod to parse the session data and ensure they conform to a schema.
 
 ```ts
-import { createCookieSessionStorage } from "remix";
+import { createCookieSessionStorage } from "@remix-run/node";
 import { createTypedSessionStorage } from "remix-utils";
 import { z } from "zod";
 
