@@ -1,4 +1,17 @@
-type Actions = Record<string, () => Promise<Response>>;
+import type { TypedResponse } from "@remix-run/server-runtime";
+
+type ActionsRecord = Record<string, () => Promise<TypedResponse<unknown>>>;
+
+type ResponsesRecord<Actions extends ActionsRecord> = {
+  [Action in keyof Actions]: Actions[Action] extends () => Promise<
+    TypedResponse<infer Result>
+  >
+    ? Result
+    : never;
+};
+
+type ResponsesUnion<Actions extends ActionsRecord> =
+  ResponsesRecord<Actions>[keyof Actions];
 
 /**
  * Runs an action based on the request's action name
@@ -8,28 +21,37 @@ type Actions = Record<string, () => Promise<Response>>;
  * @throws {ReferenceError} Action name not found
  * @throws {ReferenceError} Action "${name}" not found
  */
-export function namedAction(
+export function namedAction<Actions extends ActionsRecord>(
   request: Request,
   actions: Actions
-): Promise<Response>;
-export function namedAction(url: URL, actions: Actions): Promise<Response>;
-export function namedAction(
+): Promise<TypedResponse<ResponsesUnion<Actions>>>;
+export function namedAction<Actions extends ActionsRecord>(
+  url: URL,
+  actions: Actions
+): Promise<TypedResponse<ResponsesUnion<Actions>>>;
+export function namedAction<Actions extends ActionsRecord>(
   searchParams: URLSearchParams,
   actions: Actions
-): Promise<Response>;
-export function namedAction(
+): Promise<TypedResponse<ResponsesUnion<Actions>>>;
+export function namedAction<Actions extends ActionsRecord>(
   formData: FormData,
   actions: Actions
-): Promise<Response>;
-export async function namedAction(
+): Promise<TypedResponse<ResponsesUnion<Actions>>>;
+export async function namedAction<Actions extends ActionsRecord>(
   input: Request | URL | URLSearchParams | FormData,
   actions: Actions
-) {
+): Promise<TypedResponse<ResponsesUnion<Actions>>> {
   let name = await getActionName(input);
 
-  if (name && name in actions) return actions[name]();
+  if (name && name in actions) {
+    return actions[name]() as unknown as TypedResponse<ResponsesUnion<Actions>>;
+  }
 
-  if (name === null && "default" in actions) return actions["default"]();
+  if (name === null && "default" in actions) {
+    return actions["default"]() as unknown as TypedResponse<
+      ResponsesUnion<Actions>
+    >;
+  }
 
   if (name === null) throw new ReferenceError("Action name not found");
 
