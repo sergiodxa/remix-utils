@@ -939,9 +939,9 @@ Helper function to create a XML file response with any header.
 This is useful to create XML files based on data inside a Resource Route.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return xml("<?xml version='1.0'?><catalog></catalog>");
-};
+}
 ```
 
 #### TXT
@@ -951,12 +951,12 @@ Helper function to create a TXT file response with any header.
 This is useful to create TXT files based on data inside a Resource Route.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return txt(`
     User-agent: *
     Allow: /
   `);
-};
+}
 ```
 
 ### Typed Cookies
