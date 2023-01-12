@@ -1012,6 +1012,21 @@ export let loader: LoaderFunction = async ({ request }) => {
 };
 ```
 
+#### TXT
+
+Helper function to create a TXT file response with any header.
+
+This is useful to create TXT files based on data inside a Resource Route.
+
+```ts
+export let loader: LoaderFunction = async ({ request }) => {
+  return txt(`
+    User-agent: *
+    Allow: /
+  `);
+};
+```
+
 ### Typed Cookies
 
 Cookie objects in Remix allows any type, the typed cookies from Remix Utils lets you use Zod to parse the cookie values and ensure they conform to a schema.
