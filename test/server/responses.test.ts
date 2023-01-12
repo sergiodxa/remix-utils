@@ -2,6 +2,8 @@ import {
   badRequest,
   forbidden,
   html,
+  xml,
+  txt,
   image,
   ImageType,
   javascript,
@@ -290,6 +292,75 @@ describe("Responses", () => {
       expect(response.status).toBe(200);
       expect(response.headers.get("Content-Type")).toBe(
         "text/html; charset=utf-8"
+      );
+      expect(response.headers.get("X-Test")).toBe("it worked");
+    });
+  });
+
+  describe(xml, () => {
+    let content = "<?xml version='1.0'?><catalog></catalog>";
+    test("Should return Response with status 200", async () => {
+      let response = xml(content);
+      await expect(response.text()).resolves.toBe(content);
+      expect(response.status).toBe(200);
+      expect(response.headers.get("Content-Type")).toBe(
+        "application/xml; charset=utf-8"
+      );
+    });
+
+    test("Should allow defining the status as second options", async () => {
+      let response = xml(content, 201);
+      await expect(response.text()).resolves.toBe(content);
+      expect(response.status).toBe(201);
+      expect(response.headers.get("Content-Type")).toBe(
+        "application/xml; charset=utf-8"
+      );
+    });
+
+    test("Should allow changing the Response headers", async () => {
+      let response = xml(content, {
+        headers: { "X-Test": "it worked" },
+      });
+      await expect(response.text()).resolves.toBe(content);
+      expect(response.status).toBe(200);
+      expect(response.headers.get("Content-Type")).toBe(
+        "application/xml; charset=utf-8"
+      );
+      expect(response.headers.get("X-Test")).toBe("it worked");
+    });
+  });
+
+  describe(txt, () => {
+    let content = `
+      User-agent: *
+      Allow: /
+    `;
+    test("Should return Response with status 200", async () => {
+      let response = txt(content);
+      await expect(response.text()).resolves.toBe(content);
+      expect(response.status).toBe(200);
+      expect(response.headers.get("Content-Type")).toBe(
+        "text/plain; charset=utf-8"
+      );
+    });
+
+    test("Should allow defining the status as second options", async () => {
+      let response = txt(content, 201);
+      await expect(response.text()).resolves.toBe(content);
+      expect(response.status).toBe(201);
+      expect(response.headers.get("Content-Type")).toBe(
+        "text/plain; charset=utf-8"
+      );
+    });
+
+    test("Should allow changing the Response headers", async () => {
+      let response = txt(content, {
+        headers: { "X-Test": "it worked" },
+      });
+      await expect(response.text()).resolves.toBe(content);
+      expect(response.status).toBe(200);
+      expect(response.headers.get("Content-Type")).toBe(
+        "text/plain; charset=utf-8"
       );
       expect(response.headers.get("X-Test")).toBe("it worked");
     });
