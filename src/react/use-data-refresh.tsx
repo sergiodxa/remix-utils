@@ -2,6 +2,8 @@ import { useFetcher } from "@remix-run/react";
 import { useCallback, useMemo } from "react";
 
 /**
+ * @deprecated Use the `useRevalidator` hook from `@remix-run/react`.
+ *
  * Trigger a refresh of the current routes loaders.
  *
  * This work by sending a `POST` request with a fetcher.submit to /dev/null in
