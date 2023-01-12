@@ -490,45 +490,6 @@ export function Document({ children, title }: Props) {
 
 Now, any structured data you defined in the `StructuredDataFunction` will be added to the HTML, in the head. You may choose to include the `<StructuredData />` in either the head or the body, both are valid.
 
-### useDataRefresh
-
-This hook lets you trigger a refresh of the loaders in the current URL.
-
-The way this works is by sending a fetcher.submit to `/dev/null` to trigger all loaders to run.
-
-You need to create `app/routes/dev/null.ts` and define an action that returns null.
-
-```ts
-// app/routes/dev/null.ts
-export function action() {
-  return null;
-}
-```
-
-This Hook is mostly useful if you want to trigger the refresh manually from an effect, examples of this are:
-
-- Set an interval to trigger the refresh
-- Refresh when the browser tab is focused again
-- Refresh when the user is online again
-
-```ts
-import { useDataRefresh } from "remix-utils";
-
-function useDataRefreshOnInterval() {
-  let { refresh } = useDataRefresh();
-  useEffect(() => {
-    let interval = setInterval(refresh, 5000);
-    return () => clearInterval(interval);
-  }, [refresh]);
-}
-```
-
-The return value of `useDataRefresh` is an object with the following keys:
-
-- refresh: a function that trigger the refresh
-- type: a string which can be `init`, `refreshRedirect` or `refresh`
-- status: a string which can be `loading` or `idle`
-
 ### useGlobalTransitionStates
 
 This hook lets you know if the value of `transition.state` and every `fetcher.state` in the app.
