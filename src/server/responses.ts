@@ -3,7 +3,7 @@ import { json, redirect } from "@remix-run/server-runtime";
 /**
  * Create a response receiving a JSON object with the status code 201.
  * @example
- * export let action: ActionFunction = async ({ request }) => {
+ * export async function action({ request }: ActionArgs) {
  *   let result = await doSomething(request);
  *   return created(result);
  * }
@@ -21,7 +21,7 @@ export function created<Data = unknown>(
  * URL in case the Referer couldn't be found, this fallback should be a URL you
  * may be ok the user to land to after an action even if it's not the same.
  * @example
- * export let action: ActionFunction = async ({ request }) => {
+ * export async function action({ request }: ActionArgs) {
  *   await doSomething(request);
  *   // If the user was on `/search?query=something` we redirect to that URL
  *   // but if we couldn't we redirect to `/search`, which is an good enough
@@ -39,7 +39,7 @@ export function redirectBack(
 /**
  * Create a response receiving a JSON object with the status code 400.
  * @example
- * export let loader: LoaderFunction = async ({ request }) => {
+ * export async function loader({ request }: LoaderArgs) {
  *   let user = await getUser(request);
  *   throw badRequest<BoundaryData>({ user });
  * }
@@ -54,7 +54,7 @@ export function badRequest<Data = unknown>(
 /**
  * Create a response receiving a JSON object with the status code 401.
  * @example
- * export let loader: LoaderFunction = async ({ request }) => {
+ * export async function loader({ request }: LoaderArgs) {
  *   let user = await getUser(request);
  *   throw unauthorized<BoundaryData>({ user });
  * }
@@ -69,7 +69,7 @@ export function unauthorized<Data = unknown>(
 /**
  * Create a response receiving a JSON object with the status code 403.
  * @example
- * export let loader: LoaderFunction = async ({ request }) => {
+ * export async function loader({ request }: LoaderArgs) {
  *   let user = await getUser(request);
  *   if (!user.idAdmin) throw forbidden<BoundaryData>({ user });
  * }
@@ -84,7 +84,7 @@ export function forbidden<Data = unknown>(
 /**
  * Create a response receiving a JSON object with the status code 404.
  * @example
- * export let loader: LoaderFunction = async ({ request, params }) => {
+ * export async function loader({ request, params }: LoaderArgs) {
  *   let user = await getUser(request);
  *   if (!db.exists(params.id)) throw notFound<BoundaryData>({ user });
  * }
@@ -99,7 +99,7 @@ export function notFound<Data = unknown>(
 /**
  * Create a response receiving a JSON object with the status code 422.
  * @example
- * export let loader: LoaderFunction = async ({ request, params }) => {
+ * export async function loader({ request, params }: LoaderArgs) {
  *   let user = await getUser(request);
  *   throw unprocessableEntity<BoundaryData>({ user });
  * }
@@ -114,7 +114,7 @@ export function unprocessableEntity<Data = unknown>(
 /**
  * Create a response receiving a JSON object with the status code 500.
  * @example
- * export let loader: LoaderFunction = async ({ request }) => {
+ * export async function loader({ request }: LoaderArgs) {
  *   let user = await getUser(request);
  *   throw serverError<BoundaryData>({ user });
  * }
@@ -130,7 +130,7 @@ export function serverError<Data = unknown>(
  * Create a response with only the status 304 and optional headers.
  * This is useful when trying to implement conditional responses based on Etags.
  * @example
- * export let loader: LoaderFunction = async ({ request }) => {
+ * export async function loader({ request }: LoaderArgs) {
  *   return notModified();
  * }
  */
@@ -145,7 +145,7 @@ export function notModified(init?: Omit<ResponseInit, "status">) {
  *
  * This is useful to dynamically create a JS file from a Resource Route.
  * @example
- * export let loader: LoaderFunction = async ({ request }) => {
+ * export async function loader({ request }: LoaderArgs) {
  *   return javascript("console.log('Hello World')");
  * }
  */
@@ -173,7 +173,7 @@ export function javascript(
  *
  * This is useful to dynamically create a CSS file from a Resource Route.
  * @example
- * export let loader: LoaderFunction = async ({ request }) => {
+ * export async function loader({ request }: LoaderArgs) {
  *   return css("body { color: red; }");
  * }
  */
@@ -201,7 +201,7 @@ export function stylesheet(
  *
  * This is useful to dynamically create a PDF file from a Resource Route.
  * @example
- * export let loader: LoaderFunction = async ({ request }) => {
+ * export async function loader({ request }: LoaderArgs) {
  *   return pdf(await generatePDF(request.formData()));
  * }
  */
@@ -229,7 +229,7 @@ export function pdf(
  *
  * This is useful to dynamically create a HTML file from a Resource Route.
  * @example
- * export let loader: LoaderFunction = async ({ request }) => {
+ * export async function loader({ request }: LoaderArgs) {
  *   return html("<h1>Hello World</h1>");
  * }
  */
@@ -266,7 +266,7 @@ export type ImageType =
  *
  * This is useful to dynamically create a image file from a Resource Route.
  * @example
- * export let loader: LoaderFunction = async ({ request }) => {
+ * export async function loader({ request }: LoaderArgs) {
  *   return image(await takeScreenshot(), { type: "image/avif" });
  * }
  */

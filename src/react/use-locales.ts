@@ -10,12 +10,12 @@ import type { Locales } from "../server/get-client-locales";
  *
  * @example
  * // in the root loader
- * export let loader: LoaderFunction = async ({ request }) => {
+ * export async function loader({ request }: LoaderArgs) {
  *   let locales = getClientLocales(request);
  *   return json({ locales });
  * }
  * // in any route (including root!)
- * export default function Screen() {
+ * export default function Component() {
  *   let locales = useLocales();
  *   let date = new Date();
  *   let dateTime = date.toISOString;

@@ -801,9 +801,9 @@ Helper function to create a Bad Request (400) response with a JSON body.
 import { badRequest } from "remix-utils";
 import type { ActionFunction } from "remix";
 
-export let action: ActionFunction = async () => {
+export async function action() {
   throw badRequest({ message: "You forgot something in the form." });
-};
+}
 ```
 
 #### Unauthorized
@@ -814,10 +814,10 @@ Helper function to create an Unauthorized (401) response with a JSON body.
 import { unauthorized } from "remix-utils";
 import type { LoaderFunction } from "remix";
 
-export let loader: LoaderFunction = async () => {
+export async function loader() {
   // usually what you really want is to throw a redirect to the login page
   throw unauthorized({ message: "You need to login." });
-};
+}
 ```
 
 #### Forbidden
@@ -828,9 +828,9 @@ Helper function to create a Forbidden (403) response with a JSON body.
 import { forbidden } from "remix-utils";
 import type { LoaderFunction } from "remix";
 
-export let loader: LoaderFunction = async () => {
+export async function loader() {
   throw forbidden({ message: "You don't have access for this." });
-};
+}
 ```
 
 #### Not Found
@@ -841,9 +841,9 @@ Helper function to create a Not Found (404) response with a JSON body.
 import { notFound } from "remix-utils";
 import type { LoaderFunction } from "remix";
 
-export let loader: LoaderFunction = async () => {
+export async function loader() {
   throw notFound({ message: "This doesn't exists." });
-};
+}
 ```
 
 #### Unprocessable Entity
@@ -854,9 +854,9 @@ Helper function to create an Unprocessable Entity (422) response with a JSON bod
 import { unprocessableEntity } from "remix-utils";
 import type { LoaderFunction } from "remix";
 
-export let loader: LoaderFunction = async () => {
+export async function loader() {
   throw unprocessableEntity({ message: "This doesn't exists." });
-};
+}
 ```
 
 This is used by the CSRF validation. You probably don't want to use it directly.
@@ -869,9 +869,9 @@ Helper function to create a Server Error (500) response with a JSON body.
 import { serverError } from "remix-utils";
 import type { LoaderFunction } from "remix";
 
-export let loader: LoaderFunction = async () => {
+export async function loader() {
   throw serverError({ message: "Something unexpected happened." });
-};
+}
 ```
 
 #### Not Modified

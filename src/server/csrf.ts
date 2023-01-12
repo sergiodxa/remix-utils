@@ -24,19 +24,19 @@ export function createAuthenticityToken(session: Session, sessionKey = "csrf") {
 /**
  * Verify if a request and session has a valid CSRF token.
  * @example
- * let action: ActionFunction = async ({ request }) => {
+ * export async function action({ request }: ActionArgs) {
  *   let session = await getSession(request.headers.get("Cookie"));
  *   await verifyAuthenticityToken(request, session);
  *   // the request is authenticated and you can do anything here
  * }
  * @example
- * let action: ActionFunction = async ({ request }) => {
+ * export async function action({ request }: ActionArgs) {
  *   let session = await getSession(request.headers.get("Cookie"));
  *   await verifyAuthenticityToken(request, session, "csrfToken");
  *   // the request is authenticated and you can do anything here
  * }
  * @example
- * let action: ActionFunction = async ({ request }) => {
+ * export async function action({ request }: ActionArgs) {
  *   let session = await getSession(request.headers.get("Cookie"));
  *   let formData = await unstable_parseMultipartFormData(request, uploadHandler);
  *   await verifyAuthenticityToken(formData, session);

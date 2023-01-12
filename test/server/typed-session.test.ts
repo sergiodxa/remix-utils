@@ -1,10 +1,10 @@
 import {
-  ActionFunction,
+  ActionArgs,
   createCookie,
   createCookieSessionStorage,
   isSession,
   json,
-  LoaderFunction,
+  LoaderArgs,
 } from "@remix-run/node";
 import { z } from "zod";
 import {
@@ -37,7 +37,7 @@ declare module "@remix-run/server-runtime" {
   }
 }
 
-let loader: LoaderFunction = async ({ request, context }) => {
+async function loader({ request, context }: LoaderArgs) {
   let session = await context.sessionStorage.getSession(
     request.headers.get("Cookie")
   );
@@ -51,9 +51,9 @@ let loader: LoaderFunction = async ({ request, context }) => {
   );
 
   return json({ value }, { headers });
-};
+}
 
-let action: ActionFunction = async ({ request, context }) => {
+async function action({ request, context }: ActionArgs) {
   let session = await context.sessionStorage.getSession(
     request.headers.get("Cookie")
   );
@@ -71,7 +71,7 @@ let action: ActionFunction = async ({ request, context }) => {
   );
 
   return json(null, { headers });
-};
+}
 
 describe("Typed Sessions", () => {
   test("typedSessionStorage has correct methods", () => {
@@ -144,7 +144,7 @@ describe("Typed Sessions", () => {
 
     let response: Response = await loader({
       request: new Request("http://remix.utils", {
-        headers: { Cookie: actionResponse.headers.get("Set-Cookie") },
+        headers: { Cookie: actionResponse.headers.get("Set-Cookie") ?? "" },
       }),
       params: {},
       context: { sessionStorage: typedSessionStorage, key: "message" },
@@ -189,7 +189,7 @@ describe("Typed Sessions", () => {
 
     let response: Response = await loader({
       request: new Request("http://remix.utils", {
-        headers: { Cookie: actionResponse.headers.get("Set-Cookie") },
+        headers: { Cookie: actionResponse.headers.get("Set-Cookie") ?? "" },
       }),
       params: {},
       context: { sessionStorage: typedSessionStorage, key: "message" },
