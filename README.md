@@ -1283,6 +1283,28 @@ The `preloadLinkedAssets` function will preload any link with `rel: "preload"` a
 
 The `preloadModuleAssets` function will preload all the JS files Remix adds to the page when hydrating it, Remix already renders a `<link rel="modulepreload">` for each now before the `<script type="module">` used to start the application, this will use Link headers to preload those assets.
 
+### Safe Redirects
+
+When performing a redirect, if the URL is user provided we can't trust it, if you do you're opening a vulnerability to phishing scam by allowing bad actors to redirect the user to malicious websites.
+
+```
+https://remix.utills/?redirectTo=https://malicious.app
+```
+
+To help you prevent this Remix Utils gives you a `safeRedirect` function which can be used to check if the URL is "safe".
+
+> **Note**: In this context, safe means the URL starts with `/` but not `//`, this means the URL is a pathname inside the same app and not an external link.
+
+```ts
+export async function loader({ request }: LoaderArgs) {
+  let { searchParams } = new URL(request.url);
+  let redirectTo = searchParams.get("redirectTo");
+  return redirect(safeRedirect(redirectTo, "/home"));
+}
+```
+
+The second argumento of `safeRedirect` is the default redirect which by when not configured is `/`, this lets you tell `safeRedirect` where to redirect the user if the value is not safe.
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)
