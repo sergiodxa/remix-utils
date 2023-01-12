@@ -46,10 +46,10 @@ describe(getClientLocales, () => {
 
     expect(
       new Intl.DateTimeFormat(locale, { timeZone: "UTC" }).format(date)
-    ).toMatchInlineSnapshot(`"9/29/1992"`);
+    ).toBe("9/29/1992");
 
-    expect(
-      date.toLocaleString(locale, { timeZone: "UTC" })
-    ).toMatchInlineSnapshot(`"9/29/1992, 12:00:00 AM"`);
+    expect(date.toLocaleString(locale, { timeZone: "UTC" })).toBe(
+      "9/29/1992, 12:00:00 AM"
+    );
   });
 });
