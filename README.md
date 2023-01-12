@@ -1011,7 +1011,6 @@ export let loader: LoaderFunction = async ({ request }) => {
   return xml("<?xml version='1.0'?><catalog></catalog>");
 };
 ```
-```
 
 #### TXT
 
