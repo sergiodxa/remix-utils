@@ -278,6 +278,37 @@ export function xml(
   });
 }
 
+/**
+ * Create a response with a TXT file response.
+ * It receives a string with the TXT content and set the Content-Type header to
+ * `text/plain; charset=utf-8` always.
+ *
+ * This is useful to dynamically create a TXT file from a Resource Route.
+ * @example
+ * export let loader: LoaderFunction = async ({ request }) => {
+ *   return txt(`
+ *     User-agent: *
+ *     Allow: /
+ *   `);
+ * }
+ */
+export function txt(
+  content: string,
+  init: number | ResponseInit = {}
+): Response {
+  let responseInit = typeof init === "number" ? { status: init } : init;
+
+  let headers = new Headers(responseInit.headers);
+  if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", "text/plain; charset=utf-8");
+  }
+
+  return new Response(content, {
+    ...responseInit,
+    headers,
+  });
+}
+
 export type ImageType =
   | "image/jpeg"
   | "image/png"
