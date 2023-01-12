@@ -620,35 +620,6 @@ export default function Screen() {
 
 The return type of `useLocales` is ready to be used with the Intl API.
 
-### useRouteData
-
-This hook lets you access the data of any route in the current page. This can include child or parent routes.
-
-To use it, call `useRouteData` in your component and pass the route ID as a string. As an example, if you had the following routes:
-
-```
-routes/articles/$slug.tsx
-routes/articles/index.tsx
-routes/articles.tsx
-```
-
-Then you need to pass `useRouteData("routes/articles")` to get the data of `routes/articles.tsx`, `useRouteData("routes/articles/index")` to get the data of `routes/articles/index.tsx` and `routes/articles/$slug` to get the data of `routes/articles/$slug.tsx`.
-
-As you can see, the ID is the route file without the extension.
-
-```ts
-let parentData = useRouteData("routes/articles");
-let indexData = useRouteData("routes/articles/index");
-```
-
-The `useRouteData` hook receives a generic to be used as the type of the route data. Because the route may not be found the return type is `Data | undefined`. This means if you do the following:
-
-```ts
-let data = useRouteData<ArticleShowData>("routes/articles");
-```
-
-The type of `data` will be `ArticleShowData | undefined`, so you will need to check if it's not undefined before being able to use it.
-
 ### useShouldHydrate
 
 If you are building a Remix application where most routes are static, and you want to avoid loading client-side JS, you can use this hook, plus some conventions, to detect if one or more active routes needs JS and only render the Scripts component in that case.

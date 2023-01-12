@@ -9,5 +9,4 @@ export * from "./react/use-event-source";
 export * from "./react/use-global-pending-state";
 export * from "./react/use-hydrated";
 export * from "./react/use-locales";
-export * from "./react/use-route-data";
 export * from "./react/use-should-hydrate";
