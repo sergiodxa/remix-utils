@@ -17,20 +17,20 @@ The `promiseHash` function is not directly related to Remix but it's a useful fu
 This function is an object version of `Promise.all` which lets you pass an object with promises and get an object with the same keys with the resolved values.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return json(
     promiseHash({
       user: getUser(request),
       posts: getPosts(request),
     })
   );
-};
+}
 ```
 
 You can use nested `promiseHash` to get a nested object with resolved values.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return json(
     promiseHash({
       user: getUser(request),
@@ -43,7 +43,7 @@ export let loader: LoaderFunction = async ({ request }) => {
       }),
     })
   );
-};
+}
 ```
 
 ### cacheAssets
@@ -87,7 +87,7 @@ You can provide a fallback component to be used on SSR, and while optional, it's
 ```tsx
 import { ClientOnly } from "remix-utils";
 
-export default function View() {
+export default function Component() {
   return (
     <ClientOnly fallback={<SimplerStaticVersion />}>
       {() => <ComplexComponentNeedingBrowserEnvironment />}
@@ -119,31 +119,31 @@ There are two main ways to use the `cors` function.
 If you want to use it on every loader/action, you can do it like this:
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   let data = await getData(request);
   let response = json<LoaderData>(data);
   return await cors(request, response);
-};
+}
 ```
 
 You could also do the `json` and `cors` call in one line.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   let data = await getData(request);
   return await cors(request, json<LoaderData>(data));
-};
+}
 ```
 
 And because `cors` mutates the response, you can also call it and later return.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   let data = await getData(request);
   let response = json<LoaderData>(data);
   await cors(request, response); // this mutates the Response object
   return response; // so you can return it here
-};
+}
 ```
 
 If you want to setup it globally once, you can do it like this in `entry.server`
@@ -198,14 +198,14 @@ interface LoaderData {
   csrf: string;
 }
 
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   let session = await getSession(request.headers.get("cookie"));
   let token = createAuthenticityToken(session);
   return json<LoaderData>(
     { csrf: token },
     { headers: { "Set-Cookie": await commitSession(session) } }
   );
-};
+}
 ```
 
 The `createAuthenticityToken` function receives a session object and stores the authenticity token there using the `csrf` key (you can pass the key name as a second argument). Finally, you need to return the token in a `json` response and commit the session.
@@ -218,7 +218,7 @@ You need to read the authenticity token and render the `AuthenticityTokenProvide
 import { Outlet, useLoaderData } from "remix";
 import { Document } from "~/components/document";
 
-export default function Root() {
+export default function Component() {
   let { csrf } = useLoaderData<LoaderData>();
   return (
     <AuthenticityTokenProvider token={csrf}>
@@ -240,7 +240,7 @@ When you create a form in some route, you can use the `AuthenticityTokenInput` c
 import { Form } from "remix";
 import { AuthenticityTokenInput } from "remix-utils";
 
-export default function SomeRoute() {
+export default function Component() {
   return (
     <Form method="post">
       <AuthenticityTokenInput />
@@ -286,12 +286,12 @@ import type { ActionFunction } from "remix";
 import { verifyAuthenticityToken, redirectBack } from "remix-utils";
 import { getSession, commitSession } from "~/services/session.server";
 
-export let action: ActionFunction = async ({ request }) => {
+export async function action({ request }: ActionArgs) {
   let session = await getSession(request.headers.get("Cookie"));
   await verifyAuthenticityToken(request, session);
   // do something here
   return redirectBack(request, { fallback: "/fallback" });
-};
+}
 ```
 
 Suppose the authenticity token is missing on the session, the request body, or doesn't match. In that case, the function will throw an Unprocessable Entity response that you can either catch and handle manually or let pass and render your CatchBoundary.
@@ -603,13 +603,13 @@ You can combine it with `getClientLocal` to get the locales on the root loader a
 
 ```ts
 // in the root loader
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   let locales = getClientLocales(request);
   return json({ locales });
-};
+}
 
 // in any route (including root!)
-export default function Screen() {
+export default function Component() {
   let locales = useLocales();
   let date = new Date();
   let dateTime = date.toISOString;
@@ -682,12 +682,12 @@ The `useShouldHydrate` hook will detect `hydrate` as a function and call it usin
 This function receives a Request or Headers objects and will try to get the IP address of the client (the user) who originated the request.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   // using the request
   let ipAddress = getClientIPAddress(request);
   // or using the headers
   let ipAddress = getClientIPAddress(request.headers);
-};
+}
 ```
 
 If it can't find he ipAddress the return value will be `null`. Remember to check if it was able to find it before using it.
@@ -713,12 +713,12 @@ When a header is found that contains a valid IP address, it will return without 
 This function let you get the locales of the client (the user) who originated the request.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   // using the request
   let locales = getClientLocales(request);
   // or using the headers
   let locales = getClientLocales(request.headers);
-};
+}
 ```
 
 The return value is a Locales type, which is `string | string[] | undefined`.
@@ -727,7 +727,7 @@ The returned locales can be directly used on the Intl API when formatting dates,
 
 ```ts
 import { getClientLocales } from "remix-utils";
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   let locales = getClientLocales(request);
   let nowDate = new Date();
   let formatter = new Intl.DateTimeFormat(locales, {
@@ -736,7 +736,7 @@ export let loader: LoaderFunction = async ({ request }) => {
     day: "numeric",
   });
   return json({ now: formatter.format(nowDate) });
-};
+}
 ```
 
 The value could also be returned by the loader and used on the UI to ensure the user's locales is used on both server and client formatted dates.
@@ -748,7 +748,7 @@ This function let you identify if a request was created because of a prefetch tr
 This will let you implement a short cache only for prefetch requests so you [avoid the double data request](https://sergiodxa.com/articles/fix-double-data-request-when-prefetching-in-remix).
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   let data = await getData(request);
   let headers = new Headers();
 
@@ -757,7 +757,7 @@ export let loader: LoaderFunction = async ({ request }) => {
   }
 
   return json(data, { headers });
-};
+}
 ```
 
 ### Responses
@@ -772,9 +772,9 @@ The response created with this function will have the `Location` header pointing
 import { redirectBack } from "remix-utils";
 import type { ActionFunction } from "remix";
 
-export let action: ActionFunction = async ({ request }) => {
+export async function action({ request }: ActionArgs) {
   await redirectBack(request, { fallback: "/" });
-};
+}
 ```
 
 This helper is most useful when used in a generic action to send the user to the same URL it was before.
@@ -787,10 +787,10 @@ Helper function to create a Created (201) response with a JSON body.
 import { created } from "remix-utils";
 import type { ActionFunction } from "remix";
 
-export let action: ActionFunction = async ({ request }) => {
+export async function action({ request }: ActionArgs) {
   let result = await doSomething(request);
   return created(result);
-};
+}
 ```
 
 #### Bad Request
@@ -879,9 +879,9 @@ export let loader: LoaderFunction = async () => {
 Helper function to create a Not Modified (304) response without a body and any header.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return notModified();
-};
+}
 ```
 
 #### JavaScript
@@ -891,9 +891,9 @@ Helper function to create a JavaScript file response with any header.
 This is useful to create JS files based on data inside a Resource Route.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return javascript("console.log('Hello World')");
-};
+}
 ```
 
 #### Stylesheet
@@ -903,9 +903,9 @@ Helper function to create a CSS file response with any header.
 This is useful to create CSS files based on data inside a Resource Route.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return stylesheet("body { color: red; }");
-};
+}
 ```
 
 #### PDF
@@ -915,9 +915,9 @@ Helper function to create a PDF file response with any header.
 This is useful to create PDF files based on data inside a Resource Route.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return pdf(await generatePDF(request.formData()));
-};
+}
 ```
 
 #### HTML
@@ -927,9 +927,9 @@ Helper function to create a HTML file response with any header.
 This is useful to create HTML files based on data inside a Resource Route.
 
 ```ts
-export let loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   return html("<h1>Hello World</h1>");
-};
+}
 ```
 
 ### Typed Cookies
@@ -1126,7 +1126,7 @@ import { rollingCookie } from "remix-utils";
 
 import { sessionCookie } from "~/session.server";
 
-export default function handleRequest(
+export default function Component(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
@@ -1255,7 +1255,7 @@ All functions follows the same signature:
 
 ```ts
 // entry.server.tsx
-export default function handleRequest(
+export default function Component(
   request: Request,
   statusCode: number,
   headers: Headers,
