@@ -1143,7 +1143,7 @@ import { rollingCookie } from "remix-utils";
 
 import { sessionCookie } from "~/session.server";
 
-export default function Component(
+export default function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
@@ -1272,7 +1272,7 @@ All functions follows the same signature:
 
 ```ts
 // entry.server.tsx
-export default function Component(
+export default function handleRequest(
   request: Request,
   statusCode: number,
   headers: Headers,
