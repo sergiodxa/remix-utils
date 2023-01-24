@@ -1026,7 +1026,7 @@ import { createTypedSessionStorage } from "remix-utils";
 import { z } from "zod";
 
 let schema = z.object({
-  token: z.string().optiona(),
+  token: z.string().optional(),
   count: z.number().default(1),
 });
 
