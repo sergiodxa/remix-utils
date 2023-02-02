@@ -82,6 +82,21 @@ cacheAssests({ cacheName: "assets", buildPath: "/build/" }).catch((error) => {
 
 The ClientOnly component lets you render the children element only on the client-side, avoiding rendering it the server-side.
 
+> **Note**
+> If you're using React 18 and a [streaming server rendering API](https://beta.reactjs.org/reference/react-dom/server) (ie. `renderTo*Stream`) you probably want to use a `<Suspense>` boundary instead
+>
+> ```tsx
+> export default function Component() {
+>   return (
+>     <Suspense fallback={<SimplerStaticVersion />}>
+>       <ComplexComponentNeedingBrowserEnvironment />
+>     </Suspense>
+>   );
+> }
+> ```
+>
+> See ["Providing a fallback for server errors and server-only content" in the React Suspense docs](https://beta.reactjs.org/reference/react/Suspense#providing-a-fallback-for-server-errors-and-server-only-content).
+
 You can provide a fallback component to be used on SSR, and while optional, it's highly recommended to provide one to avoid content layout shift issues.
 
 ```tsx
