@@ -83,7 +83,7 @@ cacheAssests({ cacheName: "assets", buildPath: "/build/" }).catch((error) => {
 The ClientOnly component lets you render the children element only on the client-side, avoiding rendering it the server-side.
 
 > **Note**
-> If you're using React 18 and a [streaming server rendering API](https://beta.reactjs.org/reference/react-dom/server) (ie. `renderTo*Stream`) you probably want to use a `<Suspense>` boundary instead
+> If you're using React 18 and a [streaming server rendering API](https://beta.reactjs.org/reference/react-dom/server) (eg. `[renderToPipeableStream](https://beta.reactjs.org/reference/react-dom/server/renderToPipeableStream)`) you probably want to use a `<Suspense>` boundary instead.
 >
 > ```tsx
 > export default function Component() {
