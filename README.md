@@ -1,3 +1,57 @@
+- [Remix Utils](#remix-utils)
+  - [Installation](#installation)
+  - [API Reference](#api-reference)
+    - [promiseHash](#promisehash)
+    - [cacheAssets](#cacheassets)
+    - [ClientOnly](#clientonly)
+    - [CORS](#cors)
+      - [Options](#options)
+    - [CSRF](#csrf)
+      - [Generate the authenticity token](#generate-the-authenticity-token)
+      - [Render the AuthenticityTokenProvider](#render-the-authenticitytokenprovider)
+      - [Rendering a Form](#rendering-a-form)
+        - [Alternative: Using `useAuthenticityToken` and `useFetcher`.](#alternative-using-useauthenticitytoken-and-usefetcher)
+      - [Verify in the Action](#verify-in-the-action)
+    - [DynamicLinks](#dynamiclinks)
+    - [ExternalScripts](#externalscripts)
+    - [StructuredData](#structureddata)
+    - [useGlobalTransitionStates](#useglobaltransitionstates)
+    - [useGlobalPendingState](#useglobalpendingstate)
+    - [useGlobalSubmittingState](#useglobalsubmittingstate)
+    - [useGlobalLoadingState](#usegloballoadingstate)
+    - [useHydrated](#usehydrated)
+    - [useLocales](#uselocales)
+    - [useShouldHydrate](#useshouldhydrate)
+    - [getClientIPAddress](#getclientipaddress)
+    - [getClientLocales](#getclientlocales)
+    - [isPrefetch](#isprefetch)
+    - [Responses](#responses)
+      - [Redirect Back](#redirect-back)
+      - [Created](#created)
+      - [Bad Request](#bad-request)
+      - [Unauthorized](#unauthorized)
+      - [Forbidden](#forbidden)
+      - [Not Found](#not-found)
+      - [Unprocessable Entity](#unprocessable-entity)
+      - [Server Error](#server-error)
+      - [Not Modified](#not-modified)
+      - [JavaScript](#javascript)
+      - [Stylesheet](#stylesheet)
+      - [PDF](#pdf)
+      - [HTML](#html)
+      - [XML](#xml)
+      - [TXT](#txt)
+    - [Typed Cookies](#typed-cookies)
+    - [Typed Sessions](#typed-sessions)
+    - [Server-Sent Events](#server-sent-events)
+    - [Rolling Cookies](#rolling-cookies)
+    - [Named actions](#named-actions)
+    - [Preload Route Assets](#preload-route-assets)
+    - [Safe Redirects](#safe-redirects)
+    - [JSON Hash Response](#json-hash-response)
+  - [Author](#author)
+  - [License](#license)
+
 # Remix Utils
 
 This package contains simple utility functions to use with [Remix.run](https://remix.run).
@@ -164,10 +218,7 @@ export async function loader({ request }: LoaderArgs) {
 If you want to setup it globally once, you can do it like this in `entry.server`
 
 ```ts
-export let handleDataRequest: HandleDataRequestFunction = async (
-  response,
-  { request }
-) => {
+export let handleDataRequest: HandleDataRequestFunction = async (response, { request }) => {
   return await cors(request, response);
 };
 ```
@@ -444,10 +495,13 @@ import type { WithContext, BlogPosting } from "schema-dts";
 
 // create the structuredData function with the correct type
 // note: loader type is optional
-let structuredData: StructuredDataFunction<
-  SerializeFrom<typeof loader>,
-  BlogPosting
-> = ({ id, data, params, location, parentsData }) => {
+let structuredData: StructuredDataFunction<SerializeFrom<typeof loader>, BlogPosting> = ({
+  id,
+  data,
+  params,
+  location,
+  parentsData,
+}) => {
   let { post } = data;
 
   return {
@@ -1167,18 +1221,8 @@ export default function handleRequest(
   await rollingCookie(sessionCookie, request, responseHeaders);
 
   return isbot(request.headers.get("user-agent"))
-    ? handleBotRequest(
-        request,
-        responseStatusCode,
-        responseHeaders,
-        remixContext
-      )
-    : handleBrowserRequest(
-        request,
-        responseStatusCode,
-        responseHeaders,
-        remixContext
-      );
+    ? handleBotRequest(request, responseStatusCode, responseHeaders, remixContext)
+    : handleBrowserRequest(request, responseStatusCode, responseHeaders, remixContext);
 }
 ```
 
@@ -1189,15 +1233,10 @@ export let handleDataRequest: HandleDataRequestFunction = async (
   response: Response,
   { request }
 ) => {
-  let cookieValue = await sessionCookie.parse(
-    responseHeaders.get("set-cookie")
-  );
+  let cookieValue = await sessionCookie.parse(responseHeaders.get("set-cookie"));
   if (!cookieValue) {
     cookieValue = await sessionCookie.parse(request.headers.get("cookie"));
-    responseHeaders.append(
-      "Set-Cookie",
-      await sessionCookie.serialize(cookieValue)
-    );
+    responseHeaders.append("Set-Cookie", await sessionCookie.serialize(cookieValue));
   }
 
   return response;
@@ -1293,9 +1332,7 @@ export default function handleRequest(
   headers: Headers,
   context: EntryContext
 ) {
-  let markup = renderToString(
-    <RemixServer context={context} url={request.url} />
-  );
+  let markup = renderToString(<RemixServer context={context} url={request.url} />);
   headers.set("Content-Type", "text/html");
 
   preloadRouteAssets(context, headers); // add this line
