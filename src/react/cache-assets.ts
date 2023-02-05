@@ -34,12 +34,12 @@ export async function cacheAssets({
 function getFilePaths() {
   try {
     return unique([
-      ...Object.values(window.__remixManifest.routes).flatMap((route) => {
+      ...Object.values(self.__remixManifest.routes).flatMap((route) => {
         return [route.module, ...(route.imports ?? [])];
       }),
-      window.__remixManifest.url,
-      window.__remixManifest.entry.module,
-      ...window.__remixManifest.entry.imports,
+      self.__remixManifest.url,
+      self.__remixManifest.entry.module,
+      ...self.__remixManifest.entry.imports,
     ]);
   } catch {
     throw new Error("Failed to get file paths from Remix manifest");
@@ -56,7 +56,7 @@ async function getCachedUrls(
       .map((key) => {
         return new URL(key.url);
       })
-      .filter((url) => url.hostname === window.location.hostname)
+      .filter((url) => url.hostname === self.location.hostname)
       .map((url) => url.pathname)
       .filter((pathname) => pathname.startsWith(buildPath));
   } catch {
