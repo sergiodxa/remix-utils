@@ -849,7 +849,7 @@ Helper function to create a Not Found (404) response with a JSON body.
 import { notFound } from "remix-utils";
 
 export async function loader() {
-  throw notFound({ message: "This doesn't exists." });
+  throw notFound({ message: "This doesn't exist." });
 }
 ```
 
