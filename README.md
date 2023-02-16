@@ -129,7 +129,7 @@ The CORS function let you implement CORS headers on your loaders and actions so 
 There are two main ways to use the `cors` function.
 
 1. Use it on each loader/action where you want to enable it.
-2. Use it globally on entry.server handleDataRequest export.
+2. Use it globally on entry.server handleRequest and handleDataRequest export.
 
 If you want to use it on every loader/action, you can do it like this:
 
@@ -163,7 +163,57 @@ export async function loader({ request }: LoaderArgs) {
 
 If you want to setup it globally once, you can do it like this in `entry.server`
 
-```ts
+```tsx
+const ABORT_DELAY = 5000;
+
+export default function handleRequest(
+  request: Request,
+  responseStatusCode: number,
+  responseHeaders: Headers,
+  remixContext: EntryContext
+) {
+  let callbackName = isbot(request.headers.get("user-agent"))
+    ? "onAllReady"
+    : "onShellReady";
+
+  return new Promise((resolve, reject) => {
+    let didError = false;
+
+    let { pipe, abort } = renderToPipeableStream(
+      <RemixServer context={remixContext} url={request.url} />,
+      {
+        [callbackName]: () => {
+          let body = new PassThrough();
+
+          responseHeaders.set("Content-Type", "text/html");
+
+          cors(
+            request,
+            new Response(body, {
+              headers: responseHeaders,
+              status: didError ? 500 : responseStatusCode,
+            })
+          ).then((response) => {
+            resolve(response);
+          });
+
+          pipe(body);
+        },
+        onShellError: (err: unknown) => {
+          reject(err);
+        },
+        onError: (error: unknown) => {
+          didError = true;
+
+          console.error(error);
+        },
+      }
+    );
+
+    setTimeout(abort, ABORT_DELAY);
+  });
+}
+
 export let handleDataRequest: HandleDataRequestFunction = async (
   response,
   { request }
