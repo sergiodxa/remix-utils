@@ -6,13 +6,6 @@ import {
   suspendRace,
 } from "suspend-concurrently";
 
-export {
-  suspendAll,
-  suspendAny,
-  suspendAllSettled,
-  suspendRace,
-} from "suspend-concurrently";
-
 type RenderProp<T> = React.ReactNode | ((value: T) => React.ReactNode);
 
 export interface AwaitAllProps<Resolve extends readonly unknown[] | []>
