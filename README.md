@@ -553,6 +553,42 @@ export function Document({ children, title }: Props) {
 
 Now, any structured data you defined in the `StructuredDataFunction` will be added to the HTML, in the head. You may choose to include the `<StructuredData />` in either the head or the body, both are valid.
 
+### Promise concurrency components
+
+These components can be used in place of [`<Await>`](https://remix.run/docs/en/v1/components/await) when you want to resolve multiple concurrent promises.
+
+They differ to `<Await>` in that their `resolve` prop must be passed an array of promises.
+
+#### AwaitAll
+
+This component will resolve all promises in parallel and return an array of the resolved values. Analogous to [`Promise.all`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all).
+
+```tsx
+import { AwaitAll } from "remix-utils";
+
+export default function Route() {
+  const { promise1, promise2 } = useLoaderData();
+
+  return (
+    <AwaitAll resolve={[promise1, promise2]}>
+      {([data1, data2]) => (
+        <div>
+          <p>Data 1 is: {data1}</p>
+          <p>Data 2 is: {data2}</p>
+        </div>
+      )}
+    </AwaitAll>
+  );
+}
+```
+
+#### Other concurrent Await components
+
+- `AwaitRace` - Analogous to [`Promise.race`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race).
+- `AwaitAny` - Analogous to [`Promise.any`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/any).
+- `AwaitAllSettled` - Analogous to [`Promise.allSettled`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled).
+
+
 ### useGlobalTransitionStates
 
 This hook lets you know if the value of `transition.state` and every `fetcher.state` in the app.
