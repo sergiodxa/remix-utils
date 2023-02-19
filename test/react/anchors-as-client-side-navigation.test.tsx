@@ -145,12 +145,18 @@ describe("nested configuration checks", () => {
   const nested = (
     <TreatAnchorsAsClientSideNavigation>
       <TreatAnchorsAsClientSideNavigation>
-        <a href="/link" target="_blank">
-          A link
-        </a>
+        <a href="/link">A link</a>
       </TreatAnchorsAsClientSideNavigation>
     </TreatAnchorsAsClientSideNavigation>
   );
+
+  test("it only calls navigate once", () => {
+    render(nested);
+    fireEvent.click(screen.getByText("A link"));
+
+    expect(navigate).toHaveBeenCalledTimes(1);
+    expect(navigate).toHaveBeenCalledWith("/link");
+  });
 
   test("it warns when nested", () => {
     render(nested);
@@ -172,7 +178,6 @@ describe("nested configuration checks", () => {
         >
           <a
             href="/link"
-            target="_blank"
           >
             A link
           </a>
