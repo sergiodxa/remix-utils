@@ -10,9 +10,7 @@ type RenderProp<T> = React.ReactNode | ((value: T) => React.ReactNode);
 
 export interface AwaitAllProps<Resolve extends readonly unknown[] | []>
   extends AwaitProps<Resolve> {
-  children: RenderProp<
-    Awaited<Promise<{ -readonly [P in keyof Resolve]: Awaited<Resolve[P]> }>>
-  >;
+  children: RenderProp<{ -readonly [P in keyof Resolve]: Awaited<Resolve[P]> }>;
 }
 
 export function AwaitAll<T extends readonly unknown[] | []>({
