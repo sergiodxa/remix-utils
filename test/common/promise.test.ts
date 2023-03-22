@@ -1,4 +1,4 @@
-import { promiseHash } from "../../src";
+import { promiseHash, timeout } from "../../src";
 
 describe(promiseHash, () => {
   test("should await all promises in a hash and return them with the same name", async () => {
@@ -21,5 +21,46 @@ describe(promiseHash, () => {
       a: { b: 1, c: 2 },
       d: { e: 3, f: 4 },
     });
+  });
+});
+
+describe(timeout, () => {
+  test("resolves if the promise resolves before the timeout", async () => {
+    await expect(timeout(Promise.resolve(1), { ms: 1000 })).resolves.toBe(1);
+  });
+
+  test("rejects if the promise rejects before the timeout", async () => {
+    await expect(timeout(Promise.reject(1), { ms: 1000 })).rejects.toBe(1);
+  });
+
+  test("rejects if the timeout resolves first", async () => {
+    let timer: NodeJS.Timeout | null = null;
+
+    let promise = new Promise((resolve) => {
+      timer = setTimeout(resolve, 1000);
+    });
+
+    await expect(timeout(promise, { ms: 1 })).rejects.toThrow(
+      "Timed out after 1ms"
+    );
+
+    if (timer) clearTimeout(timer);
+  });
+
+  test("timeout aborts the controller", async () => {
+    let controller = new AbortController();
+    let timer: NodeJS.Timeout | null = null;
+
+    let promise = new Promise((resolve) => {
+      timer = setTimeout(resolve, 1000);
+    });
+
+    await expect(timeout(promise, { ms: 10, controller })).rejects.toThrow(
+      "Timed out after 10ms"
+    );
+
+    if (timer) clearTimeout(timer);
+
+    expect(controller.signal.aborted).toBe(true);
   });
 });
