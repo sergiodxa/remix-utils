@@ -18,7 +18,7 @@ const headerNames = Object.freeze([
   "Forwarded-For",
   "Forwarded",
   "DO-Connecting-IP" /** Digital ocean app platform */,
-  "oxygen-buyer-ip" /** Shopify oxygen platform */
+  "oxygen-buyer-ip" /** Shopify oxygen platform */,
 ] as const);
 
 /**
