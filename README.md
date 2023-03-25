@@ -835,7 +835,7 @@ The response created with this function will have the `Location` header pointing
 import { redirectBack } from "remix-utils";
 
 export async function action({ request }: ActionArgs) {
-  await redirectBack(request, { fallback: "/" });
+  return redirectBack(request, { fallback: "/" });
 }
 ```
 
