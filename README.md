@@ -46,6 +46,40 @@ export async function loader({ request }: LoaderArgs) {
 }
 ```
 
+### timeout
+
+The `timeout` function lets you attach a timeout to any promise, if the promise doesn't resolve or reject before the timeout, it will reject with a `TimeoutError`.
+
+```ts
+try {
+  let result = await timeout(fetch("https://example.com"), { ms: 100 });
+} catch (error) {
+  if (error instanceof TimeoutError) {
+    // Handle timeout
+  }
+}
+```
+
+Here the fetch needs to happen in less than 100ms, otherwise it will throw a `TimeoutError`.
+
+If the promise is cancellable with an AbortSignal you can pass the AbortController to the `timeout` function.
+
+```ts
+try {
+  let controller = new AbortController();
+  let result = await timeout(
+    fetch("https://example.com", { signal: controller.signal }),
+    { ms: 100, controller }
+  );
+} catch (error) {
+  if (error instanceof TimeoutError) {
+    // Handle timeout
+  }
+}
+```
+
+Here after 100ms, `timeout` will call `controller.abort()` which will mark the `controller.signal` as aborted.
+
 ### cacheAssets
 
 > **Note**
