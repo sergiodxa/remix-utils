@@ -92,13 +92,11 @@ export function timeout<Value>(
     let timer: NodeJS.Timeout | null = null;
 
     try {
-      let timeoutPromise = new Promise((resolve) => {
-        timer = setTimeout(resolve, options.ms);
-      });
-
       let result = await Promise.race([
         promise,
-        timeoutPromise.then(() => TIMEOUT),
+        new Promise((resolve) => {
+          timer = setTimeout(() => resolve(TIMEOUT), options.ms);
+        }),
       ]);
 
       if (timer) clearTimeout(timer);
