@@ -39,6 +39,7 @@ const headerNames = Object.freeze([
  * - Forwarded-For
  * - Forwarded
  * - DO-Connecting-IP
+ * - oxygen-buyer-ip
  *
  * If the IP address is valid, it will be returned. Otherwise, null will be
  * returned.

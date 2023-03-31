@@ -768,6 +768,8 @@ The function uses the following list of headers, in order of preference:
 - X-Forwarded
 - Forwarded-For
 - Forwarded
+- DO-Connecting-IP
+- oxygen-buyer-ip
 
 When a header is found that contains a valid IP address, it will return without checking the other headers.
 
