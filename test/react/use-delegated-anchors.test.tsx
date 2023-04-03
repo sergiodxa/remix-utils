@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import * as React from "react";
-import { TreatAnchorsAsClientSideNavigation } from "../../src/react/anchors-as-client-side-navigation";
+import { PrefetchPageAnchors } from "../../src";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { useNavigate } from "@remix-run/react";
 
@@ -20,49 +20,61 @@ afterEach(jest.clearAllMocks);
 
 test("it treats child anchors as links", () => {
   render(
-    <TreatAnchorsAsClientSideNavigation>
+    <PrefetchPageAnchors>
       <a href="/link">Some link</a>
-    </TreatAnchorsAsClientSideNavigation>
+    </PrefetchPageAnchors>
   );
 
   fireEvent.click(screen.getByText("Some link"));
 
-  expect(navigate).toHaveBeenCalledWith("/link");
+  expect(navigate).toHaveBeenCalledWith({
+    hash: "",
+    pathname: "/link",
+    search: "",
+  });
 });
 
 test("handles query string and hash", () => {
   render(
-    <TreatAnchorsAsClientSideNavigation>
-      <a href="/link#hash?query=string">Some link</a>
-    </TreatAnchorsAsClientSideNavigation>
+    <PrefetchPageAnchors>
+      <a href="/link?query=string#hash">Some link</a>
+    </PrefetchPageAnchors>
   );
 
   fireEvent.click(screen.getByText("Some link"));
 
-  expect(navigate).toHaveBeenCalledWith("/link#hash?query=string");
+  expect(navigate).toHaveBeenCalledWith({
+    hash: "#hash",
+    pathname: "/link",
+    search: "?query=string",
+  });
 });
 
 test("handles children inside anchor", () => {
   render(
-    <TreatAnchorsAsClientSideNavigation>
+    <PrefetchPageAnchors>
       <a href="/link">
         <span>
           <span>Some link</span>
         </span>
       </a>
-    </TreatAnchorsAsClientSideNavigation>
+    </PrefetchPageAnchors>
   );
 
   fireEvent.click(screen.getByText("Some link"));
 
-  expect(navigate).toHaveBeenCalledWith("/link");
+  expect(navigate).toHaveBeenCalledWith({
+    hash: "",
+    pathname: "/link",
+    search: "",
+  });
 });
 
 test("ignores non-anchors", () => {
   render(
-    <TreatAnchorsAsClientSideNavigation>
+    <PrefetchPageAnchors>
       <div>Not a link</div>
-    </TreatAnchorsAsClientSideNavigation>
+    </PrefetchPageAnchors>
   );
 
   fireEvent.click(screen.getByText("Not a link"));
@@ -72,9 +84,9 @@ test("ignores non-anchors", () => {
 
 test("ignores external links", () => {
   render(
-    <TreatAnchorsAsClientSideNavigation>
+    <PrefetchPageAnchors>
       <a href="https://example.com">A link</a>
-    </TreatAnchorsAsClientSideNavigation>
+    </PrefetchPageAnchors>
   );
 
   fireEvent.click(screen.getByText("A link"));
@@ -84,11 +96,11 @@ test("ignores external links", () => {
 
 test("ignores internal download links", () => {
   render(
-    <TreatAnchorsAsClientSideNavigation>
+    <PrefetchPageAnchors>
       <a href="/download" download>
         A link
       </a>
-    </TreatAnchorsAsClientSideNavigation>
+    </PrefetchPageAnchors>
   );
 
   fireEvent.click(screen.getByText("A link"));
@@ -98,9 +110,9 @@ test("ignores internal download links", () => {
 
 test("ignore clicks with modifiers and right clicks", () => {
   render(
-    <TreatAnchorsAsClientSideNavigation>
+    <PrefetchPageAnchors>
       <a href="/link">A link</a>
-    </TreatAnchorsAsClientSideNavigation>
+    </PrefetchPageAnchors>
   );
 
   fireEvent.click(screen.getByText("A link"), {
@@ -121,11 +133,11 @@ test("ignore clicks with modifiers and right clicks", () => {
 
 test("ignores links with target=_blank", () => {
   render(
-    <TreatAnchorsAsClientSideNavigation>
+    <PrefetchPageAnchors>
       <a href="/link" target="_blank">
         A link
       </a>
-    </TreatAnchorsAsClientSideNavigation>
+    </PrefetchPageAnchors>
   );
 
   fireEvent.click(screen.getByText("A link"));
@@ -143,11 +155,11 @@ describe("nested configuration checks", () => {
   });
 
   const nested = (
-    <TreatAnchorsAsClientSideNavigation>
-      <TreatAnchorsAsClientSideNavigation>
+    <PrefetchPageAnchors>
+      <PrefetchPageAnchors>
         <a href="/link">A link</a>
-      </TreatAnchorsAsClientSideNavigation>
-    </TreatAnchorsAsClientSideNavigation>
+      </PrefetchPageAnchors>
+    </PrefetchPageAnchors>
   );
 
   test("it only calls navigate once", () => {
@@ -155,34 +167,10 @@ describe("nested configuration checks", () => {
     fireEvent.click(screen.getByText("A link"));
 
     expect(navigate).toHaveBeenCalledTimes(1);
-    expect(navigate).toHaveBeenCalledWith("/link");
-  });
-
-  test("it warns when nested", () => {
-    render(nested);
-    expect(mockedConsoleError).toHaveBeenCalledWith(
-      "TreatAnchorsAsClientSideNavigation can't be nested inside another TreatAnchorsAsClientSideNavigation. Ignoring this instance."
-    );
-  });
-
-  test("it doesn't render the nested div", () => {
-    const { container } = render(nested);
-    expect(
-      container.querySelectorAll('div[data-anchors-as-links="true"]')
-    ).toHaveLength(1);
-
-    expect(container).toMatchInlineSnapshot(`
-      <div>
-        <div
-          data-anchors-as-links="true"
-        >
-          <a
-            href="/link"
-          >
-            A link
-          </a>
-        </div>
-      </div>
-    `);
+    expect(navigate).toHaveBeenCalledWith({
+      hash: "",
+      pathname: "/link",
+      search: "",
+    });
   });
 });
