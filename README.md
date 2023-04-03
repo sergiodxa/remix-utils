@@ -1495,6 +1495,37 @@ export default function Component() {
 }
 ```
 
+### Treat internal `<a href>` as `<Link>` for client-side navigation
+
+When using Remix, you can use the `<Link>` component to navigate between pages. However, if you have a `<a href>` that links to a page in your app, it will cause a full page refresh. This can be what you want, but sometimes you want to use client-side navigation here instead.
+
+You can opt into this behaviour by wrapping a portion of your app in `<TreatAnchorsAsClientSideNavigation>`. This will treat all descendant `<a href>` as `<Link>` components when they link to an internal URL ie. same origin.
+
+
+```tsx
+import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
+import { TreatAnchorsAsClientSideNavigation } from "remix-utils";
+
+export default function App() {
+  return (
+    <html lang="en">
+      <head>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <TreatAnchorsAsClientSideNavigation>
+          <Outlet />
+        </TreatAnchorsAsClientSideNavigation>
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
+      </body>
+    </html>
+  );
+}
+```
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)

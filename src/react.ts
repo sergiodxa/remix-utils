@@ -1,3 +1,4 @@
+export * from "./react/anchors-as-client-side-navigation";
 export * from "./react/cache-assets";
 export * from "./react/client-only";
 export * from "./react/csrf";
