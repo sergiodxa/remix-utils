@@ -1,4 +1,3 @@
-export * from "./react/anchors-as-client-side-navigation";
 export * from "./react/cache-assets";
 export * from "./react/client-only";
 export * from "./react/csrf";
@@ -11,3 +10,4 @@ export * from "./react/use-global-pending-state";
 export * from "./react/use-hydrated";
 export * from "./react/use-locales";
 export * from "./react/use-should-hydrate";
+export * from "./react/use-delegated-anchors";
