@@ -1495,36 +1495,56 @@ export default function Component() {
 }
 ```
 
-### Treat internal `<a href>` as `<Link>` for client-side navigation
+### Delegate Anchors to Remix
 
 When using Remix, you can use the `<Link>` component to navigate between pages. However, if you have a `<a href>` that links to a page in your app, it will cause a full page refresh. This can be what you want, but sometimes you want to use client-side navigation here instead.
 
-You can opt into this behaviour by wrapping a portion of your app in `<TreatAnchorsAsClientSideNavigation>`. This will treat all descendant `<a href>` as `<Link>` components when they link to an internal URL ie. same origin.
-
+The `useDelegatedAnchors` hook lets you add client-side navigation to anchor tags in a portion of your app. This can be specially useful when working with dynamic content like HTML or Markdown from a CMS.
 
 ```tsx
-import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
-import { TreatAnchorsAsClientSideNavigation } from "remix-utils";
+import { useDelegatedAnchors } from "remix-utils";
 
-export default function App() {
+export async function loader() {
+  let content = await fetchContentFromCMS();
+  return json({ content });
+}
+
+export default function Component() {
+  let { content } = useLoaderData<typeof loader>();
+
+  let ref = useRef<HTMLDivElement>(null);
+  useDelegatedAnchors(ref);
+
+  return <article ref={ref} dangerouslySetInnerHTML={{ __html: content }} />;
+}
+```
+
+### Prefetch Anchors
+
+If additionally you want to be able to prefetch your anchors you can use the `PrefetchPageAnchors` components.
+
+This components wraps your content with anchors inside, it detects any hovered anchor to prefetch it, and it delegates them to Remix.
+
+```tsx
+import { PrefetchPageAnchors } from "remix-utils";
+
+export async function loader() {
+  let content = await fetchContentFromCMS();
+  return json({ content });
+}
+
+export default function Component() {
+  let { content } = useLoaderData<typeof loader>();
+
   return (
-    <html lang="en">
-      <head>
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        <TreatAnchorsAsClientSideNavigation>
-          <Outlet />
-        </TreatAnchorsAsClientSideNavigation>
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
+    <PrefetchPageAnchors>
+      <article ref={ref} dangerouslySetInnerHTML={{ __html: content }} />
+    </PrefetchPageAnchors>
   );
 }
 ```
+
+Now you can see in your DevTools that when the user hovers an anchor it will prefetch it, and when the user clicks it will do a client-side navigation.
 
 ## Author
 
