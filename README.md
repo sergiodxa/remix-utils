@@ -379,7 +379,7 @@ export function useMarkAsRead() {
 
 Finally, you need to verify the authenticity token in the action that received the request.
 
-```t
+```ts
 import { verifyAuthenticityToken, redirectBack } from "remix-utils";
 import { getSession, commitSession } from "~/services/session.server";
 
