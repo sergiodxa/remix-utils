@@ -19,7 +19,7 @@ This function is an object version of `Promise.all` which lets you pass an objec
 ```ts
 export async function loader({ request }: LoaderArgs) {
   return json(
-    promiseHash({
+    await promiseHash({
       user: getUser(request),
       posts: getPosts(request),
     })
@@ -32,7 +32,7 @@ You can use nested `promiseHash` to get a nested object with resolved values.
 ```ts
 export async function loader({ request }: LoaderArgs) {
   return json(
-    promiseHash({
+    await promiseHash({
       user: getUser(request),
       posts: promiseHash({
         list: getPosts(request),
