@@ -1232,7 +1232,8 @@ function Counter() {
 ```
 
 The `event` name in both the event stream and the hook is optional, in which case it will default to `message`, if defined you must use the same event name in both sides, this also allows you to emit different events from the same event stream.
-For Server-Sent Events to work, your server mus support HTTP streaming. Therefore, it won't work in services like AWS lambda.
+
+For Server-Sent Events to work, your server must support HTTP streaming. If you don't get SSE to work check if your deployment platform has support for it.
 
 ### Rolling Cookies
 
