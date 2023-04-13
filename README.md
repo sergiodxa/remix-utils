@@ -395,6 +395,8 @@ Suppose the authenticity token is missing on the session, the request body, or d
 
 ### DynamicLinks
 
+> **Warning**: Deprecated in favor of the `V2_MetaFunction`. This will be removed in the next major version. Check below for the new way to do this.
+
 If you need to create `<link />` tags based on the loader data instead of being static, you can use the `DynamicLinks` component together with the `DynamicLinksFunction` type.
 
 In the route you want to define dynamic links add `handle` export with a `dynamicLinks` method, this method should implement the `DynamicLinksFunction` type.
@@ -452,6 +454,26 @@ Now, any link you defined in the `DynamicLinksFunction` will be added to the HTM
 
 > **Note**
 > You can also put the `DynamicLinks` after the `Links` component, it's up to you what to prioritize, since static links are probably prefetched when you do `<Link prefetch>` you may want to put the `DynamicLinks` first to prioritize them.
+
+If you want to upgrade to use the `V2_MetaFunction`, first enable it in your Remix app:
+
+```js
+/** @type {import('@remix-run/dev').AppConfig} */
+module.exports = {
+  future: { v2_meta: true },
+};
+```
+
+Then you can use it like this:
+
+```ts
+export let meta: V2_MetaFunction<typeof loader> = ({ data }) => {
+  if (!data.user) return [];
+  return [
+    { tagName: "link", rel: "preload", href: data.user.avatar, as: "image" },
+  ];
+};
+```
 
 ### ExternalScripts
 

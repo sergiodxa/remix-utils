@@ -2,10 +2,18 @@ import { useLocation, useMatches } from "@remix-run/react";
 import type { AppData, LinkDescriptor } from "@remix-run/server-runtime";
 import { HandleConventionArguments } from "./handle-conventions";
 
+/**
+ * @deprecated Use new V2_MetaFunction instead
+ * @see https://remix.run/docs/en/main/route/meta-v2
+ */
 export interface DynamicLinksFunction<Data extends AppData = AppData> {
   (args: HandleConventionArguments<Data>): LinkDescriptor[];
 }
 
+/**
+ * @deprecated Use new V2_MetaFunction instead
+ * @see https://remix.run/docs/en/main/route/meta-v2
+ */
 export function DynamicLinks() {
   let location = useLocation();
 
