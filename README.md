@@ -541,6 +541,8 @@ Now, any script you defined in the ScriptsFunction will be added to the HTML tog
 
 ### StructuredData
 
+> **Warning**: Deprecated in favor of the V2_MetaFunction. This will be removed in the next major version. Check below for the new way to do this.
+
 If you need to include structured data (JSON-LD) scripts on certain routes, you can use the `StructuredData` component together with the `HandleStructuredData` type or `StructuredDataFunction` type.
 
 In the route you want to include the structured data, add a `handle` export with a `structuredData` method, this method should implement the `StructuredDataFunction` type.
@@ -608,6 +610,35 @@ export function Document({ children, title }: Props) {
 ```
 
 Now, any structured data you defined in the `StructuredDataFunction` will be added to the HTML, in the head. You may choose to include the `<StructuredData />` in either the head or the body, both are valid.
+
+If you want to upgrade to use the `V2_MetaFunction`, first enable it in your Remix app:
+
+```js
+/** @type {import('@remix-run/dev').AppConfig} */
+module.exports = {
+  future: { v2_meta: true },
+};
+```
+
+Then you can use it like this:
+
+```ts
+export let meta: V2_MetaFunction<typeof loader> = ({ data }) => {
+  let { post } = data;
+  return [
+    {
+      "script:ld+json": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        datePublished: post.published,
+        mainEntityOfPage: { "@type": "WebPage", "@id": post.postUrl },
+        image: post.featuredImage,
+        author: { "@type": "Person", name: post.authorName },
+      },
+    },
+  ];
+};
+```
 
 ### useGlobalTransitionStates
 
