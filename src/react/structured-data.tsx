@@ -3,11 +3,18 @@ import { AppData } from "@remix-run/server-runtime";
 import type { Thing, WithContext } from "schema-dts";
 import { HandleConventionArguments } from "./handle-conventions";
 
+/**
+ * @deprecated Use new V2_MetaFunction instead
+ * @see https://remix.run/docs/en/main/route/meta-v2
+ */
 export type StructuredDatum<StructuredDataSchema extends Thing> =
   WithContext<StructuredDataSchema>;
 
 /**
  * A convenience type for `export let handle =` to ensure the correct `handle` structure is used.
+ *
+ * @deprecated Use new V2_MetaFunction instead
+ * @see https://remix.run/docs/en/main/route/meta-v2
  *
  * @example
  * // This route uses the data to render structured data (e.g. BreadcrumbList and BlogPosting)
@@ -34,6 +41,10 @@ function isHandleStructuredData(
   );
 }
 
+/**
+ * @deprecated Use new V2_MetaFunction instead
+ * @see https://remix.run/docs/en/main/route/meta-v2
+ */
 export interface StructuredDataFunction<
   Data extends AppData = AppData,
   StructuredDataSchema extends Thing = Thing
@@ -46,6 +57,10 @@ export interface StructuredDataFunction<
 
 /**
  * Render "application/ld+json" script tags for structured data (https://developers.google.com/search/docs/advanced/structured-data/intro-structured-data)
+ *
+ * @deprecated Use new V2_MetaFunction instead
+ * @see https://remix.run/docs/en/main/route/meta-v2
+ *
  * @example
  * // This route uses the data to render structured data (e.g. BreadcrumbList and BlogPosting)
  * export let handle: HandleStructuredData<LoaderData, BlogPosting> = {
