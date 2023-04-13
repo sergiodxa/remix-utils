@@ -1550,6 +1550,44 @@ export default function Component() {
 
 Now you can see in your DevTools that when the user hovers an anchor it will prefetch it, and when the user clicks it will do a client-side navigation.
 
+### Generate URL strings for Link/Form
+
+If you use `<Link>` with search params, specially dynamic values like a pagination, you will have to create the URL with the search params manually.
+
+You may have something like this:
+
+```tsx
+return <Link to={`?page=${page + 1}&search=${search}`}>Next</Link>;
+```
+
+Or maybe using URLSearchParams:
+
+```tsx
+let searchParams = new URLSearchParams();
+searchParams.set("page", page + 1);
+searchParams.set("search", search);
+return <Link to={`?${searchParams.toString()}`}>Next</Link>;
+```
+
+Or even using the `useSearchParams` hook to edit the current ones:
+
+```tsx
+let [searchParams] = useSearchParams();
+searchParams.set("page", page + 1);
+
+return <Link to={`?${searchParams.toString()}`}>Next</Link>;
+```
+
+All of these are valid solutions, but they can be a bit verbose and repetitive, and you may forget to add the `?` before the search params, the `to` function in Remix Utils lets you do this in a more concise way.
+
+```tsx
+import { to } from "remix-utils";
+
+return <Link to={to({ page: page + 1, search })}>Next</Link>;
+```
+
+The `to` is going to generate a URL like `?page=2&search=hello` so you can pass it to `<Link to/>`, `<Form action>`, `useFetcher().load()`, `useFetcher().submit()`, or `useSubmit()()`.
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)
