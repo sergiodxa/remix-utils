@@ -4,9 +4,9 @@ import type { RouterState } from "@remix-run/router";
 type RouteData = RouterState["loaderData"];
 
 export type HandleConventionArguments<Data extends AppData = AppData> = {
-	id: string;
-	data: Data;
-	params: Params;
-	location: Location;
-	parentsData: RouteData;
+  id: string;
+  data: Data;
+  params: Params;
+  location: Location;
+  parentsData: RouteData;
 };
