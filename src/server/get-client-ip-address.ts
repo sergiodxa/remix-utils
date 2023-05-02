@@ -8,6 +8,7 @@ import { getHeaders } from "./get-headers";
 const headerNames = Object.freeze([
   "X-Client-IP",
   "X-Forwarded-For",
+  "HTTP-X-Forwarded-For",
   "Fly-Client-IP",
   "CF-Connecting-IP",
   "Fastly-Client-Ip",
@@ -29,6 +30,7 @@ const headerNames = Object.freeze([
  *
  * - X-Client-IP
  * - X-Forwarded-For
+ * - HTTP-X-Forwarded-For
  * - Fly-Client-IP
  * - CF-Connecting-IP
  * - Fastly-Client-Ip
