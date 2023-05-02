@@ -6,6 +6,7 @@ const INVALID_IP = "abc.def.ghi.jkl";
 const headerNames = Object.freeze([
   "X-Client-IP",
   "X-Forwarded-For",
+  "HTTP-X-Forwarded-For",
   "Fly-Client-IP",
   "CF-Connecting-IP",
   "Fastly-Client-Ip",
@@ -15,6 +16,8 @@ const headerNames = Object.freeze([
   "X-Forwarded",
   "Forwarded-For",
   "Forwarded",
+  "DO-Connecting-IP" /** Digital ocean app platform */,
+  "oxygen-buyer-ip" /** Shopify oxygen platform */,
 ] as const);
 
 describe(getClientIPAddress, () => {
