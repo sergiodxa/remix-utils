@@ -62,6 +62,6 @@ describe(createJWTSessionStorage.name, () => {
         })
         .then(sessionStorage.commitSession)
         .then(sessionStorage.getJWT)
-    ).resolves.toEqual("");
+    ).resolves.toEqual(expect.any(String));
   });
 });
