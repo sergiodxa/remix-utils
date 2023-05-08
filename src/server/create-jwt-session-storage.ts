@@ -2,16 +2,10 @@ import type {
   Session,
   SessionStorage,
   CookieOptions,
+  SessionData,
 } from "@remix-run/server-runtime";
 import { createSession } from "@remix-run/server-runtime";
-import {
-  EncryptJWT,
-  jwtDecrypt,
-  JWTPayload,
-  jwtVerify,
-  SignJWT,
-  UnsecuredJWT,
-} from "jose";
+import { EncryptJWT, jwtDecrypt, jwtVerify, SignJWT, UnsecuredJWT } from "jose";
 import { parse, serialize } from "cookie";
 
 interface JWTSessionStorageOptions {
@@ -34,7 +28,7 @@ export function createJWTSessionStorage({
 }: JWTSessionStorageOptions): JWTSessionStorage {
   let secret = cookie.secrets?.[0];
 
-  async function encodeJWT(data: JWTPayload, expires?: Date) {
+  async function encodeJWT(data: SessionData, expires?: Date) {
     let encoded;
 
     if (encrypt && secret) {
@@ -71,7 +65,7 @@ export function createJWTSessionStorage({
           jwt,
           new TextEncoder().encode(secret)
         );
-        return unsignedValue.data;
+        return unsignedValue.data as SessionData;
       } catch {}
 
       return null;
@@ -82,13 +76,13 @@ export function createJWTSessionStorage({
           new TextEncoder().encode(secret)
         );
 
-        return unsignedValue.data;
+        return unsignedValue.data as SessionData;
       } catch {}
 
       return null;
     }
 
-    return UnsecuredJWT.decode(jwt).payload.data as unknown;
+    return UnsecuredJWT.decode(jwt).payload.data as SessionData;
   }
 
   return {
@@ -99,7 +93,7 @@ export function createJWTSessionStorage({
       let cookies =
         cookieHeader && parse(cookieHeader, { ...options, ...cookie });
       let jwt = cookies && cookies[cookie.name] ? cookies[cookie.name] : "";
-      let data: unknown = {};
+      let data: SessionData | null = {};
       let id = "";
 
       try {
