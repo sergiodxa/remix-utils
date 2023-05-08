@@ -4,7 +4,14 @@ import type {
   CookieOptions,
 } from "@remix-run/server-runtime";
 import { createSession } from "@remix-run/server-runtime";
-import { EncryptJWT, jwtDecrypt, jwtVerify, SignJWT, UnsecuredJWT } from "jose";
+import {
+  EncryptJWT,
+  jwtDecrypt,
+  JWTPayload,
+  jwtVerify,
+  SignJWT,
+  UnsecuredJWT,
+} from "jose";
 import { parse, serialize } from "cookie";
 
 interface JWTSessionStorageOptions {
@@ -25,8 +32,9 @@ export function createJWTSessionStorage({
   encrypt,
   sign,
 }: JWTSessionStorageOptions): JWTSessionStorage {
-  const secret = cookie.secrets?.[0];
-  const encodeJWT = async (data: unknown, expires?: Date) => {
+  let secret = cookie.secrets?.[0];
+
+  async function encodeJWT(data: JWTPayload, expires?: Date) {
     let encoded;
 
     if (encrypt && secret) {
@@ -54,9 +62,9 @@ export function createJWTSessionStorage({
     }
 
     return encoded as string;
-  };
+  }
 
-  const decodeJWT = async (jwt: string) => {
+  async function decodeJWT(jwt: string) {
     if (encrypt && secret) {
       try {
         let { payload: unsignedValue } = await jwtDecrypt(
@@ -81,7 +89,7 @@ export function createJWTSessionStorage({
     }
 
     return UnsecuredJWT.decode(jwt).payload.data as unknown;
-  };
+  }
 
   return {
     async getSession(
@@ -89,7 +97,7 @@ export function createJWTSessionStorage({
       options?: CookieOptions
     ): Promise<Session> {
       let cookies =
-        cookieHeader && (await parse(cookieHeader, { ...options, ...cookie }));
+        cookieHeader && parse(cookieHeader, { ...options, ...cookie });
       let jwt = cookies && cookies[cookie.name] ? cookies[cookie.name] : "";
       let data: unknown = {};
       let id = "";
@@ -110,7 +118,7 @@ export function createJWTSessionStorage({
       options?: CookieOptions
     ): Promise<string | null> {
       let cookies =
-        cookieHeader && (await parse(cookieHeader, { ...options, ...cookie }));
+        cookieHeader && parse(cookieHeader, { ...options, ...cookie });
       let jwt = cookies && cookies[cookie.name] ? cookies[cookie.name] : "";
 
       try {
@@ -126,12 +134,12 @@ export function createJWTSessionStorage({
       session: Session,
       options?: CookieOptions
     ): Promise<string> {
-      const jwt = await encodeJWT(
+      let jwt = await encodeJWT(
         session.data,
         options?.expires || new Date(Date.now() + (cookie.maxAge || 0) * 1000)
       );
 
-      const serializedCookie = serialize(cookie.name, jwt, {
+      let serializedCookie = serialize(cookie.name, jwt, {
         ...options,
         ...cookie,
       });
