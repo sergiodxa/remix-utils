@@ -18,7 +18,7 @@ jobs:
 
       - run: npm install
 
-      - run: npm run build
+      - run: npm run prepare
 
       - run: npm publish --access public
         env:
