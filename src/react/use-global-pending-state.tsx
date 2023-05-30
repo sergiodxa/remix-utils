@@ -36,8 +36,8 @@ export function useGlobalTransitionStates() {
 }
 
 /**
- * Let you know if the app is pending some request, either global transition
- *, some fetcher transition or revalidation.
+ * Let you know if the app is pending some request, either global transition,
+ * some fetcher transition or revalidation.
  * @returns "idle" | "pending"
  */
 export function useGlobalPendingState() {
@@ -61,8 +61,8 @@ export function useGlobalSubmittingState() {
 }
 
 /**
- * Let you know if the app is loading some request, either global transition
- *, some fetcher transition or revalidation.
+ * Let you know if the app is loading some request, either global transition,
+ * some fetcher transition or revalidation.
  * @returns "idle" | "loading"
  */
 export function useGlobalLoadingState() {
