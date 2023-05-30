@@ -1,9 +1,9 @@
-import { useTransition, useFetchers } from "@remix-run/react";
+import { useTransition, useFetchers, useRevalidator } from "@remix-run/react";
 import { useMemo } from "react";
 
 /**
  * This is a helper hook that returns the state of every fetcher active on
- * the app and combine it with the state of the global transition.
+ * the app and combine it with the state of the global transition and revalidation state.
  * @example
  * let states = useGlobalTransitionStates();
  * if (state.includes("loading")) {
@@ -17,6 +17,7 @@ import { useMemo } from "react";
 export function useGlobalTransitionStates() {
   let transition = useTransition();
   let fetchers = useFetchers();
+  let revalidator = useRevalidator();
 
   /**
    * This gets the state of every fetcher active on the app and combine it with
@@ -24,22 +25,27 @@ export function useGlobalTransitionStates() {
    */
   return useMemo(
     function getGlobalTransitionStates() {
-      return [transition.state, ...fetchers.map((fetcher) => fetcher.state)];
+      return [
+        transition.state,
+        revalidator.state,
+        ...fetchers.map((fetcher) => fetcher.state),
+      ];
     },
-    [transition.state, fetchers]
+    [transition.state, fetchers, revalidator.state]
   );
 }
 
 /**
  * Let you know if the app is pending some request, either global transition
- * or some fetcher transition.
+ *, some fetcher transition or revalidation.
  * @returns "idle" | "pending"
  */
 export function useGlobalPendingState() {
   let isSubmitting = useGlobalSubmittingState() === "submitting";
   let isLoading = useGlobalLoadingState() === "loading";
+  let isRevalidating = useRevalidator().state === "loading";
 
-  if (isLoading || isSubmitting) return "pending";
+  if (isLoading || isSubmitting || isRevalidating) return "pending";
   return "idle";
 }
 
@@ -56,11 +62,16 @@ export function useGlobalSubmittingState() {
 
 /**
  * Let you know if the app is loading some request, either global transition
- * or some fetcher transition.
+ *, some fetcher transition or revalidation.
  * @returns "idle" | "loading"
  */
 export function useGlobalLoadingState() {
   let states = useGlobalTransitionStates();
-  if (states.includes("loading")) return "loading";
+  let revalidator = useRevalidator();
+
+  if (revalidator.state === "loading" || states.includes("loading")) {
+    return "loading";
+  }
+
   return "idle";
 }
