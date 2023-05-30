@@ -2,62 +2,90 @@
 
 This package contains simple utility functions to use with [Remix.run](https://remix.run).
 
-- [Remix Utils](#remix-utils)
-  - [Installation](#installation)
-  - [API Reference](#api-reference)
-    - [promiseHash](#promisehash)
-    - [timeout](#timeout)
-    - [cacheAssets](#cacheassets)
-    - [ClientOnly](#clientonly)
-    - [CORS](#cors)
-      - [Options](#options)
-    - [CSRF](#csrf)
-      - [Generate the authenticity token](#generate-the-authenticity-token)
-      - [Render the AuthenticityTokenProvider](#render-the-authenticitytokenprovider)
-      - [Rendering a Form](#rendering-a-form)
-        - [Alternative: Using `useAuthenticityToken` and `useFetcher`.](#alternative-using-useauthenticitytoken-and-usefetcher)
-      - [Verify in the Action](#verify-in-the-action)
-    - [DynamicLinks](#dynamiclinks)
-    - [ExternalScripts](#externalscripts)
-    - [StructuredData](#structureddata)
-    - [useGlobalTransitionStates](#useglobaltransitionstates)
-    - [useGlobalPendingState](#useglobalpendingstate)
-    - [useGlobalSubmittingState](#useglobalsubmittingstate)
-    - [useGlobalLoadingState](#usegloballoadingstate)
-    - [useHydrated](#usehydrated)
-    - [useLocales](#uselocales)
-    - [useShouldHydrate](#useshouldhydrate)
-    - [getClientIPAddress](#getclientipaddress)
-    - [getClientLocales](#getclientlocales)
-    - [isPrefetch](#isprefetch)
-    - [Responses](#responses)
-      - [Redirect Back](#redirect-back)
-      - [Created](#created)
-      - [Bad Request](#bad-request)
-      - [Unauthorized](#unauthorized)
-      - [Forbidden](#forbidden)
-      - [Not Found](#not-found)
-      - [Unprocessable Entity](#unprocessable-entity)
-      - [Server Error](#server-error)
-      - [Not Modified](#not-modified)
-      - [JavaScript](#javascript)
-      - [Stylesheet](#stylesheet)
-      - [PDF](#pdf)
-      - [HTML](#html)
-      - [XML](#xml)
-      - [TXT](#txt)
-    - [Typed Cookies](#typed-cookies)
-    - [Typed Sessions](#typed-sessions)
-    - [Server-Sent Events](#server-sent-events)
-    - [Rolling Cookies](#rolling-cookies)
-    - [Named actions](#named-actions)
-    - [Preload Route Assets](#preload-route-assets)
-    - [Safe Redirects](#safe-redirects)
-    - [JSON Hash Response](#json-hash-response)
-    - [Delegate Anchors to Remix](#delegate-anchors-to-remix)
-    - [Prefetch Anchors](#prefetch-anchors)
-  - [Author](#author)
-  - [License](#license)
+<details>
+  <summary>Table of Contents</summary>
+  <ul>
+    <li><a href="#installation">Installation</a></li>
+    <li>
+      <a href="#api-reference">API Reference</a>
+      <ul>
+        <li><a href="#promisehash">promiseHash</a></li>
+        <li><a href="#timeout">timeout</a></li>
+        <li><a href="#cacheassets">cacheAssets</a></li>
+        <li><a href="#clientonly">ClientOnly</a></li>
+        <li>
+          <a href="#cors">CORS</a>
+          <ul>
+            <li><a href="#options">Options</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#csrf">CSRF</a>
+          <ul>
+            <li><a href="#generate-the-authenticity-token">Generate the authenticity token</a></li>
+            <li><a href="#render-the-authenticitytokenprovider">Render the AuthenticityTokenProvider</a></li>
+            <li>
+              <a href="#rendering-a-form">Rendering a Form</a>
+              <ul>
+                <li>
+                  <a href="#alternative-using-useauthenticitytoken-and-usefetcher">
+                    Alternative: Using `useAuthenticityToken` and `useFetcher`
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li><a href="#verify-in-the-action">Verify in the Action</a></li>
+          </ul>
+        </li>
+        <li><a href="#dynamiclinks">DynamicLinks</a></li>
+        <li><a href="#externalscripts">ExternalScripts</a></li>
+        <li><a href="#structureddata">StructuredData</a></li>
+        <li><a href="#useglobaltransitionstates">useGlobalTransitionStates</a></li>
+        <li><a href="#useglobalpendingstate">useGlobalPendingState</a></li>
+        <li><a href="#useglobalsubmittingstate">useGlobalSubmittingState</a></li>
+        <li><a href="#usegloballoadingstate">useGlobalLoadingState</a></li>
+        <li><a href="#usehydrated">useHydrated</a></li>
+        <li><a href="#uselocales">useLocales</a></li>
+        <li><a href="#useshouldhydrate">useShouldHydrate</a></li>
+        <li><a href="#getclientipaddress">getClientIPAddress</a></li>
+        <li><a href="#getclientlocales">getClientLocales</a></li>
+        <li><a href="#isprefetch">isPrefetch</a></li>
+        <li>
+          <a href="#responses">Responses</a>
+          <ul>
+            <li><a href="#redirect-back">Redirect Back</a></li>
+            <li><a href="#created">Created</a></li>
+            <li><a href="#bad-request">Bad Request</a></li>
+            <li><a href="#unauthorized">Unauthorized</a></li>
+            <li><a href="#forbidden">Forbidden</a></li>
+            <li><a href="#not-found">Not Found</a></li>
+            <li><a href="#unprocessable-entity">Unprocessable Entity</a></li>
+            <li><a href="#server-error">Server Error</a></li>
+            <li><a href="#not-modified">Not Modified</a></li>
+            <li><a href="#javascript">JavaScript</a></li>
+            <li><a href="#stylesheet">Stylesheet</a></li>
+            <li><a href="#pdf">PDF</a></li>
+            <li><a href="#html">HTML</a></li>
+            <li><a href="#xml">XML</a></li>
+            <li><a href="#txt">TXT</a></li>
+          </ul>
+        </li>
+        <li><a href="#typed-cookies">Typed Cookies</a></li>
+        <li><a href="#typed-sessions">Typed Sessions</a></li>
+        <li><a href="#server-sent-events">Server-Sent Events</a></li>
+        <li><a href="#rolling-cookies">Rolling Cookies</a></li>
+        <li><a href="#named-actions">Named actions</a></li>
+        <li><a href="#preload-route-assets">Preload Route Assets</a></li>
+        <li><a href="#safe-redirects">Safe Redirects</a></li>
+        <li><a href="#json-hash-response">JSON Hash Response</a></li>
+        <li><a href="#delegate-anchors-to-remix">Delegate Anchors to Remix</a></li>
+        <li><a href="#prefetch-anchors">Prefetch Anchors</a></li>
+      </ul>
+    </li>
+    <li><a href="#author">Author</a></li>
+    <li><a href="#license">License</a></li>
+  </ul>
+</details>
 
 ## Installation
 
