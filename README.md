@@ -103,6 +103,8 @@ export async function loader({ request }: LoaderArgs) {
 }
 ```
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### timeout
 
 The `timeout` function lets you attach a timeout to any promise, if the promise doesn't resolve or reject before the timeout, it will reject with a `TimeoutError`.
@@ -137,6 +139,8 @@ try {
 
 Here after 100ms, `timeout` will call `controller.abort()` which will mark the `controller.signal` as aborted.
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### cacheAssets
 
 > **Note**
@@ -168,6 +172,8 @@ cacheAssests({ cacheName: "assets", buildPath: "/build/" }).catch((error) => {
   // do something with the error, or not
 });
 ```
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 ### ClientOnly
 
@@ -212,6 +218,8 @@ The rendering flow will be:
 - CSR Future Renders: Always render the actual component, don't bother to render the fallback.
 
 This component uses the `useHydrated` hook internally.
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 ### CORS
 
@@ -335,6 +343,8 @@ Additionally, the `cors` function accepts a `options` object as a third optional
 - `credentials`: Configures the **Access-Control-Allow-Credentials** CORS header.
 - `maxAge`: Configures the **Access-Control-Max-Age** CORS header.
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### CSRF
 
 The CSRF related functions let you implement CSRF protection on your application.
@@ -450,6 +460,8 @@ export async function action({ request }: ActionArgs) {
 
 Suppose the authenticity token is missing on the session, the request body, or doesn't match. In that case, the function will throw an Unprocessable Entity response that you can either catch and handle manually or let pass and render your CatchBoundary.
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### DynamicLinks
 
 > **Warning**: Deprecated in favor of the `V2_MetaFunction`. This will be removed in the next major version. Check below for the new way to do this.
@@ -532,6 +544,8 @@ export let meta: V2_MetaFunction<typeof loader> = ({ data }) => {
 };
 ```
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### ExternalScripts
 
 If you need to load different external scripts on certain routes, you can use the `ExternalScripts` component together with the `ExternalScriptsFunction` type.
@@ -595,6 +609,8 @@ export function Document({ children, title }: Props) {
 Now, any script you defined in the ScriptsFunction will be added to the HTML together with a `<link rel="preload">` before it.
 
 > Tip: You could use it together with useShouldHydrate to disable Remix scripts in certain routes but still load scripts for analytics or small features that need JS but don't need the full app JS to be enabled.
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 ### StructuredData
 
@@ -697,6 +713,8 @@ export let meta: V2_MetaFunction<typeof loader> = ({ data }) => {
 };
 ```
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### useGlobalTransitionStates
 
 This hook lets you know if the value of `transition.state` and every `fetcher.state` in the app.
@@ -723,6 +741,8 @@ The return value of `useGlobalTransitionStates` can be `"idle"`, `"loading"` or 
 
 > **Note** This is used by the hooks below to determine if the app is loading, submitting or both (pending).
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### useGlobalPendingState
 
 This hook lets you know if the global transition or if one of any active fetchers is either loading or submitting.
@@ -744,6 +764,8 @@ The return value of `useGlobalPendingState` is either `"idle"` or `"pending"`.
 
 > **Note**: The `pending` state is a combination of the `loading` and `submitting` states introduced by this hook.
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### useGlobalSubmittingState
 
 This hook lets you know if the global transition or if one of any active fetchers is submitting.
@@ -761,6 +783,8 @@ export function GlobalPendingUI() {
 
 The return value of `useGlobalSubmittingState` is either `"idle"` or `"submitting"`.
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### useGlobalLoadingState
 
 This hook lets you know if the global transition or if one of any active fetchers is loading.
@@ -777,6 +801,8 @@ export function GlobalPendingUI() {
 ```
 
 The return value of `useGlobalLoadingState` is either `"idle"` or `"loading"`.
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 ### useHydrated
 
@@ -802,6 +828,8 @@ When doing SSR, the value of `isHydrated` will always be `false`. The first clie
 
 After the first client-side render, future components rendered calling this hook will receive `true` as the value of `isHydrated`. This way, your server fallback UI will never be rendered on a route transition.
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### useLocales
 
 This hooks lets you get the locales returned by the root loader. It follows a simple convention, your root loader return value should be an objet with the key `locales`.
@@ -826,6 +854,8 @@ export default function Component() {
 ```
 
 The return type of `useLocales` is ready to be used with the Intl API.
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 ### useShouldHydrate
 
@@ -884,6 +914,8 @@ export let handle = {
 
 The `useShouldHydrate` hook will detect `hydrate` as a function and call it using the route data.
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### getClientIPAddress
 
 This function receives a Request or Headers objects and will try to get the IP address of the client (the user) who originated the request.
@@ -916,6 +948,8 @@ The function uses the following list of headers, in order of preference:
 - oxygen-buyer-ip
 
 When a header is found that contains a valid IP address, it will return without checking the other headers.
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 ### getClientLocales
 
@@ -950,6 +984,8 @@ export async function loader({ request }: LoaderArgs) {
 
 The value could also be returned by the loader and used on the UI to ensure the user's locales is used on both server and client formatted dates.
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### isPrefetch
 
 This function let you identify if a request was created because of a prefetch triggered by using `<Link prefetch="intent">` or `<Link prefetch="render">`.
@@ -969,6 +1005,8 @@ export async function loader({ request }: LoaderArgs) {
 }
 ```
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### Responses
 
 #### Redirect Back
@@ -987,6 +1025,8 @@ export async function action({ request }: ActionArgs) {
 
 This helper is most useful when used in a generic action to send the user to the same URL it was before.
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 #### Created
 
 Helper function to create a Created (201) response with a JSON body.
@@ -1000,6 +1040,8 @@ export async function action({ request }: ActionArgs) {
 }
 ```
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 #### Bad Request
 
 Helper function to create a Bad Request (400) response with a JSON body.
@@ -1011,6 +1053,8 @@ export async function action() {
   throw badRequest({ message: "You forgot something in the form." });
 }
 ```
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 #### Unauthorized
 
@@ -1025,6 +1069,8 @@ export async function loader() {
 }
 ```
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 #### Forbidden
 
 Helper function to create a Forbidden (403) response with a JSON body.
@@ -1037,6 +1083,8 @@ export async function loader() {
 }
 ```
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 #### Not Found
 
 Helper function to create a Not Found (404) response with a JSON body.
@@ -1048,6 +1096,8 @@ export async function loader() {
   throw notFound({ message: "This doesn't exist." });
 }
 ```
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 #### Unprocessable Entity
 
@@ -1063,6 +1113,8 @@ export async function loader() {
 
 This is used by the CSRF validation. You probably don't want to use it directly.
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 #### Server Error
 
 Helper function to create a Server Error (500) response with a JSON body.
@@ -1075,6 +1127,8 @@ export async function loader() {
 }
 ```
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 #### Not Modified
 
 Helper function to create a Not Modified (304) response without a body and any header.
@@ -1084,6 +1138,8 @@ export async function loader({ request }: LoaderArgs) {
   return notModified();
 }
 ```
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 #### JavaScript
 
@@ -1097,6 +1153,8 @@ export async function loader({ request }: LoaderArgs) {
 }
 ```
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 #### Stylesheet
 
 Helper function to create a CSS file response with any header.
@@ -1108,6 +1166,8 @@ export async function loader({ request }: LoaderArgs) {
   return stylesheet("body { color: red; }");
 }
 ```
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 #### PDF
 
@@ -1121,6 +1181,8 @@ export async function loader({ request }: LoaderArgs) {
 }
 ```
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 #### HTML
 
 Helper function to create a HTML file response with any header.
@@ -1133,6 +1195,8 @@ export async function loader({ request }: LoaderArgs) {
 }
 ```
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 #### XML
 
 Helper function to create a XML file response with any header.
@@ -1144,6 +1208,8 @@ export async function loader({ request }: LoaderArgs) {
   return xml("<?xml version='1.0'?><catalog></catalog>");
 }
 ```
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 #### TXT
 
@@ -1159,6 +1225,8 @@ export async function loader({ request }: LoaderArgs) {
   `);
 }
 ```
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 ### Typed Cookies
 
@@ -1227,6 +1295,8 @@ let sessionTypedCookie = createTypedCookie({ cookie, schema });
 sessionTypedCookie.parse(request.headers.get("Cookie"));
 ```
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### Typed Sessions
 
 Session objects in Remix allows any type, the typed sessions from Remix Utils lets you use Zod to parse the session data and ensure they conform to a schema.
@@ -1290,6 +1360,8 @@ let typedSessionStorage = createTypedSessionStorage({ sessionStorage, schema });
 typedSessionStorage.getSession(request.headers.get("Cookie"));
 ```
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### Server-Sent Events
 
 Server-Sent Events are a way to send data from the server to the client without the need for the client to request it. This is useful for things like chat applications, live updates, and more.
@@ -1344,6 +1416,8 @@ function Counter() {
 The `event` name in both the event stream and the hook is optional, in which case it will default to `message`, if defined you must use the same event name in both sides, this also allows you to emit different events from the same event stream.
 
 For Server-Sent Events to work, your server must support HTTP streaming. If you don't get SSE to work check if your deployment platform has support for it.
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 ### Rolling Cookies
 
@@ -1405,6 +1479,8 @@ export let handleDataRequest: HandleDataRequestFunction = async (
 ```
 
 > **Note**: [Read more about rolling cookies in Remix](https://sergiodxa.com/articles/add-rolling-sessions-to-remix).
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 ### Named actions
 
@@ -1475,6 +1551,8 @@ If the `default` is not defined it will throw a ReferenceError with the message 
 
 If the library couldn't found the name at all, it will throw a ReferenceError with the message `Action name not found`
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### Preload Route Assets
 
 The `Link` header allows responses to push to the browser assets that are needed for the document, this is useful to improve the performance of the application by sending those assets earlier.
@@ -1515,6 +1593,8 @@ The `preloadLinkedAssets` function will preload any link with `rel: "preload"` a
 
 The `preloadModuleAssets` function will preload all the JS files Remix adds to the page when hydrating it, Remix already renders a `<link rel="modulepreload">` for each now before the `<script type="module">` used to start the application, this will use Link headers to preload those assets.
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### Safe Redirects
 
 When performing a redirect, if the URL is user provided we can't trust it, if you do you're opening a vulnerability to phishing scam by allowing bad actors to redirect the user to malicious websites.
@@ -1536,6 +1616,8 @@ export async function loader({ request }: LoaderArgs) {
 ```
 
 The second argumento of `safeRedirect` is the default redirect which by when not configured is `/`, this lets you tell `safeRedirect` where to redirect the user if the value is not safe.
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 ### JSON Hash Response
 
@@ -1609,6 +1691,8 @@ export default function Component() {
 }
 ```
 
+<p align="right"><a href="#remix-utils">back to top</a></p>
+
 ### Delegate Anchors to Remix
 
 When using Remix, you can use the `<Link>` component to navigate between pages. However, if you have a `<a href>` that links to a page in your app, it will cause a full page refresh. This can be what you want, but sometimes you want to use client-side navigation here instead.
@@ -1632,6 +1716,8 @@ export default function Component() {
   return <article ref={ref} dangerouslySetInnerHTML={{ __html: content }} />;
 }
 ```
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 ### Prefetch Anchors
 
@@ -1659,6 +1745,8 @@ export default function Component() {
 ```
 
 Now you can see in your DevTools that when the user hovers an anchor it will prefetch it, and when the user clicks it will do a client-side navigation.
+
+<p align="right"><a href="#remix-utils">back to top</a></p>
 
 ## Author
 
