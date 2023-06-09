@@ -156,6 +156,37 @@ The rendering flow will be:
 
 This component uses the `useHydrated` hook internally.
 
+### ServerOnly
+
+The ServerOnly component is the opposite of the ClientOnly component, it lets you render the children element only on the server-side, avoiding rendering it the client-side.
+
+You can provide a fallback component to be used on CSR, and while optional, it's highly recommended to provide one to avoid content layout shift issues, unless you only render visually hidden elements.
+
+```tsx
+import { ServerOnly } from "remix-utils";
+
+export default function Component() {
+  return (
+    <ServerOnly fallback={<ComplexComponentNeedingBrowserEnvironment />}>
+      {() => <SimplerStaticVersion />}
+    </ServerOnly>
+  );
+}
+```
+
+This component is handy to render some content only on the server-side, like a hidden input you can later use to know if JS has loaded.
+
+Consider it like the `<noscript>` HTML tag but it can work even if JS failed to load but it's enabled on the browser.
+
+The rendering flow will be:
+
+- SSR: Always render the children.
+- CSR First Render: Always render the children.
+- CSR Update: Update to render the fallback component (if defined).
+- CSR Future Renders: Always render the fallback component, don't bother to render the children.
+
+This component uses the `useHydrated` hook internally.
+
 ### CORS
 
 The CORS function let you implement CORS headers on your loaders and actions so you can use them as an API for other client-side applications.
