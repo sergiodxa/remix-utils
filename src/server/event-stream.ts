@@ -6,6 +6,10 @@ interface SendFunctionArgs {
   data: string;
 }
 
+interface EventStreamOptions {
+  headers: HeadersInit;
+}
+
 interface SendFunction {
   (args: SendFunctionArgs): void;
 }
@@ -14,8 +18,12 @@ interface CleanupFunction {
   (): void;
 }
 
+interface AbortFunction {
+  (): void;
+}
+
 interface InitFunction {
-  (send: SendFunction): CleanupFunction;
+  (send: SendFunction, abort: AbortFunction): CleanupFunction;
 }
 
 /**
@@ -24,7 +32,7 @@ interface InitFunction {
  * @param init The function that will be called to initialize the stream, here you can subscribe to your events
  * @returns A Response object that can be returned from a loader
  */
-export function eventStream(signal: AbortSignal, init: InitFunction) {
+export function eventStream(signal: AbortSignal, init: InitFunction, options: EventStreamOptions = { headers: {} }) {
   let stream = new ReadableStream({
     start(controller) {
       let encoder = new TextEncoder();
@@ -34,7 +42,7 @@ export function eventStream(signal: AbortSignal, init: InitFunction) {
         controller.enqueue(encoder.encode(`data: ${data}\n\n`));
       }
 
-      let cleanup = init(send);
+      let cleanup = init(send, close);
 
       let closed = false;
 
@@ -52,11 +60,11 @@ export function eventStream(signal: AbortSignal, init: InitFunction) {
     },
   });
 
-  return new Response(stream, {
-    headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive",
-    },
-  });
+  const headers = new Headers(options.headers);
+
+  headers.set("Content-Type", "text/event-stream");
+  headers.set("Cache-Control",  "no-cache");
+  headers.set("Connection", "keep-alive");
+
+  return new Response(stream, { headers });
 }
