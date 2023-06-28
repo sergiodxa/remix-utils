@@ -27,6 +27,7 @@ export function DynamicLinks() {
         params: match.params,
         location,
         parentsData: matches.slice(0, index).map((match) => match.data),
+        matches,
       });
       if (Array.isArray(result)) return result;
       return [];

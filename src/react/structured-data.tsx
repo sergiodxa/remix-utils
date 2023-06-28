@@ -95,6 +95,7 @@ export function StructuredData() {
         params: match.params,
         location,
         parentsData: matches.slice(0, index).map((match) => match.data),
+        matches,
       });
       if (result) return result;
     }
