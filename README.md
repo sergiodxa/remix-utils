@@ -439,6 +439,7 @@ let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
   data,
   params,
+  matches,
   location,
   parentsData,
 }) => {
@@ -519,6 +520,7 @@ let scripts: ExternalScriptsFunction<SerializeFrom<typeof loader>> = ({
   id,
   data,
   params,
+  matches,
   location,
   parentsData,
 }) => {
