@@ -6,10 +6,6 @@ interface SendFunctionArgs {
   data: string;
 }
 
-interface EventStreamOptions {
-  headers: HeadersInit;
-}
-
 interface SendFunction {
   (args: SendFunctionArgs): void;
 }
@@ -32,7 +28,11 @@ interface InitFunction {
  * @param init The function that will be called to initialize the stream, here you can subscribe to your events
  * @returns A Response object that can be returned from a loader
  */
-export function eventStream(signal: AbortSignal, init: InitFunction, options: EventStreamOptions = { headers: {} }) {
+export function eventStream(
+  signal: AbortSignal,
+  init: InitFunction,
+  options: ResponseInit = {}
+) {
   let stream = new ReadableStream({
     start(controller) {
       let encoder = new TextEncoder();
