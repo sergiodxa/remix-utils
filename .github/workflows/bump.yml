@@ -6,6 +6,11 @@ on:
       version:
         description: 'Semver type of new version (major / minor / patch)'
         required: true
+        type: choice
+        options:
+        - major
+        - minor
+        - patch
 
 jobs:
   bump-version:
