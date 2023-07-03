@@ -6,10 +6,6 @@ interface SendFunctionArgs {
   data: string;
 }
 
-interface EventStreamOptions {
-  headers: HeadersInit;
-}
-
 interface SendFunction {
   (args: SendFunctionArgs): void;
 }
@@ -32,7 +28,11 @@ interface InitFunction {
  * @param init The function that will be called to initialize the stream, here you can subscribe to your events
  * @returns A Response object that can be returned from a loader
  */
-export function eventStream(signal: AbortSignal, init: InitFunction, options: EventStreamOptions = { headers: {} }) {
+export function eventStream(
+  signal: AbortSignal,
+  init: InitFunction,
+  options: ResponseInit = {}
+) {
   let stream = new ReadableStream({
     start(controller) {
       let encoder = new TextEncoder();
@@ -60,10 +60,22 @@ export function eventStream(signal: AbortSignal, init: InitFunction, options: Ev
     },
   });
 
-  const headers = new Headers(options.headers);
+  let headers = new Headers(options.headers);
+
+  if (headers.has("Content-Type")) {
+    console.warn("Overriding Content-Type header to `text/event-stream`");
+  }
+
+  if (headers.has("Cache-Control")) {
+    console.warn("Overriding Cache-Control header to `no-cache`");
+  }
+
+  if (headers.has("Connection")) {
+    console.warn("Overriding Connection header to `keep-alive`");
+  }
 
   headers.set("Content-Type", "text/event-stream");
-  headers.set("Cache-Control",  "no-cache");
+  headers.set("Cache-Control", "no-cache");
   headers.set("Connection", "keep-alive");
 
   return new Response(stream, { headers });
