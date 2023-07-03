@@ -1275,7 +1275,7 @@ There are two utils provided to help with the usage inside Remix:
 - `eventStream`
 - `useEventSource`
 
-The `eventStream` function is used to create a new event stream response needed to send events to the client.
+The `eventStream` function is used to create a new event stream response needed to send events to the client. This must live in a [Resource Route](https://remix.run/docs/en/1.18.1/guides/resource-routes).
 
 ```ts
 // app/routes/sse.time.ts
@@ -1301,6 +1301,7 @@ Then, inside any component, you can use the `useEventSource` hook to connect to 
 import { useEventSource } from "remix-utils";
 
 function Counter() {
+  // Here `/sse/time` is the resource route returning an eventStream response
   let time = useEventSource("/sse/time", { event: "time" });
 
   if (!time) return null;
