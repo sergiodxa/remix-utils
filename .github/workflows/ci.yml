@@ -19,7 +19,7 @@ jobs:
         uses: bahmutov/npm-install@v1
 
       - name: Build
-        run: npm run prepare
+        run: npm run build
 
   typecheck:
     name: Typechecker
@@ -71,9 +71,6 @@ jobs:
 
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
-
-      - name: Build
-        run: npm run build
 
       - name: Lint
         run: npm run lint
