@@ -1,4 +1,4 @@
-import { useTransition, useFetchers } from "@remix-run/react";
+import { useNavigation, useFetchers } from "@remix-run/react";
 import { useMemo } from "react";
 
 /**
@@ -15,7 +15,7 @@ import { useMemo } from "react";
  * // The app is idle
  */
 export function useGlobalTransitionStates() {
-  let transition = useTransition();
+  let { state: navigationState } = useNavigation();
   let fetchers = useFetchers();
 
   /**
@@ -24,9 +24,9 @@ export function useGlobalTransitionStates() {
    */
   return useMemo(
     function getGlobalTransitionStates() {
-      return [transition.state, ...fetchers.map((fetcher) => fetcher.state)];
+      return [navigationState, ...fetchers.map((fetcher) => fetcher.state)];
     },
-    [transition.state, fetchers]
+    [navigationState, fetchers]
   );
 }
 
