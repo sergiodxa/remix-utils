@@ -8,6 +8,9 @@ import { useCallback, useEffect, useRef } from "react";
 
 type SubmitTarget = Parameters<SubmitFunction>["0"];
 
+/**
+ * Submits a HTML `<form>` to the server without reloading the page.
+ */
 type DebounceSubmitFunction = (
   /**
    * Specifies the `<form>` to be submitted to the server, a specific
@@ -29,9 +32,7 @@ type DebounceSubmitFunction = (
 type DebouncedFetcher<Data = unknown> = Omit<
   FetcherWithComponents<Data>,
   "submit"
-> & {
-  submit: DebounceSubmitFunction;
-};
+> & { submit: DebounceSubmitFunction };
 
 export function useDebounceFetcher<Data>() {
   let timeoutRef = useRef<NodeJS.Timeout | undefined>();

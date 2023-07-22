@@ -1242,7 +1242,7 @@ let schema = z.object({
   count: z.number().default(1),
 });
 
-// you can use a Remix's Cookie container or a Remix Utils's Typed Cookie container
+// you can use a Remix's Cookie container or a Remix Utils' Typed Cookie container
 let sessionStorage = createCookieSessionStorage({ cookie });
 
 // pass the session storage and the schema
@@ -1661,6 +1661,32 @@ export default function Component() {
 ```
 
 Now you can see in your DevTools that when the user hovers an anchor it will prefetch it, and when the user clicks it will do a client-side navigation.
+
+### Debounced Fetcher
+
+The `useDebounceFetcher` is a wrapper of `useFetcher` that adds debounce support to `fetcher.submit`.
+
+The hook is based on @JacobParis [article](https://www.jacobparis.com/content/use-debounce-fetcher).
+
+The main difference with Jacob's version is that Remix Utils' version overwrites `fetcher.submit` instead of appending a `fetcher.debounceSubmit` method.
+
+```tsx
+import { useDebounceFetcher } from "remix-utils";
+
+export function Component({ data }) {
+  let fetcher = useDebounceFetcher<Type>();
+
+  function handleClick() {
+    fetcher.submit(data, { debounceTimeout: 1000 });
+  }
+
+  return (
+    <button type="button" onClick={handleClick}>
+      Do Something
+    </button>
+  );
+}
+```
 
 ## Author
 
