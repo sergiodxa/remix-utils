@@ -6,7 +6,7 @@ import { useMemo } from "react";
  * the app and combine it with the state of the global transition and
  * revalidator.
  * @example
- * let states = useGlobalTransitionStates();
+ * let states = useGlobalNavigationState();
  * if (state.includes("loading")) {
  *   // The app is loading or revalidating.
  * }
@@ -15,7 +15,7 @@ import { useMemo } from "react";
  * }
  * // The app is idle
  */
-export function useGlobalTransitionStates() {
+export function useGlobalNavigationState() {
   let { state: navigationState } = useNavigation();
   let { state: revalidatorState } = useRevalidator();
   let fetchers = useFetchers();
@@ -25,7 +25,7 @@ export function useGlobalTransitionStates() {
    * the state of the global transition (Link and Form) and revalidator.
    */
   return useMemo(
-    function getGlobalTransitionStates() {
+    function getGlobalNavigationState() {
       return [
         navigationState,
         // The type cast here is used to remove RevalidatorState from the union
@@ -56,7 +56,7 @@ export function useGlobalPendingState() {
  * @returns "idle" | "submitting"
  */
 export function useGlobalSubmittingState() {
-  let states = useGlobalTransitionStates();
+  let states = useGlobalNavigationState();
   if (states.includes("submitting")) return "submitting";
   return "idle";
 }
@@ -67,7 +67,7 @@ export function useGlobalSubmittingState() {
  * @returns "idle" | "loading"
  */
 export function useGlobalLoadingState() {
-  let states = useGlobalTransitionStates();
+  let states = useGlobalNavigationState();
   if (states.includes("loading")) return "loading";
   return "idle";
 }
