@@ -1146,7 +1146,10 @@ import { createTypedCookie } from "remix-utils";
 import { z } from "zod";
 
 let cookie = createCookie("returnTo", cookieOptions);
-let schema = z.string().url();
+// I recommend you to always add `nullable` to your schema, if a cookie didn't
+// come with the request Cookie header Remix will return null, and it can be
+// useful to remove it later when clearing the cookie
+let schema = z.string().url().nullable();
 
 // pass the cookie and the schema
 let typedCookie = createTypedCookie({ cookie, schema });
@@ -1155,17 +1158,17 @@ let typedCookie = createTypedCookie({ cookie, schema });
 let returnTo = await typedCookie.parse(request.headers.get("Cookie"));
 
 // this will not pass the schema validation and throw a ZodError
-await cookie.serialize("a random string that's not a URL");
+await typedCookie.serialize("a random string that's not a URL");
 // this will make TS yell because it's not a string, if you ignore it it will
 // throw a ZodError
-await cookie.serialize(123);
+await typedCookie.serialize(123);
 ```
 
 You could also use typed cookies with any sessionStorage mechanism from Remix.
 
 ```ts
 let cookie = createCookie("session", cookieOptions);
-let schema = z.object({ token: z.string() });
+let schema = z.object({ token: z.string() }).nullable();
 
 let sessionStorage = createCookieSessionStorage({
   cookie: createTypedCookie({ cookie, schema }),
@@ -1190,17 +1193,39 @@ You can also use async refinements in your schemas because typed cookies uses pa
 ```ts
 let cookie = createCookie("session", cookieOptions);
 
-let schema = z.object({
-  token: z.string().refine(async (token) => {
-    let user = await getUserByToken(token);
-    return user !== null;
-  }, "INVALID_TOKEN"),
-});
+let schema = z
+  .object({
+    token: z.string().refine(async (token) => {
+      let user = await getUserByToken(token);
+      return user !== null;
+    }, "INVALID_TOKEN"),
+  })
+  .nullable();
 
 let sessionTypedCookie = createTypedCookie({ cookie, schema });
 
 // this will throw if the token stored in the cookie is not valid anymore
 sessionTypedCookie.parse(request.headers.get("Cookie"));
+```
+
+Finally, to be able to delete a cookie, you can add `.nullable()` to your schema and serialize it with `null` as value.
+
+```ts
+// Set the value as null and expires as current date - 1 second so the browser expires the cookie
+await typedCookie.serialize(null, { expires: new Date(Date.now() - 1) });
+```
+
+If you didn't add `.nullable()` to your schema, you will need to provide a mock value and set the expires date to the past.
+
+```ts
+let cookie = createCookie("returnTo", cookieOptions);
+let schema = z.string().url().nullable();
+
+let typedCookie = createTypedCookie({ cookie, schema });
+
+await typedCookie.serialize("some fake url to pass schema validation", {
+  expires: new Date(Date.now() - 1),
+});
 ```
 
 ### Typed Sessions
