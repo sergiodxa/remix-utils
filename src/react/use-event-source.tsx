@@ -1,11 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, createContext, useContext } from "react";
 
-type EventSourceOptions = {
+export interface EventSourceOptions {
   init?: EventSourceInit;
   event?: string;
-};
+}
 
-const map = new Map<string, { count: number; source: EventSource }>();
+export type EventSourceMap = Map<
+  string,
+  { count: number; source: EventSource }
+>;
+
+const context = createContext<EventSourceMap>(
+  new Map<string, { count: number; source: EventSource }>()
+);
+
+export const EventSourceProvider = context.Provider;
 
 /**
  * Subscribe to an event source and return the latest event.
@@ -17,6 +26,7 @@ export function useEventSource(
   url: string | URL,
   { event = "message", init }: EventSourceOptions = {}
 ) {
+  let map = useContext(context);
   let [data, setData] = useState<string | null>(null);
 
   useEffect(() => {
@@ -48,7 +58,7 @@ export function useEventSource(
         map.delete(key);
       }
     };
-  }, [url, event, init]);
+  }, [url, event, init, map]);
 
   return data;
 }

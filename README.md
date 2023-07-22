@@ -1163,6 +1163,23 @@ The `event` name in both the event stream and the hook is optional, in which cas
 
 For Server-Sent Events to work, your server must support HTTP streaming. If you don't get SSE to work check if your deployment platform has support for it.
 
+Because SSE count towards the limit of HTTP connections per domain, the useEventSource hook keeps a global map of connections based on the provided URL and options, as long as they are the same the hook will open a single SSE connection and share it between instances of the hook.
+
+Once there are not more instances of the hook re-using a connection, the connection will be closed and removed from the map.
+
+You can use the `<EventSourceProvider />` component to control the map.
+
+```tsx
+let map: EventSourceMap = new Map();
+return (
+  <EventSourceProvider value={map}>
+    <YourAppOrPartOfIt />
+  </EventSourceProvider>
+);
+```
+
+This way, you could overwrite the map with a new one on a part of the app. Note that this provider is optional and a default map will be used if you don't provide one.
+
 ### Rolling Cookies
 
 Rolling cookies allows you to prolong the expiration of a cookie by updating the expiration date of every cookie.
