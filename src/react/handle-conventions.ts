@@ -1,4 +1,4 @@
-import { RouteData } from "@remix-run/react/dist/routeData";
+import type { RouterState } from "@remix-run/router";
 import type { AppData } from "@remix-run/server-runtime";
 import type { Location, Params } from "react-router-dom";
 import { Matches } from "./matches-type";
@@ -8,6 +8,6 @@ export type HandleConventionArguments<Data extends AppData = AppData> = {
   data: Data;
   params: Params;
   location: Location;
-  parentsData: RouteData;
+  parentsData: RouterState["loaderData"];
   matches: Matches;
 };
