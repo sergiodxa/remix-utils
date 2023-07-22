@@ -26,7 +26,10 @@ type DebounceSubmitFunction = (
   options?: SubmitOptions & { debounceTimeout?: number }
 ) => void;
 
-type DebouncedFetcher<Data = unknown> = FetcherWithComponents<Data> & {
+type DebouncedFetcher<Data = unknown> = Omit<
+  FetcherWithComponents<Data>,
+  "submit"
+> & {
   submit: DebounceSubmitFunction;
 };
 
@@ -43,7 +46,7 @@ export function useDebounceFetcher<Data>() {
 
   let fetcher = useFetcher<Data>() as DebouncedFetcher<Data>;
 
-  fetcher.submit = useCallback<DebounceSubmitFunction>(
+  fetcher.submit = useCallback(
     (target, { debounceTimeout = 0, ...options } = {}) => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       if (!debounceTimeout || debounceTimeout <= 0) {
