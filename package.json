@@ -41,8 +41,9 @@
     "body parser"
   ],
   "peerDependencies": {
-    "@remix-run/react": "^1.10.0",
-    "@remix-run/server-runtime": "^1.10.0",
+    "@remix-run/router": "^1.7.2",
+    "@remix-run/react": "^1.19.1",
+    "@remix-run/server-runtime": "^1.19.1",
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
     "zod": "^3.19.1"
   },
@@ -52,9 +53,10 @@
     "@babel/preset-react": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
     "@jest/types": "^27.2.5",
-    "@remix-run/node": "^1.10.0",
-    "@remix-run/react": "^1.10.0",
-    "@remix-run/server-runtime": "^1.10.0",
+    "@remix-run/node": "^1.19.1",
+    "@remix-run/react": "^1.19.1",
+    "@remix-run/router": "^1.7.2",
+    "@remix-run/server-runtime": "^1.19.1",
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^12.1.2",
     "@types/react": "^17.0.14",
