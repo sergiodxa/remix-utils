@@ -5,6 +5,8 @@ type EventSourceOptions = {
   event?: string;
 };
 
+const map = new Map<string, { count: number; source: EventSource }>();
+
 /**
  * Subscribe to an event source and return the latest event.
  * @param url The URL of the event source to connect to
@@ -15,11 +17,21 @@ export function useEventSource(
   url: string | URL,
   { event = "message", init }: EventSourceOptions = {}
 ) {
-  const [data, setData] = useState<string | null>(null);
+  let [data, setData] = useState<string | null>(null);
 
   useEffect(() => {
-    const eventSource = new EventSource(url, init);
-    eventSource.addEventListener(event ?? "message", handler);
+    let key = [url.toString(), event, init?.withCredentials].join("::");
+
+    let value = map.get(key) ?? {
+      count: 0,
+      source: new EventSource(url, init),
+    };
+
+    ++value.count;
+
+    map.set(key, value);
+
+    value.source.addEventListener(event, handler);
 
     // rest data if dependencies change
     setData(null);
@@ -29,8 +41,12 @@ export function useEventSource(
     }
 
     return () => {
-      eventSource.removeEventListener(event ?? "message", handler);
-      eventSource.close();
+      value.source.removeEventListener(event, handler);
+      --value.count;
+      if (value.count <= 0) {
+        value.source.close();
+        map.delete(key);
+      }
     };
   }, [url, event, init]);
 
