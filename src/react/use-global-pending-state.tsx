@@ -1,13 +1,14 @@
-import { useNavigation, useFetchers } from "@remix-run/react";
+import { useNavigation, useFetchers, useRevalidator } from "@remix-run/react";
 import { useMemo } from "react";
 
 /**
  * This is a helper hook that returns the state of every fetcher active on
- * the app and combine it with the state of the global transition.
+ * the app and combine it with the state of the global transition and
+ * revalidator.
  * @example
  * let states = useGlobalTransitionStates();
  * if (state.includes("loading")) {
- *   // The app is loading.
+ *   // The app is loading or revalidating.
  * }
  * if (state.includes("submitting")) {
  *   // The app is submitting.
@@ -16,17 +17,23 @@ import { useMemo } from "react";
  */
 export function useGlobalTransitionStates() {
   let { state: navigationState } = useNavigation();
+  let { state: revalidatorState } = useRevalidator();
   let fetchers = useFetchers();
 
   /**
    * This gets the state of every fetcher active on the app and combine it with
-   * the state of the global transition (Link and Form).
+   * the state of the global transition (Link and Form) and revalidator.
    */
   return useMemo(
     function getGlobalTransitionStates() {
-      return [navigationState, ...fetchers.map((fetcher) => fetcher.state)];
+      return [
+        navigationState,
+        // The type cast here is used to remove RevalidatorState from the union
+        revalidatorState as "idle" | "loading",
+        ...fetchers.map((fetcher) => fetcher.state),
+      ];
     },
-    [navigationState, fetchers]
+    [navigationState, revalidatorState, fetchers]
   );
 }
 
