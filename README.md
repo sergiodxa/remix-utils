@@ -1165,7 +1165,7 @@ For Server-Sent Events to work, your server must support HTTP streaming. If you 
 
 Because SSE count towards the limit of HTTP connections per domain, the useEventSource hook keeps a global map of connections based on the provided URL and options, as long as they are the same the hook will open a single SSE connection and share it between instances of the hook.
 
-Once there are not more instances of the hook re-using a connection, the connection will be closed and removed from the map.
+Once there are no more instances of the hook re-using a connection, it will be closed and removed from the map.
 
 You can use the `<EventSourceProvider />` component to control the map.
 
