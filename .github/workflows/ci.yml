@@ -13,7 +13,7 @@ jobs:
       - name: Use Node LTS
         uses: actions/setup-node@v2
         with:
-          node-version: "lts/*"
+          node-version: "20"
 
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
@@ -31,7 +31,7 @@ jobs:
       - name: Use Node LTS
         uses: actions/setup-node@v2
         with:
-          node-version: "lts/*"
+          node-version: "20"
 
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
@@ -49,7 +49,7 @@ jobs:
       - name: Use Node LTS
         uses: actions/setup-node@v2
         with:
-          node-version: "lts/*"
+          node-version: "20"
 
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
@@ -67,7 +67,7 @@ jobs:
       - name: Use Node LTS
         uses: actions/setup-node@v2
         with:
-          node-version: "lts/*"
+          node-version: "20"
 
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
