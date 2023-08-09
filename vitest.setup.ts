@@ -1,6 +1,7 @@
+import { expect } from "vitest";
 import { installGlobals } from "@remix-run/node";
+
 import "@testing-library/jest-dom";
-import "jest-fetch-mock/setupJest";
 
 installGlobals();
 

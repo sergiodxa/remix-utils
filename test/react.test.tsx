@@ -1,6 +1,5 @@
-/**
- * @jest-environment jsdom
- */
+// @vitest-environment happy-dom
+import { describe, test } from "vitest";
 import { render } from "@testing-library/react";
 import * as React from "react";
 import {
@@ -10,7 +9,7 @@ import {
 
 describe("React Utils", () => {
   describe("CSRF", () => {
-    it("should work", () => {
+    test("should work", () => {
       render(
         <AuthenticityTokenProvider token="testing-token">
           <AuthenticityTokenInput />

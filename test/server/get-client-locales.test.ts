@@ -1,3 +1,4 @@
+import { describe, test, expect } from "vitest";
 import { getClientLocales } from "../../src";
 
 describe(getClientLocales, () => {

@@ -1,3 +1,4 @@
+import { describe, test, expect } from "vitest";
 import { getClientIPAddress } from "../../src";
 
 const VALID_IP = "192.168.0.1";

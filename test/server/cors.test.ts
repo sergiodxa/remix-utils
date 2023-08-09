@@ -1,3 +1,5 @@
+import { describe, test, expect } from "vitest";
+
 import { cors } from "../../src";
 
 function createRequest(headers: Headers = new Headers()) {

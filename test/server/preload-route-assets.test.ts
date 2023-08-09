@@ -1,5 +1,7 @@
+import { describe, test, expect } from "vitest";
 import type { EntryContext } from "@remix-run/server-runtime";
 import { preloadRouteAssets } from "../../src";
+import { SerializedError } from "@remix-run/server-runtime/dist/errors";
 
 describe(preloadRouteAssets.name, () => {
   let context: EntryContext = {
@@ -47,7 +49,16 @@ describe(preloadRouteAssets.name, () => {
         links: undefined,
       },
     },
-    future: { v2_meta: false },
+    future: {
+      v2_meta: false,
+      v2_dev: false,
+      v2_errorBoundary: false,
+      v2_headers: false,
+      v2_normalizeFormMethod: false,
+      v2_routeConvention: false,
+      unstable_postcss: false,
+      unstable_tailwind: false,
+    },
     staticHandlerContext: {
       actionData: {},
       actionHeaders: {},
@@ -81,6 +92,10 @@ describe(preloadRouteAssets.name, () => {
         },
       ],
       statusCode: 200,
+      activeDeferreds: null,
+    },
+    serializeError(error): SerializedError {
+      return { message: error.message, stack: error.stack };
     },
   };
 

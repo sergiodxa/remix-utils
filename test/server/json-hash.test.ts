@@ -1,3 +1,4 @@
+import { describe, test, expect } from "vitest";
 import { jsonHash } from "../../src";
 
 describe(jsonHash.name, () => {

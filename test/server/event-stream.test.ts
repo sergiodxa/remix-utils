@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
+import { vi, describe, test, expect } from "vitest";
 import { eventStream } from "../../src";
 
 describe(eventStream, () => {
@@ -48,7 +49,7 @@ describe(eventStream, () => {
 
   describe("Headers Overrides", () => {
     test("overrrides Content-Type header", () => {
-      let spy = jest.spyOn(console, "warn").mockImplementation(() => {});
+      let spy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
       let response = eventStream(
         new AbortController().signal,
@@ -66,7 +67,7 @@ describe(eventStream, () => {
     });
 
     test("overrides Cache-Control", () => {
-      let spy = jest.spyOn(console, "warn").mockImplementation(() => {});
+      let spy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
       let response = eventStream(
         new AbortController().signal,
@@ -84,7 +85,7 @@ describe(eventStream, () => {
     });
 
     test("overrides Connection", () => {
-      let spy = jest.spyOn(console, "warn").mockImplementation(() => {});
+      let spy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
       let response = eventStream(
         new AbortController().signal,
