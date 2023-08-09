@@ -229,23 +229,15 @@ describe("Responses", () => {
     test("Should return Response with status 200", async () => {
       let blob = new Blob();
       let response = pdf(blob);
-      expect(response).toEqual(
-        new Response(blob, {
-          status: 200,
-          headers: { "Content-Type": "application/pdf" },
-        })
-      );
+      expect(response.status).toBe(200);
+      expect(response.headers.get("content-type")).toBe("application/pdf");
     });
 
     test("Should allow defining the status as second options", async () => {
       let blob = new Blob();
       let response = pdf(blob, 201);
-      expect(response).toEqual(
-        new Response(blob, {
-          status: 201,
-          headers: { "Content-Type": "application/pdf" },
-        })
-      );
+      expect(response.status).toBe(201);
+      expect(response.headers.get("content-type")).toBe("application/pdf");
     });
 
     test("Should allow changing the Response headers", async () => {
@@ -253,15 +245,9 @@ describe("Responses", () => {
       let response = pdf(blob, {
         headers: { "X-Test": "it worked" },
       });
-      expect(response).toEqual(
-        new Response(blob, {
-          status: 200,
-          headers: {
-            "X-Test": "it worked",
-            "Content-Type": "application/pdf",
-          },
-        })
-      );
+      expect(response.headers.get("x-test")).toBe("it worked");
+      expect(response.status).toBe(200);
+      expect(response.headers.get("content-type")).toBe("application/pdf");
     });
   });
 
