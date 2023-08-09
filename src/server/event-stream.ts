@@ -23,7 +23,7 @@ interface InitFunction {
 }
 
 /**
- * A response holper to use Server Sent Events server-side
+ * A response helper to use Server Sent Events server-side
  * @param signal The AbortSignal used to close the stream
  * @param init The function that will be called to initialize the stream, here you can subscribe to your events
  * @returns A Response object that can be returned from a loader
