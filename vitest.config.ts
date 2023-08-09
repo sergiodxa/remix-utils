@@ -12,6 +12,7 @@ export default defineConfig({
     setupFiles: ["./vitest.setup.ts"],
     coverage: {
       all: true,
+      include: ["src/**/*"],
     },
   },
 });
