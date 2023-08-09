@@ -15,11 +15,15 @@ describe(safeRedirect.name, () => {
     undefined,
     "mailto:remix@utils.com",
     "//remix.utils",
-  ])("Is invalid %s", (to) => {
+  ])("is invalid %s", (to) => {
     expect(safeRedirect(to)).toBe("/");
   });
 
-  test("Uses default redirect", () => {
+  test("uses default redirect", () => {
     expect(safeRedirect(null, "/login")).toBe("/login");
+  });
+
+  test("considers invalid /\\", () => {
+    expect(safeRedirect("/\\", "/login")).toBe("/login");
   });
 });

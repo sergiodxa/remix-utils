@@ -11,15 +11,18 @@ const DEFAULT_REDIRECT = "/";
  */
 export function safeRedirect(
   to: FormDataEntryValue | string | null | undefined,
-  defaultRedirect: string = DEFAULT_REDIRECT
+  defaultRedirect: string = DEFAULT_REDIRECT,
 ) {
-  if (!to || typeof to !== "string") {
-    return defaultRedirect;
-  }
+  if (!to || typeof to !== "string") return defaultRedirect;
 
   to = to.trim();
 
-  if (!to.startsWith("/") || to.startsWith("//")) {
+  if (
+    !to.startsWith("/") ||
+    to.startsWith("//") ||
+    to.startsWith("/\\") ||
+    to.includes("..")
+  ) {
     return defaultRedirect;
   }
 
