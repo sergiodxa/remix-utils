@@ -315,53 +315,71 @@ The CSRF related functions let you implement CSRF protection on your application
 
 This part of Remix Utils needs React and server-side code.
 
-#### Generate the authenticity token
-
-In the server, we need to add to our `root` component the following.
+First create a new CSRF instance.
 
 ```ts
-import { createAuthenticityToken, json } from "remix-utils";
-import { getSession, commitSession } from "~/services/session.server";
+// app/utils/csrf.server.ts
+import { CSRF } from "remix-utils";
+import { createCookie } from "@remix-run/node"; // or /cloudflare
 
-interface LoaderData {
-  csrf: string;
-}
+export const cookie = createCookie("csrf", {
+  path: "/",
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax",
+  secrets: ["s3cr3t"],
+});
+
+export const csrf = new CSRF({
+  cookie,
+  // what key in FormData objects will be used for the token, defaults to `csrf`
+  formDataKey: "csrf",
+  // an optional secret used to sign the token, recommended for extra safety
+  secret: "s3cr3t",
+});
+```
+
+Then you can use `csrf` to generate a new token.
+
+```ts
+import { csrf } from "~/utils/csrf.server";
 
 export async function loader({ request }: LoaderArgs) {
-  let session = await getSession(request.headers.get("cookie"));
-  let token = createAuthenticityToken(session);
-  return json<LoaderData>(
-    { csrf: token },
-    { headers: { "Set-Cookie": await commitSession(session) } }
-  );
+  let token = csrf.generate();
 }
 ```
 
-The `createAuthenticityToken` function receives a session object and stores the authenticity token there using the `csrf` key (you can pass the key name as a second argument). Finally, you need to return the token in a `json` response and commit the session.
+You can customize the token size by passing the byte size, the default one is 32 bytes which will give you a string with a length of 43 after encoding.
 
-#### Render the AuthenticityTokenProvider
+```ts
+let token = csrf.generate(64); // customize token length
+```
 
-You need to read the authenticity token and render the `AuthenticityTokenProvider` component wrapping your code in your root.
+You will need to save this token in a cookie and also return it from the loader, for convenience, you can use the `CSRF#commitToken` helper.
+
+```ts
+import { csrf } from "~/utils/csrf.server";
+
+export async function loader({ request }: LoaderArgs) {
+  let [token, cookieHeader] = await csrf.commitToken();
+  return json({ token }, { headers: { "set-cookie": cookieHeader } });
+}
+```
+
+> **Note**: You could do this on any route, but I recommend you to do it on the `root` loader.
+
+Now that you returned the token and set it in a cookie, you can use the `AuthenticityTokenProvider` component to provide the token to your React components.
 
 ```tsx
-import { Outlet, useLoaderData } from "@remix-run/react";
-import { Document } from "~/components/document";
-
-export default function Component() {
-  let { csrf } = useLoaderData<LoaderData>();
-  return (
-    <AuthenticityTokenProvider token={csrf}>
-      <Document>
-        <Outlet />
-      </Document>
-    </AuthenticityTokenProvider>
-  );
-}
+let { csrf } = useLoaderData<LoaderData>();
+return (
+  <AuthenticityTokenProvider token={csrf}>
+    <Outlet />
+  </AuthenticityTokenProvider>
+);
 ```
 
-With this, your whole app can access the authenticity token generated in the root.
-
-#### Rendering a Form
+Render it in your `root` component and wrap the `Outlet` with it.
 
 When you create a form in some route, you can use the `AuthenticityTokenInput` component to add the authenticity token to the form.
 
@@ -389,40 +407,71 @@ This `AuthenticityTokenInput` will get the authenticity token from the `Authenti
 
 You should only customize the name if you also changed it on `createAuthenticityToken`.
 
-##### Alternative: Using `useAuthenticityToken` and `useFetcher`.
-
 If you need to use `useFetcher` (or `useSubmit`) instead of `Form` you can also get the authenticity token with the `useAuthenticityToken` hook.
 
 ```tsx
-import { useFetcher } from "remix";
+import { useFetcher } from "@remix-run/react";
 import { useAuthenticityToken } from "remix-utils";
 
 export function useMarkAsRead() {
   let fetcher = useFetcher();
   let csrf = useAuthenticityToken();
   return function submit(data) {
-    fetcher.submit({ csrf, ...data }, { action: "/action", method: "post" });
+    fetcher.submit(
+      { csrf, ...data },
+      { action: "/api/mark-as-read", method: "post" }
+    );
   };
 }
 ```
 
-#### Verify in the Action
-
-Finally, you need to verify the authenticity token in the action that received the request.
+Finally, you need to validate the authenticity token in the action that received the request.
 
 ```ts
-import { verifyAuthenticityToken, redirectBack } from "remix-utils";
-import { getSession, commitSession } from "~/services/session.server";
+import { CSRFError, redirectBack } from "remix-utils";
+import { csrf } from "~/utils/csrf.server";
 
 export async function action({ request }: ActionArgs) {
-  let session = await getSession(request.headers.get("Cookie"));
-  await verifyAuthenticityToken(request, session);
-  // do something here
+  try {
+    await csrf.validate(request);
+  } catch (error) {
+    if (error instanceof CSRFError) {
+      // handle CSRF errors
+    }
+    // handle other possible errors
+  }
+
+  // here you know the request is valid
   return redirectBack(request, { fallback: "/fallback" });
 }
 ```
 
-Suppose the authenticity token is missing on the session, the request body, or doesn't match. In that case, the function will throw an Unprocessable Entity response that you can either catch and handle manually or let pass and render your CatchBoundary.
+If you need to parse the body as FormData yourself (e.g. to support file uploads) you can also call `CSRF#validate` with the FormData and Headers objects.
+
+```ts
+let formData = await parseMultiPartFormData(request);
+try {
+  await csrf.validate(formData, request.headers);
+} catch (error) {
+  // handle errors
+}
+```
+
+> **Warning**: If you call `CSRF#validate` with the request instance but you read the body before it will throw an error.
+
+In case the CSRF validation fails, it will throw a `CSRFError` which can be used to correctly identify them against other possible errors that may throw.
+
+The list of possible error messages are:
+
+- `missing_token_in_cookie`: The request is missing the CSRF token in the cookie.
+- `invalid_token_in_cookie`: The CSRF token is not valid (is not a string).
+- `tampered_token_in_cookie`: The CSRF token doesn't match the signature.
+- `missing_token_in_body`: The request is missing the CSRF token in the body (FormData).
+- `mismatched_token`: The CSRF token in the cookie and the body don't match.
+
+You can use `error.code` to check one of the error codes above, and `error.message` to get a human friendly description.
+
+> **Warning**: Don't send those error messages to the end-user, they are meant to be used for debugging purposes only.
 
 ### ExternalScripts
 

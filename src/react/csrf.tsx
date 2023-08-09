@@ -13,17 +13,14 @@ let context = createContext<string | null>(null);
 
 /**
  * Save the Authenticity Token into context
- * Example: In the `root` add `<AuthenticityTokenProvider>`
- * ```tsx
- * let { csrf } = useLoaderData<{ csrf: string }>();
+ * @example
+ * // Add `<AuthenticityTokenProvider>` wrapping your Outlet
+ * let { csrf } = useLoaderData<typeof loader>();
  * return (
  *   <AuthenticityTokenProvider token={csrf}>
- *     <Document>
- *       <Outlet />
- *     </Document>
+ *     <Outlet />
  *   </AuthenticityTokenProvider>
- * )'
- * ```
+ * )
  */
 export function AuthenticityTokenProvider({
   children,
@@ -52,7 +49,8 @@ export function useAuthenticityToken() {
 
 /**
  * Render a hidden input with the name csrf and the authenticity token as value.
- * ```tsx
+ * @example
+ * // Default usage
  * return (
  *   <Form action="/login" method="post">
  *     <AuthenticityTokenInput />
@@ -61,7 +59,9 @@ export function useAuthenticityToken() {
  *     <button type="submit">Login</button>
  *   </Form>
  * );
- * ```
+ * @example
+ * // Customizing the name
+ * <AuthenticityTokenInput name="authenticity_token" />
  */
 export function AuthenticityTokenInput({
   name = "csrf",

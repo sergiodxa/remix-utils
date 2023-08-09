@@ -1,174 +1,149 @@
-import {
-  createCookieSessionStorage,
-  unstable_parseMultipartFormData,
-  UploadHandler,
-  UploadHandlerPart,
-} from "@remix-run/node";
-import { createAuthenticityToken, verifyAuthenticityToken } from "../../src/";
+import { createCookie } from "@remix-run/node";
+import { CSRF, CSRFError } from "../../src/";
 
-function uploadHandler(part: UploadHandlerPart): ReturnType<UploadHandler> {
-  return Promise.resolve(`${part.filename} contents`);
-}
+describe("CSRF", () => {
+  let cookie = createCookie("csrf", { secrets: ["s3cr3t"] });
+  let csrf = new CSRF({ cookie });
 
-describe("CSRF Server", () => {
-  let sessionStorage = createCookieSessionStorage({
-    cookie: { name: "session", secrets: ["s3cr3t"] },
+  test("generates a new authenticity token with the default size", () => {
+    let token = csrf.generate();
+    expect(token).toStrictEqual(expect.any(String));
+    expect(token).toHaveLength(43);
   });
 
-  describe(createAuthenticityToken, () => {
-    test("should return a random string", async () => {
-      let session = await sessionStorage.getSession();
-      const token = createAuthenticityToken(session);
-      expect(token).toBeDefined();
-      expect(token).toHaveLength(36);
-    });
-
-    test("the returned token should be stored in the session as csrf", async () => {
-      let session = await sessionStorage.getSession();
-      const token = createAuthenticityToken(session);
-      expect(session.get("csrf")).toBe(token);
-    });
-
-    test("should be able to change the key used to store the token in the session", async () => {
-      let session = await sessionStorage.getSession();
-      const token = createAuthenticityToken(session, "newKey");
-      expect(session.get("newKey")).toBe(token);
-    });
-
-    test("should only generate new token if not already in the session", async () => {
-      let session = await sessionStorage.getSession();
-      let initialToken = createAuthenticityToken(session);
-      let cookie = await sessionStorage.commitSession(session);
-
-      let requestSession = await sessionStorage.getSession(cookie);
-      let newToken = createAuthenticityToken(requestSession);
-      expect(newToken).toBe(initialToken);
-    });
+  test("generates a new authenticity token with the given size", () => {
+    let token = csrf.generate(64);
+    expect(token).toStrictEqual(expect.any(String));
+    expect(token).toHaveLength(86);
   });
 
-  describe(verifyAuthenticityToken, () => {
-    test("should throw Unprocessable Entity if the csrf is not in the session", async () => {
-      let session = await sessionStorage.getSession();
-      let cookie = await sessionStorage.commitSession(session);
+  test("generates a new signed authenticity token", () => {
+    let csrf = new CSRF({ cookie, secret: "my-secret" });
 
-      let request = new Request("http://remix.utils/", {
-        method: "POST",
-        headers: { cookie },
-        body: new FormData(),
-      });
+    let token = csrf.generate();
+    let [value, signature] = token.split(".");
 
-      try {
-        await verifyAuthenticityToken(request, session);
-      } catch (error) {
-        if (!(error instanceof Response)) throw error;
-        expect(error.status).toBe(422);
-        expect(await error.json()).toEqual({
-          message: "Can't find CSRF token in session.",
-        });
-      }
+    expect(token).toHaveLength(87);
+    expect(value).toHaveLength(43);
+    expect(signature).toHaveLength(43);
+  });
+
+  test("verify tokens using FormData and Headers", async () => {
+    let token = csrf.generate();
+
+    let headers = new Headers({
+      cookie: await cookie.serialize(token),
     });
 
-    test("should throw Unprocessable Entity if csrf is not in the body", async () => {
-      let session = await sessionStorage.getSession();
-      session.set("csrf", "token");
+    let formData = new FormData();
+    formData.set("csrf", token);
 
-      let cookie = await sessionStorage.commitSession(session);
+    await expect(csrf.validate(formData, headers)).resolves.toBeUndefined();
+  });
 
-      let request = new Request("http://remix.utils/", {
-        method: "POST",
-        headers: { cookie },
-        body: new FormData(),
-      });
+  test("verify tokens using Request", async () => {
+    let token = csrf.generate();
 
-      try {
-        await verifyAuthenticityToken(request, session);
-      } catch (error) {
-        if (!(error instanceof Response)) throw error;
-        expect(error.status).toBe(422);
-        expect(await error.json()).toEqual({
-          message: "Can't find CSRF token in body.",
-        });
-      }
+    let headers = new Headers({
+      cookie: await cookie.serialize(token),
     });
 
-    test("should throw Unprocessable Entity if session and body csrf don't match", async () => {
-      let session = await sessionStorage.getSession();
-      session.set("csrf", "token");
+    let formData = new FormData();
+    formData.set("csrf", token);
 
-      let cookie = await sessionStorage.commitSession(session);
-
-      let formData = new FormData();
-      formData.set("csrf", "wrong token");
-
-      let request = new Request("http://remix.utils/", {
-        method: "POST",
-        headers: { cookie },
-        body: formData,
-      });
-
-      try {
-        await verifyAuthenticityToken(request, session);
-      } catch (error) {
-        if (!(error instanceof Response)) throw error;
-        expect(error.status).toBe(422);
-        expect(await error.json()).toEqual({
-          message: "Can't verify CSRF token authenticity.",
-        });
-      }
+    let request = new Request("http://remix.utils/", {
+      method: "POST",
+      headers,
+      body: formData,
     });
 
-    test.each([
-      [undefined, "csrf"],
-      ["xsrf", "xsrf"],
-    ])(
-      "should validate request if session and body csrf match",
-      async (sessionKey, expected) => {
-        let session = await sessionStorage.getSession();
-        session.set(expected, "token");
+    await expect(csrf.validate(request)).resolves.toBeUndefined();
+  });
 
-        let cookie = await sessionStorage.commitSession(session);
+  test('throws "Can\'t find CSRF token in cookie" if cookie is not set', async () => {
+    let headers = new Headers();
 
-        let formData = new FormData();
-        formData.set(expected, "token");
+    let formData = new FormData();
+    formData.set("csrf", "token");
 
-        let request = new Request("http://remix.utils/", {
-          method: "POST",
-          headers: { cookie },
-          body: formData,
-        });
-
-        await verifyAuthenticityToken(request, session, sessionKey);
-      }
+    await expect(csrf.validate(formData, headers)).rejects.toThrow(
+      new CSRFError(
+        "missing_token_in_cookie",
+        "Can't find CSRF token in cookie."
+      )
     );
+  });
 
-    afterEach(() => jest.restoreAllMocks());
-
-    test.skip("should validate request with File if session and body csrf match", async () => {
-      jest.spyOn(console, "warn");
-
-      let session = await sessionStorage.getSession();
-      session.set("csrf", "token");
-
-      let cookie = await sessionStorage.commitSession(session);
-
-      let formData = new FormData();
-      formData.set("csrf", "token");
-      formData.set("upload", new Blob(["blob"]), "blob.ext");
-
-      let request = new Request("http://remix.utils/", {
-        method: "POST",
-        headers: { cookie },
-        body: formData,
-      });
-
-      await verifyAuthenticityToken(
-        await unstable_parseMultipartFormData(request, uploadHandler),
-        session
-      );
-
-      // Tried to parse multipart file upload for field "upload" but no uploadHandler was provided.
-      // Read more here: https://remix.run/api/remix#parseMultipartFormData-node
-      expect(console.warn).toHaveBeenCalledTimes(0);
+  test('throw "Invalid CSRF token in cookie" if cookie is not a string', async () => {
+    let headers = new Headers({
+      cookie: await cookie.serialize(123),
     });
+
+    let formData = new FormData();
+    formData.set("csrf", "token");
+
+    await expect(csrf.validate(formData, headers)).rejects.toThrow(
+      new CSRFError("invalid_token_in_cookie", "Invalid CSRF token in cookie.")
+    );
+  });
+
+  test('throws "Can\'t find CSRF token in body" if CSRF token is not in body', async () => {
+    let token = csrf.generate();
+
+    let headers = new Headers({
+      cookie: await cookie.serialize(token),
+    });
+
+    let formData = new FormData();
+
+    await expect(csrf.validate(formData, headers)).rejects.toThrow(
+      new CSRFError("missing_token_in_body", "Can't find CSRF token in body.")
+    );
+  });
+
+  test("throws \"Can't verify CSRF token authenticity\" if CSRF token in body doesn't match CSRF token in cookie", async () => {
+    let token = csrf.generate();
+
+    let headers = new Headers({
+      cookie: await cookie.serialize(token),
+    });
+
+    let formData = new FormData();
+    formData.set("csrf", "wrong token");
+
+    await expect(csrf.validate(formData, headers)).rejects.toThrow(
+      new CSRFError("mismatched_token", "Can't verify CSRF token authenticity.")
+    );
+  });
+
+  test('throws "Tampered CSRF token in cookie" if the CSRF token in cookie is changed', async () => {
+    let securetCSRF = new CSRF({ cookie, secret: "my-secret" });
+
+    let token = securetCSRF.generate();
+
+    let formData = new FormData();
+    formData.set("csrf", token);
+
+    let headers = new Headers({
+      cookie: await cookie.serialize(
+        [csrf.generate(), token.split(".").at(1)].join(".")
+      ),
+    });
+
+    await expect(securetCSRF.validate(formData, headers)).rejects.toThrow(
+      new CSRFError(
+        "tampered_token_in_cookie",
+        "Tampered CSRF token in cookie."
+      )
+    );
+  });
+
+  test("commits the token to a cookie", async () => {
+    let [token, cookieHeader] = await csrf.commitToken();
+    let parsedCookie = await cookie.parse(cookieHeader);
+
+    expect(token).toStrictEqual(expect.any(String));
+    expect(cookieHeader).toStrictEqual(expect.any(String));
+    expect(token).toEqual(parsedCookie);
   });
 });
