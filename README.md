@@ -355,7 +355,7 @@ You can customize the token size by passing the byte size, the default one is 32
 let token = csrf.generate(64); // customize token length
 ```
 
-You will need to save this token in a cookie and also return it from the loader, for convenience, you can use the `CSRF#commitToken` helper.
+You will need to save this token in a cookie and also return it from the loader. For convenience, you can use the `CSRF#commitToken` helper.
 
 ```ts
 import { csrf } from "~/utils/csrf.server";
@@ -457,9 +457,9 @@ try {
 }
 ```
 
-> **Warning**: If you call `CSRF#validate` with the request instance but you read the body before it will throw an error.
+> **Warning**: If you call `CSRF#validate` with the request instance, but you already read its body, it will throw an error.
 
-In case the CSRF validation fails, it will throw a `CSRFError` which can be used to correctly identify them against other possible errors that may throw.
+In case the CSRF validation fails, it will throw a `CSRFError` which can be used to correctly identify it against other possible errors that may get thrown.
 
 The list of possible error messages are:
 
@@ -540,7 +540,7 @@ Now, any script you defined in the ScriptsFunction will be added to the HTML tog
 
 ### useGlobalNavigationState
 
-This hook lets you know if the value of `transition.state`, every `fetcher.state` in the app, and `revalidator.state`.
+This hook allows you to read the value of `transition.state`, every `fetcher.state` in the app, and `revalidator.state`.
 
 ```ts
 import { useGlobalNavigationState } from "remix-utils";
@@ -566,7 +566,7 @@ The return value of `useGlobalNavigationState` can be `"idle"`, `"loading"` or `
 
 ### useGlobalPendingState
 
-This hook lets you know if the global navigation, if one of any active fetchers is either loading or submitting, or the revalidator is running.
+This hook lets you know if the global navigation, if one of any active fetchers is either loading or submitting, or if the revalidator is running.
 
 ```ts
 import { useGlobalPendingState } from "remix-utils";
@@ -604,7 +604,7 @@ The return value of `useGlobalSubmittingState` is either `"idle"` or `"submittin
 
 ### useGlobalLoadingState
 
-This hook lets you know if the global transition, if one of any active fetchers is loading, or the revalidator is running
+This hook lets you know if the global transition, if one of any active fetchers is loading, or if the revalidator is running
 
 ```ts
 import { useGlobalLoadingState } from "remix-utils";
@@ -1212,7 +1212,7 @@ The `event` name in both the event stream and the hook is optional, in which cas
 
 For Server-Sent Events to work, your server must support HTTP streaming. If you don't get SSE to work check if your deployment platform has support for it.
 
-Because SSE count towards the limit of HTTP connections per domain, the useEventSource hook keeps a global map of connections based on the provided URL and options, as long as they are the same, the hook will open a single SSE connection and share it between instances of the hook.
+Because SSE count towards the limit of HTTP connections per domain, the `useEventSource` hook keeps a global map of connections based on the provided URL and options. As long as they are the same, the hook will open a single SSE connection and share it between instances of the hook.
 
 Once there are no more instances of the hook re-using a connection, it will be closed and removed from the map.
 
@@ -1227,7 +1227,7 @@ return (
 );
 ```
 
-This way, you could overwrite the map with a new one on a part of the app. Note that this provider is optional and a default map will be used if you don't provide one.
+This way, you can overwrite the map with a new one for a specific part of your app. Note that this provider is optional and a default map will be used if you don't provide one.
 
 ### Rolling Cookies
 
