@@ -1570,6 +1570,53 @@ export function Component({ data }) {
 }
 ```
 
+### Derive Fetcher init
+
+Derive the value of the deprecated `fetcher.type` from the fetcher and navigation data.
+
+```ts
+import { getFetcherType } from "remix-utils";
+
+function Component() {
+  let fetcher = useFetcher();
+  let navigation = useNavigation();
+  let fetcherType = getFetcherType(fetcher, navigation);
+  useEffect(() => {
+    if (fetcherType === "done") {
+      // do something once the fetcher is done submitting the data
+    }
+  }, [fetcherType]);
+}
+```
+
+You can also use the React Hook API which let's you avoid calling `useNavigation`.
+
+```ts
+import { useFetcherType } from "remix-utils";
+
+function Component() {
+  let fetcher = useFetcher();
+  let fetcherType = useFetcherType(fetcher);
+  useEffect(() => {
+    if (fetcherType === "done") {
+      // do something once the fetcher is done submitting the data
+    }
+  }, [fetcherType]);
+}
+```
+
+If you need to pass the fetcher type around, you can also import `FetcherType` type.
+
+```ts
+import { type FetcherType } from "remix-utils";
+
+function useCallbackOnDone(type: FetcherType, cb) {
+  useEffect(() => {
+    if (type === "done") cb();
+  }, [type, cb]);
+}
+```
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)

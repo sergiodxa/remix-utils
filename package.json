@@ -54,6 +54,7 @@
     "@remix-run/react": "^1.19.2",
     "@remix-run/router": "^1.7.2",
     "@remix-run/server-runtime": "^1.19.2",
+    "@remix-run/testing": "^1.19.3",
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^12.1.2",
     "@types/crypto-js": "^4.1.1",
