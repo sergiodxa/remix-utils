@@ -72,7 +72,7 @@ describe(getFetcherType, () => {
   });
 });
 
-describe.skip(useFetcherType, () => {
+describe(useFetcherType, () => {
   function Component() {
     let fetcher = useFetcher();
     let fetcherType = useFetcherType(fetcher);
