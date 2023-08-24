@@ -17,6 +17,8 @@ export interface HonetpotConfig {
 export class SpamError extends Error {}
 
 export class Honeypot {
+  private generatedEncryptionSeed = this.randomValue();
+
   constructor(protected config: HonetpotConfig = {}) {}
 
   public getInputProps(): HoneypotInputProps {
@@ -75,7 +77,7 @@ export class Honeypot {
   }
 
   protected get encryptionSeed() {
-    return this.config.encryptionSeed ?? this.randomValue();
+    return this.config.encryptionSeed ?? this.generatedEncryptionSeed;
   }
 
   protected getRandomizedNameFieldName(
