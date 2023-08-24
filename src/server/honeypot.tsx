@@ -11,8 +11,6 @@ export interface HonetpotConfig {
   nameFieldName?: string;
   validFromFieldName?: string;
   validFromTimestamp?: number;
-  amountOfSeconds?: number;
-  honeypotFieldsRequiredForAllForms?: boolean;
   encryptionSeed?: string;
 }
 
