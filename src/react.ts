@@ -3,6 +3,7 @@ export * from "./react/client-only";
 export * from "./react/csrf";
 export * from "./react/external-scripts";
 export * from "./react/fetcher-type";
+export * from "./react/honeypot-inputs";
 export * from "./react/matches-type";
 export * from "./react/server-only";
 export * from "./react/use-debounced-fetcher";
