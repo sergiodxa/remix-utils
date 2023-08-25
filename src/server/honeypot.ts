@@ -10,27 +10,31 @@ export interface HonetpotConfig {
   randomizeNameFieldName?: boolean;
   nameFieldName?: string;
   validFromFieldName?: string;
-  validFromTimestamp?: number;
   encryptionSeed?: string;
 }
 
 export class SpamError extends Error {}
+
+const DEFAULT_NAME_FIELD_NAME = "name__confirm";
+const DEFAULT_VALID_FROM_FIELD_NAME = "from__confirm";
 
 export class Honeypot {
   private generatedEncryptionSeed = this.randomValue();
 
   constructor(protected config: HonetpotConfig = {}) {}
 
-  public getInputProps(): HoneypotInputProps {
+  public getInputProps({
+    validFromTimestamp = Date.now(),
+  } = {}): HoneypotInputProps {
     return {
       nameFieldName: this.nameFieldName,
       validFromFieldName: this.validFromFieldName,
-      encryptedValidFrom: this.encrypt(this.validFromTimestamp.toString()),
+      encryptedValidFrom: this.encrypt(validFromTimestamp.toString()),
     };
   }
 
   public check(formData: FormData) {
-    let nameFieldName = this.config.nameFieldName ?? "honeypot";
+    let nameFieldName = this.config.nameFieldName ?? DEFAULT_NAME_FIELD_NAME;
     if (this.config.randomizeNameFieldName) {
       let actualName = this.getRandomizedNameFieldName(nameFieldName, formData);
       if (actualName) nameFieldName = actualName;
@@ -45,7 +49,7 @@ export class Honeypot {
     let honeypotValue = formData.get(nameFieldName);
 
     if (honeypotValue !== "") throw new SpamError("Honeypot input not empty");
-    if (!this.config.validFromTimestamp) return;
+    if (!this.validFromFieldName) return;
 
     let validFrom = formData.get(this.validFromFieldName);
 
@@ -63,17 +67,13 @@ export class Honeypot {
   }
 
   protected get nameFieldName() {
-    let fieldName = this.config.nameFieldName ?? "honeypot";
+    let fieldName = this.config.nameFieldName ?? DEFAULT_NAME_FIELD_NAME;
     if (!this.config.randomizeNameFieldName) return fieldName;
     return `${fieldName}_${this.randomValue()}`;
   }
 
   protected get validFromFieldName() {
-    return this.config.validFromFieldName ?? "honeypot_from";
-  }
-
-  protected get validFromTimestamp() {
-    return this.config.validFromTimestamp ?? Date.now();
+    return this.config.validFromFieldName ?? DEFAULT_VALID_FROM_FIELD_NAME;
   }
 
   protected get encryptionSeed() {

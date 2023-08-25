@@ -1,51 +1,58 @@
 import * as React from "react";
-import { useRouteLoaderData } from "@remix-run/react";
-import type { HoneypotInputProps } from "../server/honeypot.jsx";
+import type { HoneypotInputProps } from "../server/honeypot.js";
 
-export function HoneypotInputs() {
-  let rootLoaderData = useRouteLoaderData(
-    "root"
-  ) as Partial<HoneypotInputProps>;
+type HoneypotContextType = Partial<HoneypotInputProps>;
 
-  if (!rootLoaderData) throw new Error("Missing loader data from root");
+const HoneypotContext = React.createContext<HoneypotContextType>({});
 
-  if (!rootLoaderData.nameFieldName) {
-    throw new Error("Missing Honeypot's nameFieldName on root loader data");
-  }
+export function HoneypotInputs(): JSX.Element {
+  const context = React.useContext(HoneypotContext);
 
-  if (!rootLoaderData.validFromFieldName) {
-    throw new Error(
-      "Missing Honeypot's validFromFieldName on root loader data"
-    );
-  }
-
-  if (!rootLoaderData.encryptedValidFrom) {
-    throw new Error(
-      "Missing Honeypot's encryptedValidFrom on root loader data"
-    );
-  }
+  const {
+    nameFieldName = "name__confirm",
+    validFromFieldName = "from__confirm",
+    encryptedValidFrom,
+  } = context;
 
   return (
     <div
-      id={`${rootLoaderData.nameFieldName}_wrap`}
+      id={`${nameFieldName}_wrap`}
       style={{ display: "none" }}
       aria-hidden="true"
     >
+      <label htmlFor={nameFieldName}>Please leave this field blank</label>
       <input
-        id={rootLoaderData.nameFieldName}
-        name={rootLoaderData.nameFieldName}
+        id={nameFieldName}
+        name={nameFieldName}
         type="text"
         defaultValue=""
-        autoComplete="off"
+        autoComplete="nope"
         tabIndex={-1}
       />
-      <input
-        name={rootLoaderData.validFromFieldName}
-        type="text"
-        value={rootLoaderData.encryptedValidFrom}
-        autoComplete="off"
-        tabIndex={-1}
-      />
+      {validFromFieldName && encryptedValidFrom ? (
+        <>
+          <label htmlFor={validFromFieldName}>
+            Please leave this field blank
+          </label>
+          <input
+            name={validFromFieldName}
+            type="text"
+            value={encryptedValidFrom}
+            readOnly
+            autoComplete="off"
+            tabIndex={-1}
+          />
+        </>
+      ) : null}
     </div>
   );
+}
+
+export function HoneypotProvider({
+  children,
+  ...context
+}: {
+  children: React.ReactNode;
+} & HoneypotContextType) {
+  return <HoneypotContext.Provider value={context} children={children} />;
 }

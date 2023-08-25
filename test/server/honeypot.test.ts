@@ -7,8 +7,8 @@ describe(Honeypot.name, () => {
   test("generates input props", () => {
     let props = new Honeypot().getInputProps();
     expect(props).toEqual({
-      nameFieldName: "honeypot",
-      validFromFieldName: "honeypot_from",
+      nameFieldName: "name__confirm",
+      validFromFieldName: "from__confirm",
       encryptedValidFrom: expect.any(String),
     });
   });
@@ -16,7 +16,7 @@ describe(Honeypot.name, () => {
   test("uses randomized nameFieldName", () => {
     let honeypot = new Honeypot({ randomizeNameFieldName: true });
     let props = honeypot.getInputProps();
-    expect(props.nameFieldName.startsWith("honeypot_")).toBeTruthy();
+    expect(props.nameFieldName.startsWith("name__confirm_")).toBeTruthy();
   });
 
   test("uses randomized nameFieldName with prefix", () => {
@@ -73,7 +73,7 @@ describe(Honeypot.name, () => {
   });
 
   test("fails if valid from timestamp is missing", () => {
-    let honeypot = new Honeypot({ validFromTimestamp: Date.now() });
+    let honeypot = new Honeypot();
     let props = honeypot.getInputProps();
 
     let formData = new FormData();
@@ -86,7 +86,6 @@ describe(Honeypot.name, () => {
 
   test("fails if the timestamp is not valid", () => {
     let honeypot = new Honeypot({
-      validFromTimestamp: Date.now(),
       encryptionSeed: "SEED",
     });
     let props = honeypot.getInputProps();
@@ -105,7 +104,6 @@ describe(Honeypot.name, () => {
 
   test("fails if valid from timestamp is in the future", () => {
     let honeypot = new Honeypot({
-      validFromTimestamp: Date.now(),
       encryptionSeed: "SEED",
     });
 
