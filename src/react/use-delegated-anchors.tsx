@@ -46,7 +46,11 @@ export function useDelegatedAnchors(nodeRef: React.RefObject<HTMLElement>) {
   }, [hasParentPrefetch, navigate, nodeRef]);
 }
 
-export function PrefetchPageAnchors({ children }: { children: React.ReactNode }) {
+export function PrefetchPageAnchors({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   let nodeRef = React.useRef<HTMLDivElement>(null);
   let [page, setPage] = React.useState<null | string>(null);
   let hasParentPrefetch = React.useContext(context);
