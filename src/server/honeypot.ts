@@ -24,12 +24,12 @@ export class Honeypot {
   constructor(protected config: HonetpotConfig = {}) {}
 
   public getInputProps({
-    validFromTimestamp = new Date(),
+    validFromTimestamp = Date.now(),
   } = {}): HoneypotInputProps {
     return {
       nameFieldName: this.nameFieldName,
       validFromFieldName: this.validFromFieldName,
-      encryptedValidFrom: this.encrypt(validFromTimestamp.getTime().toString()),
+      encryptedValidFrom: this.encrypt(validFromTimestamp.toString()),
     };
   }
 
