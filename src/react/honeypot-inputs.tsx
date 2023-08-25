@@ -5,10 +5,14 @@ type HoneypotContextType = Partial<HoneypotInputProps>;
 
 const HoneypotContext = React.createContext<HoneypotContextType>({});
 
-export function HoneypotInputs(): JSX.Element {
-  const context = React.useContext(HoneypotContext);
+export function HoneypotInputs({
+  label = "Please leave this field blank",
+}: {
+  label?: string;
+}): JSX.Element {
+  let context = React.useContext(HoneypotContext);
 
-  const {
+  let {
     nameFieldName = "name__confirm",
     validFromFieldName = "from__confirm",
     encryptedValidFrom,
@@ -20,7 +24,7 @@ export function HoneypotInputs(): JSX.Element {
       style={{ display: "none" }}
       aria-hidden="true"
     >
-      <label htmlFor={nameFieldName}>Please leave this field blank</label>
+      <label htmlFor={nameFieldName}>{label}</label>
       <input
         id={nameFieldName}
         name={nameFieldName}
@@ -31,9 +35,7 @@ export function HoneypotInputs(): JSX.Element {
       />
       {validFromFieldName && encryptedValidFrom ? (
         <>
-          <label htmlFor={validFromFieldName}>
-            Please leave this field blank
-          </label>
+          <label htmlFor={validFromFieldName}>{label}</label>
           <input
             name={validFromFieldName}
             type="text"
@@ -48,11 +50,13 @@ export function HoneypotInputs(): JSX.Element {
   );
 }
 
+export type HoneypotProviderProps = HoneypotContextType & {
+  children: React.ReactNode;
+};
+
 export function HoneypotProvider({
   children,
   ...context
-}: {
-  children: React.ReactNode;
-} & HoneypotContextType) {
+}: HoneypotProviderProps) {
   return <HoneypotContext.Provider value={context} children={children} />;
 }
