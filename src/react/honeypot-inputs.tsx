@@ -1,5 +1,5 @@
 import * as React from "react";
-import { type HoneypotInputProps } from "../server/honeypot.js";
+import type { HoneypotInputProps } from "../server/honeypot.js";
 
 type HoneypotContextType = Partial<HoneypotInputProps>;
 

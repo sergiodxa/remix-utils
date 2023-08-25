@@ -23,7 +23,9 @@ export class Honeypot {
 
   constructor(protected config: HonetpotConfig = {}) {}
 
-  getInputProps({ validFromTimestamp = new Date() } = {}): HoneypotInputProps {
+  public getInputProps({
+    validFromTimestamp = new Date(),
+  } = {}): HoneypotInputProps {
     return {
       nameFieldName: this.nameFieldName,
       validFromFieldName: this.validFromFieldName,
