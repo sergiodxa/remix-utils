@@ -1,15 +1,7 @@
 import { PrefetchPageLinks, useNavigate } from "@remix-run/react";
-import {
-  createContext,
-  ReactNode,
-  RefObject,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import * as React from "react";
 
-const context = createContext(false);
+const context = React.createContext(false);
 
 export function isLinkEvent(event: MouseEvent) {
   if (!(event.target instanceof HTMLElement)) return;
@@ -18,11 +10,11 @@ export function isLinkEvent(event: MouseEvent) {
   return;
 }
 
-export function useDelegatedAnchors(nodeRef: RefObject<HTMLElement>) {
+export function useDelegatedAnchors(nodeRef: React.RefObject<HTMLElement>) {
   let navigate = useNavigate();
-  let hasParentPrefetch = useContext(context);
+  let hasParentPrefetch = React.useContext(context);
 
-  useEffect(() => {
+  React.useEffect(() => {
     // if you call useDelegatedAnchors as a children of a PrefetchPageAnchors
     // then do nothing
     if (hasParentPrefetch) return;
@@ -54,15 +46,15 @@ export function useDelegatedAnchors(nodeRef: RefObject<HTMLElement>) {
   }, [hasParentPrefetch, navigate, nodeRef]);
 }
 
-export function PrefetchPageAnchors({ children }: { children: ReactNode }) {
-  let nodeRef = useRef<HTMLDivElement>(null);
-  let [page, setPage] = useState<null | string>(null);
-  let hasParentPrefetch = useContext(context);
+export function PrefetchPageAnchors({ children }: { children: React.ReactNode }) {
+  let nodeRef = React.useRef<HTMLDivElement>(null);
+  let [page, setPage] = React.useState<null | string>(null);
+  let hasParentPrefetch = React.useContext(context);
 
   // prefetch is useless without delegated anchors, so we enable it
   useDelegatedAnchors(nodeRef);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (hasParentPrefetch) return;
 
     let node = nodeRef.current;

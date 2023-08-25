@@ -1,4 +1,4 @@
-import { getHeaders } from "./get-headers";
+import { getHeaders } from "./get-headers.js";
 
 /**
  * Check if a specific Request is a prefetch request created by using

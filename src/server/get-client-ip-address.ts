@@ -1,5 +1,5 @@
 import isIP from "is-ip";
-import { getHeaders } from "./get-headers";
+import { getHeaders } from "./get-headers.js";
 
 /**
  * This is the list of headers, in order of preference, that will be used to

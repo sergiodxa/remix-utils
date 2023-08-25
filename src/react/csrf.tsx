@@ -1,7 +1,7 @@
-import { createContext, ReactNode, useContext } from "react";
+import * as React from "react";
 
 export interface AuthenticityTokenProviderProps {
-  children: ReactNode;
+  children: React.ReactNode;
   token: string;
 }
 
@@ -9,7 +9,7 @@ export interface AuthenticityTokenInputProps {
   name?: string;
 }
 
-let context = createContext<string | null>(null);
+let context = React.createContext<string | null>(null);
 
 /**
  * Save the Authenticity Token into context
@@ -42,7 +42,7 @@ export function AuthenticityTokenProvider({
  * }
  */
 export function useAuthenticityToken() {
-  let token = useContext(context);
+  let token = React.useContext(context);
   if (!token) throw new Error("Missing AuthenticityTokenProvider.");
   return token;
 }

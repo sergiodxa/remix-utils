@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import { useHydrated } from "./use-hydrated";
+import * as React from "react";
+import { useHydrated } from "./use-hydrated.js";
 
 type Props = {
   /**
@@ -7,8 +7,8 @@ type Props = {
    * as the server rendered children. This will avoid content layout
    * shift which is disgusting
    */
-  children(): ReactNode;
-  fallback?: ReactNode;
+  children(): React.ReactNode;
+  fallback?: React.ReactNode;
 };
 
 /**

@@ -1,1 +1,1 @@
-export * from "./common/promise";
+export * from "./common/promise.js";

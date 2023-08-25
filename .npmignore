@@ -7,3 +7,6 @@
 .npmignore
 .npmrc
 tsconfig.json
+prettier.config.mjs
+vitest.config.ts
+vitest.setup.ts

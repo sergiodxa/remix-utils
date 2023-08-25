@@ -1,6 +1,7 @@
+import * as React from "react";
 import { useLocation, useMatches } from "@remix-run/react";
 import type { AppData } from "@remix-run/server-runtime";
-import { HandleConventionArguments } from "./handle-conventions";
+import { HandleConventionArguments } from "./handle-conventions.js";
 
 type ReferrerPolicy =
   | "no-referrer-when-downgrade"

@@ -1,5 +1,5 @@
-import { getHeaders } from "./get-headers";
-import { parseAcceptHeader } from "./parse-accept-header";
+import { getHeaders } from "./get-headers.js";
+import { parseAcceptHeader } from "./parse-accept-header.js";
 
 export interface RespondToHandlers {
   default(): Response | Promise<Response>;

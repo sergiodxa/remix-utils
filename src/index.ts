@@ -1,3 +1,3 @@
-export * from "./common";
-export * from "./react";
-export * from "./server";
+export * from "./common.js";
+export * from "./react.js";
+export * from "./server.js";

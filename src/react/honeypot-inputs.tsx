@@ -1,5 +1,6 @@
+import * as React from "react";
 import { useRouteLoaderData } from "@remix-run/react";
-import type { HoneypotInputProps } from "..";
+import type { HoneypotInputProps } from "../server/honeypot.jsx";
 
 export function HoneypotInputs() {
   let rootLoaderData = useRouteLoaderData(
