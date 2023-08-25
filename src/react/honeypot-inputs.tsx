@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/autocomplete-valid */
 import * as React from "react";
 import type { HoneypotInputProps } from "../server/honeypot.js";
 
@@ -58,5 +59,9 @@ export function HoneypotProvider({
   children,
   ...context
 }: HoneypotProviderProps) {
-  return <HoneypotContext.Provider value={context} children={children} />;
+  return (
+    <HoneypotContext.Provider value={context}>
+      {children}
+    </HoneypotContext.Provider>
+  );
 }
