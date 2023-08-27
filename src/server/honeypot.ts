@@ -97,7 +97,10 @@ export class Honeypot {
     formData: FormData,
     nameFieldName: string
   ): boolean {
-    return formData.has(nameFieldName) || Boolean(this.validFromFieldName && formData.has(this.validFromFieldName));
+    return (
+      formData.has(nameFieldName) ||
+      Boolean(this.validFromFieldName && formData.has(this.validFromFieldName))
+    );
   }
 
   protected randomValue() {

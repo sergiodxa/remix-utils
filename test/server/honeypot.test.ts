@@ -53,14 +53,11 @@ describe(Honeypot.name, () => {
 
   test("fails validity check if input is not present", () => {
     let honeypot = new Honeypot();
-    let props = honeypot.getInputProps()
+    let props = honeypot.getInputProps();
     invariant(props.validFromFieldName, "validFromFieldName is null");
 
     let formData = new FormData();
-    formData.set(
-      props.validFromFieldName,
-      props.encryptedValidFrom
-    );
+    formData.set(props.validFromFieldName, props.encryptedValidFrom);
 
     expect(() => honeypot.check(formData)).toThrowError(
       new SpamError("Missing honeypot input")
@@ -142,5 +139,5 @@ describe(Honeypot.name, () => {
     formData.set(props.nameFieldName, "");
 
     expect(() => honeypot.check(formData)).not.toThrow();
-  })
+  });
 });
