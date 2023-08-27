@@ -2,14 +2,14 @@ import CryptoJS from "crypto-js";
 
 export interface HoneypotInputProps {
   nameFieldName: string;
-  validFromFieldName: string;
+  validFromFieldName: string | null;
   encryptedValidFrom: string;
 }
 
 export interface HonetpotConfig {
   randomizeNameFieldName?: boolean;
   nameFieldName?: string;
-  validFromFieldName?: string;
+  validFromFieldName?: string | null;
   encryptionSeed?: string;
 }
 
@@ -73,7 +73,10 @@ export class Honeypot {
   }
 
   protected get validFromFieldName() {
-    return this.config.validFromFieldName ?? DEFAULT_VALID_FROM_FIELD_NAME;
+    if (this.config.validFromFieldName === undefined) {
+      return DEFAULT_VALID_FROM_FIELD_NAME;
+    }
+    return this.config.validFromFieldName;
   }
 
   protected get encryptionSeed() {
@@ -94,7 +97,7 @@ export class Honeypot {
     formData: FormData,
     nameFieldName: string
   ): boolean {
-    return formData.has(nameFieldName) || formData.has(this.validFromFieldName);
+    return formData.has(nameFieldName) || Boolean(this.validFromFieldName && formData.has(this.validFromFieldName));
   }
 
   protected randomValue() {
