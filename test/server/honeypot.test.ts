@@ -3,6 +3,10 @@ import CryptoJS from "crypto-js";
 
 import { Honeypot, SpamError } from "../../src";
 
+function invariant(condition: any, message: string): asserts condition {
+  if (!condition) throw new Error(message);
+}
+
 describe(Honeypot.name, () => {
   test("generates input props", () => {
     let props = new Honeypot().getInputProps();
@@ -38,6 +42,7 @@ describe(Honeypot.name, () => {
     let honeypot = new Honeypot({ randomizeNameFieldName: true });
 
     let props = honeypot.getInputProps();
+    invariant(props.validFromFieldName, "validFromFieldName is null");
 
     let formData = new FormData();
     formData.set(props.nameFieldName, "");
@@ -48,12 +53,11 @@ describe(Honeypot.name, () => {
 
   test("fails validity check if input is not present", () => {
     let honeypot = new Honeypot();
+    let props = honeypot.getInputProps();
+    invariant(props.validFromFieldName, "validFromFieldName is null");
 
     let formData = new FormData();
-    formData.set(
-      honeypot.getInputProps().validFromFieldName,
-      honeypot.getInputProps().encryptedValidFrom
-    );
+    formData.set(props.validFromFieldName, props.encryptedValidFrom);
 
     expect(() => honeypot.check(formData)).toThrowError(
       new SpamError("Missing honeypot input")
@@ -89,6 +93,7 @@ describe(Honeypot.name, () => {
       encryptionSeed: "SEED",
     });
     let props = honeypot.getInputProps();
+    invariant(props.validFromFieldName, "validFromFieldName is null");
 
     let formData = new FormData();
     formData.set(props.nameFieldName, "");
@@ -108,6 +113,7 @@ describe(Honeypot.name, () => {
     });
 
     let props = honeypot.getInputProps();
+    invariant(props.validFromFieldName, "validFromFieldName is null");
 
     let formData = new FormData();
     formData.set(props.nameFieldName, "");
@@ -119,5 +125,19 @@ describe(Honeypot.name, () => {
     expect(() => honeypot.check(formData)).toThrowError(
       new SpamError("Honeypot valid from is in future")
     );
+  });
+
+  test("does not check for valid from timestamp if it's set to null", () => {
+    let honeypot = new Honeypot({
+      validFromFieldName: null,
+    });
+
+    let props = honeypot.getInputProps();
+    expect(props.validFromFieldName).toBeNull();
+
+    let formData = new FormData();
+    formData.set(props.nameFieldName, "");
+
+    expect(() => honeypot.check(formData)).not.toThrow();
   });
 });
