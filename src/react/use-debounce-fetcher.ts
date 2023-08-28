@@ -26,7 +26,7 @@ type DebounceSubmitFunction = (
    * submitting arbitrary data without a backing `<form>`. Additionally, you
    * can specify a `debounceTimeout` to delay the submission of the data.
    */
-  options?: SubmitOptions & { debounceTimeout?: number },
+  options?: SubmitOptions & { debounceTimeout?: number }
 ) => void;
 
 type DebouncedFetcher<Data = unknown> = Omit<
@@ -58,7 +58,7 @@ export function useDebounceFetcher<Data>() {
         fetcher.submit(target, options);
       }, debounceTimeout);
     },
-    [fetcher],
+    [fetcher]
   );
 
   return fetcher;
