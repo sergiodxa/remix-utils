@@ -6,7 +6,48 @@
     "node": ">=18.0.0"
   },
   "type": "module",
-  "main": "./build/index.js",
+  "exports": {
+    "./promise": "./build/common/promise.js",
+
+    "./cache-assets": "./build/client/cache-assets.js",
+
+    "./cors": "./build/server/cors.js",
+    "./get-client-ip-address": "./build/server/get-client-ip-address.js",
+    "./is-prefetch": "./build/server/is-prefetch.js",
+    "./json-hash": "./build/server/json-hash.js",
+    "./named-action": "./build/server/named-action.js",
+    "./parse-accept-header": "./build/server/parse-accept-header.js",
+    "./preload-route-assets": "./build/server/preload-route-assets.js",
+    "./redirect-back": "./build/server/redirect-back.js",
+    "./respond-to": "./build/server/respond-to.js",
+    "./responses": "./build/server/responses.js",
+    "./rolling-cookie": "./build/server/rolling-cookie.js",
+    "./safe-redirect": "./build/server/safe-redirect.js",
+    "./typed-cookie": "./build/server/typed-cookie.js",
+    "./typed-session": "./build/server/typed-session.js",
+
+    "./client-only": "./build/react/client-only.js",
+    "./external-scripts": "./build/react/external-scripts.js",
+    "./fetcher-type": "./build/react/fetcher-type.js",
+    "./server-only": "./build/react/server-only.js",
+    "./use-debounced-fetcher": "./build/react/use-debounced-fetcher.js",
+    "./use-delegated-anchors": "./build/react/use-delegated-anchors.js",
+    "./use-global-pending-state": "./build/react/use-global-pending-state.js",
+    "./use-hydrated": "./build/react/use-hydrated.js",
+    "./use-should-hydrate": "./build/react/use-should-hydrate.js",
+
+    "./sse/server": "./build/server/event-stream.js",
+    "./sse/react": "./build/react/use-event-source.js",
+
+    "./locales/server": "./build/server/get-client-locales.js",
+    "./locales/react": "./build/react/use-locales.js",
+
+    "./honeypot/server": "./build/server/honeypot.js",
+    "./honeypot/react": "./build/react/honeypot.js",
+
+    "./csrf/server": "./build/server/csrf.js",
+    "./csrf/react": "./build/react/authenticity-token.js"
+  },
   "sideEffects": false,
   "scripts": {
     "prepare": "npm run build",
@@ -51,140 +92,6 @@
     "prefetch",
     "named action"
   ],
-  "exports": {
-    "./authenticity-token": {
-      "types": "./build/react/authenticity-token.d.ts",
-      "default": "./build/react/authenticity-token.js"
-    },
-    "./cache-assets": {
-      "types": "./build/client/cache-assets.d.ts",
-      "default": "./build/client/cache-assets.js"
-    },
-    "./client-only": {
-      "types": "./build/react/client-only.d.ts",
-      "default": "./build/react/client-only.js"
-    },
-    "./cors": {
-      "types": "./build/server/cors.d.ts",
-      "default": "./build/server/cors.js"
-    },
-    "./csrf": {
-      "types": "./build/server/csrf.d.ts",
-      "default": "./build/server/csrf.js"
-    },
-    "./event-stream": {
-      "types": "./build/server/event-stream.d.ts",
-      "default": "./build/server/event-stream.js"
-    },
-    "./external-scripts": {
-      "types": "./build/react/external-scripts.d.ts",
-      "default": "./build/react/external-scripts.js"
-    },
-    "./fetcher-type": {
-      "types": "./build/react/fetcher-type.d.ts",
-      "default": "./build/react/fetcher-type.js"
-    },
-    "./get-client-ip-address": {
-      "types": "./build/server/get-client-ip-address.d.ts",
-      "default": "./build/server/get-client-ip-address.js"
-    },
-    "./get-client-locales": {
-      "types": "./build/server/get-client-locales.d.ts",
-      "default": "./build/server/get-client-locales.js"
-    },
-    "./honeypot-input": {
-      "types": "./build/react/honeypot-inputs.d.ts",
-      "default": "./build/react/honeypot-inputs.js"
-    },
-    "./honeypot": {
-      "types": "./build/server/honeypot.d.ts",
-      "default": "./build/server/honeypot.js"
-    },
-    "./is-prefetch": {
-      "types": "./build/server/is-prefetch.d.ts",
-      "default": "./build/server/is-prefetch.js"
-    },
-    "./json-hash": {
-      "types": "./build/server/json-hash.d.ts",
-      "default": "./build/server/json-hash.js"
-    },
-    "./named-action": {
-      "types": "./build/server/named-action.d.ts",
-      "default": "./build/server/named-action.js"
-    },
-    "./parse-accept-header": {
-      "types": "./build/server/parse-accept-header.d.ts",
-      "default": "./build/server/parse-accept-header.js"
-    },
-    "./preload-route-assets": {
-      "types": "./build/server/preload-route-assets.d.ts",
-      "default": "./build/server/preload-route-assets.js"
-    },
-    "./promise": {
-      "types": "./build/common/promise.d.ts",
-      "default": "./build/common/promise.js"
-    },
-    "./redirect-back": {
-      "types": "./build/server/redirect-back.d.ts",
-      "default": "./build/server/redirect-back.js"
-    },
-    "./respond-to": {
-      "types": "./build/server/respond-to.d.ts",
-      "default": "./build/server/respond-to.js"
-    },
-    "./responses": {
-      "types": "./build/server/responses.d.ts",
-      "default": "./build/server/responses.js"
-    },
-    "./rolling-cookie": {
-      "types": "./build/server/rolling-cookie.d.ts",
-      "default": "./build/server/rolling-cookie.js"
-    },
-    "./safe-redirect": {
-      "types": "./build/server/safe-redirect.d.ts",
-      "default": "./build/server/safe-redirect.js"
-    },
-    "./server-only": {
-      "types": "./build/react/server-only.d.ts",
-      "default": "./build/react/server-only.js"
-    },
-    "./typed-cookie": {
-      "types": "./build/server/typed-cookie.d.ts",
-      "default": "./build/server/typed-cookie.js"
-    },
-    "./typed-session": {
-      "types": "./build/server/typed-session.d.ts",
-      "default": "./build/server/typed-session.js"
-    },
-    "./use-debounce-fetcher": {
-      "types": "./build/react/use-debounce-fetcher.d.ts",
-      "default": "./build/react/use-debounce-fetcher.js"
-    },
-    "./use-delegated-anchors": {
-      "types": "./build/react/use-delegated-anchors.d.ts",
-      "default": "./build/react/use-delegated-anchors.js"
-    },
-    "./use-event-source": {
-      "types": "./build/react/use-event-source.d.ts",
-      "default": "./build/react/use-event-source.js"
-    },
-    "./use-global-navigation-state": {
-      "types": "./build/react/use-global-navigation-state.d.ts",
-      "default": "./build/react/use-global-navigation-state.js"
-    },
-    "./use-hydrated": {
-      "types": "./build/react/use-hydrated.d.ts",
-      "default": "./build/react/use-hydrated.js"
-    },
-    "./use-locales": {
-      "types": "./build/react/use-locales.d.ts",
-      "default": "./build/react/use-locales.js"
-    },
-    "./use-should-hydrate": {
-      "types": "./build/react/use-should-hydrate.d.ts",
-      "default": "./build/react/use-should-hydrate.js"
-    }
-  },
   "peerDependencies": {
     "@remix-run/react": "^1.19.1",
     "@remix-run/router": "^1.7.2",
