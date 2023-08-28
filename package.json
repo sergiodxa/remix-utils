@@ -9,6 +9,8 @@
   "exports": {
     "./promise": "./build/common/promise.js",
 
+    "./cache-assets": "./build/client/cache-assets.js",
+
     "./cors": "./build/server/cors.js",
     "./get-client-ip-address": "./build/server/get-client-ip-address.js",
     "./get-headers": "./build/server/get-headers.js",
@@ -24,7 +26,6 @@
     "./typed-cookie": "./build/server/typed-cookie.js",
     "./typed-session": "./build/server/typed-session.js",
 
-    "./cache-assets": "./build/react/cache-assets.js",
     "./client-only": "./build/react/client-only.js",
     "./external-scripts": "./build/react/external-scripts.js",
     "./fetcher-type": "./build/react/fetcher-type.js",
