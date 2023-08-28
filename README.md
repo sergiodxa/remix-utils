@@ -8,6 +8,15 @@ This package contains simple utility functions to use with [Remix.run](https://r
 npm install remix-utils
 ```
 
+Additional optional dependencies may be needed, all peer dependencies are:
+
+- `zod`
+- `react`
+- `@remix-run/react` (also `@remix-run/router` but you sohuld be using the React one)
+- `@remix-run/node` or `@remix-run/cloudflare` or `@remix-run/deno` (actually it's `@remix-run/server-runtime` but you should use one of the others)
+
+The utils that require an extra optional dependency mention it in their documentation.
+
 ## API Reference
 
 ### promiseHash
@@ -17,12 +26,14 @@ The `promiseHash` function is not directly related to Remix but it's a useful fu
 This function is an object version of `Promise.all` which lets you pass an object with promises and get an object with the same keys with the resolved values.
 
 ```ts
+import { promiseHash } from "remix-utils/promise";
+
 export async function loader({ request }: LoaderArgs) {
   return json(
     await promiseHash({
       user: getUser(request),
       posts: getPosts(request),
-    })
+    }),
   );
 }
 ```
@@ -30,6 +41,8 @@ export async function loader({ request }: LoaderArgs) {
 You can use nested `promiseHash` to get a nested object with resolved values.
 
 ```ts
+import { promiseHash } from "remix-utils/promise";
+
 export async function loader({ request }: LoaderArgs) {
   return json(
     await promiseHash({
@@ -41,7 +54,7 @@ export async function loader({ request }: LoaderArgs) {
           likes: getLikes(request),
         }),
       }),
-    })
+    }),
   );
 }
 ```
@@ -51,6 +64,8 @@ export async function loader({ request }: LoaderArgs) {
 The `timeout` function lets you attach a timeout to any promise, if the promise doesn't resolve or reject before the timeout, it will reject with a `TimeoutError`.
 
 ```ts
+import { timeout } from "remix-utils/promise";
+
 try {
   let result = await timeout(fetch("https://example.com"), { ms: 100 });
 } catch (error) {
@@ -65,11 +80,13 @@ Here the fetch needs to happen in less than 100ms, otherwise it will throw a `Ti
 If the promise is cancellable with an AbortSignal you can pass the AbortController to the `timeout` function.
 
 ```ts
+import { timeout } from "remix-utils/promise";
+
 try {
   let controller = new AbortController();
   let result = await timeout(
     fetch("https://example.com", { signal: controller.signal }),
-    { ms: 100, controller }
+    { ms: 100, controller },
   );
 } catch (error) {
   if (error instanceof TimeoutError) {
@@ -90,7 +107,7 @@ This function lets you easily cache inside the [browser's Cache Storage](https:/
 To use it, open your `entry.client` file and add this:
 
 ```ts
-import { cacheAssets } from "remix-utils";
+import { cacheAssets } from "remix-utils/cache-assets";
 
 cacheAssets().catch((error) => {
   // do something with the error, or not
@@ -107,6 +124,8 @@ It's important that if you changed your build path in `remix.config.js` you pass
 The `cacheName` can be left as is unless you're adding a Service Worker to your app and want to share the cache.
 
 ```ts
+import { cacheAssets } from "remix-utils/cache-assets";
+
 cacheAssests({ cacheName: "assets", buildPath: "/build/" }).catch((error) => {
   // do something with the error, or not
 });
@@ -114,27 +133,14 @@ cacheAssests({ cacheName: "assets", buildPath: "/build/" }).catch((error) => {
 
 ### ClientOnly
 
-The ClientOnly component lets you render the children element only on the client-side, avoiding rendering it the server-side.
+> **Note** This depends on `react`.
 
-> **Note**
-> If you're using React 18 and a [streaming server rendering API](https://beta.reactjs.org/reference/react-dom/server) (eg. [`renderToPipeableStream`](https://beta.reactjs.org/reference/react-dom/server/renderToPipeableStream)) you probably want to use a `<Suspense>` boundary instead.
->
-> ```tsx
-> export default function Component() {
->   return (
->     <Suspense fallback={<SimplerStaticVersion />}>
->       <ComplexComponentNeedingBrowserEnvironment />
->     </Suspense>
->   );
-> }
-> ```
->
-> See ["Providing a fallback for server errors and server-only content" in the React Suspense docs](https://beta.reactjs.org/reference/react/Suspense#providing-a-fallback-for-server-errors-and-server-only-content).
+The ClientOnly component lets you render the children element only on the client-side, avoiding rendering it the server-side.
 
 You can provide a fallback component to be used on SSR, and while optional, it's highly recommended to provide one to avoid content layout shift issues.
 
 ```tsx
-import { ClientOnly } from "remix-utils";
+import { ClientOnly } from "remix-utils/client-only";
 
 export default function Component() {
   return (
@@ -158,12 +164,14 @@ This component uses the `useHydrated` hook internally.
 
 ### ServerOnly
 
+> **Note** This depends on `react`.
+
 The ServerOnly component is the opposite of the ClientOnly component, it lets you render the children element only on the server-side, avoiding rendering it the client-side.
 
 You can provide a fallback component to be used on CSR, and while optional, it's highly recommended to provide one to avoid content layout shift issues, unless you only render visually hidden elements.
 
 ```tsx
-import { ServerOnly } from "remix-utils";
+import { ServerOnly } from "remix-utils/server-only";
 
 export default function Component() {
   return (
@@ -199,6 +207,8 @@ There are two main ways to use the `cors` function.
 If you want to use it on every loader/action, you can do it like this:
 
 ```ts
+import { cors } from "remix-utils/cors";
+
 export async function loader({ request }: LoaderArgs) {
   let data = await getData(request);
   let response = json<LoaderData>(data);
@@ -209,6 +219,8 @@ export async function loader({ request }: LoaderArgs) {
 You could also do the `json` and `cors` call in one line.
 
 ```ts
+import { cors } from "remix-utils/cors";
+
 export async function loader({ request }: LoaderArgs) {
   let data = await getData(request);
   return await cors(request, json<LoaderData>(data));
@@ -218,6 +230,8 @@ export async function loader({ request }: LoaderArgs) {
 And because `cors` mutates the response, you can also call it and later return.
 
 ```ts
+import { cors } from "remix-utils/cors";
+
 export async function loader({ request }: LoaderArgs) {
   let data = await getData(request);
   let response = json<LoaderData>(data);
@@ -229,13 +243,15 @@ export async function loader({ request }: LoaderArgs) {
 If you want to setup it globally once, you can do it like this in `entry.server`
 
 ```tsx
+import { cors } from "remix-utils/cors";
+
 const ABORT_DELAY = 5000;
 
 export default function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext
+  remixContext: EntryContext,
 ) {
   let callbackName = isbot(request.headers.get("user-agent"))
     ? "onAllReady"
@@ -257,7 +273,7 @@ export default function handleRequest(
             new Response(body, {
               headers: responseHeaders,
               status: didError ? 500 : responseStatusCode,
-            })
+            }),
           ).then((response) => {
             resolve(response);
           });
@@ -272,7 +288,7 @@ export default function handleRequest(
 
           console.error(error);
         },
-      }
+      },
     );
 
     setTimeout(abort, ABORT_DELAY);
@@ -281,7 +297,7 @@ export default function handleRequest(
 
 export let handleDataRequest: HandleDataRequestFunction = async (
   response,
-  { request }
+  { request },
 ) => {
   return await cors(request, response);
 };
@@ -311,6 +327,8 @@ Additionally, the `cors` function accepts a `options` object as a third optional
 
 ### CSRF
 
+> **Note**: This depends on `react`, and a Remix server runtime.
+
 The CSRF related functions let you implement CSRF protection on your application.
 
 This part of Remix Utils needs React and server-side code.
@@ -319,7 +337,7 @@ First create a new CSRF instance.
 
 ```ts
 // app/utils/csrf.server.ts
-import { CSRF } from "remix-utils";
+import { CSRF } from "remix-utils/csrf";
 import { createCookie } from "@remix-run/node"; // or /cloudflare
 
 export const cookie = createCookie("csrf", {
@@ -371,6 +389,8 @@ export async function loader({ request }: LoaderArgs) {
 Now that you returned the token and set it in a cookie, you can use the `AuthenticityTokenProvider` component to provide the token to your React components.
 
 ```tsx
+import { AuthenticityTokenProvider } from "remix-utils/authenticity-token";
+
 let { csrf } = useLoaderData<LoaderData>();
 return (
   <AuthenticityTokenProvider token={csrf}>
@@ -385,7 +405,7 @@ When you create a form in some route, you can use the `AuthenticityTokenInput` c
 
 ```tsx
 import { Form } from "@remix-run/react";
-import { AuthenticityTokenInput } from "remix-utils";
+import { AuthenticityTokenInput } from "remix-utils/authenticity-token";
 
 export default function Component() {
   return (
@@ -411,7 +431,7 @@ If you need to use `useFetcher` (or `useSubmit`) instead of `Form` you can also 
 
 ```tsx
 import { useFetcher } from "@remix-run/react";
-import { useAuthenticityToken } from "remix-utils";
+import { useAuthenticityToken } from "remix-utils/authenticity-token";
 
 export function useMarkAsRead() {
   let fetcher = useFetcher();
@@ -419,7 +439,7 @@ export function useMarkAsRead() {
   return function submit(data) {
     fetcher.submit(
       { csrf, ...data },
-      { action: "/api/mark-as-read", method: "post" }
+      { action: "/api/mark-as-read", method: "post" },
     );
   };
 }
@@ -428,7 +448,8 @@ export function useMarkAsRead() {
 Finally, you need to validate the authenticity token in the action that received the request.
 
 ```ts
-import { CSRFError, redirectBack } from "remix-utils";
+import { CSRFError } from "remix-utils/csrf";
+import { redirectBack } from "remix-utils/redirect-back";
 import { csrf } from "~/utils/csrf.server";
 
 export async function action({ request }: ActionArgs) {
@@ -475,40 +496,37 @@ You can use `error.code` to check one of the error codes above, and `error.messa
 
 ### ExternalScripts
 
+> **Note**: This depends on `react`, `@remix-run/react`, and a Remix server runtime.
+
 If you need to load different external scripts on certain routes, you can use the `ExternalScripts` component together with the `ExternalScriptsFunction` type.
 
 In the route you want to load the script add a `handle` export with a `scripts` method, this method should implement the `ExternalScriptsFunction` type.
 
 ```ts
-// create the scripts function with the correct type
-// note: loader type is optional
-let scripts: ExternalScriptsFunction<SerializeFrom<typeof loader>> = ({
-  id,
-  data,
-  params,
-  matches,
-  location,
-  parentsData,
-}) => {
-  return [
-    {
-      src: "https://code.jquery.com/jquery-3.6.0.min.js",
-      integrity: "sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=",
-      crossOrigin: "anonymous",
-    },
-  ];
-};
+import { ExternalScriptsFunction } from "remix-utils/external-scripts";
 
-// and export it through the handle, you could also create it inline here
-// if you don't care about the type
-export let handle = { scripts };
+type LoaderData = SerializeFrom<typeof loader>
+
+// create the scripts function with the correct type (loader type is optional)
+// and export it through the handle
+export let handle = {
+  scripts({ id, data, params, matches, location, parentsData }) {
+    return [
+      {
+        src: "https://code.jquery.com/jquery-3.6.0.min.js",
+        integrity: "sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=",
+        crossOrigin: "anonymous",
+      },
+    ];
+  },
+} satifies { scripts: ExternalScriptsFunction<LoaderData> }
 ```
 
 Then, in the root route, add the `ExternalScripts` component together with the Remix's Scripts component, usually inside a Document component.
 
 ```tsx
 import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
-import { ExternalScripts } from "remix-utils";
+import { ExternalScripts } from "remix-utils/external-scripts";
 
 type Props = { children: React.ReactNode; title?: string };
 
@@ -540,10 +558,12 @@ Now, any script you defined in the ScriptsFunction will be added to the HTML tog
 
 ### useGlobalNavigationState
 
+> **Note**: This depends on `react`, and `@remix-run/react`.
+
 This hook allows you to read the value of `transition.state`, every `fetcher.state` in the app, and `revalidator.state`.
 
 ```ts
-import { useGlobalNavigationState } from "remix-utils";
+import { useGlobalNavigationState } from "remix-utils/use-global-navigation-state";
 
 export function GlobalPendingUI() {
   let states = useGlobalNavigationState();
@@ -566,10 +586,12 @@ The return value of `useGlobalNavigationState` can be `"idle"`, `"loading"` or `
 
 ### useGlobalPendingState
 
+> **Note**: This depends on `react`, and `@remix-run/react`.
+
 This hook lets you know if the global navigation, if one of any active fetchers is either loading or submitting, or if the revalidator is running.
 
 ```ts
-import { useGlobalPendingState } from "remix-utils";
+import { useGlobalPendingState } from "remix-utils/use-global-navigation-state";
 
 export function GlobalPendingUI() {
   let globalState = useGlobalPendingState();
@@ -587,10 +609,12 @@ The return value of `useGlobalPendingState` is either `"idle"` or `"pending"`.
 
 ### useGlobalSubmittingState
 
+> **Note**: This depends on `react`, and `@remix-run/react`.
+
 This hook lets you know if the global transition or if one of any active fetchers is submitting.
 
 ```ts
-import { useGlobalSubmittingState } from "remix-utils";
+import { useGlobalSubmittingState } from "remix-utils/use-global-navigation-state";
 
 export function GlobalPendingUI() {
   let globalState = useGlobalSubmittingState();
@@ -604,10 +628,12 @@ The return value of `useGlobalSubmittingState` is either `"idle"` or `"submittin
 
 ### useGlobalLoadingState
 
+> **Note**: This depends on `react`, and `@remix-run/react`.
+
 This hook lets you know if the global transition, if one of any active fetchers is loading, or if the revalidator is running
 
 ```ts
-import { useGlobalLoadingState } from "remix-utils";
+import { useGlobalLoadingState } from "remix-utils/use-global-navigation-state";
 
 export function GlobalPendingUI() {
   let globalState = useGlobalLoadingState();
@@ -621,12 +647,14 @@ The return value of `useGlobalLoadingState` is either `"idle"` or `"loading"`.
 
 ### useHydrated
 
+> **Note**: This depends on `react`.
+
 This hook lets you detect if your component is already hydrated. This means the JS for the element loaded client-side and React is running.
 
 With useHydrated, you can render different things on the server and client while ensuring the hydration will not have a mismatched HTML.
 
 ```ts
-import { useHydrated } from "remix-utils";
+import { useHydrated } from "remix-utils/use-hydrated";
 
 export function Component() {
   let isHydrated = useHydrated();
@@ -645,11 +673,16 @@ After the first client-side render, future components rendered calling this hook
 
 ### useLocales
 
+> **Note**: This depends on `react`.
+
 This hooks lets you get the locales returned by the root loader. It follows a simple convention, your root loader return value should be an objet with the key `locales`.
 
 You can combine it with `getClientLocal` to get the locales on the root loader and return that. The return value of `useLocales` is a `Locales` type which is `string | string[] | undefined`.
 
 ```ts
+import { useLocales } from "remix-utils/use-locales";
+import { getClientLocales } from "remix-utils/get-client-locales";
+
 // in the root loader
 export async function loader({ request }: LoaderArgs) {
   let locales = getClientLocales(request);
@@ -670,6 +703,8 @@ The return type of `useLocales` is ready to be used with the Intl API.
 
 ### useShouldHydrate
 
+> **Note**: This depends on `@remix-run/react`.
+
 If you are building a Remix application where most routes are static, and you want to avoid loading client-side JS, you can use this hook, plus some conventions, to detect if one or more active routes needs JS and only render the Scripts component in that case.
 
 In your document component, you can call this hook to dynamically render the Scripts component if needed.
@@ -677,7 +712,7 @@ In your document component, you can call this hook to dynamically render the Scr
 ```tsx
 import type { ReactNode } from "react";
 import { Links, LiveReload, Meta, Scripts } from "@remix-run/react";
-import { useShouldHydrate } from "remix-utils";
+import { useShouldHydrate } from "remix-utils/use-should-hydrate";
 
 interface DocumentProps {
   children: ReactNode;
@@ -730,6 +765,8 @@ The `useShouldHydrate` hook will detect `hydrate` as a function and call it usin
 This function receives a Request or Headers objects and will try to get the IP address of the client (the user) who originated the request.
 
 ```ts
+import { getClientIPAddress } from "remix-utils/get-client-ip-address";
+
 export async function loader({ request }: LoaderArgs) {
   // using the request
   let ipAddress = getClientIPAddress(request);
@@ -738,7 +775,7 @@ export async function loader({ request }: LoaderArgs) {
 }
 ```
 
-If it can't find he ipAddress the return value will be `null`. Remember to check if it was able to find it before using it.
+If it can't find he IP address the return value will be `null`. Remember to check if it was able to find it before using it.
 
 The function uses the following list of headers, in order of preference:
 
@@ -763,6 +800,8 @@ When a header is found that contains a valid IP address, it will return without 
 This function let you get the locales of the client (the user) who originated the request.
 
 ```ts
+import { getClientLocales } from "remix-utils/get-client-locales";
+
 export async function loader({ request }: LoaderArgs) {
   // using the request
   let locales = getClientLocales(request);
@@ -776,7 +815,7 @@ The return value is a Locales type, which is `string | string[] | undefined`.
 The returned locales can be directly used on the Intl API when formatting dates, numbers, etc.
 
 ```ts
-import { getClientLocales } from "remix-utils";
+import { getClientLocales } from "remix-utils/get-client-locales";
 export async function loader({ request }: LoaderArgs) {
   let locales = getClientLocales(request);
   let nowDate = new Date();
@@ -798,6 +837,8 @@ This function let you identify if a request was created because of a prefetch tr
 This will let you implement a short cache only for prefetch requests so you [avoid the double data request](https://sergiodxa.com/articles/fix-double-data-request-when-prefetching-in-remix).
 
 ```ts
+import { isPrefetch } from "remix-utils/is-prefetch";
+
 export async function loader({ request }: LoaderArgs) {
   let data = await getData(request);
   let headers = new Headers();
@@ -819,7 +860,7 @@ This function is a wrapper of the `redirect` helper from Remix. Unlike Remix's v
 The response created with this function will have the `Location` header pointing to the `Referer` header from the request, or if not available, the fallback URL provided in the second argument.
 
 ```ts
-import { redirectBack } from "remix-utils";
+import { redirectBack } from "remix-utils/redirect-back";
 
 export async function action({ request }: ActionArgs) {
   return redirectBack(request, { fallback: "/" });
@@ -828,99 +869,13 @@ export async function action({ request }: ActionArgs) {
 
 This helper is most useful when used in a generic action to send the user to the same URL it was before.
 
-#### Created
-
-Helper function to create a Created (201) response with a JSON body.
-
-```ts
-import { created } from "remix-utils";
-
-export async function action({ request }: ActionArgs) {
-  let result = await doSomething(request);
-  return created(result);
-}
-```
-
-#### Bad Request
-
-Helper function to create a Bad Request (400) response with a JSON body.
-
-```ts
-import { badRequest } from "remix-utils";
-
-export async function action() {
-  throw badRequest({ message: "You forgot something in the form." });
-}
-```
-
-#### Unauthorized
-
-Helper function to create an Unauthorized (401) response with a JSON body.
-
-```ts
-import { unauthorized } from "remix-utils";
-
-export async function loader() {
-  // usually what you really want is to throw a redirect to the login page
-  throw unauthorized({ message: "You need to login." });
-}
-```
-
-#### Forbidden
-
-Helper function to create a Forbidden (403) response with a JSON body.
-
-```ts
-import { forbidden } from "remix-utils";
-
-export async function loader() {
-  throw forbidden({ message: "You don't have access for this." });
-}
-```
-
-#### Not Found
-
-Helper function to create a Not Found (404) response with a JSON body.
-
-```ts
-import { notFound } from "remix-utils";
-
-export async function loader() {
-  throw notFound({ message: "This doesn't exist." });
-}
-```
-
-#### Unprocessable Entity
-
-Helper function to create an Unprocessable Entity (422) response with a JSON body.
-
-```ts
-import { unprocessableEntity } from "remix-utils";
-
-export async function loader() {
-  throw unprocessableEntity({ message: "This doesn't exists." });
-}
-```
-
-This is used by the CSRF validation. You probably don't want to use it directly.
-
-#### Server Error
-
-Helper function to create a Server Error (500) response with a JSON body.
-
-```ts
-import { serverError } from "remix-utils";
-
-export async function loader() {
-  throw serverError({ message: "Something unexpected happened." });
-}
-```
-
 #### Not Modified
 
 Helper function to create a Not Modified (304) response without a body and any header.
 
 ```ts
+import { notModified } from "remix-utils/responses";
+
 export async function loader({ request }: LoaderArgs) {
   return notModified();
 }
@@ -933,6 +888,8 @@ Helper function to create a JavaScript file response with any header.
 This is useful to create JS files based on data inside a Resource Route.
 
 ```ts
+import { javascript } from "remix-utils/responses";
+
 export async function loader({ request }: LoaderArgs) {
   return javascript("console.log('Hello World')");
 }
@@ -945,6 +902,8 @@ Helper function to create a CSS file response with any header.
 This is useful to create CSS files based on data inside a Resource Route.
 
 ```ts
+import { stylesheet } from "remix-utils/responses";
+
 export async function loader({ request }: LoaderArgs) {
   return stylesheet("body { color: red; }");
 }
@@ -957,6 +916,8 @@ Helper function to create a PDF file response with any header.
 This is useful to create PDF files based on data inside a Resource Route.
 
 ```ts
+import { pdf } from "remix-utils/responses";
+
 export async function loader({ request }: LoaderArgs) {
   return pdf(await generatePDF(request.formData()));
 }
@@ -969,6 +930,8 @@ Helper function to create a HTML file response with any header.
 This is useful to create HTML files based on data inside a Resource Route.
 
 ```ts
+import { html } from "remix-utils/responses";
+
 export async function loader({ request }: LoaderArgs) {
   return html("<h1>Hello World</h1>");
 }
@@ -981,6 +944,8 @@ Helper function to create a XML file response with any header.
 This is useful to create XML files based on data inside a Resource Route.
 
 ```ts
+import { xml } from "remix-utils/responses";
+
 export async function loader({ request }: LoaderArgs) {
   return xml("<?xml version='1.0'?><catalog></catalog>");
 }
@@ -993,6 +958,8 @@ Helper function to create a TXT file response with any header.
 This is useful to create TXT files based on data inside a Resource Route.
 
 ```ts
+import { txt } from "remix-utils/responses";
+
 export async function loader({ request }: LoaderArgs) {
   return txt(`
     User-agent: *
@@ -1003,11 +970,13 @@ export async function loader({ request }: LoaderArgs) {
 
 ### Typed Cookies
 
+> **Note**: This depends on `zod`, and a Remix server runtime.
+
 Cookie objects in Remix allows any type, the typed cookies from Remix Utils lets you use Zod to parse the cookie values and ensure they conform to a schema.
 
 ```ts
 import { createCookie } from "@remix-run/node";
-import { createTypedCookie } from "remix-utils";
+import { createTypedCookie } from "remix-utils/typed-cookie";
 import { z } from "zod";
 
 let cookie = createCookie("returnTo", cookieOptions);
@@ -1095,11 +1064,13 @@ await typedCookie.serialize("some fake url to pass schema validation", {
 
 ### Typed Sessions
 
+> **Note**: This depends on `zod`, and a Remix server runtime.
+
 Session objects in Remix allows any type, the typed sessions from Remix Utils lets you use Zod to parse the session data and ensure they conform to a schema.
 
 ```ts
 import { createCookieSessionStorage } from "@remix-run/node";
-import { createTypedSessionStorage } from "remix-utils";
+import { createTypedSessionStorage } from "remix-utils/typed-session";
 import { z } from "zod";
 
 let schema = z.object({
@@ -1158,6 +1129,8 @@ typedSessionStorage.getSession(request.headers.get("Cookie"));
 
 ### Server-Sent Events
 
+> **Note**: This depends on `react`.
+
 Server-Sent Events are a way to send data from the server to the client without the need for the client to request it. This is useful for things like chat applications, live updates, and more.
 
 There are two utils provided to help with the usage inside Remix:
@@ -1169,7 +1142,7 @@ The `eventStream` function is used to create a new event stream response needed 
 
 ```ts
 // app/routes/sse.time.ts
-import { eventStream } from "remix-utils";
+import { eventStream } from "remix-utils/event-stream";
 
 export async function loader({ request }: LoaderArgs) {
   return eventStream(request.signal, function setup(send) {
@@ -1188,7 +1161,7 @@ Then, inside any component, you can use the `useEventSource` hook to connect to 
 
 ```tsx
 // app/components/counter.ts
-import { useEventSource } from "remix-utils";
+import { useEventSource } from "remix-utils/use-event-source";
 
 function Counter() {
   // Here `/sse/time` is the resource route returning an eventStream response
@@ -1231,6 +1204,8 @@ This way, you can overwrite the map with a new one for a specific part of your a
 
 ### Rolling Cookies
 
+> **Note**: This depends on `zod`, and a Remix server runtime.
+
 Rolling cookies allows you to prolong the expiration of a cookie by updating the expiration date of every cookie.
 
 The `rollingCookie` function is prepared to be used in `entry.server` exported function to update the expiration date of a cookie if no loader set it.
@@ -1238,7 +1213,7 @@ The `rollingCookie` function is prepared to be used in `entry.server` exported f
 For document request you can use it on the `handleRequest` function:
 
 ```ts
-import { rollingCookie } from "remix-utils";
+import { rollingCookie } from "remix-utils/rolling-cookie";
 
 import { sessionCookie } from "~/session.server";
 
@@ -1246,7 +1221,7 @@ export default function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext
+  remixContext: EntryContext,
 ) {
   await rollingCookie(sessionCookie, request, responseHeaders);
 
@@ -1255,13 +1230,13 @@ export default function handleRequest(
         request,
         responseStatusCode,
         responseHeaders,
-        remixContext
+        remixContext,
       )
     : handleBrowserRequest(
         request,
         responseStatusCode,
         responseHeaders,
-        remixContext
+        remixContext,
       );
 }
 ```
@@ -1269,18 +1244,20 @@ export default function handleRequest(
 And for data request you can do it on the `handleDataRequest` function:
 
 ```ts
+import { rollingCookie } from "remix-utils/rolling-cookie";
+
 export let handleDataRequest: HandleDataRequestFunction = async (
   response: Response,
-  { request }
+  { request },
 ) => {
   let cookieValue = await sessionCookie.parse(
-    responseHeaders.get("set-cookie")
+    responseHeaders.get("set-cookie"),
   );
   if (!cookieValue) {
     cookieValue = await sessionCookie.parse(request.headers.get("cookie"));
     responseHeaders.append(
       "Set-Cookie",
-      await sessionCookie.serialize(cookieValue)
+      await sessionCookie.serialize(cookieValue),
     );
   }
 
@@ -1292,10 +1269,12 @@ export let handleDataRequest: HandleDataRequestFunction = async (
 
 ### Named actions
 
+> **Note**: This depends on a Remix server runtime.
+
 It's common to need to handle more than one action in the same route, there are many options here like [sending the form to a resource route](https://sergiodxa.com/articles/multiple-forms-per-route-in-remix#using-resource-routes) or using an [action reducer](https://sergiodxa.com/articles/multiple-forms-per-route-in-remix#the-action-reducer-pattern), the `namedAction` function uses some conventions to implement the action reducer pattern.
 
 ```tsx
-import { namedAction } from "remix-utils";
+import { namedAction } from "remix-utils/named-action";
 
 export async function action({ request }: ActionArgs) {
   return namedAction(request, {
@@ -1375,10 +1354,10 @@ export default function handleRequest(
   request: Request,
   statusCode: number,
   headers: Headers,
-  context: EntryContext
+  context: EntryContext,
 ) {
   let markup = renderToString(
-    <RemixServer context={context} url={request.url} />
+    <RemixServer context={context} url={request.url} />,
   );
   headers.set("Content-Type", "text/html");
 
@@ -1500,7 +1479,7 @@ When using Remix, you can use the `<Link>` component to navigate between pages. 
 The `useDelegatedAnchors` hook lets you add client-side navigation to anchor tags in a portion of your app. This can be specially useful when working with dynamic content like HTML or Markdown from a CMS.
 
 ```tsx
-import { useDelegatedAnchors } from "remix-utils";
+import { useDelegatedAnchors } from "remix-utils/use-delegated-anchors";
 
 export async function loader() {
   let content = await fetchContentFromCMS();
@@ -1524,7 +1503,7 @@ If additionally you want to be able to prefetch your anchors you can use the `Pr
 This components wraps your content with anchors inside, it detects any hovered anchor to prefetch it, and it delegates them to Remix.
 
 ```tsx
-import { PrefetchPageAnchors } from "remix-utils";
+import { PrefetchPageAnchors } from "remix-utils/use-delegated-anchors";
 
 export async function loader() {
   let content = await fetchContentFromCMS();
@@ -1546,6 +1525,8 @@ Now you can see in your DevTools that when the user hovers an anchor it will pre
 
 ### Debounced Fetcher
 
+> **Note**: This depends on `react`, and `@remix-run/react`.
+
 The `useDebounceFetcher` is a wrapper of `useFetcher` that adds debounce support to `fetcher.submit`.
 
 The hook is based on @JacobParis [article](https://www.jacobparis.com/content/use-debounce-fetcher).
@@ -1553,7 +1534,7 @@ The hook is based on @JacobParis [article](https://www.jacobparis.com/content/us
 The main difference with Jacob's version is that Remix Utils' version overwrites `fetcher.submit` instead of appending a `fetcher.debounceSubmit` method.
 
 ```tsx
-import { useDebounceFetcher } from "remix-utils";
+import { useDebounceFetcher } from "remix-utils/use-debounce-fetcher";
 
 export function Component({ data }) {
   let fetcher = useDebounceFetcher<Type>();
@@ -1572,10 +1553,12 @@ export function Component({ data }) {
 
 ### Derive Fetcher init
 
+> **Note**: This depends on `@remix-route/react`.
+
 Derive the value of the deprecated `fetcher.type` from the fetcher and navigation data.
 
 ```ts
-import { getFetcherType } from "remix-utils";
+import { getFetcherType } from "remix-utils/fetcher-type";
 
 function Component() {
   let fetcher = useFetcher();
@@ -1592,7 +1575,7 @@ function Component() {
 You can also use the React Hook API which let's you avoid calling `useNavigation`.
 
 ```ts
-import { useFetcherType } from "remix-utils";
+import { useFetcherType } from "remix-utils/fetcher-type";
 
 function Component() {
   let fetcher = useFetcher();
@@ -1608,7 +1591,7 @@ function Component() {
 If you need to pass the fetcher type around, you can also import `FetcherType` type.
 
 ```ts
-import { type FetcherType } from "remix-utils";
+import { type FetcherType } from "remix-utils/fetcher-type";
 
 function useCallbackOnDone(type: FetcherType, cb) {
   useEffect(() => {
@@ -1622,7 +1605,7 @@ function useCallbackOnDone(type: FetcherType, cb) {
 If you're building a resource route and wants to send a different response based on what content type the client requested (e.g. send the same data as PDF or XML or JSON), you will need to implement content negotiation, this can be done with the `respondTo` header.
 
 ```ts
-import { respondTo } from "remix-utils";
+import { respondTo } from "remix-utils/respond-to";
 
 export async function loader({ request }: LoaderArgs) {
   // do any work independent of the response type before respondTo
@@ -1669,16 +1652,106 @@ export async function loader({ request }: LoaderArgs) {
 Now, the `respondTo` function will check the `Accept` header and call the correct handler, to know which one to call it will use the `parseAcceptHeader` function also exported from Remix Utils
 
 ```ts
-import { parseAcceptHeader } from "remix-utils";
+import { parseAcceptHeader } from "remix-utils/parse-accept-header";
 
 let parsed = parseAcceptHeader(
-  "text/html, application/xhtml+xml, application/xml;q=0.9, image/webp, image/*, */*;q=0.8"
+  "text/html, application/xhtml+xml, application/xml;q=0.9, image/webp, image/*, */*;q=0.8",
 );
 ```
 
 The result is an array with the type, subtype and extra params (e.g. the `q` value). The order will be the same encountered in the header, in the example aabove `text/html` will be the first, followed by `application/xhtml+xml`.
 
 This means that the `respondTo` helper will prioritize any handler that match `text/html`, in our example above, that will be the `html` handler, but if we remove it then the `text` handler will be called instead.67
+
+### Form Honeypot
+
+> **Note**: This depends on `react`.
+
+Honeypot is a simple technic to prevent spam bots from submitting forms, it works by adding a hidden field to the form that bots will fill, but humans won't.
+
+There's a pair of utils in Remix Utils to help you implement this.
+
+First, create a `honeypot.server.ts` where you will instantiate and configure your Honeypot.
+
+```tsx
+import { Honeypot } from "remix-utils/honeypot";
+
+// Create a new Honeypot instance, the values here are the defaults, you can
+// customize them
+export const honeypot = new Honeypot({
+  randomizeNameFieldName: false,
+  nameFieldName: "name__confirm",
+  validFromFieldName: "from__confirm", // null to disable it
+  encryptionSeed: undefined, // Ideally it should be unique even between processes
+});
+```
+
+Then, in your `app/root` loader, call `honeypot.getInputProps()` and return it.
+
+```ts
+// app/root.tsx
+import { honeypot } from "~/honeypot.server";
+
+export async function loader() {
+  // more code here
+  return json({ honeypot: honeypot.getInputProps() });
+}
+```
+
+And in the `app/root` component render the `HoneypotProvider` component wrapping the rest of the UI.
+
+```tsx
+import { HoneypotProvider } from "remix-utils/honeypot-inputs";
+
+export default function Component() {
+  // more code here
+  return (
+    // some JSX
+    <HoneypotProvider>
+      <Outlet />
+    </HoneypotProvider>
+    // end that JSX
+  );
+}
+```
+
+Now, in every public form you want protect against spam (like a login form), render the `HoneypotInputs` component.
+
+```tsx
+import { HoneypotInputs } from "remix-utils/honeypot-inputs";
+
+function SomePublicForm() {
+  return (
+    <Form method="post">
+      <HoneypotInputs label="Please leave this field blank" />
+      {/* more inputs and some buttons */}
+    </Form>
+  );
+}
+```
+
+> **Note**: The label value above is the default one, use it to allow the label to be localized, or remove it if you don't want to change it.
+
+Finally, in the action the form submits to, you can call `honeypot.check`.
+
+```ts
+import { SpamError } from "remix-utils/honeypot";
+import { honeypot } from "~/honeypot.server";
+
+export async function action({ request }) {
+  let formData = await request.formData();
+  try {
+    honeypot.check(formData);
+  } catch (error) {
+    if (error instanceof SpamError) {
+      // handle spam requests here
+    }
+    // handle any other possible error here, e.g. re-throw since nothing else
+    // should be thrown
+  }
+  // the rest of your action
+}
+```
 
 ## Author
 

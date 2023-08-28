@@ -3,7 +3,7 @@ import { useLocation, useMatches } from "@remix-run/react";
 import type { AppData } from "@remix-run/server-runtime";
 import { HandleConventionArguments } from "./handle-conventions.js";
 
-type ReferrerPolicy =
+export type ReferrerPolicy =
   | "no-referrer-when-downgrade"
   | "no-referrer"
   | "origin-when-cross-origin"
@@ -13,9 +13,9 @@ type ReferrerPolicy =
   | "strict-origin"
   | "unsafe-url";
 
-type CrossOrigin = "anonymous" | "use-credentials";
+export type CrossOrigin = "anonymous" | "use-credentials";
 
-type ScriptDescriptor = {
+export type ScriptDescriptor = {
   async?: boolean;
   crossOrigin?: CrossOrigin;
   defer?: boolean;
