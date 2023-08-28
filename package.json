@@ -46,7 +46,7 @@
     "./honeypot/react": "./build/react/honeypot.js",
 
     "./csrf/server": "./build/server/csrf.js",
-    "./csrf/react": "./build/react/csrf.js"
+    "./csrf/react": "./build/react/authenticity-token.js"
   },
   "sideEffects": false,
   "scripts": {
