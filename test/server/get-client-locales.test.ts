@@ -46,7 +46,7 @@ describe(getClientLocales, () => {
     let date = new Date("1992-09-29T00:00:00.000Z");
 
     expect(
-      new Intl.DateTimeFormat(locale, { timeZone: "UTC" }).format(date),
+      new Intl.DateTimeFormat(locale, { timeZone: "UTC" }).format(date)
     ).toBe("9/29/1992");
 
     // expect(date.toLocaleString(locale, { timeZone: "UTC" })).toBe(

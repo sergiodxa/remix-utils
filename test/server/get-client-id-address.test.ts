@@ -50,7 +50,7 @@ describe(getClientIPAddress, () => {
 
         for (let header of headerNames.slice(
           0,
-          headerNames.indexOf(headerName),
+          headerNames.indexOf(headerName)
         )) {
           headers.delete(header);
         }

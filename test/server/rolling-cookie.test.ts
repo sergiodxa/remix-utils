@@ -28,7 +28,7 @@ describe(rollingCookie.name, () => {
 
       expect(headers.has("set-cookie")).toBe(true);
       expect(headers.get("Set-Cookie")).toMatchInlineSnapshot(
-        '"name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"',
+        '"name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"'
       );
     });
 
@@ -44,7 +44,7 @@ describe(rollingCookie.name, () => {
 
       expect(headers.has("set-cookie")).toBe(true);
       expect(headers.get("Set-Cookie")).toMatchInlineSnapshot(
-        '"name=InZhbHVlIGZyb20gaGVhZGVycyI%3D.bLpX1ehfp7NZe7E9yNSkd56WbnG3QdHLmfwxt%2BxfkfA; Path=/; SameSite=Lax"',
+        '"name=InZhbHVlIGZyb20gaGVhZGVycyI%3D.bLpX1ehfp7NZe7E9yNSkd56WbnG3QdHLmfwxt%2BxfkfA; Path=/; SameSite=Lax"'
       );
     });
 
@@ -63,7 +63,7 @@ describe(rollingCookie.name, () => {
 
       expect(headers.has("set-cookie")).toBe(true);
       expect(headers.get("Set-Cookie")).toMatchInlineSnapshot(
-        '"other=InZhbHVlIGZyb20gb3RoZXIgY29va2llIg%3D%3D.wn3PvV5dGwPg2Ql8wMy1Q%2B0v%2BU0UQjrI7SBgR6W51QQ; Path=/; SameSite=Lax, name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"',
+        '"other=InZhbHVlIGZyb20gb3RoZXIgY29va2llIg%3D%3D.wn3PvV5dGwPg2Ql8wMy1Q%2B0v%2BU0UQjrI7SBgR6W51QQ; Path=/; SameSite=Lax, name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"'
       );
     });
   });
@@ -95,7 +95,7 @@ describe(rollingCookie.name, () => {
 
       expect(headers.has("set-cookie")).toBe(true);
       expect(headers.get("Set-Cookie")).toMatchInlineSnapshot(
-        '"name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"',
+        '"name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"'
       );
     });
 
@@ -111,7 +111,7 @@ describe(rollingCookie.name, () => {
 
       expect(headers.has("set-cookie")).toBe(true);
       expect(headers.get("Set-Cookie")).toMatchInlineSnapshot(
-        '"name=InZhbHVlIGZyb20gaGVhZGVycyI%3D.bLpX1ehfp7NZe7E9yNSkd56WbnG3QdHLmfwxt%2BxfkfA; Path=/; SameSite=Lax"',
+        '"name=InZhbHVlIGZyb20gaGVhZGVycyI%3D.bLpX1ehfp7NZe7E9yNSkd56WbnG3QdHLmfwxt%2BxfkfA; Path=/; SameSite=Lax"'
       );
     });
 
@@ -130,7 +130,7 @@ describe(rollingCookie.name, () => {
 
       expect(headers.has("set-cookie")).toBe(true);
       expect(headers.get("Set-Cookie")).toMatchInlineSnapshot(
-        '"other=InZhbHVlIGZyb20gb3RoZXIgY29va2llIg%3D%3D.wn3PvV5dGwPg2Ql8wMy1Q%2B0v%2BU0UQjrI7SBgR6W51QQ; Path=/; SameSite=Lax, name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"',
+        '"other=InZhbHVlIGZyb20gb3RoZXIgY29va2llIg%3D%3D.wn3PvV5dGwPg2Ql8wMy1Q%2B0v%2BU0UQjrI7SBgR6W51QQ; Path=/; SameSite=Lax, name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"'
       );
     });
   });

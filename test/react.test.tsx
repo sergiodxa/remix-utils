@@ -13,7 +13,7 @@ describe("React Utils", () => {
       render(
         <AuthenticityTokenProvider token="testing-token">
           <AuthenticityTokenInput />
-        </AuthenticityTokenProvider>,
+        </AuthenticityTokenProvider>
       );
     });
   });

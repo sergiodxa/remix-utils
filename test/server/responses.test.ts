@@ -38,7 +38,7 @@ describe("Responses", () => {
       await expect(response.text()).resolves.toBe(content);
       expect(response.status).toBe(200);
       expect(response.headers.get("Content-Type")).toBe(
-        "application/javascript; charset=utf-8",
+        "application/javascript; charset=utf-8"
       );
     });
 
@@ -47,7 +47,7 @@ describe("Responses", () => {
       await expect(response.text()).resolves.toBe(content);
       expect(response.status).toBe(201);
       expect(response.headers.get("Content-Type")).toBe(
-        "application/javascript; charset=utf-8",
+        "application/javascript; charset=utf-8"
       );
     });
 
@@ -58,7 +58,7 @@ describe("Responses", () => {
       await expect(response.text()).resolves.toBe(content);
       expect(response.status).toBe(200);
       expect(response.headers.get("Content-Type")).toBe(
-        "application/javascript; charset=utf-8",
+        "application/javascript; charset=utf-8"
       );
       expect(response.headers.get("X-Test")).toBe("it worked");
     });
@@ -71,7 +71,7 @@ describe("Responses", () => {
       await expect(response.text()).resolves.toBe(content);
       expect(response.status).toBe(200);
       expect(response.headers.get("Content-Type")).toBe(
-        "text/css; charset=utf-8",
+        "text/css; charset=utf-8"
       );
     });
 
@@ -80,7 +80,7 @@ describe("Responses", () => {
       await expect(response.text()).resolves.toBe(content);
       expect(response.status).toBe(201);
       expect(response.headers.get("Content-Type")).toBe(
-        "text/css; charset=utf-8",
+        "text/css; charset=utf-8"
       );
     });
 
@@ -91,7 +91,7 @@ describe("Responses", () => {
       await expect(response.text()).resolves.toBe(content);
       expect(response.status).toBe(200);
       expect(response.headers.get("Content-Type")).toBe(
-        "text/css; charset=utf-8",
+        "text/css; charset=utf-8"
       );
       expect(response.headers.get("X-Test")).toBe("it worked");
     });
@@ -130,7 +130,7 @@ describe("Responses", () => {
       await expect(response.text()).resolves.toBe(content);
       expect(response.status).toBe(200);
       expect(response.headers.get("Content-Type")).toBe(
-        "text/html; charset=utf-8",
+        "text/html; charset=utf-8"
       );
     });
 
@@ -139,7 +139,7 @@ describe("Responses", () => {
       await expect(response.text()).resolves.toBe(content);
       expect(response.status).toBe(201);
       expect(response.headers.get("Content-Type")).toBe(
-        "text/html; charset=utf-8",
+        "text/html; charset=utf-8"
       );
     });
 
@@ -150,7 +150,7 @@ describe("Responses", () => {
       await expect(response.text()).resolves.toBe(content);
       expect(response.status).toBe(200);
       expect(response.headers.get("Content-Type")).toBe(
-        "text/html; charset=utf-8",
+        "text/html; charset=utf-8"
       );
       expect(response.headers.get("X-Test")).toBe("it worked");
     });
@@ -163,7 +163,7 @@ describe("Responses", () => {
       await expect(response.text()).resolves.toBe(content);
       expect(response.status).toBe(200);
       expect(response.headers.get("Content-Type")).toBe(
-        "application/xml; charset=utf-8",
+        "application/xml; charset=utf-8"
       );
     });
 
@@ -172,7 +172,7 @@ describe("Responses", () => {
       await expect(response.text()).resolves.toBe(content);
       expect(response.status).toBe(201);
       expect(response.headers.get("Content-Type")).toBe(
-        "application/xml; charset=utf-8",
+        "application/xml; charset=utf-8"
       );
     });
 
@@ -183,7 +183,7 @@ describe("Responses", () => {
       await expect(response.text()).resolves.toBe(content);
       expect(response.status).toBe(200);
       expect(response.headers.get("Content-Type")).toBe(
-        "application/xml; charset=utf-8",
+        "application/xml; charset=utf-8"
       );
       expect(response.headers.get("X-Test")).toBe("it worked");
     });
@@ -199,7 +199,7 @@ describe("Responses", () => {
       await expect(response.text()).resolves.toBe(content);
       expect(response.status).toBe(200);
       expect(response.headers.get("Content-Type")).toBe(
-        "text/plain; charset=utf-8",
+        "text/plain; charset=utf-8"
       );
     });
 
@@ -208,7 +208,7 @@ describe("Responses", () => {
       await expect(response.text()).resolves.toBe(content);
       expect(response.status).toBe(201);
       expect(response.headers.get("Content-Type")).toBe(
-        "text/plain; charset=utf-8",
+        "text/plain; charset=utf-8"
       );
     });
 
@@ -219,7 +219,7 @@ describe("Responses", () => {
       await expect(response.text()).resolves.toBe(content);
       expect(response.status).toBe(200);
       expect(response.headers.get("Content-Type")).toBe(
-        "text/plain; charset=utf-8",
+        "text/plain; charset=utf-8"
       );
       expect(response.headers.get("X-Test")).toBe("it worked");
     });

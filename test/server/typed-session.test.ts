@@ -40,7 +40,7 @@ declare module "@remix-run/server-runtime" {
 
 async function loader({ request, context }: LoaderArgs) {
   let session = await context.sessionStorage.getSession(
-    request.headers.get("Cookie"),
+    request.headers.get("Cookie")
   );
 
   let value = session.get(context.key);
@@ -48,7 +48,7 @@ async function loader({ request, context }: LoaderArgs) {
   let headers = new Headers();
   headers.set(
     "Set-Cookie",
-    await context.sessionStorage.commitSession(session),
+    await context.sessionStorage.commitSession(session)
   );
 
   return json({ value }, { headers });
@@ -56,7 +56,7 @@ async function loader({ request, context }: LoaderArgs) {
 
 async function action({ request, context }: ActionArgs) {
   let session = await context.sessionStorage.getSession(
-    request.headers.get("Cookie"),
+    request.headers.get("Cookie")
   );
 
   let formData = await request.formData();
@@ -68,7 +68,7 @@ async function action({ request, context }: ActionArgs) {
   let headers = new Headers();
   headers.set(
     "Set-Cookie",
-    await context.sessionStorage.commitSession(session),
+    await context.sessionStorage.commitSession(session)
   );
 
   return json(null, { headers });
@@ -156,7 +156,7 @@ describe("Typed Sessions", () => {
     });
 
     expect(response.headers.get("Set-Cookie")).toEqual(
-      headers.get("Set-Cookie"),
+      headers.get("Set-Cookie")
     );
   });
 
@@ -185,7 +185,7 @@ describe("Typed Sessions", () => {
     });
 
     session = await typedSessionStorage.getSession(
-      actionResponse.headers.get("Set-Cookie"),
+      actionResponse.headers.get("Set-Cookie")
     );
 
     let response: Response = await loader({
@@ -201,7 +201,7 @@ describe("Typed Sessions", () => {
     });
 
     expect(response.headers.get("Set-Cookie")).toEqual(
-      headers.get("Set-Cookie"),
+      headers.get("Set-Cookie")
     );
   });
 });

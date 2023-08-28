@@ -12,8 +12,8 @@ describe(getFetcherType, () => {
     expect(
       getFetcherType(
         { state: "idle", data: "data", formMethod: undefined },
-        { state: "idle", formMethod: undefined },
-      ),
+        { state: "idle", formMethod: undefined }
+      )
     ).toBe("done");
   });
 
@@ -21,8 +21,8 @@ describe(getFetcherType, () => {
     expect(
       getFetcherType(
         { state: "submitting", data: "data", formMethod: undefined },
-        { state: "idle", formMethod: undefined },
-      ),
+        { state: "idle", formMethod: undefined }
+      )
     ).toBe("actionSubmission");
   });
 
@@ -30,8 +30,8 @@ describe(getFetcherType, () => {
     expect(
       getFetcherType(
         { state: "loading", data: "data", formMethod: "POST" },
-        { state: "idle", formMethod: "POST" },
-      ),
+        { state: "idle", formMethod: "POST" }
+      )
     ).toBe("actionReload");
   });
 
@@ -39,8 +39,8 @@ describe(getFetcherType, () => {
     expect(
       getFetcherType(
         { state: "loading", data: null, formMethod: "POST" },
-        { state: "idle", formMethod: "POST" },
-      ),
+        { state: "idle", formMethod: "POST" }
+      )
     ).toBe("actionRedirect");
   });
 
@@ -48,8 +48,8 @@ describe(getFetcherType, () => {
     expect(
       getFetcherType(
         { state: "loading", data: null, formMethod: undefined },
-        { state: "loading", formMethod: "GET" },
-      ),
+        { state: "loading", formMethod: "GET" }
+      )
     ).toBe("loaderSubmission");
   });
 
@@ -57,8 +57,8 @@ describe(getFetcherType, () => {
     expect(
       getFetcherType(
         { state: "idle", data: null, formMethod: undefined },
-        { state: "loading", formMethod: undefined },
-      ),
+        { state: "loading", formMethod: undefined }
+      )
     ).toBe("normalLoad");
   });
 
@@ -66,8 +66,8 @@ describe(getFetcherType, () => {
     expect(
       getFetcherType(
         { state: "idle", data: null, formMethod: undefined },
-        { state: "idle", formMethod: undefined },
-      ),
+        { state: "idle", formMethod: undefined }
+      )
     ).toBe("init");
   });
 });
@@ -88,7 +88,7 @@ describe(useFetcherType, () => {
       <RemixStub
         initialEntries={["/"]}
         remixConfigFuture={{ v2_normalizeFormMethod: true }}
-      />,
+      />
     );
 
     let $h1 = screen.getByRole("heading", { level: 1 });
