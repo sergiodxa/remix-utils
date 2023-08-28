@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { createCookie } from "@remix-run/node";
-import { CSRF, CSRFError } from "../../src/";
+import { CSRF, CSRFError } from "../../src/server/csrf";
 
 describe("CSRF", () => {
   let cookie = createCookie("csrf", { secrets: ["s3cr3t"] });
@@ -70,8 +70,8 @@ describe("CSRF", () => {
     await expect(csrf.validate(formData, headers)).rejects.toThrow(
       new CSRFError(
         "missing_token_in_cookie",
-        "Can't find CSRF token in cookie."
-      )
+        "Can't find CSRF token in cookie.",
+      ),
     );
   });
 
@@ -84,7 +84,7 @@ describe("CSRF", () => {
     formData.set("csrf", "token");
 
     await expect(csrf.validate(formData, headers)).rejects.toThrow(
-      new CSRFError("invalid_token_in_cookie", "Invalid CSRF token in cookie.")
+      new CSRFError("invalid_token_in_cookie", "Invalid CSRF token in cookie."),
     );
   });
 
@@ -98,7 +98,7 @@ describe("CSRF", () => {
     let formData = new FormData();
 
     await expect(csrf.validate(formData, headers)).rejects.toThrow(
-      new CSRFError("missing_token_in_body", "Can't find CSRF token in body.")
+      new CSRFError("missing_token_in_body", "Can't find CSRF token in body."),
     );
   });
 
@@ -113,7 +113,10 @@ describe("CSRF", () => {
     formData.set("csrf", "wrong token");
 
     await expect(csrf.validate(formData, headers)).rejects.toThrow(
-      new CSRFError("mismatched_token", "Can't verify CSRF token authenticity.")
+      new CSRFError(
+        "mismatched_token",
+        "Can't verify CSRF token authenticity.",
+      ),
     );
   });
 
@@ -127,15 +130,15 @@ describe("CSRF", () => {
 
     let headers = new Headers({
       cookie: await cookie.serialize(
-        [csrf.generate(), token.split(".").at(1)].join(".")
+        [csrf.generate(), token.split(".").at(1)].join("."),
       ),
     });
 
     await expect(securetCSRF.validate(formData, headers)).rejects.toThrow(
       new CSRFError(
         "tampered_token_in_cookie",
-        "Tampered CSRF token in cookie."
-      )
+        "Tampered CSRF token in cookie.",
+      ),
     );
   });
 

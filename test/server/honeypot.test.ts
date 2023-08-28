@@ -1,7 +1,7 @@
 import { describe } from "vitest";
 import CryptoJS from "crypto-js";
 
-import { Honeypot, SpamError } from "../../src";
+import { Honeypot, SpamError } from "../../src/server/honeypot";
 
 function invariant(condition: any, message: string): asserts condition {
   if (!condition) throw new Error(message);
@@ -60,7 +60,7 @@ describe(Honeypot.name, () => {
     formData.set(props.validFromFieldName, props.encryptedValidFrom);
 
     expect(() => honeypot.check(formData)).toThrowError(
-      new SpamError("Missing honeypot input")
+      new SpamError("Missing honeypot input"),
     );
   });
 
@@ -72,7 +72,7 @@ describe(Honeypot.name, () => {
     formData.set(props.nameFieldName, "not empty");
 
     expect(() => honeypot.check(formData)).toThrowError(
-      new SpamError("Honeypot input not empty")
+      new SpamError("Honeypot input not empty"),
     );
   });
 
@@ -84,7 +84,7 @@ describe(Honeypot.name, () => {
     formData.set(props.nameFieldName, "");
 
     expect(() => honeypot.check(formData)).toThrowError(
-      new SpamError("Missing honeypot valid from input")
+      new SpamError("Missing honeypot valid from input"),
     );
   });
 
@@ -99,11 +99,11 @@ describe(Honeypot.name, () => {
     formData.set(props.nameFieldName, "");
     formData.set(
       props.validFromFieldName,
-      CryptoJS.AES.encrypt("invalid", "SEED").toString()
+      CryptoJS.AES.encrypt("invalid", "SEED").toString(),
     );
 
     expect(() => honeypot.check(formData)).toThrowError(
-      new SpamError("Invalid honeypot valid from input")
+      new SpamError("Invalid honeypot valid from input"),
     );
   });
 
@@ -119,11 +119,11 @@ describe(Honeypot.name, () => {
     formData.set(props.nameFieldName, "");
     formData.set(
       props.validFromFieldName,
-      CryptoJS.AES.encrypt((Date.now() + 10_000).toString(), "SEED").toString()
+      CryptoJS.AES.encrypt((Date.now() + 10_000).toString(), "SEED").toString(),
     );
 
     expect(() => honeypot.check(formData)).toThrowError(
-      new SpamError("Honeypot valid from is in future")
+      new SpamError("Honeypot valid from is in future"),
     );
   });
 

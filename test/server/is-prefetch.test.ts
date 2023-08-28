@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { isPrefetch } from "../../src";
+import { isPrefetch } from "../../src/server/is-prefetch";
 
 describe(isPrefetch, () => {
   test.each([

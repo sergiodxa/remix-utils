@@ -5,7 +5,7 @@ import * as React from "react";
 import {
   AuthenticityTokenInput,
   AuthenticityTokenProvider,
-} from "../src/react";
+} from "../src/react/authenticity-token";
 
 describe("React Utils", () => {
   describe("CSRF", () => {
@@ -13,7 +13,7 @@ describe("React Utils", () => {
       render(
         <AuthenticityTokenProvider token="testing-token">
           <AuthenticityTokenInput />
-        </AuthenticityTokenProvider>
+        </AuthenticityTokenProvider>,
       );
     });
   });

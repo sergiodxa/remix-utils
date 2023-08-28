@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { safeRedirect } from "../../src";
+import { safeRedirect } from "../../src/server/safe-redirect";
 
 describe(safeRedirect.name, () => {
   test.each(["/home", "/home?foo=bar", "/home#foo"])("Is valid %s", (to) => {

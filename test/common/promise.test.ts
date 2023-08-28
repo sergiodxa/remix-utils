@@ -1,4 +1,4 @@
-import { promiseHash, timeout } from "../../src";
+import { promiseHash, timeout } from "../../src/common/promise";
 import { describe, test, expect } from "vitest";
 
 describe(promiseHash, () => {
@@ -42,7 +42,7 @@ describe(timeout, () => {
     });
 
     await expect(timeout(promise, { ms: 1 })).rejects.toThrow(
-      "Timed out after 1ms"
+      "Timed out after 1ms",
     );
 
     if (timer) clearTimeout(timer);
@@ -57,7 +57,7 @@ describe(timeout, () => {
     });
 
     await expect(timeout(promise, { ms: 10, controller })).rejects.toThrow(
-      "Timed out after 10ms"
+      "Timed out after 10ms",
     );
 
     if (timer) clearTimeout(timer);

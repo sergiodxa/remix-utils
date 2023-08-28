@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { RouteData } from "@remix-run/router/dist/utils";
-import { useLocales } from "../../src";
+import { useLocales } from "../../src/react/use-locales";
 import { fakeMatch } from "../helpers/fake-match";
 import { mockMatches } from "../helpers/mock-match";
 import { vi, describe, test, expect, afterEach } from "vitest";

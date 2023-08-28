@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import type { EntryContext } from "@remix-run/server-runtime";
-import { preloadRouteAssets } from "../../src";
+import { preloadRouteAssets } from "../../src/server/preload-route-assets";
 import { SerializedError } from "@remix-run/server-runtime/dist/errors";
 
 describe(preloadRouteAssets.name, () => {
@@ -105,7 +105,7 @@ describe(preloadRouteAssets.name, () => {
     preloadRouteAssets(context, headers);
 
     expect(headers.get("link")).toMatchInlineSnapshot(
-      `"</styles.css>; rel=preload; as=style, </manifest.js>; rel=preload; as=script; crossorigin=anonymous, </entry.client.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-1.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-2.js>; rel=preload; as=script; crossorigin=anonymous, </root.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-3.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-4.js>; rel=preload; as=script; crossorigin=anonymous, </routes/index.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-5.js>; rel=preload; as=script; crossorigin=anonymous"`
+      `"</styles.css>; rel=preload; as=style, </manifest.js>; rel=preload; as=script; crossorigin=anonymous, </entry.client.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-1.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-2.js>; rel=preload; as=script; crossorigin=anonymous, </root.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-3.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-4.js>; rel=preload; as=script; crossorigin=anonymous, </routes/index.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-5.js>; rel=preload; as=script; crossorigin=anonymous"`,
     );
   });
 
@@ -114,7 +114,7 @@ describe(preloadRouteAssets.name, () => {
     headers.set("Link", "</custom.js>; rel=preload; as=script");
     preloadRouteAssets(context, headers);
     expect(headers.get("link")).toMatchInlineSnapshot(
-      `"</custom.js>; rel=preload; as=script, </styles.css>; rel=preload; as=style, </manifest.js>; rel=preload; as=script; crossorigin=anonymous, </entry.client.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-1.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-2.js>; rel=preload; as=script; crossorigin=anonymous, </root.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-3.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-4.js>; rel=preload; as=script; crossorigin=anonymous, </routes/index.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-5.js>; rel=preload; as=script; crossorigin=anonymous"`
+      `"</custom.js>; rel=preload; as=script, </styles.css>; rel=preload; as=style, </manifest.js>; rel=preload; as=script; crossorigin=anonymous, </entry.client.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-1.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-2.js>; rel=preload; as=script; crossorigin=anonymous, </root.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-3.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-4.js>; rel=preload; as=script; crossorigin=anonymous, </routes/index.js>; rel=preload; as=script; crossorigin=anonymous, </chunk-5.js>; rel=preload; as=script; crossorigin=anonymous"`,
     );
   });
 });

@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { respondTo } from "../../src";
+import { respondTo } from "../../src/server/respond-to";
 
 describe(respondTo, () => {
   test("uses default handler", () => {
@@ -12,7 +12,7 @@ describe(respondTo, () => {
         default() {
           return response;
         },
-      })
+      }),
     ).toEqual(response);
   });
 
@@ -24,7 +24,7 @@ describe(respondTo, () => {
         default() {
           return response;
         },
-      })
+      }),
     ).toEqual(response);
   });
 
@@ -41,7 +41,7 @@ describe(respondTo, () => {
         default() {
           return response;
         },
-      })
+      }),
     ).toEqual(response);
   });
 
@@ -58,7 +58,7 @@ describe(respondTo, () => {
         default() {
           return new Response("default");
         },
-      })
+      }),
     ).toEqual(response);
   });
 
@@ -75,7 +75,7 @@ describe(respondTo, () => {
         default() {
           return new Response("default");
         },
-      })
+      }),
     ).toEqual(response);
   });
 
@@ -92,7 +92,7 @@ describe(respondTo, () => {
         default() {
           return new Response("default");
         },
-      })
+      }),
     ).toEqual(response);
   });
 
@@ -109,7 +109,7 @@ describe(respondTo, () => {
         default() {
           return new Response("default");
         },
-      })
+      }),
     ).toEqual(response);
   });
 
@@ -126,7 +126,7 @@ describe(respondTo, () => {
         default() {
           return new Response("default");
         },
-      })
+      }),
     ).toEqual(response);
   });
 
@@ -143,7 +143,7 @@ describe(respondTo, () => {
         default() {
           return new Response("default");
         },
-      })
+      }),
     ).resolves.toEqual(response);
   });
 });

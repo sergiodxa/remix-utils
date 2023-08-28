@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/consistent-function-scoping */
 import { describe, test, expect } from "vitest";
 import { ActionArgs, json } from "@remix-run/server-runtime";
-import { namedAction } from "../../src";
+import { namedAction } from "../../src/server/named-action";
 
 describe(namedAction.name, () => {
   test("FormData - Convention /", async () => {
@@ -254,7 +254,7 @@ describe(namedAction.name, () => {
     }
 
     await expect(action({ request, params: {}, context: {} })).rejects.toThrow(
-      'Action "update" not found'
+      'Action "update" not found',
     );
   });
 
@@ -274,7 +274,7 @@ describe(namedAction.name, () => {
     }
 
     await expect(action({ request, params: {}, context: {} })).rejects.toThrow(
-      "Action name not found"
+      "Action name not found",
     );
   });
 
@@ -308,7 +308,7 @@ describe(namedAction.name, () => {
         }),
         params: {},
         context: {},
-      }).then((res) => res.json())
+      }).then((res) => res.json()),
     ).resolves.toBe("created");
 
     await expect(
@@ -319,7 +319,7 @@ describe(namedAction.name, () => {
         }),
         params: {},
         context: {},
-      }).then((res) => res.json())
+      }).then((res) => res.json()),
     ).resolves.toBe("updated");
 
     await expect(
@@ -330,7 +330,7 @@ describe(namedAction.name, () => {
         }),
         params: {},
         context: {},
-      }).then((res) => res.json())
+      }).then((res) => res.json()),
     ).resolves.toBe("deleted");
 
     await expect(
@@ -341,7 +341,7 @@ describe(namedAction.name, () => {
         }),
         params: {},
         context: {},
-      }).then((res) => res.json())
+      }).then((res) => res.json()),
     ).resolves.toBe("default");
   });
 });

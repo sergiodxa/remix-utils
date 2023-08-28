@@ -5,7 +5,10 @@ import {
   isCookie,
 } from "@remix-run/node";
 import { z, ZodError } from "zod";
-import { createTypedCookie, isTypedCookie } from "../../src";
+import {
+  createTypedCookie,
+  isTypedCookie,
+} from "../../src/server/typed-cookie";
 
 describe("Typed Cookie", () => {
   let cookie = createCookie("name", { secrets: ["secret"] });
@@ -20,18 +23,18 @@ describe("Typed Cookie", () => {
 
   test("throw if serialized type is not valid", async () => {
     await expect(() => typedCookie.serialize("a")).rejects.toThrowError(
-      ZodError
+      ZodError,
     );
     // @ts-expect-error We now this will be a TS error
     await expect(() => typedCookie.serialize(123)).rejects.toThrowError(
-      ZodError
+      ZodError,
     );
   });
 
   test("throw if parsed type is not valid", async () => {
     let cookieHeader = await cookie.serialize("a");
     await expect(() => typedCookie.parse(cookieHeader)).rejects.toThrowError(
-      ZodError
+      ZodError,
     );
   });
 
@@ -52,7 +55,7 @@ describe("Typed Cookie", () => {
     session.unset("token");
 
     await expect(() =>
-      sessionStorage.commitSession(session)
+      sessionStorage.commitSession(session),
     ).rejects.toThrowError(ZodError);
   });
 
@@ -67,7 +70,7 @@ describe("Typed Cookie", () => {
     let typedCookie = createTypedCookie({ cookie, schema });
 
     await expect(() =>
-      typedCookie.serialize({ token: "a-b-c" })
+      typedCookie.serialize({ token: "a-b-c" }),
     ).rejects.toThrowError(ZodError);
   });
 
@@ -88,8 +91,8 @@ describe("Typed Cookie", () => {
       typedCookie.parse(
         // @ts-expect-error serialized doesn't directly expect flash keys as
         // valids, use sessionStorage to make them work
-        await typedCookie.serialize({ __flash_token__: "a-b-c" })
-      )
+        await typedCookie.serialize({ __flash_token__: "a-b-c" }),
+      ),
     ).resolves.toEqual({ __flash_token__: "a-b-c" });
   });
 
@@ -100,7 +103,7 @@ describe("Typed Cookie", () => {
     });
 
     await expect(
-      typedCookie.parse(await typedCookie.serialize(["a", "b", "c"]))
+      typedCookie.parse(await typedCookie.serialize(["a", "b", "c"])),
     ).resolves.toEqual(["a", "b", "c"]);
   });
 
@@ -111,7 +114,7 @@ describe("Typed Cookie", () => {
     });
 
     await expect(
-      typedCookie.parse(await typedCookie.serialize((a: string) => a))
+      typedCookie.parse(await typedCookie.serialize((a: string) => a)),
     ).rejects.toThrowError(
       new ZodError([
         {
@@ -121,7 +124,7 @@ describe("Typed Cookie", () => {
           path: [],
           message: "Expected function, received object",
         },
-      ])
+      ]),
     );
   });
 
@@ -132,11 +135,11 @@ describe("Typed Cookie", () => {
     });
 
     await expect(
-      typedCookie.parse(await typedCookie.serialize(true))
+      typedCookie.parse(await typedCookie.serialize(true)),
     ).resolves.toEqual(true);
 
     await expect(
-      typedCookie.parse(await typedCookie.serialize(false))
+      typedCookie.parse(await typedCookie.serialize(false)),
     ).resolves.toEqual(false);
   });
 
@@ -147,7 +150,7 @@ describe("Typed Cookie", () => {
     });
 
     await expect(
-      typedCookie.parse(await typedCookie.serialize(123))
+      typedCookie.parse(await typedCookie.serialize(123)),
     ).resolves.toEqual(123);
   });
 
@@ -162,7 +165,7 @@ describe("Typed Cookie", () => {
     });
 
     await expect(
-      typedCookie.parse(await typedCookie.serialize(new Date()))
+      typedCookie.parse(await typedCookie.serialize(new Date())),
     ).resolves.toBeInstanceOf(Date);
   });
 
@@ -175,7 +178,7 @@ describe("Typed Cookie", () => {
     });
 
     await expect(
-      typedCookie.parse(await typedCookie.serialize({ token: "a-b-c" }))
+      typedCookie.parse(await typedCookie.serialize({ token: "a-b-c" })),
     ).resolves.toEqual({ token: "a-b-c" });
   });
 
@@ -186,7 +189,7 @@ describe("Typed Cookie", () => {
     });
 
     await expect(
-      typedCookie.parse(await typedCookie.serialize(null))
+      typedCookie.parse(await typedCookie.serialize(null)),
     ).resolves.toEqual(null);
   });
 
@@ -197,7 +200,7 @@ describe("Typed Cookie", () => {
     });
 
     await expect(
-      typedCookie.parse(await typedCookie.serialize(void 0))
+      typedCookie.parse(await typedCookie.serialize(void 0)),
     ).rejects.toThrowError(
       new ZodError([
         {
@@ -207,7 +210,7 @@ describe("Typed Cookie", () => {
           path: [],
           message: "Expected undefined, received object",
         },
-      ])
+      ]),
     );
   });
 });

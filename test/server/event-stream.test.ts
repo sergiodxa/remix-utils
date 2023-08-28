@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { vi, describe, test, expect } from "vitest";
-import { eventStream } from "../../src";
+import { eventStream } from "../../src/server/event-stream";
 
 describe(eventStream, () => {
   test("returns a response", () => {
@@ -56,11 +56,11 @@ describe(eventStream, () => {
         (_, abort) => {
           return () => abort();
         },
-        { headers: { "Content-Type": "text/html" } }
+        { headers: { "Content-Type": "text/html" } },
       );
 
       expect(spy).toHaveBeenCalledWith(
-        "Overriding Content-Type header to `text/event-stream`"
+        "Overriding Content-Type header to `text/event-stream`",
       );
 
       expect(response.headers.get("Content-Type")).toBe("text/event-stream");
@@ -74,11 +74,11 @@ describe(eventStream, () => {
         (_, abort) => {
           return () => abort();
         },
-        { headers: { "Cache-Control": "max-age=60" } }
+        { headers: { "Cache-Control": "max-age=60" } },
       );
 
       expect(spy).toHaveBeenCalledWith(
-        "Overriding Cache-Control header to `no-cache`"
+        "Overriding Cache-Control header to `no-cache`",
       );
 
       expect(response.headers.get("Content-Type")).toBe("text/event-stream");
@@ -92,11 +92,11 @@ describe(eventStream, () => {
         (_, abort) => {
           return () => abort();
         },
-        { headers: { Connection: "close" } }
+        { headers: { Connection: "close" } },
       );
 
       expect(spy).toHaveBeenCalledWith(
-        "Overriding Connection header to `keep-alive`"
+        "Overriding Connection header to `keep-alive`",
       );
 
       expect(response.headers.get("Content-Type")).toBe("text/event-stream");

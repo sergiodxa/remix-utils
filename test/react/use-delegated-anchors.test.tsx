@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import * as React from "react";
 import { vi, beforeAll, afterEach, test, expect, MockedFunction } from "vitest";
-import { PrefetchPageAnchors } from "../../src";
+import { PrefetchPageAnchors } from "../../src/react/use-delegated-anchors";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { useNavigate } from "@remix-run/react";
 
@@ -22,7 +22,7 @@ describe.skip(PrefetchPageAnchors.name, () => {
     render(
       <PrefetchPageAnchors>
         <a href="/link">Some link</a>
-      </PrefetchPageAnchors>
+      </PrefetchPageAnchors>,
     );
 
     fireEvent.click(screen.getByText("Some link"));
@@ -38,7 +38,7 @@ describe.skip(PrefetchPageAnchors.name, () => {
     render(
       <PrefetchPageAnchors>
         <a href="/link?query=string#hash">Some link</a>
-      </PrefetchPageAnchors>
+      </PrefetchPageAnchors>,
     );
 
     fireEvent.click(screen.getByText("Some link"));
@@ -58,7 +58,7 @@ describe.skip(PrefetchPageAnchors.name, () => {
             <span>Some link</span>
           </span>
         </a>
-      </PrefetchPageAnchors>
+      </PrefetchPageAnchors>,
     );
 
     fireEvent.click(screen.getByText("Some link"));
@@ -74,7 +74,7 @@ describe.skip(PrefetchPageAnchors.name, () => {
     render(
       <PrefetchPageAnchors>
         <div>Not a link</div>
-      </PrefetchPageAnchors>
+      </PrefetchPageAnchors>,
     );
 
     fireEvent.click(screen.getByText("Not a link"));
@@ -86,7 +86,7 @@ describe.skip(PrefetchPageAnchors.name, () => {
     render(
       <PrefetchPageAnchors>
         <a href="https://example.com">A link</a>
-      </PrefetchPageAnchors>
+      </PrefetchPageAnchors>,
     );
 
     fireEvent.click(screen.getByText("A link"));
@@ -100,7 +100,7 @@ describe.skip(PrefetchPageAnchors.name, () => {
         <a href="/download" download>
           A link
         </a>
-      </PrefetchPageAnchors>
+      </PrefetchPageAnchors>,
     );
 
     fireEvent.click(screen.getByText("A link"));
@@ -112,7 +112,7 @@ describe.skip(PrefetchPageAnchors.name, () => {
     render(
       <PrefetchPageAnchors>
         <a href="/link">A link</a>
-      </PrefetchPageAnchors>
+      </PrefetchPageAnchors>,
     );
 
     fireEvent.click(screen.getByText("A link"), {
@@ -137,7 +137,7 @@ describe.skip(PrefetchPageAnchors.name, () => {
         <a href="/link" target="_blank">
           A link
         </a>
-      </PrefetchPageAnchors>
+      </PrefetchPageAnchors>,
     );
 
     fireEvent.click(screen.getByText("A link"));
