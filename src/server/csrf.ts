@@ -61,6 +61,8 @@ export class CSRF {
 
   /**
    * Generates a token and serialize it into the cookie.
+   * @param requestOrHeaders A request or headers object from which we can
+   * get the cookie to get the existing token.
    * @param bytes The number of bytes used to generate the token
    * @returns A tuple with the token and the string to send in Set-Cookie
    * If there's already a csrf value in the cookie then the token will
