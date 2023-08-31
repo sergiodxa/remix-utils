@@ -147,4 +147,14 @@ describe("CSRF", () => {
     expect(cookieHeader).toStrictEqual(expect.any(String));
     expect(token).toEqual(parsedCookie);
   });
+
+  test("does not return a cookie header if there's already a value", async () => {
+    let originalToken = csrf.generate();
+    let headers = new Headers({
+      cookie: await cookie.serialize(originalToken),
+    });
+    let [token, cookieHeader] = await csrf.commitToken(headers);
+    expect(token).toBe(originalToken);
+    expect(cookieHeader).toBe(null);
+  });
 });

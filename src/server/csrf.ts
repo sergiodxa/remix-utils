@@ -1,5 +1,6 @@
 import type { Cookie } from "@remix-run/server-runtime";
 import cryptoJS from "crypto-js";
+import { getHeaders } from "./get-headers.js";
 
 export type CSRFErrorCode =
   | "missing_token_in_cookie"
@@ -62,15 +63,23 @@ export class CSRF {
    * Generates a token and serialize it into the cookie.
    * @param bytes The number of bytes used to generate the token
    * @returns A tuple with the token and the string to send in Set-Cookie
+   * If there's already a csrf value in the cookie then the token will
+   * be the same and the cookie will be null.
    * @example
-   * let [token, cookie] = await csrf.commitToken();
+   * let [token, cookie] = await csrf.commitToken(request);
    * return json({ token }, {
    *   headers: { "set-cookie": cookie }
    * })
    */
-  async commitToken(bytes = 32) {
-    let token = this.generate(bytes);
-    let cookie = await this.cookie.serialize(token);
+  async commitToken(
+    requestOrHeaders: Request | Headers = new Headers(),
+    bytes = 32
+  ) {
+    let headers = getHeaders(requestOrHeaders);
+    let existingToken = await this.cookie.parse(headers.get("cookie"));
+    let token =
+      typeof existingToken !== "string" ? this.generate(bytes) : existingToken;
+    let cookie = existingToken ? null : await this.cookie.serialize(token);
     return [token, cookie] as const;
   }
 
