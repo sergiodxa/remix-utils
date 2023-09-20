@@ -9,17 +9,19 @@ type EventSourceOptions = {
  * Subscribe to an event source and return the latest event.
  * @param url The URL of the event source to connect to
  * @param options The options to pass to the EventSource constructor
+ * @property withCredentials If true, send CORS headers
  * @returns The last event received from the server
  */
 export function useEventSource(
   url: string | URL,
-  { event = "message", init }: EventSourceOptions = {}
+  { event = "message", init = {} }: EventSourceOptions = {}
 ) {
   const [data, setData] = useState<string | null>(null);
+  const withCredentials = init.withCredentials;
 
   useEffect(() => {
-    const eventSource = new EventSource(url, init);
-    eventSource.addEventListener(event ?? "message", handler);
+    const eventSource = new EventSource(url, { withCredentials });
+    eventSource.addEventListener("message", handler);
 
     // rest data if dependencies change
     setData(null);
@@ -32,7 +34,7 @@ export function useEventSource(
       eventSource.removeEventListener(event ?? "message", handler);
       eventSource.close();
     };
-  }, [url, event, init]);
+  }, [url, event, withCredentials]);
 
   return data;
 }
