@@ -494,35 +494,88 @@ You can use `error.code` to check one of the error codes above, and `error.messa
 
 > **Warning**: Don't send those error messages to the end-user, they are meant to be used for debugging purposes only.
 
-### ExternalScripts
+### External Scripts
 
 > **Note**: This depends on `react`, `@remix-run/react`, and a Remix server runtime.
 
-If you need to load different external scripts on certain routes, you can use the `ExternalScripts` component together with the `ExternalScriptsFunction` type.
+If you need to load different external scripts on certain routes, you can use the `ExternalScripts` component together with the `ExternalScriptsFunction` and `ScriptDescriptor` types.
 
-In the route you want to load the script add a `handle` export with a `scripts` method, this method should implement the `ExternalScriptsFunction` type.
+In the route you want to load the script add a `handle` export with a `scripts` method, type the `handle` to be `ExternalScriptsHandle`. This interface is let's you define `scripts` as either a function or an array.
+
+If you want to define what scripts to load based on the loader data, you can use `scripts` as a function:
 
 ```ts
-import { ExternalScriptsFunction } from "remix-utils/external-scripts";
+import { ExternalScriptsHandle } from "remix-utils/external-scripts";
 
-type LoaderData = SerializeFrom<typeof loader>
+type LoaderData = SerializeFrom<typeof loader>;
 
-// create the scripts function with the correct type (loader type is optional)
-// and export it through the handle
-export let handle = {
+export let handle: ExternalScriptsHandle<LoaderData> = {
   scripts({ id, data, params, matches, location, parentsData }) {
     return [
       {
-        src: "https://code.jquery.com/jquery-3.6.0.min.js",
-        integrity: "sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=",
-        crossOrigin: "anonymous",
-      },
+        src: "https://unpkg.com/htmx.org@1.9.6",
+        integrity: "sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni",
+        crossOrigin: 'anonymous"
+      }
     ];
   },
-} satifies { scripts: ExternalScriptsFunction<LoaderData> }
+};
 ```
 
-Then, in the root route, add the `ExternalScripts` component together with the Remix's Scripts component, usually inside a Document component.
+If the list of scripts to load is static you can define `scripts` as an array directly.
+
+```ts
+import { ExternalScriptsHandle } from "remix-utils/external-scripts";
+
+export let handle: ExternalScriptsHandle = {
+  scripts: [
+    {
+      src: "https://unpkg.com/htmx.org@1.9.6",
+      integrity: "sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni",
+      crossOrigin: 'anonymous",
+      preload: true, // use it to render a <link rel="preload"> for this script
+    }
+  ],
+};
+```
+
+You can also import `ExternalScriptsFunction` and `ScriptDescriptor` interfaces yourself to build a custom handle type.
+
+```ts
+import {
+  ExternalScriptsFunction,
+  ScriptDescriptor,
+} from "remix-utils/external-scripts";
+
+interface AppHandle<LoaderData = unknown> {
+  scripts?: ExternalScriptsFunction<LoaderData> | ScriptDescriptor[];
+}
+
+export let handle: AppHandle<LoaderData> = {
+  scripts, // define scripts as a function or array here
+};
+```
+
+Or you can extend the `ExternalScriptsHandle` interface.
+
+```ts
+import { ExternalScriptsHandle } from "remix-utils/external-scripts";
+
+interface AppHandle<LoaderData = unknown>
+  extends ExternalScriptsHandle<LoaderData> {
+  // more handle properties here
+}
+
+export let handle: AppHandle<LoaderData> = {
+  scripts, // define scripts as a function or array here
+};
+```
+
+---
+
+Then, in the root route, add the `ExternalScripts` component somewhere, usually you want to load it either inside `<head>` or at the bottom of `<body>`, either before or after the Remix's `<Scripts>` component.
+
+Where exactly to place `<ExternalScripts />` will depend on your app, but a safe place is at the end of `<body>`.
 
 ```tsx
 import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
@@ -552,9 +605,31 @@ export function Document({ children, title }: Props) {
 }
 ```
 
-Now, any script you defined in the ScriptsFunction will be added to the HTML together with a `<link rel="preload">` before it.
+Now, any script you defined in the ScriptsFunction will be added to the HTML.
 
-> Tip: You could use it together with useShouldHydrate to disable Remix scripts in certain routes but still load scripts for analytics or small features that need JS but don't need the full app JS to be enabled.
+You could use this util together with `useShouldHydrate` to disable Remix scripts in certain routes but still load scripts for analytics or small features that need JS but don't need the full app JS to be enabled.
+
+```tsx
+let shouldHydrate = useShouldHydrate();
+
+return (
+  <html lang="en">
+    <head>
+      <meta charSet="utf-8" />
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      {title ? <title>{title}</title> : null}
+      <Meta />
+      <Links />
+    </head>
+    <body>
+      {children}
+      <ScrollRestoration />
+      {shouldHydrate ? <Scripts /> : <ExternalScripts />}
+      <LiveReload />
+    </body>
+  </html>
+);
+```
 
 ### useGlobalNavigationState
 

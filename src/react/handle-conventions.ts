@@ -6,7 +6,7 @@ export type HandleConventionArguments<Data extends AppData = AppData> = {
   id: string;
   data: Data;
   params: Params;
+  matches: RouteMatch[];
   location: Location;
   parentsData: RouterState["loaderData"];
-  matches: RouteMatch[];
 };
