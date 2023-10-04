@@ -80,7 +80,7 @@ describe(useFetcherType, () => {
   }
 
   let RemixStub = createRemixStub([
-    { id: "root", path: "/", index: true, element: <Component /> },
+    { id: "root", path: "/", index: true, Component },
   ]);
 
   test("renders init", () => {
