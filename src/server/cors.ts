@@ -1,4 +1,4 @@
-import { Promisable } from "type-fest";
+import { type Promisable } from "type-fest";
 
 type Origin = boolean | string | RegExp | Array<string | RegExp>;
 
@@ -112,7 +112,7 @@ class CORS {
     if (!allowedHeaders) {
       // headers wasn't specified, so reflect the request headers
       let requestHeaders = request.headers.get(
-        "Access-Control-Request-Headers"
+        "Access-Control-Request-Headers",
       );
 
       if (this.isString(requestHeaders)) allowedHeaders = requestHeaders;
@@ -258,7 +258,7 @@ class CORS {
 export async function cors(
   request: Request,
   response: Response,
-  options: CORSOptions = DEFAULT_OPTIONS
+  options: CORSOptions = DEFAULT_OPTIONS,
 ): Promise<Response> {
   return new CORS(options).exec(request, response);
 }

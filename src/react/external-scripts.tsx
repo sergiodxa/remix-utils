@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useLocation, useMatches } from "@remix-run/react";
-import type { AppData } from "@remix-run/server-runtime";
 import { HandleConventionArguments } from "./handle-conventions.js";
 import { useHydrated } from "./use-hydrated.js";
 
@@ -59,8 +58,8 @@ export type ScriptDescriptor = {
   type?: ScriptType;
 };
 
-export interface ExternalScriptsFunction<Data extends AppData = AppData> {
-  (args: HandleConventionArguments<Data>): ScriptDescriptor[];
+export interface ExternalScriptsFunction<Loader = unknown> {
+  (args: HandleConventionArguments<Loader>): ScriptDescriptor[];
 }
 
 /**
@@ -86,7 +85,7 @@ export interface ExternalScriptsFunction<Data extends AppData = AppData> {
  *   // and any other handle properties here
  * }
  */
-export interface ExternalScriptsHandle<Data extends AppData = AppData> {
+export interface ExternalScriptsHandle<Data = unknown> {
   scripts?: ExternalScriptsFunction<Data> | ScriptDescriptor[];
 }
 
