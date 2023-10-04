@@ -8,12 +8,15 @@ This package contains simple utility functions to use with [Remix.run](https://r
 npm install remix-utils
 ```
 
-Additional optional dependencies may be needed, all peer dependencies are:
+Additional optional dependencies may be needed, all optional dependencies are:
 
-- `zod`
-- `react`
-- `@remix-run/react` (also `@remix-run/router` but you sohuld be using the React one)
+- `@remix-run/react` (also `@remix-run/router` but you should be using the React one)
 - `@remix-run/node` or `@remix-run/cloudflare` or `@remix-run/deno` (actually it's `@remix-run/server-runtime` but you should use one of the others)
+- `crypto-js`
+- `is-ip`
+- `intl-parse-accept-language`
+- `react`
+- `zod`
 
 The utils that require an extra optional dependency mention it in their documentation.
 
@@ -327,7 +330,7 @@ Additionally, the `cors` function accepts a `options` object as a third optional
 
 ### CSRF
 
-> **Note**: This depends on `react`, and a Remix server runtime.
+> **Note**: This depends on `react`, `crypto-js`, and a Remix server runtime.
 
 The CSRF related functions let you implement CSRF protection on your application.
 
@@ -338,7 +341,7 @@ First create a new CSRF instance.
 ```ts
 // app/utils/csrf.server.ts
 import { CSRF } from "remix-utils/csrf";
-import { createCookie } from "@remix-run/node"; // or /cloudflare
+import { createCookie } from "@remix-run/node"; // or cloudflare/deno
 
 export const cookie = createCookie("csrf", {
   path: "/",
@@ -837,6 +840,8 @@ The `useShouldHydrate` hook will detect `hydrate` as a function and call it usin
 
 ### getClientIPAddress
 
+> **Note**: This depends on `is-ip`.
+
 This function receives a Request or Headers objects and will try to get the IP address of the client (the user) who originated the request.
 
 ```ts
@@ -871,6 +876,8 @@ The function uses the following list of headers, in order of preference:
 When a header is found that contains a valid IP address, it will return without checking the other headers.
 
 ### getClientLocales
+
+> **Note**: This depends on `intl-parse-accept-language`.
 
 This function let you get the locales of the client (the user) who originated the request.
 
@@ -1740,7 +1747,7 @@ This means that the `respondTo` helper will prioritize any handler that match `t
 
 ### Form Honeypot
 
-> **Note**: This depends on `react`.
+> **Note**: This depends on `react` and `crypto-js`.
 
 Honeypot is a simple technic to prevent spam bots from submitting forms, it works by adding a hidden field to the form that bots will fill, but humans won't.
 
