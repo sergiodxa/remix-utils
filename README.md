@@ -20,7 +20,23 @@ Additional optional dependencies may be needed, all optional dependencies are:
 
 The utils that require an extra optional dependency mention it in their documentation.
 
-### Usage with CJS
+If you want to install them all run:
+
+```sh
+npm add crypto-js is-ip intl-parse-accept-language zod
+```
+
+React and the `@remix-run/*` packages should be already installed in your project.
+
+## Upgrade from Remix Utils v6
+
+If you used Remix Utils before, you will notice some changes.
+
+1. The package is published as ESM only
+2. Every util now has a specific path in the package, so you need to import them from `remix-utils/<util-name>`.
+3. All dependencies are now optional, so you need to install them yourself.
+
+#### Usage with CJS
 
 Since v7 of Remix Utils the package is published as ESM-only (plus type definitions). This means if you're using Remix with CJS you need to configure it to bundle Remix Utils.
 
@@ -38,6 +54,33 @@ In case you don't have one, if you're using Remix v1 it will be CJS and if you'r
 
 > **Note**
 > Some of the optional dependencies in Remix Utils may still be published as CJS, so you may need to add them to `serverDependenciesToBundle` too.
+
+#### Updated Import Paths
+
+You will need to change your imports to use the correct one. So instead of doing:
+
+```ts
+import { eventStream, useEventSource } from "remix-utils";
+```
+
+You need to change it to:
+
+```ts
+import { eventStream } from "remix-utils/sse/server";
+import { useEventSource } from "remix-utils/sse/react";
+```
+
+This adds more lines but enables the next change.
+
+#### Optional Dependencies
+
+Before, Remix Utils installed some dependencies like Zod that you may never used.
+
+Current version marks every dependency as optional, so you need to install them yourself.
+
+While this is more works it means the package can keep using more dependencies as needed without increasing the bundle size for everyone. Only if you use the dependency that depends on Zod you will install and include Zod in your bundle.
+
+Every util mentions what dependencies it requires and the [Installation](#installation) section mentions the whole list in case you want to install them all upfront.
 
 ## API Reference
 
