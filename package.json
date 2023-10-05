@@ -7,6 +7,7 @@
   },
   "type": "module",
   "exports": {
+    "./package.json": "./package.json",
     "./promise": "./build/common/promise.js",
     "./cache-assets": "./build/client/cache-assets.js",
     "./cors": "./build/server/cors.js",
