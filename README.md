@@ -1673,7 +1673,7 @@ Now you can see in your DevTools that when the user hovers an anchor it will pre
 
 The `useDebounceFetcher` is a wrapper of `useFetcher` that adds debounce support to `fetcher.submit`.
 
-The hook is based on @JacobParis [article](https://www.jacobparis.com/content/use-debounce-fetcher).
+The hook is based on [@JacobParis](https://github.com/JacobParis)' [article](https://www.jacobparis.com/content/use-debounce-fetcher).
 
 The main difference with Jacob's version is that Remix Utils' version overwrites `fetcher.submit` instead of appending a `fetcher.debounceSubmit` method.
 
