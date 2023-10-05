@@ -20,6 +20,25 @@ Additional optional dependencies may be needed, all optional dependencies are:
 
 The utils that require an extra optional dependency mention it in their documentation.
 
+### Usage with CJS
+
+Since v7 of Remix Utils the package is published as ESM-only (plus type definitions). This means if you're using Remix with CJS you need to configure it to bundle Remix Utils.
+
+In your `remix.config.js` file, add this:
+
+```js
+module.exports = {
+  serverDependenciesToBundle: ["remix-utils"],
+};
+```
+
+If you're not sure if your app uses ESM or CJS, check if you have `serverModuleFormat` in your `remix.config.js` file to know.
+
+In case you don't have one, if you're using Remix v1 it will be CJS and if you're using Remix v2 it will be ESM.
+
+> **Note**
+> Some of the optional dependencies in Remix Utils may still be published as CJS, so you may need to add them to `serverDependenciesToBundle` too.
+
 ## API Reference
 
 ### promiseHash
@@ -945,7 +964,7 @@ The response created with this function will have the `Location` header pointing
 import { redirectBack } from "remix-utils/redirect-back";
 
 export async function action({ request }: ActionArgs) {
-  return redirectBack(request, { fallback: "/" });
+  throw redirectBack(request, { fallback: "/" });
 }
 ```
 
@@ -1033,7 +1052,7 @@ export async function loader({ request }: LoaderArgs) {
 }
 ```
 
-#### TXT
+#### Plain Text
 
 Helper function to create a TXT file response with any header.
 
