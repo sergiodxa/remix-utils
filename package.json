@@ -3,19 +3,56 @@
   "version": "6.6.0",
   "license": "MIT",
   "engines": {
-    "node": ">=14"
+    "node": ">=18.0.0"
   },
-  "browser": "./browser/index.js",
-  "main": "./build/index.js",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./promise": "./build/common/promise.js",
+    "./cache-assets": "./build/client/cache-assets.js",
+    "./cors": "./build/server/cors.js",
+    "./get-client-ip-address": "./build/server/get-client-ip-address.js",
+    "./is-prefetch": "./build/server/is-prefetch.js",
+    "./json-hash": "./build/server/json-hash.js",
+    "./named-action": "./build/server/named-action.js",
+    "./parse-accept-header": "./build/server/parse-accept-header.js",
+    "./preload-route-assets": "./build/server/preload-route-assets.js",
+    "./redirect-back": "./build/server/redirect-back.js",
+    "./respond-to": "./build/server/respond-to.js",
+    "./responses": "./build/server/responses.js",
+    "./rolling-cookie": "./build/server/rolling-cookie.js",
+    "./safe-redirect": "./build/server/safe-redirect.js",
+    "./typed-cookie": "./build/server/typed-cookie.js",
+    "./typed-session": "./build/server/typed-session.js",
+    "./client-only": "./build/react/client-only.js",
+    "./external-scripts": "./build/react/external-scripts.js",
+    "./fetcher-type": "./build/react/fetcher-type.js",
+    "./server-only": "./build/react/server-only.js",
+    "./use-debounced-fetcher": "./build/react/use-debounced-fetcher.js",
+    "./use-delegated-anchors": "./build/react/use-delegated-anchors.js",
+    "./use-global-pending-state": "./build/react/use-global-pending-state.js",
+    "./use-hydrated": "./build/react/use-hydrated.js",
+    "./use-should-hydrate": "./build/react/use-should-hydrate.js",
+    "./sse/server": "./build/server/event-stream.js",
+    "./sse/react": "./build/react/use-event-source.js",
+    "./locales/server": "./build/server/get-client-locales.js",
+    "./locales/react": "./build/react/use-locales.js",
+    "./honeypot/server": "./build/server/honeypot.js",
+    "./honeypot/react": "./build/react/honeypot.js",
+    "./csrf/server": "./build/server/csrf.js",
+    "./csrf/react": "./build/react/authenticity-token.js"
+  },
   "sideEffects": false,
   "scripts": {
     "prepare": "npm run build",
-    "build": "npm run build:browser && npm run build:main",
-    "build:browser": "tsc --project tsconfig.json --module ESNext --outDir ./browser",
-    "build:main": "tsc --project tsconfig.json --module CommonJS --outDir ./build",
+    "build": "tsc --project tsconfig.json --module ESNext --outDir ./build",
+    "postbuild": "prettier --write \"build/**/*.js\" \"build/**/*.d.ts\"",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\" \"test/**/*.ts\" \"test/**/*.tsx\"",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "lint": "eslint --ext .ts,.tsx src/",
-    "test": "jest --config=config/jest.config.ts --passWithNoTests"
+    "test": "vitest --run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest --coverage"
   },
   "author": {
     "name": "Sergio Xalambrí",
@@ -35,39 +72,82 @@
     "response",
     "csrf",
     "redirect-back",
-    "outlet",
     "client-only",
     "hydrated",
-    "body parser"
+    "server-only",
+    "cors",
+    "rolling cookie",
+    "safe redirect",
+    "typed cookie",
+    "typed session",
+    "client IP address",
+    "client locale",
+    "json hash",
+    "prefetch",
+    "named action"
   ],
   "peerDependencies": {
-    "@remix-run/react": "^1.10.0",
-    "@remix-run/server-runtime": "^1.10.0",
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+    "@remix-run/cloudflare": "^2.0.0",
+    "@remix-run/deno": "^2.0.0",
+    "@remix-run/node": "^2.0.0",
+    "@remix-run/react": "^2.0.0",
+    "@remix-run/router": "^1.7.2",
+    "crypto-js": "^4.1.1",
+    "intl-parse-accept-language": "^1.0.0",
+    "is-ip": "^3.1.0",
+    "react": "^18.0.0",
     "zod": "^3.19.1"
   },
+  "peerDependenciesMeta": {
+    "@remix-run/cloudflare": {
+      "optional": true
+    },
+    "@remix-run/deno": {
+      "optional": true
+    },
+    "@remix-run/node": {
+      "optional": true
+    },
+    "@remix-run/react": {
+      "optional": true
+    },
+    "@remix-run/router": {
+      "optional": true
+    },
+    "crypto-js": {
+      "optional": true
+    },
+    "intl-parse-accept-language": {
+      "optional": true
+    },
+    "is-ip": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "zod": {
+      "optional": true
+    }
+  },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@babel/preset-env": "^7.16.0",
-    "@babel/preset-react": "^7.16.0",
-    "@babel/preset-typescript": "^7.16.0",
-    "@jest/types": "^27.2.5",
-    "@remix-run/node": "^1.10.0",
-    "@remix-run/react": "^1.10.0",
-    "@remix-run/server-runtime": "^1.10.0",
+    "@remix-run/node": "^2.0.0",
+    "@remix-run/react": "^2.0.0",
+    "@remix-run/router": "^1.7.2",
+    "@remix-run/testing": "^2.0.0",
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^12.1.2",
+    "@types/crypto-js": "^4.1.1",
     "@types/react": "^17.0.14",
-    "@types/uuid": "^8.3.3",
     "@typescript-eslint/eslint-plugin": "^5.3.0",
     "@typescript-eslint/parser": "^5.3.0",
-    "babel-jest": "^27.3.1",
+    "@vitejs/plugin-react": "^4.0.4",
+    "@vitest/coverage-v8": "^0.34.1",
     "eslint": "^8.12.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-import-resolver-typescript": "^2.5.0",
     "eslint-plugin-cypress": "^2.11.3",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jest": "^26.1.3",
     "eslint-plugin-jest-dom": "^4.0.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^4.0.0",
@@ -76,21 +156,18 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-testing-library": "^5.1.0",
     "eslint-plugin-unicorn": "^41.0.1",
-    "jest": "^27.3.1",
-    "jest-fetch-mock": "^3.0.3",
+    "happy-dom": "^10.9.0",
+    "msw": "^1.2.3",
     "prettier": "^2.5.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-router-dom": "6.3.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "ts-node": "^10.4.0",
-    "typescript": "^4.2.4",
+    "typescript": "^5.1.6",
+    "vite": "^4.4.9",
+    "vitest": "^0.34.1",
     "zod": "^3.19.1"
   },
   "dependencies": {
-    "intl-parse-accept-language": "^1.0.0",
-    "is-ip": "^3.1.0",
-    "schema-dts": "^1.1.0",
-    "type-fest": "^2.5.2",
-    "uuid": "^8.3.2"
+    "type-fest": "^2.5.2"
   }
 }

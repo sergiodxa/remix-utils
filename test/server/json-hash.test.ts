@@ -1,4 +1,5 @@
-import { jsonHash } from "../../src";
+import { describe, test, expect } from "vitest";
+import { jsonHash } from "../../src/server/json-hash";
 
 describe(jsonHash.name, () => {
   test("should return a response with a status code", async () => {

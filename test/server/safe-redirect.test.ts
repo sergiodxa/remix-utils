@@ -1,4 +1,5 @@
-import { safeRedirect } from "../../src";
+import { describe, test, expect } from "vitest";
+import { safeRedirect } from "../../src/server/safe-redirect";
 
 describe(safeRedirect.name, () => {
   test.each(["/home", "/home?foo=bar", "/home#foo"])("Is valid %s", (to) => {
@@ -15,11 +16,15 @@ describe(safeRedirect.name, () => {
     undefined,
     "mailto:remix@utils.com",
     "//remix.utils",
-  ])("Is invalid %s", (to) => {
+  ])("is invalid %s", (to) => {
     expect(safeRedirect(to)).toBe("/");
   });
 
-  test("Uses default redirect", () => {
+  test("uses default redirect", () => {
     expect(safeRedirect(null, "/login")).toBe("/login");
+  });
+
+  test("considers invalid /\\", () => {
+    expect(safeRedirect("/\\", "/login")).toBe("/login");
   });
 });

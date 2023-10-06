@@ -1,4 +1,5 @@
-import { getClientLocales } from "../../src";
+import { describe, test, expect } from "vitest";
+import { getClientLocales } from "../../src/server/get-client-locales";
 
 describe(getClientLocales, () => {
   test("should return undefined if no Accept-Language header is not present", () => {

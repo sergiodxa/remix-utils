@@ -1,5 +1,5 @@
 import { useMatches } from "@remix-run/react";
-import type { Locales } from "../server/get-client-locales";
+import type { Locales } from "../server/get-client-locales.js";
 
 /**
  * Get the locales returned by the loader of the root route.

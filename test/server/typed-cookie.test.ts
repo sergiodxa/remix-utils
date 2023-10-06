@@ -1,10 +1,14 @@
+import { describe, test, expect } from "vitest";
 import {
   createCookie,
   createCookieSessionStorage,
   isCookie,
 } from "@remix-run/node";
 import { z, ZodError } from "zod";
-import { createTypedCookie, isTypedCookie } from "../../src";
+import {
+  createTypedCookie,
+  isTypedCookie,
+} from "../../src/server/typed-cookie";
 
 describe("Typed Cookie", () => {
   let cookie = createCookie("name", { secrets: ["secret"] });

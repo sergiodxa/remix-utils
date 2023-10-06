@@ -2,6 +2,5 @@
 .DS_Store
 node_modules
 
-/browser
 /build
 /coverage

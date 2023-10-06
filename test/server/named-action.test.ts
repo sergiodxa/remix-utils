@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/consistent-function-scoping */
-import { useActionData } from "@remix-run/react";
+import { describe, test, expect } from "vitest";
 import { ActionArgs, json } from "@remix-run/server-runtime";
-import { namedAction } from "../../src";
+import { namedAction } from "../../src/server/named-action";
 
 describe(namedAction.name, () => {
   test("FormData - Convention /", async () => {
@@ -168,9 +168,7 @@ describe(namedAction.name, () => {
   test("URL", async () => {
     let url = new URL("https://remix.utils?/update");
 
-    let request = new Request(url, {
-      method: "POST",
-    });
+    let request = new Request(url, { method: "POST" });
 
     async function action({ request }: ActionArgs) {
       return await namedAction(request, {

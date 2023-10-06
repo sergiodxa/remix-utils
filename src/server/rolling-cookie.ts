@@ -1,6 +1,6 @@
 import type { Cookie } from "@remix-run/server-runtime";
 import { z } from "zod";
-import { TypedCookie } from "./typed-cookie";
+import { TypedCookie } from "./typed-cookie.js";
 
 export async function rollingCookie<Schema extends z.ZodTypeAny>(
   cookie: Cookie | TypedCookie<Schema>,

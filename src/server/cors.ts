@@ -1,4 +1,4 @@
-import { Promisable } from "type-fest";
+import { type Promisable } from "type-fest";
 
 type Origin = boolean | string | RegExp | Array<string | RegExp>;
 

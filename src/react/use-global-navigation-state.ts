@@ -1,32 +1,39 @@
-import { useTransition, useFetchers } from "@remix-run/react";
+import { useNavigation, useFetchers, useRevalidator } from "@remix-run/react";
 import { useMemo } from "react";
 
 /**
  * This is a helper hook that returns the state of every fetcher active on
- * the app and combine it with the state of the global transition.
+ * the app and combine it with the state of the global transition and
+ * revalidator.
  * @example
- * let states = useGlobalTransitionStates();
+ * let states = useGlobalNavigationState();
  * if (state.includes("loading")) {
- *   // The app is loading.
+ *   // The app is loading or revalidating.
  * }
  * if (state.includes("submitting")) {
  *   // The app is submitting.
  * }
  * // The app is idle
  */
-export function useGlobalTransitionStates() {
-  let transition = useTransition();
+export function useGlobalNavigationState() {
+  let { state: navigationState } = useNavigation();
+  let { state: revalidatorState } = useRevalidator();
   let fetchers = useFetchers();
 
   /**
    * This gets the state of every fetcher active on the app and combine it with
-   * the state of the global transition (Link and Form).
+   * the state of the global transition (Link and Form) and revalidator.
    */
   return useMemo(
-    function getGlobalTransitionStates() {
-      return [transition.state, ...fetchers.map((fetcher) => fetcher.state)];
+    function getGlobalNavigationState() {
+      return [
+        navigationState,
+        // The type cast here is used to remove RevalidatorState from the union
+        revalidatorState as "idle" | "loading",
+        ...fetchers.map((fetcher) => fetcher.state),
+      ];
     },
-    [transition.state, fetchers]
+    [navigationState, revalidatorState, fetchers]
   );
 }
 
@@ -49,7 +56,7 @@ export function useGlobalPendingState() {
  * @returns "idle" | "submitting"
  */
 export function useGlobalSubmittingState() {
-  let states = useGlobalTransitionStates();
+  let states = useGlobalNavigationState();
   if (states.includes("submitting")) return "submitting";
   return "idle";
 }
@@ -60,7 +67,7 @@ export function useGlobalSubmittingState() {
  * @returns "idle" | "loading"
  */
 export function useGlobalLoadingState() {
-  let states = useGlobalTransitionStates();
+  let states = useGlobalNavigationState();
   if (states.includes("loading")) return "loading";
   return "idle";
 }

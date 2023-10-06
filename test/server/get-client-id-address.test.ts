@@ -1,4 +1,5 @@
-import { getClientIPAddress } from "../../src";
+import { describe, test, expect } from "vitest";
+import { getClientIPAddress } from "../../src/server/get-client-ip-address";
 
 const VALID_IP = "192.168.0.1";
 const INVALID_IP = "abc.def.ghi.jkl";

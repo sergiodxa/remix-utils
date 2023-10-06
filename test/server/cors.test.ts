@@ -1,4 +1,6 @@
-import { cors } from "../../src";
+import { describe, test, expect } from "vitest";
+
+import { cors } from "../../src/server/cors";
 
 function createRequest(headers: Headers = new Headers()) {
   headers.set("Origin", "http://remix.utils");

@@ -1,3 +1,4 @@
+import { describe, test, expect } from "vitest";
 import {
   ActionArgs,
   createCookie,
@@ -8,11 +9,11 @@ import {
 } from "@remix-run/node";
 import { z } from "zod";
 import {
-  createTypedCookie,
   createTypedSessionStorage,
   isTypedSession,
   TypedSessionStorage,
-} from "../../src";
+} from "../../src/server/typed-session";
+import { createTypedCookie } from "../../src/server/typed-cookie";
 
 let cookie = createCookie("session", { secrets: ["secret"] });
 let schema = z.object({

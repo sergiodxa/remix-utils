@@ -1,0 +1,21 @@
+version: 2
+
+updates:
+  # GitHub Action workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    reviewers:
+      - "sergiodxa"
+    assignees:
+      - "sergiodxa"
+  # Website
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "sergiodxa"
+    assignees:
+      - "sergiodxa"

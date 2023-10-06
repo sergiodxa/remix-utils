@@ -1,7 +1,12 @@
-import { useMatches } from "@remix-run/react";
+import { RouteMatch } from "@remix-run/react";
+import { vi } from "vitest";
 
-jest.mock("@remix-run/react");
+const { mockMatches } = vi.hoisted(() => {
+  return { mockMatches: vi.fn<never, RouteMatch[]>() };
+});
 
-export function mockMatches(value: ReturnType<typeof useMatches>) {
-  (useMatches as jest.MockedFunction<typeof useMatches>).mockReturnValue(value);
-}
+vi.mock("@remix-run/react", () => {
+  return { useMatches: mockMatches };
+});
+
+export { mockMatches };

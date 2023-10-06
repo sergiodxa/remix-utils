@@ -30,6 +30,7 @@ export function useShouldHydrate() {
     if (typeof handle !== "object") return false;
     if (handle === null) return false;
     if (Array.isArray(handle)) return false;
+    if (!("hydrate" in handle)) return false;
 
     // get hydrate from handle (it may not exists)
     let hydrate = handle.hydrate as

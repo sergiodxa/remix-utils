@@ -1,4 +1,5 @@
-import { promiseHash, timeout } from "../../src";
+import { promiseHash, timeout } from "../../src/common/promise";
+import { describe, test, expect } from "vitest";
 
 describe(promiseHash, () => {
   test("should await all promises in a hash and return them with the same name", async () => {

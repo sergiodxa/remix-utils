@@ -1,5 +1,5 @@
 import { parseAcceptLanguage } from "intl-parse-accept-language";
-import { getHeaders } from "./get-headers";
+import { getHeaders } from "./get-headers.js";
 
 export type Locales = string[] | undefined;
 

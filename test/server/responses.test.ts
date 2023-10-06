@@ -1,41 +1,19 @@
+import { describe, test, expect } from "vitest";
 import {
-  badRequest,
-  forbidden,
   html,
   xml,
   txt,
   image,
   ImageType,
   javascript,
-  notFound,
   notModified,
   pdf,
-  redirectBack,
-  serverError,
   stylesheet,
-  unauthorized,
-  unprocessableEntity,
-} from "../../src";
+} from "../../src/server/responses";
 
 let jsonContentType = "application/json; charset=utf-8";
 
 describe("Responses", () => {
-  describe(redirectBack, () => {
-    it("uses the referer if available", () => {
-      const request = new Request("http://remix.utils/", {
-        headers: { Referer: "/referer" },
-      });
-      const response = redirectBack(request, { fallback: "/fallback" });
-      expect(response.headers.get("Location")).toBe("/referer");
-    });
-
-    it("uses the fallback if referer is not available", () => {
-      const request = new Request("http://remix.utils/");
-      const response = redirectBack(request, { fallback: "/fallback" });
-      expect(response.headers.get("Location")).toBe("/fallback");
-    });
-  });
-
   describe(notModified, () => {
     test("Should return Response with status 304", async () => {
       let response = notModified();
@@ -49,111 +27,6 @@ describe("Responses", () => {
       });
       await expect(response.text()).resolves.toBe("");
       expect(response.status).toBe(304);
-      expect(response.headers.get("X-Test")).toBe("it worked");
-    });
-  });
-
-  describe(badRequest, () => {
-    test("Should return Response with status 404", async () => {
-      let response = badRequest({});
-      await expect(response.text()).resolves.toBe("{}");
-      expect(response.status).toBe(400);
-      expect(response.headers.get("Content-Type")).toBe(jsonContentType);
-    });
-
-    test("Should allow changing the Response headers", async () => {
-      let response = badRequest({}, { headers: { "X-Test": "it worked" } });
-      await expect(response.text()).resolves.toBe("{}");
-      expect(response.status).toBe(400);
-      expect(response.headers.get("Content-Type")).toBe(jsonContentType);
-      expect(response.headers.get("X-Test")).toBe("it worked");
-    });
-  });
-
-  describe(unauthorized, () => {
-    test("Should return Response with status 401", async () => {
-      let response = unauthorized({});
-      await expect(response.text()).resolves.toBe("{}");
-      expect(response.status).toBe(401);
-      expect(response.headers.get("Content-Type")).toBe(jsonContentType);
-    });
-
-    test("Should allow changing the Response headers", async () => {
-      let response = unauthorized({}, { headers: { "X-Test": "it worked" } });
-      await expect(response.text()).resolves.toBe("{}");
-      expect(response.status).toBe(401);
-      expect(response.headers.get("Content-Type")).toBe(jsonContentType);
-      expect(response.headers.get("X-Test")).toBe("it worked");
-    });
-  });
-
-  describe(forbidden, () => {
-    test("Should return Response with status 403", async () => {
-      let response = forbidden({});
-      await expect(response.text()).resolves.toBe("{}");
-      expect(response.status).toBe(403);
-      expect(response.headers.get("Content-Type")).toBe(jsonContentType);
-    });
-
-    test("Should allow changing the Response headers", async () => {
-      let response = forbidden({}, { headers: { "X-Test": "it worked" } });
-      await expect(response.text()).resolves.toBe("{}");
-      expect(response.status).toBe(403);
-      expect(response.headers.get("Content-Type")).toBe(jsonContentType);
-      expect(response.headers.get("X-Test")).toBe("it worked");
-    });
-  });
-
-  describe(notFound, () => {
-    test("Should return Response with status 404", async () => {
-      let response = notFound({});
-      await expect(response.text()).resolves.toBe("{}");
-      expect(response.status).toBe(404);
-      expect(response.headers.get("Content-Type")).toBe(jsonContentType);
-    });
-
-    test("Should allow changing the Response headers", async () => {
-      let response = notFound({}, { headers: { "X-Test": "it worked" } });
-      await expect(response.text()).resolves.toBe("{}");
-      expect(response.status).toBe(404);
-      expect(response.headers.get("Content-Type")).toBe(jsonContentType);
-      expect(response.headers.get("X-Test")).toBe("it worked");
-    });
-  });
-
-  describe(unprocessableEntity, () => {
-    test("Should return Response with status 422", async () => {
-      let response = unprocessableEntity({});
-      await expect(response.text()).resolves.toBe("{}");
-      expect(response.status).toBe(422);
-      expect(response.headers.get("Content-Type")).toBe(jsonContentType);
-    });
-
-    test("Should allow changing the Response headers", async () => {
-      let response = unprocessableEntity(
-        {},
-        { headers: { "X-Test": "it worked" } }
-      );
-      await expect(response.text()).resolves.toBe("{}");
-      expect(response.status).toBe(422);
-      expect(response.headers.get("Content-Type")).toBe(jsonContentType);
-      expect(response.headers.get("X-Test")).toBe("it worked");
-    });
-  });
-
-  describe(serverError, () => {
-    test("Should return Response with status 500", async () => {
-      let response = serverError({});
-      await expect(response.text()).resolves.toBe("{}");
-      expect(response.status).toBe(500);
-      expect(response.headers.get("Content-Type")).toBe(jsonContentType);
-    });
-
-    test("Should allow changing the Response headers", async () => {
-      let response = serverError({}, { headers: { "X-Test": "it worked" } });
-      await expect(response.text()).resolves.toBe("{}");
-      expect(response.status).toBe(500);
-      expect(response.headers.get("Content-Type")).toBe(jsonContentType);
       expect(response.headers.get("X-Test")).toBe("it worked");
     });
   });
@@ -228,23 +101,15 @@ describe("Responses", () => {
     test("Should return Response with status 200", async () => {
       let blob = new Blob();
       let response = pdf(blob);
-      expect(response).toEqual(
-        new Response(blob, {
-          status: 200,
-          headers: { "Content-Type": "application/pdf" },
-        })
-      );
+      expect(response.status).toBe(200);
+      expect(response.headers.get("content-type")).toBe("application/pdf");
     });
 
     test("Should allow defining the status as second options", async () => {
       let blob = new Blob();
       let response = pdf(blob, 201);
-      expect(response).toEqual(
-        new Response(blob, {
-          status: 201,
-          headers: { "Content-Type": "application/pdf" },
-        })
-      );
+      expect(response.status).toBe(201);
+      expect(response.headers.get("content-type")).toBe("application/pdf");
     });
 
     test("Should allow changing the Response headers", async () => {
@@ -252,15 +117,9 @@ describe("Responses", () => {
       let response = pdf(blob, {
         headers: { "X-Test": "it worked" },
       });
-      expect(response).toEqual(
-        new Response(blob, {
-          status: 200,
-          headers: {
-            "X-Test": "it worked",
-            "Content-Type": "application/pdf",
-          },
-        })
-      );
+      expect(response.headers.get("x-test")).toBe("it worked");
+      expect(response.status).toBe(200);
+      expect(response.headers.get("content-type")).toBe("application/pdf");
     });
   });
 
