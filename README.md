@@ -1623,7 +1623,7 @@ export async function loader({ params }: LoaderData) {
 		},
 		async post() {
 			// Async function
-			// Implement me
+			return await getPost(postId);
 		},
 	});
 
