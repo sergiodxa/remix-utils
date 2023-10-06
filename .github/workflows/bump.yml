@@ -17,23 +17,20 @@ jobs:
     name: Bump version
     runs-on: ubuntu-latest
     steps:
-      - name: Check out source
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           ssh-key: ${{ secrets.DEPLOY_KEY }}
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+
+      - uses: oven-sh/setup-bun@v1
+      - run: bun install
+
+      - uses: actions/setup-node@v3
         with:
-          node-version: '16'
-          cache: 'npm'
-      - name: Install dependencies
-        uses: bahmutov/npm-install@v1
-      - name: Setup Git
-        run: |
+          node-version: "lts/*"
+
+      - run: |
           git config user.name 'Sergio Xalambrí'
           git config user.email 'hello@sergiodxa.com'
-      - name: bump version
-        run: npm version ${{ github.event.inputs.version }}
 
-      - name: Push latest version
-        run: git push origin main --follow-tags
+      - run: npm version ${{ github.event.inputs.version }}
+      - run: git push origin main --follow-tags
