@@ -6,7 +6,8 @@
 .gitignore
 .npmignore
 .npmrc
-tsconfig.json
+bun.lockb
 prettier.config.mjs
+tsconfig.json
 vitest.config.ts
 vitest.setup.ts
