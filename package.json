@@ -1,6 +1,6 @@
 {
   "name": "remix-utils",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
