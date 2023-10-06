@@ -7,7 +7,7 @@
 .npmignore
 .npmrc
 bun.lockb
-prettier.config.mjs
+prettier.config.js
 tsconfig.json
 vitest.config.ts
 vitest.setup.ts
