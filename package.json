@@ -1,176 +1,176 @@
 {
-  "name": "remix-utils",
-  "version": "7.0.1",
-  "license": "MIT",
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "type": "module",
-  "exports": {
-    "./package.json": "./package.json",
-    "./promise": "./build/common/promise.js",
-    "./cache-assets": "./build/client/cache-assets.js",
-    "./cors": "./build/server/cors.js",
-    "./get-client-ip-address": "./build/server/get-client-ip-address.js",
-    "./is-prefetch": "./build/server/is-prefetch.js",
-    "./json-hash": "./build/server/json-hash.js",
-    "./named-action": "./build/server/named-action.js",
-    "./parse-accept-header": "./build/server/parse-accept-header.js",
-    "./preload-route-assets": "./build/server/preload-route-assets.js",
-    "./redirect-back": "./build/server/redirect-back.js",
-    "./respond-to": "./build/server/respond-to.js",
-    "./responses": "./build/server/responses.js",
-    "./rolling-cookie": "./build/server/rolling-cookie.js",
-    "./safe-redirect": "./build/server/safe-redirect.js",
-    "./typed-cookie": "./build/server/typed-cookie.js",
-    "./typed-session": "./build/server/typed-session.js",
-    "./client-only": "./build/react/client-only.js",
-    "./external-scripts": "./build/react/external-scripts.js",
-    "./fetcher-type": "./build/react/fetcher-type.js",
-    "./server-only": "./build/react/server-only.js",
-    "./use-debounced-fetcher": "./build/react/use-debounced-fetcher.js",
-    "./use-delegated-anchors": "./build/react/use-delegated-anchors.js",
-    "./use-global-pending-state": "./build/react/use-global-pending-state.js",
-    "./use-hydrated": "./build/react/use-hydrated.js",
-    "./use-should-hydrate": "./build/react/use-should-hydrate.js",
-    "./sse/server": "./build/server/event-stream.js",
-    "./sse/react": "./build/react/use-event-source.js",
-    "./locales/server": "./build/server/get-client-locales.js",
-    "./locales/react": "./build/react/use-locales.js",
-    "./honeypot/server": "./build/server/honeypot.js",
-    "./honeypot/react": "./build/react/honeypot.js",
-    "./csrf/server": "./build/server/csrf.js",
-    "./csrf/react": "./build/react/authenticity-token.js"
-  },
-  "sideEffects": false,
-  "scripts": {
-    "prepare": "npm run build",
-    "build": "tsc --project tsconfig.json --outDir ./build",
-    "postbuild": "prettier --write \"build/**/*.js\" \"build/**/*.d.ts\"",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\" \"test/**/*.ts\" \"test/**/*.tsx\" \"*.md\"",
-    "typecheck": "tsc --project tsconfig.json --noEmit",
-    "lint": "eslint --ext .ts,.tsx src/",
-    "test": "vitest --run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest --coverage"
-  },
-  "author": {
-    "name": "Sergio Xalambrí",
-    "url": "https://sergiodxa.com",
-    "email": "hello@sergiodxa.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/sergiodxa/remix-utils"
-  },
-  "keywords": [
-    "remix",
-    "remix.run",
-    "react",
-    "utils",
-    "request",
-    "response",
-    "csrf",
-    "redirect-back",
-    "client-only",
-    "hydrated",
-    "server-only",
-    "cors",
-    "rolling cookie",
-    "safe redirect",
-    "typed cookie",
-    "typed session",
-    "client IP address",
-    "client locale",
-    "json hash",
-    "prefetch",
-    "named action"
-  ],
-  "peerDependencies": {
-    "@remix-run/cloudflare": "^2.0.0",
-    "@remix-run/deno": "^2.0.0",
-    "@remix-run/node": "^2.0.0",
-    "@remix-run/react": "^2.0.0",
-    "@remix-run/router": "^1.7.2",
-    "crypto-js": "^4.1.1",
-    "intl-parse-accept-language": "^1.0.0",
-    "is-ip": "^5.0.1",
-    "react": "^18.0.0",
-    "zod": "^3.22.4"
-  },
-  "peerDependenciesMeta": {
-    "@remix-run/cloudflare": {
-      "optional": true
-    },
-    "@remix-run/deno": {
-      "optional": true
-    },
-    "@remix-run/node": {
-      "optional": true
-    },
-    "@remix-run/react": {
-      "optional": true
-    },
-    "@remix-run/router": {
-      "optional": true
-    },
-    "crypto-js": {
-      "optional": true
-    },
-    "intl-parse-accept-language": {
-      "optional": true
-    },
-    "is-ip": {
-      "optional": true
-    },
-    "react": {
-      "optional": true
-    },
-    "zod": {
-      "optional": true
-    }
-  },
-  "devDependencies": {
-    "@remix-run/node": "^2.0.0",
-    "@remix-run/react": "^2.0.0",
-    "@remix-run/router": "^1.7.2",
-    "@remix-run/testing": "^2.0.0",
-    "@testing-library/jest-dom": "^6.1.3",
-    "@testing-library/react": "^14.0.0",
-    "@types/crypto-js": "^4.1.2",
-    "@types/react": "^18.2.25",
-    "@typescript-eslint/eslint-plugin": "^6.7.4",
-    "@typescript-eslint/parser": "^6.7.4",
-    "@vitejs/plugin-react": "^4.1.0",
-    "@vitest/coverage-v8": "^0.34.6",
-    "crypto-js": "^4.1.1",
-    "eslint": "^8.12.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-import-resolver-typescript": "^3.6.1",
-    "eslint-plugin-cypress": "^2.15.1",
-    "eslint-plugin-import": "^2.28.1",
-    "eslint-plugin-jest-dom": "^5.1.0",
-    "eslint-plugin-jsx-a11y": "^6.7.1",
-    "eslint-plugin-prettier": "^5.0.0",
-    "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-testing-library": "^6.0.2",
-    "eslint-plugin-unicorn": "^48.0.1",
-    "happy-dom": "^12.9.0",
-    "intl-parse-accept-language": "^1.0.0",
-    "is-ip": "5.0.1",
-    "msw": "^1.3.2",
-    "prettier": "^3.0.3",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.2.2",
-    "vite": "^4.4.11",
-    "vitest": "^0.34.6",
-    "zod": "^3.22.4"
-  },
-  "dependencies": {
-    "type-fest": "^4.3.3"
-  }
+	"name": "remix-utils",
+	"version": "7.0.1",
+	"license": "MIT",
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"type": "module",
+	"exports": {
+		"./package.json": "./package.json",
+		"./promise": "./build/common/promise.js",
+		"./cache-assets": "./build/client/cache-assets.js",
+		"./cors": "./build/server/cors.js",
+		"./get-client-ip-address": "./build/server/get-client-ip-address.js",
+		"./is-prefetch": "./build/server/is-prefetch.js",
+		"./json-hash": "./build/server/json-hash.js",
+		"./named-action": "./build/server/named-action.js",
+		"./parse-accept-header": "./build/server/parse-accept-header.js",
+		"./preload-route-assets": "./build/server/preload-route-assets.js",
+		"./redirect-back": "./build/server/redirect-back.js",
+		"./respond-to": "./build/server/respond-to.js",
+		"./responses": "./build/server/responses.js",
+		"./rolling-cookie": "./build/server/rolling-cookie.js",
+		"./safe-redirect": "./build/server/safe-redirect.js",
+		"./typed-cookie": "./build/server/typed-cookie.js",
+		"./typed-session": "./build/server/typed-session.js",
+		"./client-only": "./build/react/client-only.js",
+		"./external-scripts": "./build/react/external-scripts.js",
+		"./fetcher-type": "./build/react/fetcher-type.js",
+		"./server-only": "./build/react/server-only.js",
+		"./use-debounce-fetcher": "./build/react/use-debounce-fetcher.js",
+		"./use-delegated-anchors": "./build/react/use-delegated-anchors.js",
+		"./use-global-pending-state": "./build/react/use-global-pending-state.js",
+		"./use-hydrated": "./build/react/use-hydrated.js",
+		"./use-should-hydrate": "./build/react/use-should-hydrate.js",
+		"./sse/server": "./build/server/event-stream.js",
+		"./sse/react": "./build/react/use-event-source.js",
+		"./locales/server": "./build/server/get-client-locales.js",
+		"./locales/react": "./build/react/use-locales.js",
+		"./honeypot/server": "./build/server/honeypot.js",
+		"./honeypot/react": "./build/react/honeypot.js",
+		"./csrf/server": "./build/server/csrf.js",
+		"./csrf/react": "./build/react/authenticity-token.js"
+	},
+	"sideEffects": false,
+	"scripts": {
+		"prepare": "npm run build",
+		"build": "tsc --project tsconfig.json --outDir ./build",
+		"postbuild": "prettier --write \"build/**/*.js\" \"build/**/*.d.ts\"",
+		"format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\" \"test/**/*.ts\" \"test/**/*.tsx\" \"*.md\"",
+		"typecheck": "tsc --project tsconfig.json --noEmit",
+		"lint": "eslint --ext .ts,.tsx src/",
+		"test": "vitest --run",
+		"test:watch": "vitest",
+		"test:coverage": "vitest --coverage"
+	},
+	"author": {
+		"name": "Sergio Xalambrí",
+		"url": "https://sergiodxa.com",
+		"email": "hello@sergiodxa.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sergiodxa/remix-utils"
+	},
+	"keywords": [
+		"remix",
+		"remix.run",
+		"react",
+		"utils",
+		"request",
+		"response",
+		"csrf",
+		"redirect-back",
+		"client-only",
+		"hydrated",
+		"server-only",
+		"cors",
+		"rolling cookie",
+		"safe redirect",
+		"typed cookie",
+		"typed session",
+		"client IP address",
+		"client locale",
+		"json hash",
+		"prefetch",
+		"named action"
+	],
+	"peerDependencies": {
+		"@remix-run/cloudflare": "^2.0.0",
+		"@remix-run/deno": "^2.0.0",
+		"@remix-run/node": "^2.0.0",
+		"@remix-run/react": "^2.0.0",
+		"@remix-run/router": "^1.7.2",
+		"crypto-js": "^4.1.1",
+		"intl-parse-accept-language": "^1.0.0",
+		"is-ip": "^5.0.1",
+		"react": "^18.0.0",
+		"zod": "^3.22.4"
+	},
+	"peerDependenciesMeta": {
+		"@remix-run/cloudflare": {
+			"optional": true
+		},
+		"@remix-run/deno": {
+			"optional": true
+		},
+		"@remix-run/node": {
+			"optional": true
+		},
+		"@remix-run/react": {
+			"optional": true
+		},
+		"@remix-run/router": {
+			"optional": true
+		},
+		"crypto-js": {
+			"optional": true
+		},
+		"intl-parse-accept-language": {
+			"optional": true
+		},
+		"is-ip": {
+			"optional": true
+		},
+		"react": {
+			"optional": true
+		},
+		"zod": {
+			"optional": true
+		}
+	},
+	"devDependencies": {
+		"@remix-run/node": "^2.0.0",
+		"@remix-run/react": "^2.0.0",
+		"@remix-run/router": "^1.7.2",
+		"@remix-run/testing": "^2.0.0",
+		"@testing-library/jest-dom": "^6.1.3",
+		"@testing-library/react": "^14.0.0",
+		"@types/crypto-js": "^4.1.2",
+		"@types/react": "^18.2.25",
+		"@typescript-eslint/eslint-plugin": "^6.7.4",
+		"@typescript-eslint/parser": "^6.7.4",
+		"@vitejs/plugin-react": "^4.1.0",
+		"@vitest/coverage-v8": "^0.34.6",
+		"crypto-js": "^4.1.1",
+		"eslint": "^8.12.0",
+		"eslint-config-prettier": "^9.0.0",
+		"eslint-import-resolver-typescript": "^3.6.1",
+		"eslint-plugin-cypress": "^2.15.1",
+		"eslint-plugin-import": "^2.28.1",
+		"eslint-plugin-jest-dom": "^5.1.0",
+		"eslint-plugin-jsx-a11y": "^6.7.1",
+		"eslint-plugin-prettier": "^5.0.0",
+		"eslint-plugin-promise": "^6.1.1",
+		"eslint-plugin-react": "^7.33.2",
+		"eslint-plugin-react-hooks": "^4.6.0",
+		"eslint-plugin-testing-library": "^6.0.2",
+		"eslint-plugin-unicorn": "^48.0.1",
+		"happy-dom": "^12.9.0",
+		"intl-parse-accept-language": "^1.0.0",
+		"is-ip": "5.0.1",
+		"msw": "^1.3.2",
+		"prettier": "^3.0.3",
+		"react": "^18.0.0",
+		"react-dom": "^18.0.0",
+		"ts-node": "^10.9.1",
+		"typescript": "^5.2.2",
+		"vite": "^4.4.11",
+		"vitest": "^0.34.6",
+		"zod": "^3.22.4"
+	},
+	"dependencies": {
+		"type-fest": "^4.3.3"
+	}
 }
