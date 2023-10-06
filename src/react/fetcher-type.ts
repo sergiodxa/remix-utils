@@ -5,13 +5,13 @@ import { type Navigation } from "@remix-run/router";
  * The list of types a fetcher can have
  */
 export type FetcherType =
-  | "init"
-  | "done"
-  | "actionSubmission"
-  | "actionReload"
-  | "actionRedirect"
-  | "loaderSubmission"
-  | "normalLoad";
+	| "init"
+	| "done"
+	| "actionSubmission"
+	| "actionReload"
+	| "actionRedirect"
+	| "loaderSubmission"
+	| "normalLoad";
 
 /**
  * Derive the deprecated `fetcher.type` from the current state of a fetcher.
@@ -24,8 +24,8 @@ export type FetcherType =
  * }, [fetcherType]);
  */
 export function useFetcherType(fetcher: FetcherWithComponents<unknown>) {
-  let navigation = useNavigation();
-  return getFetcherType(fetcher, navigation);
+	let navigation = useNavigation();
+	return getFetcherType(fetcher, navigation);
 }
 
 /**
@@ -42,41 +42,41 @@ export function useFetcherType(fetcher: FetcherWithComponents<unknown>) {
  * }, [fetcherType])
  */
 export function getFetcherType(
-  fetcher: Pick<
-    FetcherWithComponents<unknown>,
-    "state" | "data" | "formMethod"
-  >,
-  navigation: Pick<Navigation, "formMethod" | "state">
+	fetcher: Pick<
+		FetcherWithComponents<unknown>,
+		"state" | "data" | "formMethod"
+	>,
+	navigation: Pick<Navigation, "formMethod" | "state">,
 ): FetcherType {
-  if (fetcher.state === "idle" && fetcher.data != null) return "done";
+	if (fetcher.state === "idle" && fetcher.data != null) return "done";
 
-  if (fetcher.state === "submitting") return "actionSubmission";
+	if (fetcher.state === "submitting") return "actionSubmission";
 
-  if (
-    fetcher.state === "loading" &&
-    fetcher.formMethod != null &&
-    navigation.formMethod !== "GET" &&
-    fetcher.data != null
-  ) {
-    return "actionReload";
-  }
+	if (
+		fetcher.state === "loading" &&
+		fetcher.formMethod != null &&
+		navigation.formMethod !== "GET" &&
+		fetcher.data != null
+	) {
+		return "actionReload";
+	}
 
-  if (
-    fetcher.state === "loading" &&
-    fetcher.formMethod != null &&
-    navigation.formMethod !== "GET" &&
-    fetcher.data == null
-  ) {
-    return "actionRedirect";
-  }
+	if (
+		fetcher.state === "loading" &&
+		fetcher.formMethod != null &&
+		navigation.formMethod !== "GET" &&
+		fetcher.data == null
+	) {
+		return "actionRedirect";
+	}
 
-  if (navigation.state === "loading" && navigation.formMethod === "GET") {
-    return "loaderSubmission";
-  }
+	if (navigation.state === "loading" && navigation.formMethod === "GET") {
+		return "loaderSubmission";
+	}
 
-  if (navigation.state === "loading" && navigation.formMethod == null) {
-    return "normalLoad";
-  }
+	if (navigation.state === "loading" && navigation.formMethod == null) {
+		return "normalLoad";
+	}
 
-  return "init";
+	return "init";
 }

@@ -6,19 +6,19 @@
  * @returns An array of objects with the type, subtype and params of each media type
  */
 export function parseAcceptHeader(header: string) {
-  let types = header.split(",").map((type) => type.trim());
+	let types = header.split(",").map((type) => type.trim());
 
-  let parsedTypes = types.map((value) => {
-    let [mediaType, ...params] = value.split(";");
+	let parsedTypes = types.map((value) => {
+		let [mediaType, ...params] = value.split(";");
 
-    let [type, subtype] = mediaType.split("/").map((part) => part.trim());
+		let [type, subtype] = mediaType.split("/").map((part) => part.trim());
 
-    let parsedParams = Object.fromEntries(
-      params.map((param) => param.split("="))
-    );
+		let parsedParams = Object.fromEntries(
+			params.map((param) => param.split("=")),
+		);
 
-    return { type, subtype, params: parsedParams };
-  });
+		return { type, subtype, params: parsedParams };
+	});
 
-  return parsedTypes;
+	return parsedTypes;
 }

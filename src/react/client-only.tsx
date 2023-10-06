@@ -2,13 +2,13 @@ import * as React from "react";
 import { useHydrated } from "./use-hydrated.js";
 
 type Props = {
-  /**
-   * You are encouraged to add a fallback that is the same dimensions
-   * as the client rendered children. This will avoid content layout
-   * shift which is disgusting
-   */
-  children(): React.ReactNode;
-  fallback?: React.ReactNode;
+	/**
+	 * You are encouraged to add a fallback that is the same dimensions
+	 * as the client rendered children. This will avoid content layout
+	 * shift which is disgusting
+	 */
+	children(): React.ReactNode;
+	fallback?: React.ReactNode;
 };
 
 /**
@@ -27,5 +27,5 @@ type Props = {
  * ```
  */
 export function ClientOnly({ children, fallback = null }: Props) {
-  return useHydrated() ? <>{children()}</> : <>{fallback}</>;
+	return useHydrated() ? <>{children()}</> : <>{fallback}</>;
 }

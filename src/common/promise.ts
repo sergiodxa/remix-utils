@@ -4,7 +4,7 @@
 export type PromiseHash = Record<string, Promise<unknown>>;
 
 export type AwaitedPromiseHash<Hash extends PromiseHash> = {
-  [Key in keyof Hash]: Awaited<Hash[Key]>;
+	[Key in keyof Hash]: Awaited<Hash[Key]>;
 };
 
 /**
@@ -36,13 +36,13 @@ export type AwaitedPromiseHash<Hash extends PromiseHash> = {
  * }
  */
 export async function promiseHash<Hash extends PromiseHash>(
-  hash: Hash
+	hash: Hash,
 ): Promise<AwaitedPromiseHash<Hash>> {
-  return Object.fromEntries(
-    await Promise.all(
-      Object.entries(hash).map(async ([key, promise]) => [key, await promise])
-    )
-  );
+	return Object.fromEntries(
+		await Promise.all(
+			Object.entries(hash).map(async ([key, promise]) => [key, await promise]),
+		),
+	);
 }
 
 /**
@@ -85,33 +85,33 @@ let TIMEOUT = Symbol("TIMEOUT");
  * }
  */
 export function timeout<Value>(
-  promise: Promise<Value>,
-  options: { controller?: AbortController; ms: number }
+	promise: Promise<Value>,
+	options: { controller?: AbortController; ms: number },
 ): Promise<Value> {
-  return new Promise(async (resolve, reject) => {
-    let timer: NodeJS.Timeout | null = null;
+	return new Promise(async (resolve, reject) => {
+		let timer: NodeJS.Timeout | null = null;
 
-    try {
-      let result = await Promise.race([
-        promise,
-        new Promise((resolve) => {
-          timer = setTimeout(() => resolve(TIMEOUT), options.ms);
-        }),
-      ]);
+		try {
+			let result = await Promise.race([
+				promise,
+				new Promise((resolve) => {
+					timer = setTimeout(() => resolve(TIMEOUT), options.ms);
+				}),
+			]);
 
-      if (timer) clearTimeout(timer);
+			if (timer) clearTimeout(timer);
 
-      if (result === TIMEOUT) {
-        if (options.controller) options.controller.abort();
-        return reject(new TimeoutError(`Timed out after ${options.ms}ms`));
-      }
+			if (result === TIMEOUT) {
+				if (options.controller) options.controller.abort();
+				return reject(new TimeoutError(`Timed out after ${options.ms}ms`));
+			}
 
-      return resolve(result as Awaited<Value>);
-    } catch (error) {
-      if (timer) clearTimeout(timer);
-      reject(error);
-    }
-  });
+			return resolve(result as Awaited<Value>);
+		} catch (error) {
+			if (timer) clearTimeout(timer);
+			reject(error);
+		}
+	});
 }
 
 /**
@@ -126,8 +126,8 @@ export function timeout<Value>(
  * }
  */
 export class TimeoutError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "TimeoutError";
-  }
+	constructor(message: string) {
+		super(message);
+		this.name = "TimeoutError";
+	}
 }

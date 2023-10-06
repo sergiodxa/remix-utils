@@ -28,8 +28,8 @@ type Link = { href: string; as: string };
  * }
  */
 export function preloadRouteAssets(context: EntryContext, headers: Headers) {
-  preloadLinkedAssets(context, headers); // preload links
-  preloadModuleAssets(context, headers); // preload JS modules
+	preloadLinkedAssets(context, headers); // preload links
+	preloadModuleAssets(context, headers); // preload JS modules
 }
 
 /**
@@ -59,30 +59,30 @@ export function preloadRouteAssets(context: EntryContext, headers: Headers) {
  * }
  */
 export function preloadLinkedAssets(context: EntryContext, headers: Headers) {
-  let links = context.staticHandlerContext.matches
-    .flatMap((match) => {
-      let route = context.routeModules[match.route.id];
-      if (route.links instanceof Function) return route.links();
-      return [];
-    })
-    .map((link) => {
-      if ("as" in link && "href" in link) {
-        return { href: link.href, as: link.as } as Link;
-      }
-      if ("rel" in link && "href" in link && link.rel === "stylesheet")
-        return { href: link.href, as: "style" } as Link;
-      return null;
-    })
-    .filter((link: Link | null): link is Link => {
-      return link !== null && "href" in link;
-    })
-    .filter((item, index, list) => {
-      return index === list.findIndex((link) => link.href === item.href);
-    });
+	let links = context.staticHandlerContext.matches
+		.flatMap((match) => {
+			let route = context.routeModules[match.route.id];
+			if (route.links instanceof Function) return route.links();
+			return [];
+		})
+		.map((link) => {
+			if ("as" in link && "href" in link) {
+				return { href: link.href, as: link.as } as Link;
+			}
+			if ("rel" in link && "href" in link && link.rel === "stylesheet")
+				return { href: link.href, as: "style" } as Link;
+			return null;
+		})
+		.filter((link: Link | null): link is Link => {
+			return link !== null && "href" in link;
+		})
+		.filter((item, index, list) => {
+			return index === list.findIndex((link) => link.href === item.href);
+		});
 
-  for (let link of links) {
-    headers.append("Link", `<${link.href}>; rel=preload; as=${link.as}`);
-  }
+	for (let link of links) {
+		headers.append("Link", `<${link.href}>; rel=preload; as=${link.as}`);
+	}
 }
 
 /**
@@ -111,21 +111,21 @@ export function preloadLinkedAssets(context: EntryContext, headers: Headers) {
  * }
  */
 export function preloadModuleAssets(context: EntryContext, headers: Headers) {
-  let urls: string[] = [
-    context.manifest.url,
-    context.manifest.entry.module,
-    ...context.manifest.entry.imports,
-  ];
+	let urls: string[] = [
+		context.manifest.url,
+		context.manifest.entry.module,
+		...context.manifest.entry.imports,
+	];
 
-  for (let match of context.staticHandlerContext.matches) {
-    let route = context.manifest.routes[match.route.id];
-    urls.push(route.module, ...(route.imports ?? []));
-  }
+	for (let match of context.staticHandlerContext.matches) {
+		let route = context.manifest.routes[match.route.id];
+		urls.push(route.module, ...(route.imports ?? []));
+	}
 
-  for (let url of urls) {
-    headers.append(
-      "Link",
-      `<${url}>; rel=preload; as=script; crossorigin=anonymous`
-    );
-  }
+	for (let url of urls) {
+		headers.append(
+			"Link",
+			`<${url}>; rel=preload; as=script; crossorigin=anonymous`,
+		);
+	}
 }

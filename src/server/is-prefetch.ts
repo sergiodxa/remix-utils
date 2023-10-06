@@ -17,14 +17,14 @@ import { getHeaders } from "./get-headers.js";
 export function isPrefetch(request: Request): boolean;
 export function isPrefetch(headers: Headers): boolean;
 export function isPrefetch(requestOrHeaders: Request | Headers): boolean {
-  let headers = getHeaders(requestOrHeaders);
-  let purpose =
-    headers.get("Purpose") ||
-    headers.get("X-Purpose") ||
-    headers.get("Sec-Purpose") ||
-    headers.get("Sec-Fetch-Purpose") ||
-    headers.get("Moz-Purpose") ||
-    headers.get("X-Moz");
+	let headers = getHeaders(requestOrHeaders);
+	let purpose =
+		headers.get("Purpose") ||
+		headers.get("X-Purpose") ||
+		headers.get("Sec-Purpose") ||
+		headers.get("Sec-Fetch-Purpose") ||
+		headers.get("Moz-Purpose") ||
+		headers.get("X-Moz");
 
-  return purpose?.toLowerCase() === "prefetch";
+	return purpose?.toLowerCase() === "prefetch";
 }

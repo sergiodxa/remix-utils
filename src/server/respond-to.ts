@@ -2,8 +2,8 @@ import { getHeaders } from "./get-headers.js";
 import { parseAcceptHeader } from "./parse-accept-header.js";
 
 export interface RespondToHandlers {
-  default(): Response | Promise<Response>;
-  [key: string]: () => Response | Promise<Response>;
+	default(): Response | Promise<Response>;
+	[key: string]: () => Response | Promise<Response>;
 }
 
 /**
@@ -41,34 +41,34 @@ export interface RespondToHandlers {
  * }
  */
 export function respondTo(
-  request: Request,
-  handlers: RespondToHandlers
+	request: Request,
+	handlers: RespondToHandlers,
 ): Promise<Response> | Response;
 export function respondTo(
-  headers: Headers,
-  handlers: RespondToHandlers
+	headers: Headers,
+	handlers: RespondToHandlers,
 ): Promise<Response> | Response;
 export function respondTo(
-  requestOrHeaders: Request | Headers,
-  handlers: RespondToHandlers
+	requestOrHeaders: Request | Headers,
+	handlers: RespondToHandlers,
 ): Promise<Response> | Response {
-  let headers = getHeaders(requestOrHeaders);
+	let headers = getHeaders(requestOrHeaders);
 
-  let accept = headers.get("accept");
+	let accept = headers.get("accept");
 
-  if (!accept) return handlers.default();
+	if (!accept) return handlers.default();
 
-  let types = parseAcceptHeader(accept);
+	let types = parseAcceptHeader(accept);
 
-  for (let { type, subtype } of types) {
-    let handler = handlers[`${type}/${subtype}`];
-    if (handler) return handler();
-    handler = handlers[subtype];
-    if (handler) return handler();
-    handler = handlers[type];
-    if (handler) return handler();
-    continue;
-  }
+	for (let { type, subtype } of types) {
+		let handler = handlers[`${type}/${subtype}`];
+		if (handler) return handler();
+		handler = handlers[subtype];
+		if (handler) return handler();
+		handler = handlers[type];
+		if (handler) return handler();
+		continue;
+	}
 
-  return handlers.default();
+	return handlers.default();
 }

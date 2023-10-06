@@ -16,25 +16,25 @@ import { useMemo } from "react";
  * // The app is idle
  */
 export function useGlobalNavigationState() {
-  let { state: navigationState } = useNavigation();
-  let { state: revalidatorState } = useRevalidator();
-  let fetchers = useFetchers();
+	let { state: navigationState } = useNavigation();
+	let { state: revalidatorState } = useRevalidator();
+	let fetchers = useFetchers();
 
-  /**
-   * This gets the state of every fetcher active on the app and combine it with
-   * the state of the global transition (Link and Form) and revalidator.
-   */
-  return useMemo(
-    function getGlobalNavigationState() {
-      return [
-        navigationState,
-        // The type cast here is used to remove RevalidatorState from the union
-        revalidatorState as "idle" | "loading",
-        ...fetchers.map((fetcher) => fetcher.state),
-      ];
-    },
-    [navigationState, revalidatorState, fetchers]
-  );
+	/**
+	 * This gets the state of every fetcher active on the app and combine it with
+	 * the state of the global transition (Link and Form) and revalidator.
+	 */
+	return useMemo(
+		function getGlobalNavigationState() {
+			return [
+				navigationState,
+				// The type cast here is used to remove RevalidatorState from the union
+				revalidatorState as "idle" | "loading",
+				...fetchers.map((fetcher) => fetcher.state),
+			];
+		},
+		[navigationState, revalidatorState, fetchers],
+	);
 }
 
 /**
@@ -43,11 +43,11 @@ export function useGlobalNavigationState() {
  * @returns "idle" | "pending"
  */
 export function useGlobalPendingState() {
-  let isSubmitting = useGlobalSubmittingState() === "submitting";
-  let isLoading = useGlobalLoadingState() === "loading";
+	let isSubmitting = useGlobalSubmittingState() === "submitting";
+	let isLoading = useGlobalLoadingState() === "loading";
 
-  if (isLoading || isSubmitting) return "pending";
-  return "idle";
+	if (isLoading || isSubmitting) return "pending";
+	return "idle";
 }
 
 /**
@@ -56,9 +56,9 @@ export function useGlobalPendingState() {
  * @returns "idle" | "submitting"
  */
 export function useGlobalSubmittingState() {
-  let states = useGlobalNavigationState();
-  if (states.includes("submitting")) return "submitting";
-  return "idle";
+	let states = useGlobalNavigationState();
+	if (states.includes("submitting")) return "submitting";
+	return "idle";
 }
 
 /**
@@ -67,7 +67,7 @@ export function useGlobalSubmittingState() {
  * @returns "idle" | "loading"
  */
 export function useGlobalLoadingState() {
-  let states = useGlobalNavigationState();
-  if (states.includes("loading")) return "loading";
-  return "idle";
+	let states = useGlobalNavigationState();
+	if (states.includes("loading")) return "loading";
+	return "idle";
 }
