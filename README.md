@@ -954,6 +954,9 @@ The function uses the following list of headers, in order of preference:
 
 When a header is found that contains a valid IP address, it will return without checking the other headers.
 
+> **Note**
+> On local development the function is most likely to return `null`. This is because the browser doesn't send any of the above headers, if you want to simulate those headers you will need to either add it to the request Remix receives in your HTTP server or run a reverse proxy like NGINX that can add them for you.
+
 ### getClientLocales
 
 > **Note**: This depends on `intl-parse-accept-language`.
