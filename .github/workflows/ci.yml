@@ -25,19 +25,10 @@ jobs:
     name: Unit and Integration Tests
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Use Node LTS
-        uses: actions/setup-node@v3
-        with:
-          node-version: "lts/*"
-
-      - name: Install dependencies
-        uses: bahmutov/npm-install@v1
-
-      - name: Test
-        run: npm run test:coverage
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+      - run: bun install
+      - run: bun run test
 
   lint:
     name: Linter
