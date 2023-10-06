@@ -3,15 +3,15 @@ import type { TypedResponse } from "@remix-run/server-runtime";
 type ActionsRecord = Record<string, () => Promise<TypedResponse<unknown>>>;
 
 type ResponsesRecord<Actions extends ActionsRecord> = {
-  [Action in keyof Actions]: Actions[Action] extends () => Promise<
-    TypedResponse<infer Result>
-  >
-    ? Result
-    : never;
+	[Action in keyof Actions]: Actions[Action] extends () => Promise<
+		TypedResponse<infer Result>
+	>
+		? Result
+		: never;
 };
 
 type ResponsesUnion<Actions extends ActionsRecord> =
-  ResponsesRecord<Actions>[keyof Actions];
+	ResponsesRecord<Actions>[keyof Actions];
 
 /**
  * Runs an action based on the request's action name
@@ -22,96 +22,96 @@ type ResponsesUnion<Actions extends ActionsRecord> =
  * @throws {ReferenceError} Action "${name}" not found
  */
 export function namedAction<Actions extends ActionsRecord>(
-  request: Request,
-  actions: Actions
+	request: Request,
+	actions: Actions,
 ): Promise<TypedResponse<ResponsesUnion<Actions>>>;
 export function namedAction<Actions extends ActionsRecord>(
-  url: URL,
-  actions: Actions
+	url: URL,
+	actions: Actions,
 ): Promise<TypedResponse<ResponsesUnion<Actions>>>;
 export function namedAction<Actions extends ActionsRecord>(
-  searchParams: URLSearchParams,
-  actions: Actions
+	searchParams: URLSearchParams,
+	actions: Actions,
 ): Promise<TypedResponse<ResponsesUnion<Actions>>>;
 export function namedAction<Actions extends ActionsRecord>(
-  formData: FormData,
-  actions: Actions
+	formData: FormData,
+	actions: Actions,
 ): Promise<TypedResponse<ResponsesUnion<Actions>>>;
 export async function namedAction<Actions extends ActionsRecord>(
-  input: Request | URL | URLSearchParams | FormData,
-  actions: Actions
+	input: Request | URL | URLSearchParams | FormData,
+	actions: Actions,
 ): Promise<TypedResponse<ResponsesUnion<Actions>>> {
-  let name = await getActionName(input);
+	let name = await getActionName(input);
 
-  if (name && name in actions) {
-    return actions[name]() as unknown as TypedResponse<ResponsesUnion<Actions>>;
-  }
+	if (name && name in actions) {
+		return actions[name]() as unknown as TypedResponse<ResponsesUnion<Actions>>;
+	}
 
-  if (name === null && "default" in actions) {
-    return actions["default"]() as unknown as TypedResponse<
-      ResponsesUnion<Actions>
-    >;
-  }
+	if (name === null && "default" in actions) {
+		return actions["default"]() as unknown as TypedResponse<
+			ResponsesUnion<Actions>
+		>;
+	}
 
-  if (name === null) throw new ReferenceError("Action name not found");
+	if (name === null) throw new ReferenceError("Action name not found");
 
-  throw new ReferenceError(`Action "${name}" not found`);
+	throw new ReferenceError(`Action "${name}" not found`);
 }
 
 async function getActionName(
-  input: Request | URL | URLSearchParams | FormData
+	input: Request | URL | URLSearchParams | FormData,
 ): Promise<string | null> {
-  if (input instanceof Request) {
-    let actionName = findNameInURL(new URL(input.url).searchParams);
-    if (actionName) return actionName;
-    return findNameInFormData(await input.clone().formData());
-  }
+	if (input instanceof Request) {
+		let actionName = findNameInURL(new URL(input.url).searchParams);
+		if (actionName) return actionName;
+		return findNameInFormData(await input.clone().formData());
+	}
 
-  if (input instanceof URL) {
-    return findNameInURL(input.searchParams);
-  }
+	if (input instanceof URL) {
+		return findNameInURL(input.searchParams);
+	}
 
-  if (input instanceof URLSearchParams) {
-    return findNameInURL(input);
-  }
+	if (input instanceof URLSearchParams) {
+		return findNameInURL(input);
+	}
 
-  if (input instanceof FormData) {
-    return findNameInFormData(input);
-  }
+	if (input instanceof FormData) {
+		return findNameInFormData(input);
+	}
 
-  return null;
+	return null;
 }
 
 function findNameInURL(searchParams: URLSearchParams) {
-  for (let key of searchParams.keys()) {
-    if (key.startsWith("/")) return key.slice(1);
-  }
+	for (let key of searchParams.keys()) {
+		if (key.startsWith("/")) return key.slice(1);
+	}
 
-  let actionName = searchParams.get("intent");
-  if (typeof actionName === "string") return actionName;
+	let actionName = searchParams.get("intent");
+	if (typeof actionName === "string") return actionName;
 
-  actionName = searchParams.get("action");
-  if (typeof actionName === "string") return actionName;
+	actionName = searchParams.get("action");
+	if (typeof actionName === "string") return actionName;
 
-  actionName = searchParams.get("_action");
-  if (typeof actionName === "string") return actionName;
+	actionName = searchParams.get("_action");
+	if (typeof actionName === "string") return actionName;
 
-  return null;
+	return null;
 }
 
 function findNameInFormData(formData: FormData) {
-  for (let key of formData.keys()) {
-    if (key.startsWith("/")) return key.slice(1);
-  }
+	for (let key of formData.keys()) {
+		if (key.startsWith("/")) return key.slice(1);
+	}
 
-  let actionName = formData.get("intent");
-  if (typeof actionName === "string") return actionName;
+	let actionName = formData.get("intent");
+	if (typeof actionName === "string") return actionName;
 
-  actionName = formData.get("action");
-  if (typeof actionName === "string") return actionName;
+	actionName = formData.get("action");
+	if (typeof actionName === "string") return actionName;
 
-  actionName = formData.get("_action");
-  if (typeof actionName === "string") return actionName;
+	actionName = formData.get("_action");
+	if (typeof actionName === "string") return actionName;
 
-  return null;
+	return null;
 }

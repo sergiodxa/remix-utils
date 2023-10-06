@@ -4,62 +4,62 @@ import { HandleConventionArguments } from "./handle-conventions.js";
 import { useHydrated } from "./use-hydrated.js";
 
 export type ReferrerPolicy =
-  | "no-referrer-when-downgrade"
-  | "no-referrer"
-  | "origin-when-cross-origin"
-  | "origin"
-  | "same-origin"
-  | "strict-origin-when-cross-origin"
-  | "strict-origin"
-  | "unsafe-url";
+	| "no-referrer-when-downgrade"
+	| "no-referrer"
+	| "origin-when-cross-origin"
+	| "origin"
+	| "same-origin"
+	| "strict-origin-when-cross-origin"
+	| "strict-origin"
+	| "unsafe-url";
 
 export type CrossOrigin = "anonymous" | "use-credentials";
 
 export type ScriptType = "module" | "text/javascript";
 
 export type ScriptDescriptor = {
-  /** Enable preloading of this script on SSR */
-  preload?: boolean;
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#async
-   */
-  async?: boolean;
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-crossorigin
-   */
-  crossOrigin?: CrossOrigin;
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-defer
-   */
-  defer?: boolean;
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-integrity
-   */
-  integrity?: string;
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-nomodule
-   */
-  noModule?: boolean;
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-nonce
-   */
-  nonce?: string;
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-referrerpolicy
-   */
-  referrerPolicy?: ReferrerPolicy;
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
-   */
-  src: string;
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-type
-   */
-  type?: ScriptType;
+	/** Enable preloading of this script on SSR */
+	preload?: boolean;
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#async
+	 */
+	async?: boolean;
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-crossorigin
+	 */
+	crossOrigin?: CrossOrigin;
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-defer
+	 */
+	defer?: boolean;
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-integrity
+	 */
+	integrity?: string;
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-nomodule
+	 */
+	noModule?: boolean;
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-nonce
+	 */
+	nonce?: string;
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-referrerpolicy
+	 */
+	referrerPolicy?: ReferrerPolicy;
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
+	 */
+	src: string;
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-type
+	 */
+	type?: ScriptType;
 };
 
 export interface ExternalScriptsFunction<Loader = unknown> {
-  (args: HandleConventionArguments<Loader>): ScriptDescriptor[];
+	(args: HandleConventionArguments<Loader>): ScriptDescriptor[];
 }
 
 /**
@@ -86,7 +86,7 @@ export interface ExternalScriptsFunction<Loader = unknown> {
  * }
  */
 export interface ExternalScriptsHandle<Data = unknown> {
-  scripts?: ExternalScriptsFunction<Data> | ScriptDescriptor[];
+	scripts?: ExternalScriptsFunction<Data> | ScriptDescriptor[];
 }
 
 /**
@@ -104,139 +104,139 @@ export interface ExternalScriptsHandle<Data = unknown> {
  * return <ExternalScripts />
  */
 export function ExternalScripts() {
-  let scripts = useExternalScripts();
+	let scripts = useExternalScripts();
 
-  return (
-    <>
-      {scripts.map((props) => {
-        return <ExternalScript key={props.src} {...props} />;
-      })}
-    </>
-  );
+	return (
+		<>
+			{scripts.map((props) => {
+				return <ExternalScript key={props.src} {...props} />;
+			})}
+		</>
+	);
 }
 
 export function useExternalScripts() {
-  let location = useLocation();
+	let location = useLocation();
 
-  let matches = useMatches();
+	let matches = useMatches();
 
-  return React.useMemo(() => {
-    let scripts = matches.flatMap((match, index, matches) => {
-      if (!match.handle) return []; // ignore no-handle routes
-      if (match.handle === null) return []; // ignore null handles
-      if (typeof match.handle !== "object") return []; // and non error handles
-      if (!("scripts" in match.handle)) return []; // and without scripts
+	return React.useMemo(() => {
+		let scripts = matches.flatMap((match, index, matches) => {
+			if (!match.handle) return []; // ignore no-handle routes
+			if (match.handle === null) return []; // ignore null handles
+			if (typeof match.handle !== "object") return []; // and non error handles
+			if (!("scripts" in match.handle)) return []; // and without scripts
 
-      let scripts = match.handle.scripts as
-        | ExternalScriptsFunction
-        | ScriptDescriptor[];
+			let scripts = match.handle.scripts as
+				| ExternalScriptsFunction
+				| ScriptDescriptor[];
 
-      // if scripts is an array, suppose it's an array of script descriptors
-      // and return it
-      if (Array.isArray(scripts)) return scripts;
+			// if scripts is an array, suppose it's an array of script descriptors
+			// and return it
+			if (Array.isArray(scripts)) return scripts;
 
-      // if it's not a function (and not an array), ignore it
-      if (typeof scripts !== "function") return [];
+			// if it's not a function (and not an array), ignore it
+			if (typeof scripts !== "function") return [];
 
-      let result = scripts({
-        id: match.id,
-        data: match.data,
-        params: match.params,
-        location,
-        parentsData: matches.slice(0, index).map((match) => match.data),
-        matches,
-      });
+			let result = scripts({
+				id: match.id,
+				data: match.data,
+				params: match.params,
+				location,
+				parentsData: matches.slice(0, index).map((match) => match.data),
+				matches,
+			});
 
-      if (Array.isArray(result)) return result;
-      return [];
-    });
+			if (Array.isArray(result)) return result;
+			return [];
+		});
 
-    let uniqueScripts = new Map();
-    for (let script of scripts) uniqueScripts.set(script.src, script);
-    return [...uniqueScripts.values()];
-  }, [matches, location]);
+		let uniqueScripts = new Map();
+		for (let script of scripts) uniqueScripts.set(script.src, script);
+		return [...uniqueScripts.values()];
+	}, [matches, location]);
 }
 
 export function ExternalScript({
-  src,
-  preload = false,
-  async = true,
-  defer = true,
-  crossOrigin,
-  integrity,
-  type,
-  referrerPolicy,
-  noModule,
-  nonce,
+	src,
+	preload = false,
+	async = true,
+	defer = true,
+	crossOrigin,
+	integrity,
+	type,
+	referrerPolicy,
+	noModule,
+	nonce,
 }: ScriptDescriptor) {
-  let isHydrated = useHydrated();
-  let startsHydrated = React.useRef(isHydrated);
+	let isHydrated = useHydrated();
+	let startsHydrated = React.useRef(isHydrated);
 
-  React.useEffect(() => {
-    if (!startsHydrated.current && isHydrated) return;
+	React.useEffect(() => {
+		if (!startsHydrated.current && isHydrated) return;
 
-    let $script = document.createElement("script");
-    $script.src = src;
+		let $script = document.createElement("script");
+		$script.src = src;
 
-    let attributes = {
-      async,
-      defer,
-      crossOrigin,
-      integrity,
-      type,
-      referrerPolicy,
-      noModule,
-      nonce,
-    };
+		let attributes = {
+			async,
+			defer,
+			crossOrigin,
+			integrity,
+			type,
+			referrerPolicy,
+			noModule,
+			nonce,
+		};
 
-    for (let [key, value] of Object.entries(attributes)) {
-      if (value) $script.setAttribute(key, value.toString());
-    }
+		for (let [key, value] of Object.entries(attributes)) {
+			if (value) $script.setAttribute(key, value.toString());
+		}
 
-    document.body.append($script);
+		document.body.append($script);
 
-    return () => $script.remove();
-  }, [
-    async,
-    crossOrigin,
-    defer,
-    integrity,
-    isHydrated,
-    noModule,
-    nonce,
-    referrerPolicy,
-    src,
-    type,
-  ]);
+		return () => $script.remove();
+	}, [
+		async,
+		crossOrigin,
+		defer,
+		integrity,
+		isHydrated,
+		noModule,
+		nonce,
+		referrerPolicy,
+		src,
+		type,
+	]);
 
-  if (startsHydrated.current && isHydrated) return null;
+	if (startsHydrated.current && isHydrated) return null;
 
-  let rel = noModule ? "modulepreload" : "preload";
-  let as = !noModule ? "script" : undefined;
+	let rel = noModule ? "modulepreload" : "preload";
+	let as = noModule ? undefined : "script";
 
-  return (
-    <>
-      {preload && (
-        <link
-          rel={rel}
-          href={src}
-          as={as}
-          crossOrigin={crossOrigin}
-          integrity={integrity}
-          referrerPolicy={referrerPolicy}
-        />
-      )}
-      <script
-        src={src}
-        defer={defer}
-        async={async}
-        type={type}
-        noModule={noModule}
-        nonce={nonce}
-        crossOrigin={crossOrigin}
-        integrity={integrity}
-        referrerPolicy={referrerPolicy}
-      />
-    </>
-  );
+	return (
+		<>
+			{preload && (
+				<link
+					rel={rel}
+					href={src}
+					as={as}
+					crossOrigin={crossOrigin}
+					integrity={integrity}
+					referrerPolicy={referrerPolicy}
+				/>
+			)}
+			<script
+				src={src}
+				defer={defer}
+				async={async}
+				type={type}
+				noModule={noModule}
+				nonce={nonce}
+				crossOrigin={crossOrigin}
+				integrity={integrity}
+				referrerPolicy={referrerPolicy}
+			/>
+		</>
+	);
 }

@@ -7,61 +7,61 @@ type HoneypotContextType = Partial<HoneypotInputProps>;
 const HoneypotContext = React.createContext<HoneypotContextType>({});
 
 export function HoneypotInputs({
-  label = "Please leave this field blank",
+	label = "Please leave this field blank",
 }: {
-  label?: string;
+	label?: string;
 }): JSX.Element {
-  let context = React.useContext(HoneypotContext);
+	let context = React.useContext(HoneypotContext);
 
-  let {
-    nameFieldName = "name__confirm",
-    validFromFieldName = "from__confirm",
-    encryptedValidFrom,
-  } = context;
+	let {
+		nameFieldName = "name__confirm",
+		validFromFieldName = "from__confirm",
+		encryptedValidFrom,
+	} = context;
 
-  return (
-    <div
-      id={`${nameFieldName}_wrap`}
-      style={{ display: "none" }}
-      aria-hidden="true"
-    >
-      <label htmlFor={nameFieldName}>{label}</label>
-      <input
-        id={nameFieldName}
-        name={nameFieldName}
-        type="text"
-        defaultValue=""
-        autoComplete="nope"
-        tabIndex={-1}
-      />
-      {validFromFieldName && encryptedValidFrom ? (
-        <>
-          <label htmlFor={validFromFieldName}>{label}</label>
-          <input
-            name={validFromFieldName}
-            type="text"
-            value={encryptedValidFrom}
-            readOnly
-            autoComplete="off"
-            tabIndex={-1}
-          />
-        </>
-      ) : null}
-    </div>
-  );
+	return (
+		<div
+			id={`${nameFieldName}_wrap`}
+			style={{ display: "none" }}
+			aria-hidden="true"
+		>
+			<label htmlFor={nameFieldName}>{label}</label>
+			<input
+				id={nameFieldName}
+				name={nameFieldName}
+				type="text"
+				defaultValue=""
+				autoComplete="nope"
+				tabIndex={-1}
+			/>
+			{validFromFieldName && encryptedValidFrom ? (
+				<>
+					<label htmlFor={validFromFieldName}>{label}</label>
+					<input
+						name={validFromFieldName}
+						type="text"
+						value={encryptedValidFrom}
+						readOnly
+						autoComplete="off"
+						tabIndex={-1}
+					/>
+				</>
+			) : null}
+		</div>
+	);
 }
 
 export type HoneypotProviderProps = HoneypotContextType & {
-  children: React.ReactNode;
+	children: React.ReactNode;
 };
 
 export function HoneypotProvider({
-  children,
-  ...context
+	children,
+	...context
 }: HoneypotProviderProps) {
-  return (
-    <HoneypotContext.Provider value={context}>
-      {children}
-    </HoneypotContext.Provider>
-  );
+	return (
+		<HoneypotContext.Provider value={context}>
+			{children}
+		</HoneypotContext.Provider>
+	);
 }

@@ -1,12 +1,12 @@
 import * as React from "react";
 
 export interface AuthenticityTokenProviderProps {
-  children: React.ReactNode;
-  token: string;
+	children: React.ReactNode;
+	token: string;
 }
 
 export interface AuthenticityTokenInputProps {
-  name?: string;
+	name?: string;
 }
 
 let context = React.createContext<string | null>(null);
@@ -23,10 +23,10 @@ let context = React.createContext<string | null>(null);
  * )
  */
 export function AuthenticityTokenProvider({
-  children,
-  token,
+	children,
+	token,
 }: AuthenticityTokenProviderProps) {
-  return <context.Provider value={token}>{children}</context.Provider>;
+	return <context.Provider value={token}>{children}</context.Provider>;
 }
 
 /**
@@ -42,9 +42,9 @@ export function AuthenticityTokenProvider({
  * }
  */
 export function useAuthenticityToken() {
-  let token = React.useContext(context);
-  if (!token) throw new Error("Missing AuthenticityTokenProvider.");
-  return token;
+	let token = React.useContext(context);
+	if (!token) throw new Error("Missing AuthenticityTokenProvider.");
+	return token;
 }
 
 /**
@@ -64,8 +64,8 @@ export function useAuthenticityToken() {
  * <AuthenticityTokenInput name="authenticity_token" />
  */
 export function AuthenticityTokenInput({
-  name = "csrf",
+	name = "csrf",
 }: AuthenticityTokenInputProps) {
-  let token = useAuthenticityToken();
-  return <input type="hidden" value={token} name={name} />;
+	let token = useAuthenticityToken();
+	return <input type="hidden" value={token} name={name} />;
 }

@@ -1,17 +1,17 @@
 import { useEffect, useState, createContext, useContext } from "react";
 
 export interface EventSourceOptions {
-  init?: EventSourceInit;
-  event?: string;
+	init?: EventSourceInit;
+	event?: string;
 }
 
 export type EventSourceMap = Map<
-  string,
-  { count: number; source: EventSource }
+	string,
+	{ count: number; source: EventSource }
 >;
 
 const context = createContext<EventSourceMap>(
-  new Map<string, { count: number; source: EventSource }>()
+	new Map<string, { count: number; source: EventSource }>(),
 );
 
 export const EventSourceProvider = context.Provider;
@@ -23,42 +23,42 @@ export const EventSourceProvider = context.Provider;
  * @returns The last event received from the server
  */
 export function useEventSource(
-  url: string | URL,
-  { event = "message", init }: EventSourceOptions = {}
+	url: string | URL,
+	{ event = "message", init }: EventSourceOptions = {},
 ) {
-  let map = useContext(context);
-  let [data, setData] = useState<string | null>(null);
+	let map = useContext(context);
+	let [data, setData] = useState<string | null>(null);
 
-  useEffect(() => {
-    let key = [url.toString(), event, init?.withCredentials].join("::");
+	useEffect(() => {
+		let key = [url.toString(), event, init?.withCredentials].join("::");
 
-    let value = map.get(key) ?? {
-      count: 0,
-      source: new EventSource(url, init),
-    };
+		let value = map.get(key) ?? {
+			count: 0,
+			source: new EventSource(url, init),
+		};
 
-    ++value.count;
+		++value.count;
 
-    map.set(key, value);
+		map.set(key, value);
 
-    value.source.addEventListener(event, handler);
+		value.source.addEventListener(event, handler);
 
-    // rest data if dependencies change
-    setData(null);
+		// rest data if dependencies change
+		setData(null);
 
-    function handler(event: MessageEvent) {
-      setData(event.data || "UNKNOWN_EVENT_DATA");
-    }
+		function handler(event: MessageEvent) {
+			setData(event.data || "UNKNOWN_EVENT_DATA");
+		}
 
-    return () => {
-      value.source.removeEventListener(event, handler);
-      --value.count;
-      if (value.count <= 0) {
-        value.source.close();
-        map.delete(key);
-      }
-    };
-  }, [url, event, init, map]);
+		return () => {
+			value.source.removeEventListener(event, handler);
+			--value.count;
+			if (value.count <= 0) {
+				value.source.close();
+				map.delete(key);
+			}
+		};
+	}, [url, event, init, map]);
 
-  return data;
+	return data;
 }

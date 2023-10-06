@@ -4,9 +4,9 @@
  * If it's a Headers returns the object directly.
  */
 export function getHeaders(requestOrHeaders: Request | Headers): Headers {
-  if (requestOrHeaders instanceof Request) {
-    return requestOrHeaders.headers;
-  }
+	if (requestOrHeaders instanceof Request) {
+		return requestOrHeaders.headers;
+	}
 
-  return requestOrHeaders;
+	return requestOrHeaders;
 }

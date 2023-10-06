@@ -21,20 +21,20 @@ export type Locales = string[] | undefined;
 export function getClientLocales(headers: Headers): Locales;
 export function getClientLocales(request: Request): Locales;
 export function getClientLocales(requestOrHeaders: Request | Headers): Locales {
-  let headers = getHeaders(requestOrHeaders);
+	let headers = getHeaders(requestOrHeaders);
 
-  let acceptLanguage = headers.get("Accept-Language");
+	let acceptLanguage = headers.get("Accept-Language");
 
-  // if the header is not defined, return undefined
-  if (!acceptLanguage) return undefined;
+	// if the header is not defined, return undefined
+	if (!acceptLanguage) return undefined;
 
-  let locales = parseAcceptLanguage(acceptLanguage, {
-    validate: Intl.DateTimeFormat.supportedLocalesOf,
-    ignoreWildcard: true,
-  });
+	let locales = parseAcceptLanguage(acceptLanguage, {
+		validate: Intl.DateTimeFormat.supportedLocalesOf,
+		ignoreWildcard: true,
+	});
 
-  // if there are no locales found, return undefined
-  if (locales.length === 0) return undefined;
-  // if there are multiple locales, return the array
-  return locales;
+	// if there are no locales found, return undefined
+	if (locales.length === 0) return undefined;
+	// if there are multiple locales, return the array
+	return locales;
 }
