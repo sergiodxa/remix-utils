@@ -836,8 +836,8 @@ This hooks lets you get the locales returned by the root loader. It follows a si
 You can combine it with `getClientLocal` to get the locales on the root loader and return that. The return value of `useLocales` is a `Locales` type which is `string | string[] | undefined`.
 
 ```ts
-import { useLocales } from "remix-utils/use-locales";
-import { getClientLocales } from "remix-utils/get-client-locales";
+import { useLocales } from "remix-utils/locales/react";
+import { getClientLocales } from "remix-utils/locales/server";
 
 // in the root loader
 export async function loader({ request }: LoaderArgs) {
@@ -960,7 +960,7 @@ When a header is found that contains a valid IP address, it will return without 
 This function let you get the locales of the client (the user) who originated the request.
 
 ```ts
-import { getClientLocales } from "remix-utils/get-client-locales";
+import { getClientLocales } from "remix-utils/locales/server";
 
 export async function loader({ request }: LoaderArgs) {
 	// using the request
@@ -975,7 +975,7 @@ The return value is a Locales type, which is `string | string[] | undefined`.
 The returned locales can be directly used on the Intl API when formatting dates, numbers, etc.
 
 ```ts
-import { getClientLocales } from "remix-utils/get-client-locales";
+import { getClientLocales } from "remix-utils/locales/server";
 export async function loader({ request }: LoaderArgs) {
 	let locales = getClientLocales(request);
 	let nowDate = new Date();
