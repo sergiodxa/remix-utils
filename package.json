@@ -86,7 +86,7 @@
     "prefetch",
     "named action"
   ],
-  "optionalDependencies": {
+  "peerDependencies": {
     "@remix-run/cloudflare": "^2.0.0",
     "@remix-run/deno": "^2.0.0",
     "@remix-run/node": "^2.0.0",
@@ -97,6 +97,38 @@
     "is-ip": "^3.1.0",
     "react": "^18.0.0",
     "zod": "^3.19.1"
+  },
+  "peerDependenciesMeta": {
+    "@remix-run/cloudflare": {
+      "optional": true
+    },
+    "@remix-run/deno": {
+      "optional": true
+    },
+    "@remix-run/node": {
+      "optional": true
+    },
+    "@remix-run/react": {
+      "optional": true
+    },
+    "@remix-run/router": {
+      "optional": true
+    },
+    "crypto-js": {
+      "optional": true
+    },
+    "intl-parse-accept-language": {
+      "optional": true
+    },
+    "is-ip": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "zod": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@remix-run/node": "^2.0.0",
