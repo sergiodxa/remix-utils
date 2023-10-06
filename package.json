@@ -47,7 +47,7 @@
     "prepare": "npm run build",
     "build": "tsc --project tsconfig.json --outDir ./build",
     "postbuild": "prettier --write \"build/**/*.js\" \"build/**/*.d.ts\"",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\" \"test/**/*.ts\" \"test/**/*.tsx\"",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\" \"test/**/*.ts\" \"test/**/*.tsx\" \"*.md\"",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "lint": "eslint --ext .ts,.tsx src/",
     "test": "vitest --run",
