@@ -418,7 +418,7 @@ First create a new CSRF instance.
 
 ```ts
 // app/utils/csrf.server.ts
-import { CSRF } from "remix-utils/csrf";
+import { CSRF } from "remix-utils/csrf/server";
 import { createCookie } from "@remix-run/node"; // or cloudflare/deno
 
 export const cookie = createCookie("csrf", {
@@ -470,7 +470,7 @@ export async function loader({ request }: LoaderArgs) {
 Now that you returned the token and set it in a cookie, you can use the `AuthenticityTokenProvider` component to provide the token to your React components.
 
 ```tsx
-import { AuthenticityTokenProvider } from "remix-utils/authenticity-token";
+import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
 
 let { csrf } = useLoaderData<LoaderData>();
 return (
@@ -486,7 +486,7 @@ When you create a form in some route, you can use the `AuthenticityTokenInput` c
 
 ```tsx
 import { Form } from "@remix-run/react";
-import { AuthenticityTokenInput } from "remix-utils/authenticity-token";
+import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 export default function Component() {
 	return (
@@ -512,7 +512,7 @@ If you need to use `useFetcher` (or `useSubmit`) instead of `Form` you can also 
 
 ```tsx
 import { useFetcher } from "@remix-run/react";
-import { useAuthenticityToken } from "remix-utils/authenticity-token";
+import { useAuthenticityToken } from "remix-utils/csrf/react";
 
 export function useMarkAsRead() {
 	let fetcher = useFetcher();
@@ -529,7 +529,7 @@ export function useMarkAsRead() {
 Finally, you need to validate the authenticity token in the action that received the request.
 
 ```ts
-import { CSRFError } from "remix-utils/csrf";
+import { CSRFError } from "remix-utils/csrf/server";
 import { redirectBack } from "remix-utils/redirect-back";
 import { csrf } from "~/utils/csrf.server";
 
@@ -719,7 +719,7 @@ return (
 This hook allows you to read the value of `transition.state`, every `fetcher.state` in the app, and `revalidator.state`.
 
 ```ts
-import { useGlobalNavigationState } from "remix-utils/use-global-navigation-state";
+import { useGlobalNavigationState } from "remix-utils/use-global-pending-state";
 
 export function GlobalPendingUI() {
 	let states = useGlobalNavigationState();
@@ -747,7 +747,7 @@ The return value of `useGlobalNavigationState` can be `"idle"`, `"loading"` or `
 This hook lets you know if the global navigation, if one of any active fetchers is either loading or submitting, or if the revalidator is running.
 
 ```ts
-import { useGlobalPendingState } from "remix-utils/use-global-navigation-state";
+import { useGlobalPendingState } from "remix-utils/use-global-pending-state";
 
 export function GlobalPendingUI() {
   let globalState = useGlobalPendingState();
@@ -770,7 +770,7 @@ The return value of `useGlobalPendingState` is either `"idle"` or `"pending"`.
 This hook lets you know if the global transition or if one of any active fetchers is submitting.
 
 ```ts
-import { useGlobalSubmittingState } from "remix-utils/use-global-navigation-state";
+import { useGlobalSubmittingState } from "remix-utils/use-global-pending-state";
 
 export function GlobalPendingUI() {
   let globalState = useGlobalSubmittingState();
@@ -789,7 +789,7 @@ The return value of `useGlobalSubmittingState` is either `"idle"` or `"submittin
 This hook lets you know if the global transition, if one of any active fetchers is loading, or if the revalidator is running
 
 ```ts
-import { useGlobalLoadingState } from "remix-utils/use-global-navigation-state";
+import { useGlobalLoadingState } from "remix-utils/use-global-pending-state";
 
 export function GlobalPendingUI() {
   let globalState = useGlobalLoadingState();
@@ -939,6 +939,7 @@ The function uses the following list of headers, in order of preference:
 
 - X-Client-IP
 - X-Forwarded-For
+- HTTP-X-Forwarded-For
 - Fly-Client-IP
 - CF-Connecting-IP
 - Fastly-Client-Ip
@@ -952,6 +953,9 @@ The function uses the following list of headers, in order of preference:
 - oxygen-buyer-ip
 
 When a header is found that contains a valid IP address, it will return without checking the other headers.
+
+> **Note**
+> On local development the function is most likely to return `null`. This is because the browser doesn't send any of the above headers, if you want to simulate those headers you will need to either add it to the request Remix receives in your HTTP server or run a reverse proxy like NGINX that can add them for you.
 
 ### getClientLocales
 
@@ -1302,7 +1306,7 @@ The `eventStream` function is used to create a new event stream response needed 
 
 ```ts
 // app/routes/sse.time.ts
-import { eventStream } from "remix-utils/event-stream";
+import { eventStream } from "remix-utils/sse/server";
 
 export async function loader({ request }: LoaderArgs) {
 	return eventStream(request.signal, function setup(send) {
@@ -1321,7 +1325,7 @@ Then, inside any component, you can use the `useEventSource` hook to connect to 
 
 ```tsx
 // app/components/counter.ts
-import { useEventSource } from "remix-utils/use-event-source";
+import { useEventSource } from "remix-utils/sse/react";
 
 function Counter() {
 	// Here `/sse/time` is the resource route returning an eventStream response
@@ -1509,6 +1513,8 @@ You can do this with the functions `preloadRouteAssets`, `preloadLinkedAssets` a
 All functions follows the same signature:
 
 ```ts
+import { preloadRouteAssets, preloadLinkedAssets, preloadModuleAssets } from "remix-utils/preload-route-assets";
+
 // entry.server.tsx
 export default function handleRequest(
   request: Request,
@@ -1551,6 +1557,8 @@ To help you prevent this Remix Utils gives you a `safeRedirect` function which c
 > **Note**: In this context, safe means the URL starts with `/` but not `//`, this means the URL is a pathname inside the same app and not an external link.
 
 ```ts
+import { safeRedirect } from "remix-utils/safe-redirect";
+
 export async function loader({ request }: LoaderArgs) {
 	let { searchParams } = new URL(request.url);
 	let redirectTo = searchParams.get("redirectTo");
@@ -1582,6 +1590,8 @@ export async function loader({ params }: LoaderData) {
 The `jsonHash` function lets you define those functions directly in the `json`, reducing the need to create extra functions and variables.
 
 ```ts
+import { jsonHash } from "remix-utils/json-hash";
+
 export async function loader({ params }: LoaderData) {
 	let postId = z.string().parse(params.postId);
 	return jsonHash({
@@ -1600,6 +1610,8 @@ It also calls your functions using `Promise.all` so you can be sure the data is 
 Additionally, you can pass non-async functions, values and promises.
 
 ```ts
+import { jsonHash } from "remix-utils/json-hash";
+
 export async function loader({ params }: LoaderData) {
 	let postId = z.string().parse(params.postId);
 	return jsonHash({
@@ -1611,7 +1623,7 @@ export async function loader({ params }: LoaderData) {
 		},
 		async post() {
 			// Async function
-			// Implement me
+			return await getPost(postId);
 		},
 	});
 
@@ -1834,7 +1846,7 @@ There's a pair of utils in Remix Utils to help you implement this.
 First, create a `honeypot.server.ts` where you will instantiate and configure your Honeypot.
 
 ```tsx
-import { Honeypot } from "remix-utils/honeypot";
+import { Honeypot } from "remix-utils/honeypot/server";
 
 // Create a new Honeypot instance, the values here are the defaults, you can
 // customize them
@@ -1861,7 +1873,7 @@ export async function loader() {
 And in the `app/root` component render the `HoneypotProvider` component wrapping the rest of the UI.
 
 ```tsx
-import { HoneypotProvider } from "remix-utils/honeypot-inputs";
+import { HoneypotProvider } from "remix-utils/honeypot/react";
 
 export default function Component() {
 	// more code here
@@ -1895,7 +1907,7 @@ function SomePublicForm() {
 Finally, in the action the form submits to, you can call `honeypot.check`.
 
 ```ts
-import { SpamError } from "remix-utils/honeypot";
+import { SpamError } from "remix-utils/honeypot/server";
 import { honeypot } from "~/honeypot.server";
 
 export async function action({ request }) {
