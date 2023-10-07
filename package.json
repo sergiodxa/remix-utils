@@ -30,7 +30,7 @@
 		"./server-only": "./build/react/server-only.js",
 		"./use-debounce-fetcher": "./build/react/use-debounce-fetcher.js",
 		"./use-delegated-anchors": "./build/react/use-delegated-anchors.js",
-		"./use-global-pending-state": "./build/react/use-global-pending-state.js",
+		"./use-global-navigation-state": "./build/react/use-global-navigation-state.js",
 		"./use-hydrated": "./build/react/use-hydrated.js",
 		"./use-should-hydrate": "./build/react/use-should-hydrate.js",
 		"./sse/server": "./build/server/event-stream.js",
