@@ -719,7 +719,7 @@ return (
 This hook allows you to read the value of `transition.state`, every `fetcher.state` in the app, and `revalidator.state`.
 
 ```ts
-import { useGlobalNavigationState } from "remix-utils/use-global-pending-state";
+import { useGlobalNavigationState } from "remix-utils/use-global-navigation-state";
 
 export function GlobalPendingUI() {
 	let states = useGlobalNavigationState();
@@ -747,7 +747,7 @@ The return value of `useGlobalNavigationState` can be `"idle"`, `"loading"` or `
 This hook lets you know if the global navigation, if one of any active fetchers is either loading or submitting, or if the revalidator is running.
 
 ```ts
-import { useGlobalPendingState } from "remix-utils/use-global-pending-state";
+import { useGlobalPendingState } from "remix-utils/use-global-navigation-state";
 
 export function GlobalPendingUI() {
   let globalState = useGlobalPendingState();
@@ -770,7 +770,7 @@ The return value of `useGlobalPendingState` is either `"idle"` or `"pending"`.
 This hook lets you know if the global transition or if one of any active fetchers is submitting.
 
 ```ts
-import { useGlobalSubmittingState } from "remix-utils/use-global-pending-state";
+import { useGlobalSubmittingState } from "remix-utils/use-global-navigation-state";
 
 export function GlobalPendingUI() {
   let globalState = useGlobalSubmittingState();
@@ -789,7 +789,7 @@ The return value of `useGlobalSubmittingState` is either `"idle"` or `"submittin
 This hook lets you know if the global transition, if one of any active fetchers is loading, or if the revalidator is running
 
 ```ts
-import { useGlobalLoadingState } from "remix-utils/use-global-pending-state";
+import { useGlobalLoadingState } from "remix-utils/use-global-navigation-state";
 
 export function GlobalPendingUI() {
   let globalState = useGlobalLoadingState();
