@@ -45,7 +45,7 @@ In your `remix.config.js` file, add this:
 ```js
 module.exports = {
 	serverDependenciesToBundle: [
-		"remix-utils",
+		/^remix-utils.*/,
 		// If you installed is-ip optional dependency you will need these too
 		"is-ip",
 		"ip-regex",
@@ -58,10 +58,6 @@ module.exports = {
 	],
 };
 ```
-
-> **Warning**
-> Until https://github.com/remix-run/remix/pull/7272 is released you will need to add every individual util to `serverDependenciesToBundle` instead of just `remix-utils`.
-
 If you're not sure if your app uses ESM or CJS, check if you have `serverModuleFormat` in your `remix.config.js` file to know.
 
 In case you don't have one, if you're using Remix v1 it will be CJS and if you're using Remix v2 it will be ESM.
