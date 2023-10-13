@@ -211,7 +211,8 @@ cacheAssests({ cacheName: "assets", buildPath: "/build/" }).catch((error) => {
 
 ### ClientOnly
 
-> **Note** This depends on `react`.
+> **Note**
+> This depends on `react`.
 
 The ClientOnly component lets you render the children element only on the client-side, avoiding rendering it the server-side.
 
@@ -242,7 +243,8 @@ This component uses the `useHydrated` hook internally.
 
 ### ServerOnly
 
-> **Note** This depends on `react`.
+> **Note**
+> This depends on `react`.
 
 The ServerOnly component is the opposite of the ClientOnly component, it lets you render the children element only on the server-side, avoiding rendering it the client-side.
 
@@ -405,7 +407,8 @@ Additionally, the `cors` function accepts a `options` object as a third optional
 
 ### CSRF
 
-> **Note**: This depends on `react`, `crypto-js`, and a Remix server runtime.
+> **Note**
+> This depends on `react`, `crypto-js`, and a Remix server runtime.
 
 The CSRF related functions let you implement CSRF protection on your application.
 
@@ -462,7 +465,8 @@ export async function loader({ request }: LoaderArgs) {
 }
 ```
 
-> **Note**: You could do this on any route, but I recommend you to do it on the `root` loader.
+> **Note**
+> You could do this on any route, but I recommend you to do it on the `root` loader.
 
 Now that you returned the token and set it in a cookie, you can use the `AuthenticityTokenProvider` component to provide the token to your React components.
 
@@ -556,7 +560,8 @@ try {
 }
 ```
 
-> **Warning**: If you call `CSRF#validate` with the request instance, but you already read its body, it will throw an error.
+> **Warning**
+> If you call `CSRF#validate` with the request instance, but you already read its body, it will throw an error.
 
 In case the CSRF validation fails, it will throw a `CSRFError` which can be used to correctly identify it against other possible errors that may get thrown.
 
@@ -570,11 +575,13 @@ The list of possible error messages are:
 
 You can use `error.code` to check one of the error codes above, and `error.message` to get a human friendly description.
 
-> **Warning**: Don't send those error messages to the end-user, they are meant to be used for debugging purposes only.
+> **Warning**
+> Don't send those error messages to the end-user, they are meant to be used for debugging purposes only.
 
 ### External Scripts
 
-> **Note**: This depends on `react`, `@remix-run/react`, and a Remix server runtime.
+> **Note**
+> This depends on `react`, `@remix-run/react`, and a Remix server runtime.
 
 If you need to load different external scripts on certain routes, you can use the `ExternalScripts` component together with the `ExternalScriptsFunction` and `ScriptDescriptor` types.
 
@@ -711,7 +718,8 @@ return (
 
 ### useGlobalNavigationState
 
-> **Note**: This depends on `react`, and `@remix-run/react`.
+> **Note**
+> This depends on `react`, and `@remix-run/react`.
 
 This hook allows you to read the value of `transition.state`, every `fetcher.state` in the app, and `revalidator.state`.
 
@@ -735,11 +743,13 @@ export function GlobalPendingUI() {
 
 The return value of `useGlobalNavigationState` can be `"idle"`, `"loading"` or `"submitting"`
 
-> **Note** This is used by the hooks below to determine if the app is loading, submitting or both (pending).
+> **Note**
+> This is used by the hooks below to determine if the app is loading, submitting or both (pending).
 
 ### useGlobalPendingState
 
-> **Note**: This depends on `react`, and `@remix-run/react`.
+> **Note**
+> This depends on `react`, and `@remix-run/react`.
 
 This hook lets you know if the global navigation, if one of any active fetchers is either loading or submitting, or if the revalidator is running.
 
@@ -762,7 +772,8 @@ The return value of `useGlobalPendingState` is either `"idle"` or `"pending"`.
 
 ### useGlobalSubmittingState
 
-> **Note**: This depends on `react`, and `@remix-run/react`.
+> **Note**
+> This depends on `react`, and `@remix-run/react`.
 
 This hook lets you know if the global transition or if one of any active fetchers is submitting.
 
@@ -781,7 +792,8 @@ The return value of `useGlobalSubmittingState` is either `"idle"` or `"submittin
 
 ### useGlobalLoadingState
 
-> **Note**: This depends on `react`, and `@remix-run/react`.
+> **Note**
+> This depends on `react`, and `@remix-run/react`.
 
 This hook lets you know if the global transition, if one of any active fetchers is loading, or if the revalidator is running
 
@@ -800,7 +812,8 @@ The return value of `useGlobalLoadingState` is either `"idle"` or `"loading"`.
 
 ### useHydrated
 
-> **Note**: This depends on `react`.
+> **Note**
+> This depends on `react`.
 
 This hook lets you detect if your component is already hydrated. This means the JS for the element loaded client-side and React is running.
 
@@ -826,7 +839,8 @@ After the first client-side render, future components rendered calling this hook
 
 ### useLocales
 
-> **Note**: This depends on `react`.
+> **Note**
+> This depends on `react`.
 
 This hooks lets you get the locales returned by the root loader. It follows a simple convention, your root loader return value should be an objet with the key `locales`.
 
@@ -856,7 +870,8 @@ The return type of `useLocales` is ready to be used with the Intl API.
 
 ### useShouldHydrate
 
-> **Note**: This depends on `@remix-run/react`.
+> **Note**
+> This depends on `@remix-run/react` and `react`.
 
 If you are building a Remix application where most routes are static, and you want to avoid loading client-side JS, you can use this hook, plus some conventions, to detect if one or more active routes needs JS and only render the Scripts component in that case.
 
@@ -915,7 +930,8 @@ The `useShouldHydrate` hook will detect `hydrate` as a function and call it usin
 
 ### getClientIPAddress
 
-> **Note**: This depends on `is-ip`.
+> **Note**
+> This depends on `is-ip`.
 
 This function receives a Request or Headers objects and will try to get the IP address of the client (the user) who originated the request.
 
@@ -951,12 +967,13 @@ The function uses the following list of headers, in order of preference:
 
 When a header is found that contains a valid IP address, it will return without checking the other headers.
 
-> **Note**
+> **Warning**
 > On local development the function is most likely to return `null`. This is because the browser doesn't send any of the above headers, if you want to simulate those headers you will need to either add it to the request Remix receives in your HTTP server or run a reverse proxy like NGINX that can add them for you.
 
 ### getClientLocales
 
-> **Note**: This depends on `intl-parse-accept-language`.
+> **Note**
+> This depends on `intl-parse-accept-language`.
 
 This function let you get the locales of the client (the user) who originated the request.
 
@@ -1131,7 +1148,8 @@ export async function loader({ request }: LoaderArgs) {
 
 ### Typed Cookies
 
-> **Note**: This depends on `zod`, and a Remix server runtime.
+> **Note**
+> This depends on `zod`, and a Remix server runtime.
 
 Cookie objects in Remix allows any type, the typed cookies from Remix Utils lets you use Zod to parse the cookie values and ensure they conform to a schema.
 
@@ -1225,7 +1243,8 @@ await typedCookie.serialize("some fake url to pass schema validation", {
 
 ### Typed Sessions
 
-> **Note**: This depends on `zod`, and a Remix server runtime.
+> **Note**
+> This depends on `zod`, and a Remix server runtime.
 
 Session objects in Remix allows any type, the typed sessions from Remix Utils lets you use Zod to parse the session data and ensure they conform to a schema.
 
@@ -1290,7 +1309,8 @@ typedSessionStorage.getSession(request.headers.get("Cookie"));
 
 ### Server-Sent Events
 
-> **Note**: This depends on `react`.
+> **Note**
+> This depends on `react`.
 
 Server-Sent Events are a way to send data from the server to the client without the need for the client to request it. This is useful for things like chat applications, live updates, and more.
 
@@ -1366,7 +1386,8 @@ This way, you can overwrite the map with a new one for a specific part of your a
 
 ### Rolling Cookies
 
-> **Note**: This depends on `zod`, and a Remix server runtime.
+> **Note**
+> This depends on `zod`, and a Remix server runtime.
 
 Rolling cookies allows you to prolong the expiration of a cookie by updating the expiration date of every cookie.
 
@@ -1427,11 +1448,12 @@ export let handleDataRequest: HandleDataRequestFunction = async (
 };
 ```
 
-> **Note**: [Read more about rolling cookies in Remix](https://sergiodxa.com/articles/add-rolling-sessions-to-remix).
+> **Note** > [Read more about rolling cookies in Remix](https://sergiodxa.com/articles/add-rolling-sessions-to-remix).
 
 ### Named actions
 
-> **Note**: This depends on a Remix server runtime.
+> **Note**
+> This depends on a Remix server runtime.
 
 It's common to need to handle more than one action in the same route, there are many options here like [sending the form to a resource route](https://sergiodxa.com/articles/multiple-forms-per-route-in-remix#using-resource-routes) or using an [action reducer](https://sergiodxa.com/articles/multiple-forms-per-route-in-remix#the-action-reducer-pattern), the `namedAction` function uses some conventions to implement the action reducer pattern.
 
@@ -1552,7 +1574,8 @@ https://remix.utills/?redirectTo=https://malicious.app
 
 To help you prevent this Remix Utils gives you a `safeRedirect` function which can be used to check if the URL is "safe".
 
-> **Note**: In this context, safe means the URL starts with `/` but not `//`, this means the URL is a pathname inside the same app and not an external link.
+> **Note**
+> In this context, safe means the URL starts with `/` but not `//`, this means the URL is a pathname inside the same app and not an external link.
 
 ```ts
 import { safeRedirect } from "remix-utils/safe-redirect";
@@ -1695,7 +1718,8 @@ Now you can see in your DevTools that when the user hovers an anchor it will pre
 
 ### Debounced Fetcher
 
-> **Note**: This depends on `react`, and `@remix-run/react`.
+> **Note**
+> This depends on `react`, and `@remix-run/react`.
 
 The `useDebounceFetcher` is a wrapper of `useFetcher` that adds debounce support to `fetcher.submit`.
 
@@ -1723,7 +1747,8 @@ export function Component({ data }) {
 
 ### Derive Fetcher init
 
-> **Note**: This depends on `@remix-route/react`.
+> **Note**
+> This depends on `@remix-route/react`.
 
 Derive the value of the deprecated `fetcher.type` from the fetcher and navigation data.
 
@@ -1835,7 +1860,8 @@ This means that the `respondTo` helper will prioritize any handler that match `t
 
 ### Form Honeypot
 
-> **Note**: This depends on `react` and `crypto-js`.
+> **Note**
+> This depends on `react` and `crypto-js`.
 
 Honeypot is a simple technic to prevent spam bots from submitting forms, it works by adding a hidden field to the form that bots will fill, but humans won't.
 
@@ -1900,7 +1926,8 @@ function SomePublicForm() {
 }
 ```
 
-> **Note**: The label value above is the default one, use it to allow the label to be localized, or remove it if you don't want to change it.
+> **Note**
+> The label value above is the default one, use it to allow the label to be localized, or remove it if you don't want to change it.
 
 Finally, in the action the form submits to, you can call `honeypot.check`.
 
@@ -1924,6 +1951,9 @@ export async function action({ request }) {
 ```
 
 ### Sec-Fetch Parsers
+
+> **Note**
+> This depends on `zod`.
 
 The `Sec-Fetch` headers include information about the request, e.g. where is the data going to be used, or if it was initiated by the user.
 
