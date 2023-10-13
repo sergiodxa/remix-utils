@@ -45,7 +45,7 @@ In your `remix.config.js` file, add this:
 ```js
 module.exports = {
 	serverDependenciesToBundle: [
-		"remix-utils",
+		/^remix-utils.*/,
 		// If you installed is-ip optional dependency you will need these too
 		"is-ip",
 		"ip-regex",
@@ -58,9 +58,6 @@ module.exports = {
 	],
 };
 ```
-
-> **Warning**
-> Until https://github.com/remix-run/remix/pull/7272 is released you will need to add every individual util to `serverDependenciesToBundle` instead of just `remix-utils`.
 
 If you're not sure if your app uses ESM or CJS, check if you have `serverModuleFormat` in your `remix.config.js` file to know.
 
@@ -1922,6 +1919,79 @@ export async function action({ request }) {
 		// should be thrown
 	}
 	// the rest of your action
+}
+```
+
+### Sec-Fetch Parsers
+
+The `Sec-Fetch` headers include information about the request, e.g. where is the data going to be used, or if it was initiated by the user.
+
+You can use the `remix-utils/sec-fetch` utils to parse those headers and get the information you need.
+
+```ts
+import {
+	fetchDest,
+	fetchMode,
+	fetchSite,
+	isUserInitiated,
+} from "remix-utils/sec-fetch";
+```
+
+#### Sec-Fetch-Dest
+
+The `Sec-Fetch-Dest` header indicates the destination of the request, e.g. `document`, `image`, `script`, etc.
+
+If the value is `empty` it means it will be used by a `fetch` call, this means you can differentiate between a request made with and without JS by checking if it's `document` (no JS) or `empty` (JS enabled).
+
+```ts
+import { fetchDest } from "remix-utils/sec-fetch";
+
+export async function action({ request }: ActionFunctionArgs) {
+	let data = await getDataSomehow();
+
+	// if the request was made with JS, we can just return json
+	if (fetchDest(request) === "empty") return json(data);
+	// otherwise we redirect to avoid a reload to trigger a new submission
+	return redirect(destination);
+}
+```
+
+#### Sec-Fetch-Mode
+
+The `Sec-Fetch-Mode` header indicates how the request was initiated, e.g. if the value is `navigate` it was triggered by the user loading the page, if the value is `no-cors` it could be an image being loaded.
+
+```ts
+import { fetchMode } from "remix-utils/sec-fetch";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+	let mode = fetchMode(request);
+	// do something based on the mode value
+}
+```
+
+#### Sec-Fetch-Site
+
+The `Sec-Fetch-Site` header indicates where the request is being made, e.g. `same-origin` means the request is being made to the same domain, `cross-site` means the request is being made to a different domain.
+
+```ts
+import { fetchSite } from "remix-utils/sec-fetch";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+	let site = fetchSite(request);
+	// do something based on the site value
+}
+```
+
+#### Sec-Fetch-User
+
+The `Sec-Fetch-User` header indicates if the request was initiated by the user, this can be used to differentiate between a request made by the user and a request made by the browser, e.g. a request made by the browser to load an image.
+
+```ts
+import { isUserInitiated } from "remix-utils/sec-fetch";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+	let userInitiated = isUserInitiated(request);
+	// do something based on the userInitiated value
 }
 ```
 
