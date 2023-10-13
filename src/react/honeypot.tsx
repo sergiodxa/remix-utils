@@ -38,6 +38,7 @@ export function HoneypotInputs({
 				<>
 					<label htmlFor={validFromFieldName}>{label}</label>
 					<input
+						id={validFromFieldName}
 						name={validFromFieldName}
 						type="text"
 						value={encryptedValidFrom}
