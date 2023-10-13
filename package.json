@@ -42,7 +42,7 @@
 		"./csrf/server": "./build/server/csrf.js",
 		"./csrf/react": "./build/react/authenticity-token.js",
 		"./sec-fetch": "./build/server/sec-fetch.js",
-    "./timers": "./build/common/timers.js"
+		"./timers": "./build/common/timers.js"
 	},
 	"sideEffects": false,
 	"scripts": {
