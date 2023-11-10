@@ -1914,7 +1914,7 @@ export default function Component() {
 Now, in every public form you want protect against spam (like a login form), render the `HoneypotInputs` component.
 
 ```tsx
-import { HoneypotInputs } from "remix-utils/honeypot-inputs";
+import { HoneypotInputs } from "remix-utils/honeypot/react";
 
 function SomePublicForm() {
 	return (
