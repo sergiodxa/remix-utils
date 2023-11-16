@@ -6,7 +6,7 @@ export interface HoneypotInputProps {
 	encryptedValidFrom: string;
 }
 
-export interface HonetpotConfig {
+export interface HoneypotConfig {
 	randomizeNameFieldName?: boolean;
 	nameFieldName?: string;
 	validFromFieldName?: string | null;
@@ -21,7 +21,7 @@ const DEFAULT_VALID_FROM_FIELD_NAME = "from__confirm";
 export class Honeypot {
 	private generatedEncryptionSeed = this.randomValue();
 
-	constructor(protected config: HonetpotConfig = {}) {}
+	constructor(protected config: HoneypotConfig = {}) {}
 
 	public getInputProps({
 		validFromTimestamp = Date.now(),
