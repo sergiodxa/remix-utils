@@ -1890,7 +1890,7 @@ import { honeypot } from "~/honeypot.server";
 
 export async function loader() {
 	// more code here
-	return json({ honeypot: honeypot.getInputProps() });
+	return json({ honeypotInputProps: honeypot.getInputProps() });
 }
 ```
 
@@ -1903,7 +1903,7 @@ export default function Component() {
 	// more code here
 	return (
 		// some JSX
-		<HoneypotProvider>
+		<HoneypotProvider {...honeypotInputProps}>
 			<Outlet />
 		</HoneypotProvider>
 		// end that JSX
