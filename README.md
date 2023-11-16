@@ -1863,7 +1863,7 @@ This means that the `respondTo` helper will prioritize any handler that match `t
 > **Note**
 > This depends on `react` and `crypto-js`.
 
-Honeypot is a simple technic to prevent spam bots from submitting forms, it works by adding a hidden field to the form that bots will fill, but humans won't.
+Honeypot is a simple technique to prevent spam bots from submitting forms. It works by adding a hidden field to the form that bots will fill, but humans won't.
 
 There's a pair of utils in Remix Utils to help you implement this.
 
