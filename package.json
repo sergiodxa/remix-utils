@@ -25,6 +25,7 @@
 		"./typed-cookie": "./build/server/typed-cookie.js",
 		"./typed-session": "./build/server/typed-session.js",
 		"./client-only": "./build/react/client-only.js",
+		"./existing-search-params": "./build/react/existing-search-params.js",
 		"./external-scripts": "./build/react/external-scripts.js",
 		"./fetcher-type": "./build/react/fetcher-type.js",
 		"./server-only": "./build/react/server-only.js",
