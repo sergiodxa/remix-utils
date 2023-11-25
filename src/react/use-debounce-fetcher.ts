@@ -47,18 +47,21 @@ export function useDebounceFetcher<Data>() {
 
 	let fetcher = useFetcher<Data>() as DebouncedFetcher<Data>;
 
+	// Clone the original submit to avoid a recursive loop
+	const originalSubmit = fetcher.submit;
+
 	fetcher.submit = useCallback(
 		(target, { debounceTimeout = 0, ...options } = {}) => {
 			if (timeoutRef.current) clearTimeout(timeoutRef.current);
 			if (!debounceTimeout || debounceTimeout <= 0) {
-				return fetcher.submit(target, options);
+				return originalSubmit(target, options);
 			}
 
 			timeoutRef.current = setTimeout(() => {
-				fetcher.submit(target, options);
+				originalSubmit(target, options);
 			}, debounceTimeout);
 		},
-		[fetcher],
+		[originalSubmit],
 	);
 
 	return fetcher;
