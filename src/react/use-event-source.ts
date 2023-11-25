@@ -30,7 +30,7 @@ export function useEventSource(
 	let [data, setData] = useState<string | null>(null);
 
 	useEffect(() => {
-		let key = [url.toString(), event, init?.withCredentials].join("::");
+		let key = [url.toString(), init?.withCredentials].join("::");
 
 		let value = map.get(key) ?? {
 			count: 0,
