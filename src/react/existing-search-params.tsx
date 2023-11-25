@@ -48,10 +48,10 @@ export function ExistingSearchParams({ exclude, ...props }: Props) {
 				return (
 					<input
 						key={`${key}=${value}`}
+						{...props}
 						type="hidden"
 						name={key}
 						value={value}
-						{...props}
 					/>
 				);
 			})}
