@@ -12,9 +12,9 @@ Additional optional dependencies may be needed, all optional dependencies are:
 
 - `@remix-run/react` (also `@remix-run/router` but you should be using the React one)
 - `@remix-run/node` or `@remix-run/cloudflare` or `@remix-run/deno` (actually it's `@remix-run/server-runtime` but you should use one of the others)
-- `crypto-js`
 - `is-ip`
 - `intl-parse-accept-language`
+- `js-base64`
 - `react`
 - `zod`
 
@@ -23,7 +23,7 @@ The utils that require an extra optional dependency mention it in their document
 If you want to install them all run:
 
 ```sh
-npm add crypto-js is-ip intl-parse-accept-language zod
+npm add is-ip intl-parse-accept-language js-base64 zod
 ```
 
 React and the `@remix-run/*` packages should be already installed in your project.
@@ -408,11 +408,25 @@ Additionally, the `cors` function accepts a `options` object as a third optional
 ### CSRF
 
 > **Note**
-> This depends on `react`, `crypto-js`, and a Remix server runtime.
+> This depends on `react`, `js-base64`, the [WebCrypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API), and a Remix server runtime.
 
 The CSRF related functions let you implement CSRF protection on your application.
 
 This part of Remix Utils needs React and server-side code.
+
+The [WebCrypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) is required. If your enviroment doesn't support it you must supply a polyfill, such as [`@peculiar/webcrypto`](https://github.com/PeculiarVentures/webcrypto), to either `globalThis.crypto` or the CSRF constructor.
+
+```ts
+import { Crypto } from "@peculiar/webcrypto";
+
+globalThis.crypto = new Crypto();
+
+// Or
+export const csrf = new CSRF({
+	...otherCsrfOptions
+	webCrypto: new Crypto(),
+});
+```
 
 First create a new CSRF instance.
 
@@ -433,8 +447,8 @@ export const csrf = new CSRF({
 	cookie,
 	// what key in FormData objects will be used for the token, defaults to `csrf`
 	formDataKey: "csrf",
-	// an optional secret used to sign the token, recommended for extra safety
-	secret: "s3cr3t",
+	// HMAC SHA-256 secret key, a string with 256 bits (32 bytes) of entropy
+	secret: "Required in production",
 });
 ```
 
@@ -444,14 +458,14 @@ Then you can use `csrf` to generate a new token.
 import { csrf } from "~/utils/csrf.server";
 
 export async function loader({ request }: LoaderArgs) {
-	let token = csrf.generate();
+	let token = await csrf.generate();
 }
 ```
 
 You can customize the token size by passing the byte size, the default one is 32 bytes which will give you a string with a length of 43 after encoding.
 
 ```ts
-let token = csrf.generate(64); // customize token length
+let token = await csrf.generate(64); // customize token length
 ```
 
 You will need to save this token in a cookie and also return it from the loader. For convenience, you can use the `CSRF#commitToken` helper.
@@ -1904,11 +1918,25 @@ This means that the `respondTo` helper will prioritize any handler that match `t
 ### Form Honeypot
 
 > **Note**
-> This depends on `react` and `crypto-js`.
+> This depends on `react`, `js-base64`, and the [`WebCrypto API`](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API).
 
 Honeypot is a simple technique to prevent spam bots from submitting forms. It works by adding a hidden field to the form that bots will fill, but humans won't.
 
 There's a pair of utils in Remix Utils to help you implement this.
+
+The [WebCrypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) is required. If your enviroment doesn't support it you must supply a polyfill, such as [`@peculiar/webcrypto`](https://github.com/PeculiarVentures/webcrypto), to either `globalThis.crypto` or the honeypot constructor.
+
+```ts
+import { Crypto } from "@peculiar/webcrypto";
+
+globalThis.crypto = new Crypto();
+
+// Or
+export const csrf = new Honeypot({
+	...otherHoneypotOptions
+	webCrypto: new Crypto(),
+});
+```
 
 First, create a `honeypot.server.ts` where you will instantiate and configure your Honeypot.
 
@@ -1921,7 +1949,8 @@ export const honeypot = new Honeypot({
 	randomizeNameFieldName: false,
 	nameFieldName: "name__confirm",
 	validFromFieldName: "from__confirm", // null to disable it
-	encryptionSeed: undefined, // Ideally it should be unique even between processes
+	// HKDF SHA-256 key, a string with 256 bits (32 bytes) of entropy
+	encryptionSeed: "required in production",
 });
 ```
 
@@ -1933,7 +1962,7 @@ import { honeypot } from "~/honeypot.server";
 
 export async function loader() {
 	// more code here
-	return json({ honeypotInputProps: honeypot.getInputProps() });
+	return json({ honeypotInputProps: await honeypot.getInputProps() });
 }
 ```
 
@@ -1981,7 +2010,7 @@ import { honeypot } from "~/honeypot.server";
 export async function action({ request }) {
 	let formData = await request.formData();
 	try {
-		honeypot.check(formData);
+		await honeypot.check(formData);
 	} catch (error) {
 		if (error instanceof SpamError) {
 			// handle spam requests here

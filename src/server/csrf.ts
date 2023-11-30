@@ -1,6 +1,8 @@
 import type { Cookie } from "@remix-run/server-runtime";
-import cryptoJS from "crypto-js";
+import { fromUint8Array } from "js-base64";
 import { getHeaders } from "./get-headers.js";
+
+const textEncoder = new globalThis.TextEncoder();
 
 export type CSRFErrorCode =
 	| "missing_token_in_cookie"
@@ -28,20 +30,27 @@ interface CSRFOptions {
 	 */
 	formDataKey?: string;
 	/**
-	 * A secret to use for signing the CSRF token.
+	 * HMAC SHA-256 secret key for signing the CSRF token, a string with 256 bits (32 bytes) of entropy
 	 */
 	secret?: string;
+	/**
+	 * Optional WebCrypto polyfill for enviroments without native support.
+	 */
+	webCrypto?: Crypto;
 }
 
 export class CSRF {
 	private cookie: Cookie;
 	private formDataKey = "csrf";
+	private key?: CryptoKey;
 	private secret?: string;
+	private webCrypto: Crypto;
 
 	constructor(options: CSRFOptions) {
 		this.cookie = options.cookie;
 		this.formDataKey = options.formDataKey ?? "csrf";
 		this.secret = options.secret;
+		this.webCrypto = options.webCrypto ?? globalThis.crypto;
 	}
 
 	/**
@@ -50,12 +59,13 @@ export class CSRF {
 	 * @param bytes The number of bytes used to generate the token
 	 * @returns A random string in Base64URL
 	 */
-	generate(bytes = 32) {
-		let token = cryptoJS.lib.WordArray.random(bytes).toString(
-			cryptoJS.enc.Base64url,
+	async generate(bytes = 32) {
+		let token = fromUint8Array(
+			this.webCrypto.getRandomValues(new Uint8Array(bytes)),
+			true,
 		);
 		if (!this.secret) return token;
-		let signature = this.sign(token);
+		let signature = await this.sign(token);
 		return [token, signature].join(".");
 	}
 
@@ -80,7 +90,9 @@ export class CSRF {
 		let headers = getHeaders(requestOrHeaders);
 		let existingToken = await this.cookie.parse(headers.get("cookie"));
 		let token =
-			typeof existingToken === "string" ? existingToken : this.generate(bytes);
+			typeof existingToken === "string"
+				? existingToken
+				: await this.generate(bytes);
 		let cookie = existingToken ? null : await this.cookie.serialize(token);
 		return [token, cookie] as const;
 	}
@@ -133,7 +145,7 @@ export class CSRF {
 			);
 		}
 
-		if (this.verifySignature(cookie) === false) {
+		if ((await this.verifySignature(cookie)) === false) {
 			throw new CSRFError(
 				"tampered_token_in_cookie",
 				"Tampered CSRF token in cookie.",
@@ -169,17 +181,35 @@ export class CSRF {
 		return this.cookie.parse(headers.get("cookie"));
 	}
 
-	private sign(token: string) {
-		if (!this.secret) return token;
-		return cryptoJS
-			.HmacSHA256(token, this.secret)
-			.toString(cryptoJS.enc.Base64url);
+	private async getKey() {
+		if (!this.key) {
+			this.key = await this.webCrypto.subtle.importKey(
+				"raw",
+				textEncoder.encode(this.secret),
+				{ name: "HMAC", hash: "SHA-256" },
+				false,
+				["sign"],
+			);
+		}
+		return this.key;
 	}
 
-	private verifySignature(token: string) {
+	private async sign(token: string) {
+		if (!this.secret) return token;
+
+		let signature = await this.webCrypto.subtle.sign(
+			"HMAC",
+			await this.getKey(),
+			textEncoder.encode(token),
+		);
+
+		return fromUint8Array(new Uint8Array(signature), true);
+	}
+
+	private async verifySignature(token: string) {
 		if (!this.secret) return true;
 		let [value, signature] = token.split(".");
-		let expectedSignature = this.sign(value);
+		let expectedSignature = await this.sign(value);
 		return signature === expectedSignature;
 	}
 }
