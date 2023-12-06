@@ -1788,7 +1788,7 @@ export function Component({ data }) {
 }
 ```
 
-### Derive Fetcher init
+### Derive Fetcher Type
 
 > **Note**
 > This depends on `@remix-route/react`.
