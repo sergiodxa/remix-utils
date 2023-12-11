@@ -1,4 +1,4 @@
-import { EntryContext } from "@remix-run/server-runtime";
+import { EntryContext, LinkDescriptor } from "@remix-run/server-runtime";
 
 type Link = { href: string; as: string };
 
@@ -62,8 +62,18 @@ export function preloadLinkedAssets(context: EntryContext, headers: Headers) {
 	let links = context.staticHandlerContext.matches
 		.flatMap((match) => {
 			let route = context.routeModules[match.route.id];
-			if (route.links instanceof Function) return route.links();
-			return [];
+			const links: LinkDescriptor[] = [];
+			const routeDef = context.manifest.routes[match.route.id];
+			if (routeDef?.css?.length) {
+				links.push(
+					...routeDef.css.map((href) => ({ rel: "stylesheet", href })),
+				);
+			}
+			if (route.links instanceof Function) {
+				links.push(...route.links());
+			}
+			return links;
+
 		})
 		.map((link) => {
 			if ("as" in link && "href" in link) {
