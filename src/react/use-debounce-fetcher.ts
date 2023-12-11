@@ -1,3 +1,4 @@
+import type { SerializeFrom } from "@remix-run/server-runtime";
 import type {
 	SubmitOptions,
 	FetcherWithComponents,
@@ -30,7 +31,7 @@ type DebounceSubmitFunction = (
 ) => void;
 
 type DebouncedFetcher<Data = unknown> = Omit<
-	FetcherWithComponents<Data>,
+	FetcherWithComponents<SerializeFrom<Data>>,
 	"submit"
 > & { submit: DebounceSubmitFunction };
 
