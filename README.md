@@ -1759,16 +1759,14 @@ export default function Component() {
 
 Now you can see in your DevTools that when the user hovers an anchor it will prefetch it, and when the user clicks it will do a client-side navigation.
 
-### Debounced Fetcher
+### Debounced Fetcher and Submit
 
 > **Note**
 > This depends on `react`, and `@remix-run/react`.
 
-The `useDebounceFetcher` is a wrapper of `useFetcher` that adds debounce support to `fetcher.submit`.
+`useDebounceFetcher` and `useDebounceSubmit` are wrappers of `useFetcher` and `useSubmit` that add debounce support.
 
-The hook is based on [@JacobParis](https://github.com/JacobParis)' [article](https://www.jacobparis.com/content/use-debounce-fetcher).
-
-The main difference with Jacob's version is that Remix Utils' version overwrites `fetcher.submit` instead of appending a `fetcher.debounceSubmit` method.
+These hooks are based on [@JacobParis](https://github.com/JacobParis)' [article](https://www.jacobparis.com/content/use-debounce-fetcher).
 
 ```tsx
 import { useDebounceFetcher } from "remix-utils/use-debounce-fetcher";
@@ -1784,6 +1782,37 @@ export function Component({ data }) {
 		<button type="button" onClick={handleClick}>
 			Do Something
 		</button>
+	);
+}
+```
+
+Usage with `useDebounceSubmit` is similar.
+
+```tsx
+import { useDebounceSubmit } from "remix-utils/use-debounce-submit";
+
+export function Component({ name }) {
+	let submit = useDebounceSubmit();
+
+	return (
+		<input
+			name={name}
+			type="text"
+			onChange={(event) => {
+				submit(event.target.form, {
+					navigate: false, // use a fetcher instead of a page navigation
+					fetcherKey: name, // cancel any previous fetcher with the same key
+					debounceTimeout: 1000,
+				});
+			}}
+			onBlur={() => {
+				submit(event.target.form, {
+					navigate: false,
+					fetcherKey: name,
+					debounceTimeout: 0, // submit immediately, canceling any pending fetcher
+				});
+			}}
+		/>
 	);
 }
 ```
