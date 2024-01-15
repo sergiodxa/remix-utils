@@ -163,7 +163,7 @@
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-testing-library": "^6.0.2",
 		"eslint-plugin-unicorn": "^50.0.1",
-		"happy-dom": "^12.9.0",
+		"happy-dom": "^13.1.4",
 		"intl-parse-accept-language": "^1.0.0",
 		"is-ip": "5.0.1",
 		"msw": "^2.0.0",
