@@ -2132,6 +2132,58 @@ export async function loader({ request }: LoaderArgs) {
 }
 ```
 
+### Detect if Application is Stale
+
+> **Note**
+> This depends on `react` and `@remix-run/react`.
+
+The `useAppIsStale` hook lets you detect if the application client is stale compared to the server version, this means the user is seeing an old version of the application and should reload the page.
+
+```tsx
+import { useAppIsStale } from "remix-utils/use-app-is-stale";
+
+export default function Component() {
+	let isStale = useAppIsStale();
+
+	// Run an effect to ask the user to reload
+	useEffect(() => {
+		if (!isStale) return;
+		if (window.confirm("The app is stale. Reload?")) window.location.reload();
+	}, [isStale]);
+
+	// Or render a UI to tell the user to reload.
+	if (isStale) {
+		return (
+			<div>
+				<p>There's a new version of the app, please reload the page</p>
+				<button onClick={() => window.location.reload()}>Reload</button>
+			</div>
+		);
+	}
+
+	return <div>Normal content</div>;
+}
+```
+
+For this hook to work is required an API endpoint to compare the client vs the server version.
+
+The default endpoint is expected to work under `/api/version`, and the example content is:
+
+```ts
+// app/routes/api.version.ts
+import { json } from "@remix-run/node"; // or /cloudflare or /deno
+import * as build from "@remix-run/dev/server-build";
+
+export async function loader() {
+	return json({ version: build.assets.version });
+}
+```
+
+The shape must always be `{ version: string }`.\
+
+> ![TIP]
+> Use `useAppIsStale({ path: "/api/v1/version" })` to customize the path of the API endpoint.
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)

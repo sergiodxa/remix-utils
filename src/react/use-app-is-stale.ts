@@ -1,47 +1,52 @@
-import { useCallback, useEffect, useState } from "react";
+import { useFetcher } from "@remix-run/react";
+import { useEffect } from "react";
+import { useHydrated } from "./use-hydrated.js";
 
 interface AppIsStaleOptions {
+	/**
+	 * The path of the endpoint used to check the server version.
+	 * @default "/api/version"
+	 */
 	path?: string;
+	/**
+	 * The interval in milliseconds to check the server version.
+	 * @default 5000
+	 */
 	intervalMs?: number;
 }
 
+/**
+ * Checks if the app is stale by comparing the server version with the client
+ * version.
+ * @param options The options for the hook.
+ * @returns `true` if the app is stale, `false` otherwise.
+ * @example
+ * let isStale = useAppIsStale();
+ * useEffect(() => {
+ *   if (!isStale) return;
+ *   if (window.confirm("The app is stale. Reload?")) {
+ *     window.location.reload();
+ *   }
+ * }, [isStale]);
+ */
 export function useAppIsStale({
 	path = "/api/version",
-	intervalMs = 2000,
+	intervalMs = 5000,
 }: AppIsStaleOptions = {}) {
-	let [isStale, setIsState] = useState(false);
+	let isHydrated = useHydrated();
+	let { load, data } = useFetcher<{ version: string }>();
 
-	let callback = useCallback(async () => {
+	let isStale = false;
+
+	if (isHydrated && data) {
+		isStale = data.version !== window.__remixManifest?.version;
+	}
+
+	useEffect(() => {
 		if (isStale) return;
-		try {
-			let response = await fetch(path, {
-				credentials: "omit",
-				redirect: "error",
-				cache: "no-cache",
-			});
-			if (!response.ok) return;
-
-			let data = await response.json();
-
-			if (typeof data !== "object") return;
-			if (data === null) return;
-			if (!("version" in data)) return;
-			if (typeof data.version !== "string") return;
-
-			return setIsState(data.version !== window.__remixManifest.version);
-		} catch {
-			return;
-		}
-	}, [isStale, path]);
-
-	usePoll(callback, intervalMs);
+		let id = setInterval(() => load(path), intervalMs);
+		return () => clearInterval(id);
+	}, [load, path, intervalMs, isStale]);
 
 	return isStale;
-}
-
-function usePoll(callback: () => void, intervalMs: number) {
-	useEffect(() => {
-		let id = setInterval(callback, intervalMs);
-		return () => clearInterval(id);
-	}, [callback, intervalMs]);
 }
