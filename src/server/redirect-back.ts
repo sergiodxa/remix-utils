@@ -1,3 +1,5 @@
+import { TypedResponse } from "@remix-run/node";
+
 /**
  * Create a new Response with a redirect set to the URL the user was before.
  * It uses the Referer header to detect the previous URL. It asks for a fallback
@@ -15,7 +17,7 @@
 export function redirectBack(
 	request: Request,
 	{ fallback, ...init }: ResponseInit & { fallback: string },
-): Response {
+): TypedResponse<never> {
 	let responseInit = init;
 	if (typeof responseInit === "number") {
 		responseInit = { status: responseInit };
@@ -29,5 +31,5 @@ export function redirectBack(
 	return new Response(null, {
 		...responseInit,
 		headers,
-	});
+	}) as TypedResponse<never>;
 }
