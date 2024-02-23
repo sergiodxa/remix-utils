@@ -63,6 +63,14 @@ If you're not sure if your app uses ESM or CJS, check if you have `serverModuleF
 
 In case you don't have one, if you're using Remix v1 it will be CJS and if you're using Remix v2 it will be ESM.
 
+If you're using Vite, but still building to CJS, you will need to [add this package to `noExternal`](https://remix.run/docs/en/main/future/vite#esm--cjs), so it's bundled with your server code. Therefore, add the following to `defineConfig()` in `vite.config.ts`:
+
+```js
+ssr: {
+      noExternal: ["remix-utils"],
+    },
+```
+
 > **Note**
 > Some of the optional dependencies in Remix Utils may still be published as CJS, so you may need to add them to `serverDependenciesToBundle` too.
 
