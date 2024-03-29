@@ -11,7 +11,7 @@ export type AwaitedPromiseHash<Hash extends PromiseHash> = {
  * Get a hash of promises and await them all.
  * Then return the same hash with the resolved values.
  * @example
- * export async function loader({ request }: LoaderArgs) {
+ * export async function loader({ request }: LoaderFunctionArgs) {
  *   return json(
  *     promiseHash({
  *       user: getUser(request),
@@ -20,7 +20,7 @@ export type AwaitedPromiseHash<Hash extends PromiseHash> = {
  *   );
  * }
  * @example
- * export async function loader({ request }: LoaderArgs) {
+ * export async function loader({ request }: LoaderFunctionArgs) {
  *   return json(
  *     promiseHash({
  *       user: getUser(request),
