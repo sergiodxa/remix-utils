@@ -1,11 +1,11 @@
 import { describe, test, expect } from "vitest";
 import {
-	ActionArgs,
+	ActionFunctionArgs,
 	createCookie,
 	createCookieSessionStorage,
 	isSession,
 	json,
-	LoaderArgs,
+	LoaderFunctionArgs,
 } from "@remix-run/node";
 import { z } from "zod";
 import {
@@ -38,7 +38,7 @@ declare module "@remix-run/server-runtime" {
 	}
 }
 
-async function loader({ request, context }: LoaderArgs) {
+async function loader({ request, context }: LoaderFunctionArgs) {
 	let session = await context.sessionStorage.getSession(
 		request.headers.get("Cookie"),
 	);
@@ -54,7 +54,7 @@ async function loader({ request, context }: LoaderArgs) {
 	return json({ value }, { headers });
 }
 
-async function action({ request, context }: ActionArgs) {
+async function action({ request, context }: ActionFunctionArgs) {
 	let session = await context.sessionStorage.getSession(
 		request.headers.get("Cookie"),
 	);

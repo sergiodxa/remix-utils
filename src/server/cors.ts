@@ -219,14 +219,14 @@ class CORS {
  *
  * @example
  * // Create a response, then setup CORS for it
- * export async function loader({ request }: LoaderArgs) {
+ * export async function loader({ request }: LoaderFunctionArgs) {
  *   let data = await getData(request);
  *   let response = json<LoaderData>(data);
  *   return await cors(request, response);
  * }
  * @example
  * // Create response and setup CORS in a single line
- * export async function loader({ request }: LoaderArgs) {
+ * export async function loader({ request }: LoaderFunctionArgs) {
  *   let data = await getData(request);
  *   return await cors(request, json<LoaderData>(data));
  * }
@@ -240,7 +240,7 @@ class CORS {
  * };
  * @example
  * // Pass a configuration object to setup CORS
- * export async function loader({ request }: LoaderArgs) {
+ * export async function loader({ request }: LoaderFunctionArgs) {
  *   let data = await getData(request);
  *   return await cors(request, json<LoaderData>(data), {
  *     origin: "https://example.com"
@@ -248,7 +248,7 @@ class CORS {
  * }
  * @example
  * // Mutate response and then return it
- * export async function loader({ request }: LoaderArgs) {
+ * export async function loader({ request }: LoaderFunctionArgs) {
  *   let data = await getData(request);
  *   let response = json<LoaderData>(data);
  *   await cors(request, response); // this mutates the Response object

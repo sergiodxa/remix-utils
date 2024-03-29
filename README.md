@@ -114,7 +114,7 @@ This function is an object version of `Promise.all` which lets you pass an objec
 ```ts
 import { promiseHash } from "remix-utils/promise";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	return json(
 		await promiseHash({
 			user: getUser(request),
@@ -129,7 +129,7 @@ You can use nested `promiseHash` to get a nested object with resolved values.
 ```ts
 import { promiseHash } from "remix-utils/promise";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	return json(
 		await promiseHash({
 			user: getUser(request),
@@ -297,7 +297,7 @@ If you want to use it on every loader/action, you can do it like this:
 ```ts
 import { cors } from "remix-utils/cors";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	let data = await getData(request);
 	let response = json<LoaderData>(data);
 	return await cors(request, response);
@@ -309,7 +309,7 @@ You could also do the `json` and `cors` call in one line.
 ```ts
 import { cors } from "remix-utils/cors";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	let data = await getData(request);
 	return await cors(request, json<LoaderData>(data));
 }
@@ -320,7 +320,7 @@ And because `cors` mutates the response, you can also call it and later return.
 ```ts
 import { cors } from "remix-utils/cors";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	let data = await getData(request);
 	let response = json<LoaderData>(data);
 	await cors(request, response); // this mutates the Response object
@@ -451,7 +451,7 @@ Then you can use `csrf` to generate a new token.
 ```ts
 import { csrf } from "~/utils/csrf.server";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	let token = csrf.generate();
 }
 ```
@@ -467,7 +467,7 @@ You will need to save this token in a cookie and also return it from the loader.
 ```ts
 import { csrf } from "~/utils/csrf.server";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	let [token, cookieHeader] = await csrf.commitToken();
 	return json({ token }, { headers: { "set-cookie": cookieHeader } });
 }
@@ -542,7 +542,7 @@ import { CSRFError } from "remix-utils/csrf/server";
 import { redirectBack } from "remix-utils/redirect-back";
 import { csrf } from "~/utils/csrf.server";
 
-export async function action({ request }: ActionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
 	try {
 		await csrf.validate(request);
 	} catch (error) {
@@ -902,7 +902,7 @@ import { useLocales } from "remix-utils/locales/react";
 import { getClientLocales } from "remix-utils/locales/server";
 
 // in the root loader
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   let locales = getClientLocales(request);
   return json({ locales });
 }
@@ -989,7 +989,7 @@ This function receives a Request or Headers objects and will try to get the IP a
 ```ts
 import { getClientIPAddress } from "remix-utils/get-client-ip-address";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	// using the request
 	let ipAddress = getClientIPAddress(request);
 	// or using the headers
@@ -1031,7 +1031,7 @@ This function let you get the locales of the client (the user) who originated th
 ```ts
 import { getClientLocales } from "remix-utils/locales/server";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	// using the request
 	let locales = getClientLocales(request);
 	// or using the headers
@@ -1045,7 +1045,7 @@ The returned locales can be directly used on the Intl API when formatting dates,
 
 ```ts
 import { getClientLocales } from "remix-utils/locales/server";
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	let locales = getClientLocales(request);
 	let nowDate = new Date();
 	let formatter = new Intl.DateTimeFormat(locales, {
@@ -1068,7 +1068,7 @@ This will let you implement a short cache only for prefetch requests so you [avo
 ```ts
 import { isPrefetch } from "remix-utils/is-prefetch";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	let data = await getData(request);
 	let headers = new Headers();
 
@@ -1091,7 +1091,7 @@ The response created with this function will have the `Location` header pointing
 ```ts
 import { redirectBack } from "remix-utils/redirect-back";
 
-export async function action({ request }: ActionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
 	throw redirectBack(request, { fallback: "/" });
 }
 ```
@@ -1105,7 +1105,7 @@ Helper function to create a Not Modified (304) response without a body and any h
 ```ts
 import { notModified } from "remix-utils/responses";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	return notModified();
 }
 ```
@@ -1119,7 +1119,7 @@ This is useful to create JS files based on data inside a Resource Route.
 ```ts
 import { javascript } from "remix-utils/responses";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	return javascript("console.log('Hello World')");
 }
 ```
@@ -1133,7 +1133,7 @@ This is useful to create CSS files based on data inside a Resource Route.
 ```ts
 import { stylesheet } from "remix-utils/responses";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	return stylesheet("body { color: red; }");
 }
 ```
@@ -1147,7 +1147,7 @@ This is useful to create PDF files based on data inside a Resource Route.
 ```ts
 import { pdf } from "remix-utils/responses";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	return pdf(await generatePDF(request.formData()));
 }
 ```
@@ -1161,7 +1161,7 @@ This is useful to create HTML files based on data inside a Resource Route.
 ```ts
 import { html } from "remix-utils/responses";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	return html("<h1>Hello World</h1>");
 }
 ```
@@ -1175,7 +1175,7 @@ This is useful to create XML files based on data inside a Resource Route.
 ```ts
 import { xml } from "remix-utils/responses";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	return xml("<?xml version='1.0'?><catalog></catalog>");
 }
 ```
@@ -1189,7 +1189,7 @@ This is useful to create TXT files based on data inside a Resource Route.
 ```ts
 import { txt } from "remix-utils/responses";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	return txt(`
     User-agent: *
     Allow: /
@@ -1377,7 +1377,7 @@ The `eventStream` function is used to create a new event stream response needed 
 import { eventStream } from "remix-utils/sse/server";
 import { interval } from "remix-utils/timers";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	return eventStream(request.signal, function setup(send) {
 		async function run() {
 			for await (let _ of interval(1000, { signal: request.signal })) {
@@ -1511,7 +1511,7 @@ It's common to need to handle more than one action in the same route, there are 
 ```tsx
 import { namedAction } from "remix-utils/named-action";
 
-export async function action({ request }: ActionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
 	return namedAction(request, {
 		async create() {
 			// do create
@@ -1631,7 +1631,7 @@ To help you prevent this Remix Utils gives you a `safeRedirect` function which c
 ```ts
 import { safeRedirect } from "remix-utils/safe-redirect";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	let { searchParams } = new URL(request.url);
 	let redirectTo = searchParams.get("redirectTo");
 	return redirect(safeRedirect(redirectTo, "/home"));
@@ -1882,7 +1882,7 @@ If you're building a resource route and wants to send a different response based
 ```ts
 import { respondTo } from "remix-utils/respond-to";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   // do any work independent of the response type before respondTo
   let data = await getData(request);
 
@@ -2127,7 +2127,7 @@ Using the `interval` combined with `eventStream` we could send a value to the cl
 import { eventStream } from "remix-utils/sse/server";
 import { interval } from "remix-utils/timers";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	return eventStream(request.signal, function setup(send) {
 		async function run() {
 			for await (let _ of interval(1000, { signal: request.signal })) {

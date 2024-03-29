@@ -2,7 +2,7 @@
  * Create a response with only the status 304 and optional headers.
  * This is useful when trying to implement conditional responses based on Etags.
  * @example
- * export async function loader({ request }: LoaderArgs) {
+ * export async function loader({ request }: LoaderFunctionArgs) {
  *   return notModified();
  * }
  */
@@ -17,7 +17,7 @@ export function notModified(init?: Omit<ResponseInit, "status">) {
  *
  * This is useful to dynamically create a JS file from a Resource Route.
  * @example
- * export async function loader({ request }: LoaderArgs) {
+ * export async function loader({ request }: LoaderFunctionArgs) {
  *   return javascript("console.log('Hello World')");
  * }
  */
@@ -45,7 +45,7 @@ export function javascript(
  *
  * This is useful to dynamically create a CSS file from a Resource Route.
  * @example
- * export async function loader({ request }: LoaderArgs) {
+ * export async function loader({ request }: LoaderFunctionArgs) {
  *   return css("body { color: red; }");
  * }
  */
@@ -73,7 +73,7 @@ export function stylesheet(
  *
  * This is useful to dynamically create a PDF file from a Resource Route.
  * @example
- * export async function loader({ request }: LoaderArgs) {
+ * export async function loader({ request }: LoaderFunctionArgs) {
  *   return pdf(await generatePDF(request.formData()));
  * }
  */
@@ -101,7 +101,7 @@ export function pdf(
  *
  * This is useful to dynamically create a HTML file from a Resource Route.
  * @example
- * export async function loader({ request }: LoaderArgs) {
+ * export async function loader({ request }: LoaderFunctionArgs) {
  *   return html("<h1>Hello World</h1>");
  * }
  */
@@ -197,7 +197,7 @@ export type ImageType =
  *
  * This is useful to dynamically create a image file from a Resource Route.
  * @example
- * export async function loader({ request }: LoaderArgs) {
+ * export async function loader({ request }: LoaderFunctionArgs) {
  *   return image(await takeScreenshot(), { type: "image/avif" });
  * }
  */
