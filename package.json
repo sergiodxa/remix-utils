@@ -162,7 +162,7 @@
 		"eslint-plugin-react": "^7.33.2",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-testing-library": "^6.0.2",
-		"eslint-plugin-unicorn": "^51.0.1",
+		"eslint-plugin-unicorn": "^52.0.0",
 		"happy-dom": "^14.3.6",
 		"intl-parse-accept-language": "^1.0.0",
 		"is-ip": "5.0.1",
