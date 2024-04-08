@@ -60,6 +60,26 @@ export class CSRF {
 	}
 
 	/**
+	 * Get the existing token from the cookie or generate a new one if it doesn't
+	 * exist.
+	 * @param requestOrHeaders A request or headers object from which we can
+	 * get the cookie to get the existing token.
+	 * @param bytes The number of bytes used to generate the token.
+	 * @returns The existing token if it exists in the cookie, otherwise a new
+	 * token.
+	 */
+	async getToken(
+		requestOrHeaders: Request | Headers = new Headers(),
+		bytes = 32,
+	) {
+		let headers = getHeaders(requestOrHeaders);
+		let existingToken = await this.cookie.parse(headers.get("cookie"));
+		let token =
+			typeof existingToken === "string" ? existingToken : this.generate(bytes);
+		return token;
+	}
+
+	/**
 	 * Generates a token and serialize it into the cookie.
 	 * @param requestOrHeaders A request or headers object from which we can
 	 * get the cookie to get the existing token.
