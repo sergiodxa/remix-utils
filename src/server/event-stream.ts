@@ -1,13 +1,13 @@
-interface SendFunctionArgs {
+interface SendFunctionArgs<T = string> {
 	/**
 	 * @default "message"
 	 */
 	event?: string;
-	data: string;
+	data: T;
 }
 
-interface SendFunction {
-	(args: SendFunctionArgs): void;
+interface SendFunction<T = string> {
+	(args: SendFunctionArgs<T>): void;
 }
 
 interface CleanupFunction {
@@ -18,8 +18,17 @@ interface AbortFunction {
 	(): void;
 }
 
-interface InitFunction {
-	(send: SendFunction, abort: AbortFunction): CleanupFunction;
+interface InitFunction<T = string> {
+	(send: SendFunction<T>, abort: AbortFunction): CleanupFunction;
+}
+
+interface HandleFunction<T = string> {
+	(send: SendFunction<T>, abort: AbortFunction): Promise<void> | void;
+}
+
+interface Options<T = string> {
+	cleanup: CleanupFunction;
+	handle: HandleFunction<T>;
 }
 
 /**
@@ -28,21 +37,33 @@ interface InitFunction {
  * @param init The function that will be called to initialize the stream, here you can subscribe to your events
  * @returns A Response object that can be returned from a loader
  */
-export function eventStream(
+export function eventStream<T = string>(
 	signal: AbortSignal,
-	init: InitFunction,
-	options: ResponseInit = {},
+	init: InitFunction<T>,
+	responseInit?: ResponseInit,
+): Response;
+export function eventStream<T = string>(
+	signal: AbortSignal,
+	options: Options<T>,
+	responseInit?: ResponseInit,
+): Response;
+export function eventStream<T = string>(
+	signal: AbortSignal,
+	initOrOptions: InitFunction<T> | Options<T>,
+	responseInit: ResponseInit = {},
 ) {
 	let stream = new ReadableStream({
 		start(controller) {
 			let encoder = new TextEncoder();
 
-			function send({ event = "message", data }: SendFunctionArgs) {
-				controller.enqueue(encoder.encode(`event: ${event}\n`));
-				controller.enqueue(encoder.encode(`data: ${data}\n\n`));
-			}
+			let cleanup =
+				typeof initOrOptions === "function"
+					? initOrOptions(send, close)
+					: initOrOptions.cleanup;
 
-			let cleanup = init(send, close);
+			if (typeof initOrOptions !== "function") {
+				initOrOptions.handle(send, close);
+			}
 
 			let closed = false;
 
@@ -57,10 +78,15 @@ export function eventStream(
 			signal.addEventListener("abort", close);
 
 			if (signal.aborted) return close();
+
+			async function send({ event = "message", data }: SendFunctionArgs<T>) {
+				controller.enqueue(encoder.encode(`event: ${event}\n`));
+				controller.enqueue(encoder.encode(`data: ${data}\n\n`));
+			}
 		},
 	});
 
-	let headers = new Headers(options.headers);
+	let headers = new Headers(responseInit.headers);
 
 	if (headers.has("Content-Type")) {
 		console.warn("Overriding Content-Type header to `text/event-stream`");
@@ -78,5 +104,5 @@ export function eventStream(
 	headers.set("Cache-Control", "no-cache");
 	headers.set("Connection", "keep-alive");
 
-	return new Response(stream, { headers });
+	return new Response(stream, { ...responseInit, headers });
 }
