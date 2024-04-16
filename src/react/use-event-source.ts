@@ -1,8 +1,16 @@
-import { useEffect, useState, createContext, useContext } from "react";
+import {
+	useEffect,
+	useState,
+	createContext,
+	useContext,
+	useRef,
+	useLayoutEffect,
+} from "react";
 
 export interface EventSourceOptions {
 	init?: EventSourceInit;
 	event?: string;
+	onEvent?: (data: string) => void;
 }
 
 export type EventSourceMap = Map<
@@ -24,10 +32,16 @@ export const EventSourceProvider = context.Provider;
  */
 export function useEventSource(
 	url: string | URL,
-	{ event = "message", init }: EventSourceOptions = {},
+	{ event = "message", init, onEvent }: EventSourceOptions = {},
 ) {
 	let map = useContext(context);
 	let [data, setData] = useState<string | null>(null);
+
+	// Stabilize the onEvent callback
+	let onEventRef = useRef(onEvent);
+	useLayoutEffect(() => {
+		onEventRef.current = onEvent;
+	});
 
 	useEffect(() => {
 		let key = [url.toString(), init?.withCredentials].join("::");
@@ -47,7 +61,9 @@ export function useEventSource(
 		setData(null);
 
 		function handler(event: MessageEvent) {
-			setData(event.data || "UNKNOWN_EVENT_DATA");
+			let data = event.data || "UNKNOWN_EVENT_DATA";
+			setData(data);
+			onEventRef.current?.(data);
 		}
 
 		return () => {
