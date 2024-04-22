@@ -173,6 +173,6 @@
 		"zod": "^3.22.4"
 	},
 	"dependencies": {
-		"type-fest": "^4.3.3"
+		"type-fest": "^4.16.0"
 	}
 }
