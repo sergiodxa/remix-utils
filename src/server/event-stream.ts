@@ -39,7 +39,10 @@ export function eventStream(
 
 			function send({ event = "message", data }: SendFunctionArgs) {
 				controller.enqueue(encoder.encode(`event: ${event}\n`));
-				controller.enqueue(encoder.encode(`data: ${data}\n\n`));
+				data.split("\n").forEach((line) => {
+					controller.enqueue(encoder.encode(`data: ${line}\n`));
+				})
+				controller.enqueue(encoder.encode("\n"));
 			}
 
 			let cleanup = init(send, close);
