@@ -1575,6 +1575,11 @@ If the library couldn't found the name at all, it will throw a ReferenceError wi
 
 ### Preload Route Assets
 
+> [!CAUTION]
+> This can potentialy create big `Link` header and can cause extremely hard to debug issues. Some provider's load balancers have set certain buffer for parsing outgoing response's headers and thanks to `preloadRouteAssets` you can easily reach that in a medium sized application.
+> Your load balancer can randomly stop responding or start throwing 502 error.
+> To overcome this either don't use `preloadRouteAssets`, set bigger buffer for processing response headers if you own the loadbalancer or use the `experimentalMinChunkSize` option in Vite config (this does not solve the issue permanently, only delays it)
+
 The `Link` header allows responses to push to the browser assets that are needed for the document, this is useful to improve the performance of the application by sending those assets earlier.
 
 Once Early Hints is supported this will also allows you to send the assets even before the document is ready, but for now you can benefit to send assets to preload before the browser parse the HTML.
