@@ -28,6 +28,7 @@ describe(eventStream, () => {
 		let controller = new AbortController();
 		let response = eventStream(controller.signal, (send, _) => {
 			send({ data: "hello" });
+			send({ event: "multi-line", data: "hello\nworld" });
 			return () => {};
 		});
 
@@ -36,12 +37,21 @@ describe(eventStream, () => {
 		if (!response.body) throw new Error("Response body is undefined");
 
 		let reader = response.body.getReader();
+		let decoder = new TextDecoder();
 
 		let { value: event } = await reader.read();
-		expect(event).toEqual(new TextEncoder().encode("event: message\n"));
+		expect(decoder.decode(event)).toEqual("event: message\n");
 
 		let { value: data } = await reader.read();
-		expect(data).toEqual(new TextEncoder().encode("data: hello\n\n"));
+		expect(decoder.decode(data)).toEqual("data: hello\n\n");
+
+		let { value: multiLineEvent } = await reader.read();
+		expect(decoder.decode(multiLineEvent)).toEqual("event: multi-line\n");
+
+		let { value: multiLineData } = await reader.read();
+		expect(decoder.decode(multiLineData)).toEqual(
+			"data: hello\ndata: world\n\n",
+		);
 
 		let { done } = await reader.read();
 		expect(done).toBe(true);
