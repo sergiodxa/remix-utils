@@ -1,4 +1,4 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import { respondTo } from "../../src/server/respond-to";
 
 describe(respondTo, () => {

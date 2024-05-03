@@ -184,9 +184,9 @@ export class CSRF {
 	}
 
 	private parseCookie(data: FormData | Request, headers?: Headers) {
-		if (data instanceof Request) headers = data.headers;
-		if (!headers) return null;
-		return this.cookie.parse(headers.get("cookie"));
+		let _headers = data instanceof Request ? data.headers : headers;
+		if (!_headers) return null;
+		return this.cookie.parse(_headers.get("cookie"));
 	}
 
 	private sign(token: string) {

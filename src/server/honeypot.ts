@@ -55,7 +55,11 @@ const DEFAULT_VALID_FROM_FIELD_NAME = "from__confirm";
 export class Honeypot {
 	private generatedEncryptionSeed = this.randomValue();
 
-	constructor(protected config: HoneypotConfig = {}) {}
+	protected config: HoneypotConfig;
+
+	constructor(config: HoneypotConfig = {}) {
+		this.config = config;
+	}
 
 	/**
 	 * Get the HoneypotInputProps to be used in your forms.

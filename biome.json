@@ -1,0 +1,55 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.7.1/schema.json",
+	"organizeImports": {
+		"enabled": true
+	},
+	"files": {
+		"ignore": ["src/server/json-hash.ts"]
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"useHookAtTopLevel": "error"
+			},
+			"performance": {
+				"noBarrelFile": "error",
+				"noReExportAll": "error"
+			},
+			"style": {
+				"noNegationElse": "error",
+				"useConst": "off",
+				"useExportType": "off",
+				"useImportType": "off"
+			},
+			"suspicious": {
+				"noConsoleLog": "warn",
+				"noEmptyBlockStatements": "warn",
+				"noSkippedTests": "error"
+			},
+			"nursery": {
+				"useSortedClasses": {
+					"level": "error",
+					"options": {
+						"attributes": ["className", "class"],
+						"functions": ["cn", "tv"]
+					}
+				}
+			}
+		}
+	},
+	"formatter": { "enabled": true },
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"defaultBranch": "main",
+		"useIgnoreFile": true
+	},
+	"overrides": [
+		{
+			"include": ["**/*.md"],
+			"formatter": { "indentStyle": "tab" }
+		}
+	]
+}

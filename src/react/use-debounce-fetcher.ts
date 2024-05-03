@@ -1,7 +1,7 @@
 import type {
-	SubmitOptions,
 	FetcherWithComponents,
 	SubmitFunction,
+	SubmitOptions,
 } from "@remix-run/react";
 import { useFetcher } from "@remix-run/react";
 import { useCallback, useEffect, useRef } from "react";
@@ -43,7 +43,7 @@ export function useDebounceFetcher<Data>() {
 		return () => {
 			if (timeout) clearTimeout(timeout);
 		};
-	}, [timeoutRef]);
+	}, []);
 
 	let fetcher = useFetcher<Data>() as DebouncedFetcher<Data>;
 

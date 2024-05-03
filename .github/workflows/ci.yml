@@ -35,7 +35,7 @@ jobs:
       - run: bun run typecheck
 
   test:
-    name: Unit and Integration Tests
+    name: Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -43,11 +43,10 @@ jobs:
       - run: bun install
       - run: bun run test
 
-  lint:
-    name: Linter
+  quality:
+    name: Code Quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
-      - run: bun install
-      - run: bun run lint
+      - uses: bahmutov/npm-install@v1
+      - run: npx biome check .

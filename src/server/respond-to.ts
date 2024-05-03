@@ -67,7 +67,6 @@ export function respondTo(
 		if (handler) return handler();
 		handler = handlers[type];
 		if (handler) return handler();
-		continue;
 	}
 
 	return handlers.default();

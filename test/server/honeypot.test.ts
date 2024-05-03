@@ -1,8 +1,9 @@
-import { describe } from "vitest";
 import CryptoJS from "crypto-js";
+import { describe, expect, test } from "vitest";
 
 import { Honeypot, SpamError } from "../../src/server/honeypot";
 
+// biome-ignore lint/suspicious/noExplicitAny: Test
 function invariant(condition: any, message: string): asserts condition {
 	if (!condition) throw new Error(message);
 }

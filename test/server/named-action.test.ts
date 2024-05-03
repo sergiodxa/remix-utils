@@ -1,6 +1,6 @@
-/* eslint-disable unicorn/consistent-function-scoping */
-import { describe, test, expect } from "vitest";
 import { ActionFunctionArgs, json } from "@remix-run/server-runtime";
+/* eslint-disable unicorn/consistent-function-scoping */
+import { describe, expect, test } from "vitest";
 import { namedAction } from "../../src/server/named-action";
 
 describe(namedAction.name, () => {

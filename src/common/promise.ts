@@ -84,34 +84,32 @@ let TIMEOUT = Symbol("TIMEOUT");
  *   }
  * }
  */
-export function timeout<Value>(
+export async function timeout<Value>(
 	promise: Promise<Value>,
 	options: { controller?: AbortController; ms: number },
 ): Promise<Value> {
-	return new Promise(async (resolve, reject) => {
-		let timer: NodeJS.Timeout | null = null;
+	let timer: Timer | null = null;
 
-		try {
-			let result = await Promise.race([
-				promise,
-				new Promise((resolve) => {
-					timer = setTimeout(() => resolve(TIMEOUT), options.ms);
-				}),
-			]);
+	try {
+		let result = await Promise.race([
+			promise,
+			new Promise((resolve) => {
+				timer = setTimeout(() => resolve(TIMEOUT), options.ms);
+			}),
+		]);
 
-			if (timer) clearTimeout(timer);
+		if (timer) clearTimeout(timer);
 
-			if (result === TIMEOUT) {
-				if (options.controller) options.controller.abort();
-				return reject(new TimeoutError(`Timed out after ${options.ms}ms`));
-			}
-
-			return resolve(result as Awaited<Value>);
-		} catch (error) {
-			if (timer) clearTimeout(timer);
-			reject(error);
+		if (result === TIMEOUT) {
+			if (options.controller) options.controller.abort();
+			throw new TimeoutError(`Timed out after ${options.ms}ms`);
 		}
-	});
+
+		return result as Awaited<Value>;
+	} catch (error) {
+		if (timer) clearTimeout(timer);
+		throw error;
+	}
 }
 
 /**

@@ -1,9 +1,9 @@
 // @vitest-environment happy-dom
 import { RouteData } from "@remix-run/router/dist/utils";
+import { afterEach, describe, expect, test, vi } from "vitest";
 import { useLocales } from "../../src/react/use-locales";
 import { fakeMatch } from "../helpers/fake-match";
 import { mockMatches } from "../helpers/mock-match";
-import { vi, describe, test, expect, afterEach } from "vitest";
 
 describe.skip(useLocales, () => {
 	afterEach(() => {
@@ -56,7 +56,7 @@ describe.skip(useLocales, () => {
 			expect(useLocales()).toBeUndefined();
 		});
 
-		test.only("String", () => {
+		test("String", () => {
 			mockMatches.mockReturnValue([fakeMatch({ locales: "en" })]);
 			// mockMatches([fakeMatch({ locales: "en" })]);
 			expect(useLocales()).toBe("en");

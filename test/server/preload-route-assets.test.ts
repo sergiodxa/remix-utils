@@ -1,7 +1,7 @@
-import { describe, test, expect } from "vitest";
 import type { EntryContext } from "@remix-run/server-runtime";
-import { preloadRouteAssets } from "../../src/server/preload-route-assets";
 import { SerializedError } from "@remix-run/server-runtime/dist/errors";
+import { describe, expect, test } from "vitest";
+import { preloadRouteAssets } from "../../src/server/preload-route-assets";
 
 describe(preloadRouteAssets.name, () => {
 	let context: EntryContext = {
