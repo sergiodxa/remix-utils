@@ -35,7 +35,7 @@ type DebouncedFetcher<Data = unknown> = Omit<
 > & { submit: DebounceSubmitFunction };
 
 export function useDebounceFetcher<Data>() {
-	let timeoutRef = useRef<NodeJS.Timeout | undefined>();
+	let timeoutRef = useRef<Timer | undefined>();
 
 	useEffect(() => {
 		// no initialize step required since timeoutRef defaults undefined
