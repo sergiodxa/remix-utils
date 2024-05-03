@@ -6,8 +6,8 @@
 .gitignore
 .npmignore
 .npmrc
+biome.json
 bun.lockb
-prettier.config.js
 tsconfig.json
 vitest.config.ts
 vitest.setup.ts
