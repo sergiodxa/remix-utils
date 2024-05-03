@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from "react";
 
 function subscribe() {
+	// biome-ignore lint/suspicious/noEmptyBlockStatements: Mock function
 	return () => {};
 }
 

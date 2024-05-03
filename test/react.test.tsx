@@ -1,7 +1,7 @@
-// @vitest-environment happy-dom
-import { describe, test } from "vitest";
 import { render } from "@testing-library/react";
 import * as React from "react";
+// @vitest-environment happy-dom
+import { describe, test } from "vitest";
 import {
 	AuthenticityTokenInput,
 	AuthenticityTokenProvider,

@@ -1,11 +1,11 @@
-// @vitest-environment happy-dom
-import * as React from "react";
-import { describe, test, expect } from "vitest";
 import { unstable_createRemixStub as createRemixStub } from "@remix-run/testing";
 import { render, screen } from "@testing-library/react";
+// @vitest-environment happy-dom
+import * as React from "react";
+import { describe, expect, test } from "vitest";
 
-import { getFetcherType, useFetcherType } from "../../src/react/fetcher-type";
 import { useFetcher } from "@remix-run/react";
+import { getFetcherType, useFetcherType } from "../../src/react/fetcher-type";
 
 describe(getFetcherType, () => {
 	test("returns done", () => {

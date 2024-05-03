@@ -1,9 +1,9 @@
+import { useNavigate } from "@remix-run/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 // @vitest-environment happy-dom
 import * as React from "react";
-import { vi, beforeAll, afterEach, test, expect, MockedFunction } from "vitest";
+import { MockedFunction, afterEach, beforeAll, expect, test, vi } from "vitest";
 import { PrefetchPageAnchors } from "../../src/react/use-delegated-anchors";
-import { render, screen, fireEvent } from "@testing-library/react";
-import { useNavigate } from "@remix-run/react";
 
 // vi.mock("@remix-run/react");
 
@@ -134,7 +134,7 @@ describe.skip(PrefetchPageAnchors.name, () => {
 	test("ignores links with target=_blank", () => {
 		render(
 			<PrefetchPageAnchors>
-				<a href="/link" target="_blank">
+				<a href="/link" target="_blank" rel="noreferrer">
 					A link
 				</a>
 			</PrefetchPageAnchors>,

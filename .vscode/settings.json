@@ -1,0 +1,70 @@
+{
+	"[javascript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[javascriptreact]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[markdown]": {
+		"editor.wordWrap": "on"
+	},
+	"editor.codeActionsOnSave": {
+		"source.organizeImports.biome": "explicit",
+		"quickfix.biome": "explicit"
+	},
+	"editor.formatOnPaste": true,
+	"editor.formatOnSave": true,
+	"editor.inlineSuggest.enabled": true,
+	"editor.multiCursorModifier": "ctrlCmd",
+	"editor.renderWhitespace": "all",
+	"editor.tabSize": 2,
+	"editor.wordWrap": "wordWrapColumn",
+	"editor.wordWrapColumn": 80,
+	"files.associations": {
+		"*.js": "javascriptreact",
+		"*.ts": "typescriptreact"
+	},
+	"files.defaultLanguage": "markdown",
+	"tailwindCSS.classAttributes": ["class", "className", "cn", "tv"],
+	"workbench.editor.customLabels.enabled": true,
+	"workbench.editor.customLabels.patterns": {
+		"**/.github/workflows/*.yml": "${filename} - GitHub Action",
+		"**/app/**/*.stories.tsx": "${dirname}/${filename} - Story",
+		"**/app/**/*.test.ts": "${dirname}/${filename} - Unit Test",
+		"**/app/**/*.test.tsx": "${dirname}/${filename} - Component Test",
+		"**/app/components/**/*.tsx": "${dirname}/${filename} - Component",
+		"**/app/entry.client.tsx": "${dirname}/${filename} - Entry Client",
+		"**/app/entry.server.tsx": "${dirname}/${filename} - Entry Server",
+		"**/app/helpers/**/*.ts": "${dirname}/${filename} - Helper",
+		"**/app/helpers/**/*.tsx": "${dirname}/${filename} - Helper",
+		"**/app/hooks/**/*.ts": "${dirname}/${filename} - Hook",
+		"**/app/hooks/**/*.tsx": "${dirname}/${filename} - Hook",
+		"**/app/modules/**/*.ts": "${filename} - Module",
+		"**/app/routes/*.ts": "${dirname}/${filename} - Resource Route",
+		"**/app/routes/*.tsx": "${dirname}/${filename} - UI Route",
+		"**/app/routes/**/route.ts": "${dirname} - Resource Route",
+		"**/app/routes/**/route.tsx": "${dirname} - UI Route",
+		"**/app/ui/**/*.tsx": "${dirname}/${filename} - UI Kit",
+		"**/config/*.ts": "${filename} - Config",
+		"**/db/migrations/*.sql": "${filename} - Migration",
+		"**/db/schema.ts": "Database Schema",
+		"**/e2e/**/*.test.ts": "${filename} - E2E Test",
+		"**/locales/**/*.ts": "${dirname}/${filename} - Locale",
+		"**/scripts/**/*.ts": "${filename} - CLI",
+		"**/server/modules/**/*.ts": "${filename} - Server Module",
+		"**/types/**/*.d.ts": "${filename} - Type"
+	},
+	"workbench.iconTheme": "vscode-icons"
+}

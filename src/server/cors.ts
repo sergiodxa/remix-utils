@@ -87,7 +87,7 @@ class CORS {
 	}
 
 	private configureMaxAge(headers: Headers) {
-		var { maxAge } = this.options;
+		const { maxAge } = this.options;
 
 		if (!this.isNumber(maxAge)) return headers;
 

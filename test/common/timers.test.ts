@@ -1,5 +1,5 @@
-import { wait, interval, TimersError } from "../../src/common/timers";
-import { describe, test, expect, beforeAll, vi, afterAll } from "vitest";
+import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
+import { TimersError, interval, wait } from "../../src/common/timers";
 
 describe("Timers", () => {
 	beforeAll(() => {

@@ -1,11 +1,11 @@
-import type { SubmitOptions, SubmitFunction } from "@remix-run/react";
+import type { SubmitFunction, SubmitOptions } from "@remix-run/react";
 import { useSubmit } from "@remix-run/react";
 import { useCallback, useEffect, useRef } from "react";
 
 type SubmitTarget = Parameters<SubmitFunction>["0"];
 
 export function useDebounceSubmit() {
-	let timeoutRef = useRef<NodeJS.Timeout | undefined>();
+	let timeoutRef = useRef<Timer | undefined>();
 
 	useEffect(() => {
 		// no initialize step required since timeoutRef defaults undefined
@@ -13,7 +13,7 @@ export function useDebounceSubmit() {
 		return () => {
 			if (timeout) clearTimeout(timeout);
 		};
-	}, [timeoutRef]);
+	}, []);
 
 	// Clone the original submit to avoid a recursive loop
 	const originalSubmit = useSubmit();

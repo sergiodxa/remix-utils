@@ -1,4 +1,4 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import { parseAcceptHeader } from "../../src/server/parse-accept-header";
 
 describe(parseAcceptHeader, () => {

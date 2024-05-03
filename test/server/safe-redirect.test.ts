@@ -1,4 +1,4 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import { safeRedirect } from "../../src/server/safe-redirect";
 
 describe(safeRedirect.name, () => {
