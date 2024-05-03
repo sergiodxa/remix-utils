@@ -1,10 +1,19 @@
 import { wait, interval, TimersError } from "../../src/common/timers";
-import { describe, test, expect } from "vitest";
+import { describe, test, expect, beforeAll, vi, afterAll } from "vitest";
 
 describe("Timers", () => {
+	beforeAll(() => {
+		vi.useFakeTimers();
+	});
+
+	afterAll(() => {
+		vi.useRealTimers();
+	});
+
 	describe(wait.name, () => {
 		test("should resolve after the specified time", async () => {
 			let start = Date.now();
+			vi.advanceTimersByTimeAsync(100);
 			await wait(100);
 			let end = Date.now();
 			expect(end - start).toBeGreaterThanOrEqual(100);
@@ -25,6 +34,7 @@ describe("Timers", () => {
 		test("should resolve after the specified time", async () => {
 			let controller = new AbortController();
 			let start = Date.now();
+			vi.advanceTimersByTimeAsync(100);
 			let iterator = interval(100, { signal: controller.signal });
 			let next = await iterator.next();
 			let end = Date.now();
