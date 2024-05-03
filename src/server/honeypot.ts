@@ -1,28 +1,68 @@
 import CryptoJS from "crypto-js";
 
 export interface HoneypotInputProps {
+	/**
+	 * The name expected to be used by the honeypot input field.
+	 */
 	nameFieldName: string;
+	/**
+	 * The name expected to be used by the honeypot valid from input field.
+	 */
 	validFromFieldName: string | null;
+	/**
+	 * The encrypted value of the current timestamp.
+	 */
 	encryptedValidFrom: string;
 }
 
 export interface HoneypotConfig {
+	/**
+	 * Enable randomization of the name field name, this way the honeypot field
+	 * name will be different for each request.
+	 */
 	randomizeNameFieldName?: boolean;
+	/**
+	 * The name of the field that will be used for the honeypot input.
+	 */
 	nameFieldName?: string;
+	/**
+	 * The name of the field that will be used for the honeypot valid from input.
+	 */
 	validFromFieldName?: string | null;
+	/**
+	 * The seed used for the encryption of the valid from timestamp.
+	 */
 	encryptionSeed?: string;
 }
 
-export class SpamError extends Error {}
+/**
+ * The error thrown when the Honeypot fails, meaning some automated bot filled
+ * the form and the request is probably spam.
+ */
+export class SpamError extends Error {
+	readonly name = "SpamError";
+}
 
 const DEFAULT_NAME_FIELD_NAME = "name__confirm";
 const DEFAULT_VALID_FROM_FIELD_NAME = "from__confirm";
 
+/**
+ * Module used to implement a Honeypot.
+ * A Honeypot is a visually hidden input that is used to detect spam bots. This
+ * field is expected to be left empty by users because they don't see it, but
+ * bots will fill it falling in the honeypot trap.
+ */
 export class Honeypot {
 	private generatedEncryptionSeed = this.randomValue();
 
 	constructor(protected config: HoneypotConfig = {}) {}
 
+	/**
+	 * Get the HoneypotInputProps to be used in your forms.
+	 * @param {Object} options The options for the input props.
+	 * @param {number} options.validFromTimestamp Since when the timestamp is valid.
+	 * @returns {HoneypotInputProps} The props to be used in the form.
+	 */
 	public getInputProps({
 		validFromTimestamp = Date.now(),
 	} = {}): HoneypotInputProps {
