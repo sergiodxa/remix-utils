@@ -6,6 +6,7 @@
 		"node": ">=18.0.0"
 	},
 	"type": "module",
+	"funding": ["https://github.com/sponsors/sergiodxa"],
 	"exports": {
 		"./package.json": "./package.json",
 		"./promise": "./build/common/promise.js",
