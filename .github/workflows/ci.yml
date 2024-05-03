@@ -48,5 +48,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: bahmutov/npm-install@v1
-      - run: npx biome check .
+      - uses: oven-sh/setup-bun@v1
+      - run: bun run check
