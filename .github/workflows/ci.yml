@@ -49,4 +49,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
+      - run: bun install --frozen-lockfile
       - run: bun run check
