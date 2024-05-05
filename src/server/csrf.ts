@@ -60,6 +60,26 @@ export class CSRF {
 	}
 
 	/**
+	 * Get the existing token from the cookie or generate a new one if it doesn't
+	 * exist.
+	 * @param requestOrHeaders A request or headers object from which we can
+	 * get the cookie to get the existing token.
+	 * @param bytes The number of bytes used to generate the token.
+	 * @returns The existing token if it exists in the cookie, otherwise a new
+	 * token.
+	 */
+	async getToken(
+		requestOrHeaders: Request | Headers = new Headers(),
+		bytes = 32,
+	) {
+		let headers = getHeaders(requestOrHeaders);
+		let existingToken = await this.cookie.parse(headers.get("cookie"));
+		let token =
+			typeof existingToken === "string" ? existingToken : this.generate(bytes);
+		return token;
+	}
+
+	/**
 	 * Generates a token and serialize it into the cookie.
 	 * @param requestOrHeaders A request or headers object from which we can
 	 * get the cookie to get the existing token.
@@ -88,18 +108,18 @@ export class CSRF {
 	/**
 	 * Verify if a request and cookie has a valid CSRF token.
 	 * @example
-	 * export async function action({ request }: ActionArgs) {
+	 * export async function action({ request }: ActionFunctionArgs) {
 	 *   await csrf.validate(request);
 	 *   // the request is authenticated and you can do anything here
 	 * }
 	 * @example
-	 * export async function action({ request }: ActionArgs) {
+	 * export async function action({ request }: ActionFunctionArgs) {
 	 *   let formData = await request.formData()
 	 *   await csrf.validate(formData, request.headers);
 	 *   // the request is authenticated and you can do anything here
 	 * }
 	 * @example
-	 * export async function action({ request }: ActionArgs) {
+	 * export async function action({ request }: ActionFunctionArgs) {
 	 *   let formData = await parseMultipartFormData(request);
 	 *   await csrf.validate(formData, request.headers);
 	 *   // the request is authenticated and you can do anything here
@@ -164,9 +184,9 @@ export class CSRF {
 	}
 
 	private parseCookie(data: FormData | Request, headers?: Headers) {
-		if (data instanceof Request) headers = data.headers;
-		if (!headers) return null;
-		return this.cookie.parse(headers.get("cookie"));
+		let _headers = data instanceof Request ? data.headers : headers;
+		if (!_headers) return null;
+		return this.cookie.parse(_headers.get("cookie"));
 	}
 
 	private sign(token: string) {

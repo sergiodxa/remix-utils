@@ -18,7 +18,7 @@ export interface RespondToHandlers {
  * @param handlers The handlers to respond with
  * @returns The response from the handler
  * @example
- * export async function loader({ request }: LoaderArgs) {
+ * export async function loader({ request }: LoaderFunctionArgs) {
  *   // do any work independent of the response type before respondTo
  *   let data = await getData(request);
  *   return respondTo(request, {
@@ -67,7 +67,6 @@ export function respondTo(
 		if (handler) return handler();
 		handler = handlers[type];
 		if (handler) return handler();
-		continue;
 	}
 
 	return handlers.default();

@@ -1,19 +1,19 @@
-import { describe, test, expect } from "vitest";
 import {
-	ActionArgs,
+	ActionFunctionArgs,
+	LoaderFunctionArgs,
 	createCookie,
 	createCookieSessionStorage,
 	isSession,
 	json,
-	LoaderArgs,
 } from "@remix-run/node";
+import { describe, expect, test } from "vitest";
 import { z } from "zod";
+import { createTypedCookie } from "../../src/server/typed-cookie";
 import {
+	TypedSessionStorage,
 	createTypedSessionStorage,
 	isTypedSession,
-	TypedSessionStorage,
 } from "../../src/server/typed-session";
-import { createTypedCookie } from "../../src/server/typed-cookie";
 
 let cookie = createCookie("session", { secrets: ["secret"] });
 let schema = z.object({
@@ -38,7 +38,7 @@ declare module "@remix-run/server-runtime" {
 	}
 }
 
-async function loader({ request, context }: LoaderArgs) {
+async function loader({ request, context }: LoaderFunctionArgs) {
 	let session = await context.sessionStorage.getSession(
 		request.headers.get("Cookie"),
 	);
@@ -54,7 +54,7 @@ async function loader({ request, context }: LoaderArgs) {
 	return json({ value }, { headers });
 }
 
-async function action({ request, context }: ActionArgs) {
+async function action({ request, context }: ActionFunctionArgs) {
 	let session = await context.sessionStorage.getSession(
 		request.headers.get("Cookie"),
 	);

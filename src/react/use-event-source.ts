@@ -1,4 +1,4 @@
-import { useEffect, useState, createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 export interface EventSourceOptions {
 	init?: EventSourceInit;

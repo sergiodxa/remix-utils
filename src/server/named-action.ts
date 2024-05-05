@@ -48,7 +48,7 @@ export async function namedAction<Actions extends ActionsRecord>(
 	}
 
 	if (name === null && "default" in actions) {
-		return actions["default"]() as unknown as TypedResponse<
+		return actions.default() as unknown as TypedResponse<
 			ResponsesUnion<Actions>
 		>;
 	}

@@ -1,5 +1,5 @@
-import { describe, test, expect } from "vitest";
 import { createCookie } from "@remix-run/node";
+import { describe, expect, test } from "vitest";
 import { CSRF, CSRFError } from "../../src/server/csrf";
 
 describe("CSRF", () => {

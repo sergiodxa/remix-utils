@@ -6,7 +6,7 @@ const context = React.createContext(false);
 export function isLinkEvent(event: MouseEvent) {
 	if (!(event.target instanceof HTMLElement)) return;
 	let a = event.target.closest("a");
-	if (a && a.hasAttribute("href") && a.host === window.location.host) return a;
+	if (a?.hasAttribute("href") && a.host === window.location.host) return a;
 	return;
 }
 

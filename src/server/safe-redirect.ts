@@ -15,16 +15,16 @@ export function safeRedirect(
 ) {
 	if (!to || typeof to !== "string") return defaultRedirect;
 
-	to = to.trim();
+	let trimmedTo = to.trim();
 
 	if (
-		!to.startsWith("/") ||
-		to.startsWith("//") ||
-		to.startsWith("/\\") ||
-		to.includes("..")
+		!trimmedTo.startsWith("/") ||
+		trimmedTo.startsWith("//") ||
+		trimmedTo.startsWith("/\\") ||
+		trimmedTo.includes("..")
 	) {
 		return defaultRedirect;
 	}
 
-	return to;
+	return trimmedTo;
 }

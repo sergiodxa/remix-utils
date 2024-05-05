@@ -62,6 +62,7 @@ export function preloadLinkedAssets(context: EntryContext, headers: Headers) {
 	let links = context.staticHandlerContext.matches
 		.flatMap((match) => {
 			let route = context.routeModules[match.route.id];
+			if (!route) return [];
 			if (route.links instanceof Function) return route.links();
 			return [];
 		})

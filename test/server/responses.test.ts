@@ -1,14 +1,14 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import {
-	html,
-	xml,
-	txt,
-	image,
 	ImageType,
+	html,
+	image,
 	javascript,
 	notModified,
 	pdf,
 	stylesheet,
+	txt,
+	xml,
 } from "../../src/server/responses";
 
 let jsonContentType = "application/json; charset=utf-8";

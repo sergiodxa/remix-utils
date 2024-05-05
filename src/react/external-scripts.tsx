@@ -1,5 +1,5 @@
-import * as React from "react";
 import { useLocation, useMatches } from "@remix-run/react";
+import * as React from "react";
 import { HandleConventionArguments } from "./handle-conventions.js";
 import { useHydrated } from "./use-hydrated.js";
 
@@ -58,9 +58,9 @@ export type ScriptDescriptor = {
 	type?: ScriptType;
 };
 
-export interface ExternalScriptsFunction<Loader = unknown> {
-	(args: HandleConventionArguments<Loader>): ScriptDescriptor[];
-}
+export type ExternalScriptsFunction<Loader = unknown> = (
+	args: HandleConventionArguments<Loader>,
+) => ScriptDescriptor[];
 
 /**
  * Define the shape of the `handle` export if you want to use `scripts`. Combine

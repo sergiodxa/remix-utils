@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
-      - run: bun install
+      - run: bun install --frozen-lockfile
       - run: bun run build
 
   exports:
@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
-      - run: bun install
+      - run: bun install --frozen-lockfile
       - run: bun run test:exports
 
   typecheck:
@@ -31,23 +31,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
-      - run: bun install
+      - run: bun install --frozen-lockfile
       - run: bun run typecheck
 
   test:
-    name: Unit and Integration Tests
+    name: Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
-      - run: bun install
+      - run: bun install --frozen-lockfile
       - run: bun run test
 
-  lint:
-    name: Linter
+  quality:
+    name: Code Quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
-      - run: bun install
-      - run: bun run lint
+      - run: bun install --frozen-lockfile
+      - run: bun run check
