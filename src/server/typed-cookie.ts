@@ -15,7 +15,7 @@ export interface TypedCookie<Schema extends z.ZodTypeAny> extends Cookie {
 	): Promise<z.infer<Schema> | null>;
 
 	serialize(
-		value: z.infer<Schema>,
+		value: z.input<Schema>,
 		options?: CookieSerializeOptions,
 	): Promise<string>;
 }
