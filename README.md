@@ -893,7 +893,7 @@ After the first client-side render, future components rendered calling this hook
 > **Note**
 > This depends on `react`.
 
-This hook lets you get the locales returned by the root loader. It follows a simple convention, your root loader return value should be an objet with the key `locales`.
+This hook lets you get the locales returned by the root loader. It follows a simple convention, your root loader return value should be an object with the key `locales`.
 
 You can combine it with `getClientLocal` to get the locales on the root loader and return that. The return value of `useLocales` is a `Locales` type which is `string | string[] | undefined`.
 
