@@ -56,6 +56,10 @@ export type ScriptDescriptor = {
 	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-type
 	 */
 	type?: ScriptType;
+	/**
+	 * Optional element ID. Use only if the script element needs to be explicitly referenced later.
+	 */
+	id?: string;
 };
 
 export type ExternalScriptsFunction<Loader = unknown> = (
@@ -168,6 +172,7 @@ export function ExternalScript({
 	referrerPolicy,
 	noModule,
 	nonce,
+	id,
 }: ScriptDescriptor) {
 	let isHydrated = useHydrated();
 	let startsHydrated = React.useRef(isHydrated);
@@ -187,13 +192,14 @@ export function ExternalScript({
 			referrerPolicy,
 			noModule,
 			nonce,
+			id,
 		};
 
 		for (let [key, value] of Object.entries(attributes)) {
 			if (value) $script.setAttribute(key, value.toString());
 		}
 
-		document.body.append($script);
+		document.body.appendChild($script);
 
 		return () => $script.remove();
 	}, [
@@ -207,6 +213,7 @@ export function ExternalScript({
 		referrerPolicy,
 		src,
 		type,
+		id,
 	]);
 
 	if (startsHydrated.current && isHydrated) return null;
@@ -227,6 +234,7 @@ export function ExternalScript({
 				/>
 			)}
 			<script
+				id={id}
 				src={src}
 				defer={defer}
 				async={async}
