@@ -3,6 +3,7 @@ interface SendFunctionArgs {
 	 * @default "message"
 	 */
 	event?: string;
+	id?: string;
 	data: string;
 }
 
@@ -32,7 +33,8 @@ export function eventStream(
 		start(controller) {
 			let encoder = new TextEncoder();
 
-			function send({ event = "message", data }: SendFunctionArgs) {
+			function send({ event = "message", id, data }: SendFunctionArgs) {
+				controller.enqueue(encoder.encode(`id: ${id}\n`));
 				controller.enqueue(encoder.encode(`event: ${event}\n`));
 				controller.enqueue(encoder.encode(`data: ${data}\n\n`));
 			}
