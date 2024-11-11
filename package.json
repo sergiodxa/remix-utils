@@ -135,7 +135,7 @@
 		}
 	},
 	"devDependencies": {
-		"@arethetypeswrong/cli": "^0.15.0",
+		"@arethetypeswrong/cli": "^0.17.0",
 		"@biomejs/biome": "^1.7.2",
 		"@remix-run/node": "^2.0.0",
 		"@remix-run/react": "^2.0.0",
