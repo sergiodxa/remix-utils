@@ -8,8 +8,10 @@ const HoneypotContext = React.createContext<HoneypotContextType>({});
 
 export function HoneypotInputs({
 	label = "Please leave this field blank",
+	nonce,
 }: {
 	label?: string;
+	nonce?: string
 }): JSX.Element {
 	let context = React.useContext(HoneypotContext);
 
@@ -22,9 +24,10 @@ export function HoneypotInputs({
 	return (
 		<div
 			id={`${nameFieldName}_wrap`}
-			style={{ display: "none" }}
+			className='__honeypot_inputs'
 			aria-hidden="true"
 		>
+			<style nonce={nonce}>{`.__honeypot_inputs { display: none; }`}</style>
 			<label htmlFor={nameFieldName}>{label}</label>
 			<input
 				id={nameFieldName}
