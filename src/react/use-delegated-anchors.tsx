@@ -1,5 +1,5 @@
-import { PrefetchPageLinks, useNavigate } from "@remix-run/react";
 import * as React from "react";
+import { PrefetchPageLinks, useNavigate } from "react-router";
 
 const context = React.createContext(false);
 

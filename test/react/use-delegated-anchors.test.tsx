@@ -1,11 +1,11 @@
-import { useNavigate } from "@remix-run/react";
 import { fireEvent, render, screen } from "@testing-library/react";
 // @vitest-environment happy-dom
 import * as React from "react";
+import { useNavigate } from "react-router";
 import { MockedFunction, afterEach, beforeAll, expect, test, vi } from "vitest";
 import { PrefetchPageAnchors } from "../../src/react/use-delegated-anchors";
 
-// vi.mock("@remix-run/react");
+// vi.mock("react-router");
 
 const navigate = vi.fn();
 
@@ -16,7 +16,7 @@ beforeAll(() => {
 afterEach(() => {
 	vi.clearAllMocks();
 });
-
+// TODO Fix this
 describe.skip(PrefetchPageAnchors.name, () => {
 	test("it treats child anchors as links", () => {
 		render(

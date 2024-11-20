@@ -1,5 +1,5 @@
-import type { Cookie } from "@remix-run/server-runtime";
 import cryptoJS from "crypto-js";
+import type { Cookie } from "react-router";
 import { getHeaders } from "./get-headers.js";
 
 export type CSRFErrorCode =

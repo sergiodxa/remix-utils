@@ -6,9 +6,7 @@
 		"node": ">=18.0.0"
 	},
 	"type": "module",
-	"funding": [
-		"https://github.com/sponsors/sergiodxa"
-	],
+	"funding": ["https://github.com/sponsors/sergiodxa"],
 	"exports": {
 		"./package.json": "./package.json",
 		"./promise": "./build/common/promise.js",
@@ -95,10 +93,7 @@
 		"named action"
 	],
 	"peerDependencies": {
-		"@remix-run/cloudflare": "^2.0.0",
-		"@remix-run/node": "^2.0.0",
-		"@remix-run/react": "^2.0.0",
-		"@remix-run/router": "^1.7.2",
+		"react-router": ">=7.0.0-pre.0",
 		"crypto-js": "^4.1.1",
 		"intl-parse-accept-language": "^1.0.0",
 		"is-ip": "^5.0.1",
@@ -106,18 +101,13 @@
 		"zod": "^3.22.4"
 	},
 	"peerDependenciesMeta": {
-		"@remix-run/cloudflare": {
+		"@react-router/cloudflare": {
 			"optional": true
 		},
-		"@remix-run/node": {
+		"react-router": {
 			"optional": true
 		},
-		"@remix-run/react": {
-			"optional": true
-		},
-		"@remix-run/router": {
-			"optional": true
-		},
+
 		"crypto-js": {
 			"optional": true
 		},
@@ -137,10 +127,7 @@
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.15.0",
 		"@biomejs/biome": "^1.7.2",
-		"@remix-run/node": "^2.0.0",
-		"@remix-run/react": "^2.0.0",
-		"@remix-run/router": "^1.7.2",
-		"@remix-run/testing": "^2.0.0",
+		"react-router": "7.0.0-pre.6",
 		"@testing-library/jest-dom": "^6.1.3",
 		"@testing-library/react": "^15.0.2",
 		"@types/bun": "^1.1.1",

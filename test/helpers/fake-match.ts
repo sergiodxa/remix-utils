@@ -1,6 +1,6 @@
-import { RouteMatch } from "@remix-run/react";
-import { RouteData } from "@remix-run/router/dist/utils";
+import { RouteMatch } from "react-router";
 
-export function fakeMatch(data?: RouteData): RouteMatch {
+// biome-ignore lint/suspicious/noExplicitAny: RouteData is not exported anymore, route match has issues
+export function fakeMatch(data?: any): any {
 	return { id: "root", data, pathname: "/", handle: {}, params: {} };
 }

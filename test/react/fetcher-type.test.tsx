@@ -1,10 +1,10 @@
-import { unstable_createRemixStub as createRemixStub } from "@remix-run/testing";
 import { render, screen } from "@testing-library/react";
 // @vitest-environment happy-dom
 import * as React from "react";
+import { createRoutesStub } from "react-router";
 import { describe, expect, test } from "vitest";
 
-import { useFetcher } from "@remix-run/react";
+import { useFetcher } from "react-router";
 import { getFetcherType, useFetcherType } from "../../src/react/fetcher-type";
 
 describe(getFetcherType, () => {
@@ -79,7 +79,7 @@ describe(useFetcherType, () => {
 		return <h1>{fetcherType}</h1>;
 	}
 
-	let RemixStub = createRemixStub([
+	let RemixStub = createRoutesStub([
 		{ id: "root", path: "/", index: true, Component },
 	]);
 
@@ -87,7 +87,7 @@ describe(useFetcherType, () => {
 		render(
 			<RemixStub
 				initialEntries={["/"]}
-				remixConfigFuture={{ v2_normalizeFormMethod: true }}
+				future={{ v2_normalizeFormMethod: true }}
 			/>,
 		);
 

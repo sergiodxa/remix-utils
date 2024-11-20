@@ -1,4 +1,4 @@
-import type { Cookie } from "@remix-run/server-runtime";
+import type { Cookie } from "react-router";
 import { z } from "zod";
 import { TypedCookie } from "./typed-cookie.js";
 

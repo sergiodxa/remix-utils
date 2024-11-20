@@ -1,5 +1,5 @@
-import { type FetcherWithComponents, useNavigation } from "@remix-run/react";
-import { type Navigation } from "@remix-run/router";
+import { type Navigation } from "react-router";
+import { type FetcherWithComponents, useNavigation } from "react-router";
 
 /**
  * The list of types a fetcher can have

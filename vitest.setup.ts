@@ -1,9 +1,6 @@
-import { installGlobals } from "@remix-run/node";
 import { expect } from "vitest";
 
 import "@testing-library/jest-dom";
-
-installGlobals();
 
 function validateIsResponse(response: Response) {
 	if (response instanceof Response === false) {

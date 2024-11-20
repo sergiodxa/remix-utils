@@ -1,5 +1,5 @@
-import { useSearchParams } from "@remix-run/react";
 import * as React from "react";
+import { useSearchParams } from "react-router";
 
 type Props = {
 	/**

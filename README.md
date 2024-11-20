@@ -10,8 +10,8 @@ npm install remix-utils
 
 Additional optional dependencies may be needed, all optional dependencies are:
 
-- `@remix-run/react` (also `@remix-run/router` but you should be using the React one)
-- `@remix-run/node` or `@remix-run/cloudflare` or `@remix-run/deno` (actually it's `@remix-run/server-runtime` but you should use one of the others)
+- `react-router` (also `react-router` but you should be using the React one)
+- `react-router` or `@remix-run/cloudflare` or `@remix-run/deno` (actually it's `react-router` but you should use one of the others)
 - `crypto-js`
 - `is-ip`
 - `intl-parse-accept-language`
@@ -427,7 +427,7 @@ First create a new CSRF instance.
 ```ts
 // app/utils/csrf.server.ts
 import { CSRF } from "remix-utils/csrf/server";
-import { createCookie } from "@remix-run/node"; // or cloudflare/deno
+import { createCookie } from "react-router"; // or cloudflare/deno
 
 export const cookie = createCookie("csrf", {
 	path: "/",
@@ -494,7 +494,7 @@ Render it in your `root` component and wrap the `Outlet` with it.
 When you create a form in some route, you can use the `AuthenticityTokenInput` component to add the authenticity token to the form.
 
 ```tsx
-import { Form } from "@remix-run/react";
+import { Form } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 export default function Component() {
@@ -520,7 +520,7 @@ You should only customize the name if you also changed it on `createAuthenticity
 If you need to use `useFetcher` (or `useSubmit`) instead of `Form` you can also get the authenticity token with the `useAuthenticityToken` hook.
 
 ```tsx
-import { useFetcher } from "@remix-run/react";
+import { useFetcher } from "react-router";
 import { useAuthenticityToken } from "remix-utils/csrf/react";
 
 export function useMarkAsRead() {
@@ -593,7 +593,7 @@ import { ExistingSearchParams } from "remix-utils/existing-search-params";
 ```
 
 > **Note**
-> This depends on `react` and `@remix-run/react`
+> This depends on `react` and `react-router`
 
 When you submit a GET form, the browser will replace all of the search params in the URL with your form data. This component copies existing search params into hidden inputs so they will not be overwritten.
 
@@ -632,7 +632,7 @@ By excluding the `page` param, from the search form, the user will return to the
 ### External Scripts
 
 > **Note**
-> This depends on `react`, `@remix-run/react`, and a Remix server runtime.
+> This depends on `react`, `react-router`, and a Remix server runtime.
 
 If you need to load different external scripts on certain routes, you can use the `ExternalScripts` component together with the `ExternalScriptsFunction` and `ScriptDescriptor` types.
 
@@ -770,7 +770,7 @@ return (
 ### useGlobalNavigationState
 
 > **Note**
-> This depends on `react`, and `@remix-run/react`.
+> This depends on `react`, and `react-router`.
 
 This hook allows you to read the value of `transition.state`, every `fetcher.state` in the app, and `revalidator.state`.
 
@@ -800,7 +800,7 @@ The return value of `useGlobalNavigationState` can be `"idle"`, `"loading"` or `
 ### useGlobalPendingState
 
 > **Note**
-> This depends on `react`, and `@remix-run/react`.
+> This depends on `react`, and `react-router`.
 
 This hook lets you know if the global navigation, if one of any active fetchers is either loading or submitting, or if the revalidator is running.
 
@@ -824,7 +824,7 @@ The return value of `useGlobalPendingState` is either `"idle"` or `"pending"`.
 ### useGlobalSubmittingState
 
 > **Note**
-> This depends on `react`, and `@remix-run/react`.
+> This depends on `react`, and `react-router`.
 
 This hook lets you know if the global transition or if one of any active fetchers is submitting.
 
@@ -844,7 +844,7 @@ The return value of `useGlobalSubmittingState` is either `"idle"` or `"submittin
 ### useGlobalLoadingState
 
 > **Note**
-> This depends on `react`, and `@remix-run/react`.
+> This depends on `react`, and `react-router`.
 
 This hook lets you know if the global transition, if one of any active fetchers is loading, or if the revalidator is running
 
@@ -922,7 +922,7 @@ The return type of `useLocales` is ready to be used with the Intl API.
 ### useShouldHydrate
 
 > **Note**
-> This depends on `@remix-run/react` and `react`.
+> This depends on `react-router` and `react`.
 
 If you are building a Remix application where most routes are static, and you want to avoid loading client-side JS, you can use this hook, plus some conventions, to detect if one or more active routes needs JS and only render the Scripts component in that case.
 
@@ -930,7 +930,7 @@ In your document component, you can call this hook to dynamically render the Scr
 
 ```tsx
 import type { ReactNode } from "react";
-import { Links, LiveReload, Meta, Scripts } from "@remix-run/react";
+import { Links, LiveReload, Meta, Scripts } from "react-router";
 import { useShouldHydrate } from "remix-utils/use-should-hydrate";
 
 interface DocumentProps {
@@ -1205,7 +1205,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 Cookie objects in Remix allows any type, the typed cookies from Remix Utils lets you use Zod to parse the cookie values and ensure they conform to a schema.
 
 ```ts
-import { createCookie } from "@remix-run/node";
+import { createCookie } from "react-router";
 import { createTypedCookie } from "remix-utils/typed-cookie";
 import { z } from "zod";
 
@@ -1300,7 +1300,7 @@ await typedCookie.serialize("some fake url to pass schema validation", {
 Session objects in Remix allows any type, the typed sessions from Remix Utils lets you use Zod to parse the session data and ensure they conform to a schema.
 
 ```ts
-import { createCookieSessionStorage } from "@remix-run/node";
+import { createCookieSessionStorage } from "react-router";
 import { createTypedSessionStorage } from "remix-utils/typed-session";
 import { z } from "zod";
 
@@ -1775,7 +1775,7 @@ Now you can see in your DevTools that when the user hovers an anchor it will pre
 ### Debounced Fetcher and Submit
 
 > **Note**
-> This depends on `react`, and `@remix-run/react`.
+> This depends on `react`, and `react-router`.
 
 `useDebounceFetcher` and `useDebounceSubmit` are wrappers of `useFetcher` and `useSubmit` that add debounce support.
 

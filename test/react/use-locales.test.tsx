@@ -1,10 +1,11 @@
 // @vitest-environment happy-dom
-import { RouteData } from "@remix-run/router/dist/utils";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { useLocales } from "../../src/react/use-locales";
 import { fakeMatch } from "../helpers/fake-match";
 import { mockMatches } from "../helpers/mock-match";
-
+// TODO Fix this
+// biome-ignore lint/suspicious/noExplicitAny: Route data not exported anymore
+type RouteData = any;
 describe.skip(useLocales, () => {
 	afterEach(() => {
 		vi.resetAllMocks();
