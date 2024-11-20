@@ -101,9 +101,6 @@
 		"zod": "^3.22.4"
 	},
 	"peerDependenciesMeta": {
-		"@react-router/cloudflare": {
-			"optional": true
-		},
 		"react-router": {
 			"optional": true
 		},

@@ -1,5 +1,8 @@
-import { type Navigation } from "react-router";
-import { type FetcherWithComponents, useNavigation } from "react-router";
+import {
+	type FetcherWithComponents,
+	type Navigation,
+	useNavigation,
+} from "react-router";
 
 /**
  * The list of types a fetcher can have
