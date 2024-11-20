@@ -632,7 +632,7 @@ By excluding the `page` param, from the search form, the user will return to the
 ### External Scripts
 
 > **Note**
-> This depends on `react`, `react-router`, and a Remix server runtime.
+> This depends on `react`, and `react-router`.
 
 If you need to load different external scripts on certain routes, you can use the `ExternalScripts` component together with the `ExternalScriptsFunction` and `ScriptDescriptor` types.
 
