@@ -10,7 +10,7 @@ npm install remix-utils
 
 Additional optional dependencies may be needed, all optional dependencies are:
 
-- `react-router` (also `react-router` but you should be using the React one)
+- `react-router`
 - `react-router` or `@remix-run/cloudflare` or `@remix-run/deno` (actually it's `react-router` but you should use one of the others)
 - `crypto-js`
 - `is-ip`
