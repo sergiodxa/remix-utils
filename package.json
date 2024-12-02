@@ -157,7 +157,7 @@
 		"react-dom": "^18.0.0",
 		"ts-node": "^10.9.1",
 		"typedoc": "^0.25.13",
-		"typedoc-plugin-mdn-links": "^3.1.23",
+		"typedoc-plugin-mdn-links": "^4.0.3",
 		"typescript": "^5.2.2",
 		"vite": "^5.2.8",
 		"vitest": "^1.4.0",
