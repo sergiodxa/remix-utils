@@ -11,7 +11,8 @@ npm install remix-utils
 Additional optional dependencies may be needed, all optional dependencies are:
 
 - `react-router`
-- `crypto-js`
+- `@oslojs/crypto`
+- `@oslojs/encoding`
 - `is-ip`
 - `intl-parse-accept-language`
 - `react`
@@ -22,7 +23,7 @@ The utils that require an extra optional dependency mention it in their document
 If you want to install them all run:
 
 ```sh
-npm add crypto-js is-ip intl-parse-accept-language zod
+npm add @oslojs/crypto @oslojs/encoding is-ip intl-parse-accept-language zod
 ```
 
 React and React Router packages should be already installed in your project.
@@ -344,7 +345,7 @@ Additionally, the `cors` function accepts a `options` object as a third optional
 ### CSRF
 
 > **Note**
-> This depends on `react`, `crypto-js`, and a Remix server runtime.
+> This depends on `react`, `@oslojs/crypto`, `@oslojs/encoding`, and React Router.
 
 The CSRF related functions let you implement CSRF protection on your application.
 
@@ -1128,7 +1129,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 ### Typed Cookies
 
 > **Note**
-> This depends on `zod`, and a Remix server runtime.
+> This depends on `zod`, and React Router.
 
 Cookie objects in Remix allows any type, the typed cookies from Remix Utils lets you use Zod to parse the cookie values and ensure they conform to a schema.
 
@@ -1223,7 +1224,7 @@ await typedCookie.serialize("some fake url to pass schema validation", {
 ### Typed Sessions
 
 > **Note**
-> This depends on `zod`, and a Remix server runtime.
+> This depends on `zod`, and React Router.
 
 Session objects in Remix allows any type, the typed sessions from Remix Utils lets you use Zod to parse the session data and ensure they conform to a schema.
 
@@ -1366,7 +1367,7 @@ This way, you can overwrite the map with a new one for a specific part of your a
 ### Rolling Cookies
 
 > **Note**
-> This depends on `zod`, and a Remix server runtime.
+> This depends on `zod`, and React Router.
 
 Rolling cookies allows you to prolong the expiration of a cookie by updating the expiration date of every cookie.
 
@@ -1858,7 +1859,7 @@ This means that the `respondTo` helper will prioritize any handler that match `t
 ### Form Honeypot
 
 > **Note**
-> This depends on `react` and `crypto-js`.
+> This depends on `react` and `@oslojs/crypto`, and `@oslojs/encoding`.
 
 Honeypot is a simple technique to prevent spam bots from submitting forms. It works by adding a hidden field to the form that bots will fill, but humans won't.
 

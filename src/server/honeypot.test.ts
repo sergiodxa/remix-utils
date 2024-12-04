@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import CryptoJS from "crypto-js";
 
+import { encrypt } from "../common/crypto";
 import { Honeypot, SpamError } from "./honeypot";
 
 // biome-ignore lint/suspicious/noExplicitAny: Test
@@ -11,50 +11,49 @@ function invariant(condition: any, message: string): asserts condition {
 describe(Honeypot.name, () => {
 	test("generates input props", () => {
 		let props = new Honeypot().getInputProps();
-		expect(props).toEqual({
+		expect(props).resolves.toEqual({
 			nameFieldName: "name__confirm",
 			validFromFieldName: "from__confirm",
 			encryptedValidFrom: expect.any(String),
 		});
 	});
 
-	test("uses randomized nameFieldName", () => {
+	test("uses randomized nameFieldName", async () => {
 		let honeypot = new Honeypot({ randomizeNameFieldName: true });
-		let props = honeypot.getInputProps();
+		let props = await honeypot.getInputProps();
 		expect(props.nameFieldName.startsWith("name__confirm_")).toBeTruthy();
 	});
 
-	test("uses randomized nameFieldName with prefix", () => {
+	test("uses randomized nameFieldName with prefix", async () => {
 		let honeypot = new Honeypot({
 			randomizeNameFieldName: true,
 			nameFieldName: "prefix",
 		});
-		let props = honeypot.getInputProps();
+		let props = await honeypot.getInputProps();
 		expect(props.nameFieldName.startsWith("prefix_")).toBeTruthy();
 	});
 
 	test("checks validity on FormData", () => {
 		let formData = new FormData();
-		let result = new Honeypot().check(formData);
-		expect(result).toBeUndefined();
+		expect(new Honeypot().check(formData)).resolves.toBeUndefined();
 	});
 
-	test("checks validity of FormData with encrypted timestamp and randomized field name", () => {
+	test("checks validity of FormData with encrypted timestamp and randomized field name", async () => {
 		let honeypot = new Honeypot({ randomizeNameFieldName: true });
 
-		let props = honeypot.getInputProps();
+		let props = await honeypot.getInputProps();
 		invariant(props.validFromFieldName, "validFromFieldName is null");
 
 		let formData = new FormData();
 		formData.set(props.nameFieldName, "");
 		formData.set(props.validFromFieldName, props.encryptedValidFrom);
 
-		expect(honeypot.check(formData)).toBeUndefined();
+		expect(honeypot.check(formData)).resolves.toBeUndefined();
 	});
 
-	test("fails validity check if input is not present", () => {
+	test("fails validity check if input is not present", async () => {
 		let honeypot = new Honeypot();
-		let props = honeypot.getInputProps();
+		let props = await honeypot.getInputProps();
 		invariant(props.validFromFieldName, "validFromFieldName is null");
 
 		let formData = new FormData();
@@ -65,9 +64,9 @@ describe(Honeypot.name, () => {
 		);
 	});
 
-	test("fails validity check if input is not empty", () => {
+	test("fails validity check if input is not empty", async () => {
 		let honeypot = new Honeypot();
-		let props = honeypot.getInputProps();
+		let props = await honeypot.getInputProps();
 
 		let formData = new FormData();
 		formData.set(props.nameFieldName, "not empty");
@@ -77,9 +76,9 @@ describe(Honeypot.name, () => {
 		);
 	});
 
-	test("fails if valid from timestamp is missing", () => {
+	test("fails if valid from timestamp is missing", async () => {
 		let honeypot = new Honeypot();
-		let props = honeypot.getInputProps();
+		let props = await honeypot.getInputProps();
 
 		let formData = new FormData();
 		formData.set(props.nameFieldName, "");
@@ -89,51 +88,48 @@ describe(Honeypot.name, () => {
 		);
 	});
 
-	test("fails if the timestamp is not valid", () => {
+	test("fails if the timestamp is not valid", async () => {
 		let honeypot = new Honeypot({
 			encryptionSeed: "SEED",
 		});
-		let props = honeypot.getInputProps();
+		let props = await honeypot.getInputProps();
 		invariant(props.validFromFieldName, "validFromFieldName is null");
 
 		let formData = new FormData();
 		formData.set(props.nameFieldName, "");
-		formData.set(
-			props.validFromFieldName,
-			CryptoJS.AES.encrypt("invalid", "SEED").toString(),
-		);
+		formData.set(props.validFromFieldName, await encrypt("invalid", "SEED"));
 
 		expect(() => honeypot.check(formData)).toThrowError(
 			new SpamError("Invalid honeypot valid from input"),
 		);
 	});
 
-	test("fails if valid from timestamp is in the future", () => {
+	test("fails if valid from timestamp is in the future", async () => {
 		let honeypot = new Honeypot({
 			encryptionSeed: "SEED",
 		});
 
-		let props = honeypot.getInputProps();
+		let props = await honeypot.getInputProps();
 		invariant(props.validFromFieldName, "validFromFieldName is null");
 
 		let formData = new FormData();
 		formData.set(props.nameFieldName, "");
 		formData.set(
 			props.validFromFieldName,
-			CryptoJS.AES.encrypt((Date.now() + 10_000).toString(), "SEED").toString(),
+			await encrypt((Date.now() + 10_000).toString(), "SEED"),
 		);
 
-		expect(() => honeypot.check(formData)).toThrowError(
+		expect(honeypot.check(formData)).rejects.toThrowError(
 			new SpamError("Honeypot valid from is in future"),
 		);
 	});
 
-	test("does not check for valid from timestamp if it's set to null", () => {
+	test("does not check for valid from timestamp if it's set to null", async () => {
 		let honeypot = new Honeypot({
 			validFromFieldName: null,
 		});
 
-		let props = honeypot.getInputProps();
+		let props = await honeypot.getInputProps();
 		expect(props.validFromFieldName).toBeNull();
 
 		let formData = new FormData();

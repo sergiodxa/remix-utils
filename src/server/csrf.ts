@@ -1,5 +1,7 @@
-import cryptoJS from "crypto-js";
+import { sha256 } from "@oslojs/crypto/sha2";
+import { encodeBase64url } from "@oslojs/encoding";
 import type { Cookie } from "react-router";
+import { randomString } from "../common/crypto.js";
 import { getHeaders } from "./get-headers.js";
 
 export type CSRFErrorCode =
@@ -51,9 +53,7 @@ export class CSRF {
 	 * @returns A random string in Base64URL
 	 */
 	generate(bytes = 32) {
-		let token = cryptoJS.lib.WordArray.random(bytes).toString(
-			cryptoJS.enc.Base64url,
-		);
+		let token = randomString(bytes);
 		if (!this.secret) return token;
 		let signature = this.sign(token);
 		return [token, signature].join(".");
@@ -191,9 +191,7 @@ export class CSRF {
 
 	private sign(token: string) {
 		if (!this.secret) return token;
-		return cryptoJS
-			.HmacSHA256(token, this.secret)
-			.toString(cryptoJS.enc.Base64url);
+		return encodeBase64url(sha256(new TextEncoder().encode(token)));
 	}
 
 	private verifySignature(token: string) {

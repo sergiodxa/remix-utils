@@ -9,13 +9,13 @@ describe("CSRF", () => {
 	test("generates a new authenticity token with the default size", () => {
 		let token = csrf.generate();
 		expect(token).toStrictEqual(expect.any(String));
-		expect(token).toHaveLength(43);
+		expect(token).toHaveLength(32);
 	});
 
 	test("generates a new authenticity token with the given size", () => {
 		let token = csrf.generate(64);
 		expect(token).toStrictEqual(expect.any(String));
-		expect(token).toHaveLength(86);
+		expect(token).toHaveLength(64);
 	});
 
 	test("generates a new signed authenticity token", () => {
@@ -24,9 +24,9 @@ describe("CSRF", () => {
 		let token = csrf.generate();
 		let [value, signature] = token.split(".");
 
-		expect(token).toHaveLength(87);
-		expect(value).toHaveLength(43);
-		expect(signature).toHaveLength(43);
+		expect(token).toHaveLength(77);
+		expect(value).toHaveLength(32);
+		expect(signature).toHaveLength(44);
 	});
 
 	test("verify tokens using FormData and Headers", async () => {
