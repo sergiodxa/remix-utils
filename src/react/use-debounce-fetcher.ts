@@ -1,10 +1,10 @@
+import { useCallback, useEffect, useRef } from "react";
 import type {
 	FetcherWithComponents,
 	SubmitFunction,
 	SubmitOptions,
-} from "@remix-run/react";
-import { useFetcher } from "@remix-run/react";
-import { useCallback, useEffect, useRef } from "react";
+} from "react-router";
+import { useFetcher } from "react-router";
 
 type SubmitTarget = Parameters<SubmitFunction>["0"];
 

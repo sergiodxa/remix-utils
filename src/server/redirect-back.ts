@@ -1,4 +1,4 @@
-import { TypedResponse } from "@remix-run/node";
+import { UNSAFE_DataWithResponseInit, data } from "react-router";
 
 /**
  * Create a new Response with a redirect set to the URL the user was before.
@@ -17,7 +17,7 @@ import { TypedResponse } from "@remix-run/node";
 export function redirectBack(
 	request: Request,
 	{ fallback, ...init }: ResponseInit & { fallback: string },
-): TypedResponse<never> {
+): UNSAFE_DataWithResponseInit<never> {
 	let responseInit = init;
 	if (typeof responseInit === "number") {
 		responseInit = { status: responseInit };
@@ -28,8 +28,8 @@ export function redirectBack(
 	let headers = new Headers(responseInit.headers);
 	headers.set("Location", request.headers.get("Referer") ?? fallback);
 
-	return new Response(null, {
+	return data(null, {
 		...responseInit,
 		headers,
-	}) as TypedResponse<never>;
+	}) as UNSAFE_DataWithResponseInit<never>;
 }

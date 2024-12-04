@@ -1,5 +1,5 @@
-import type { Cookie } from "@remix-run/server-runtime";
 import cryptoJS from "crypto-js";
+import type { Cookie } from "react-router";
 import { getHeaders } from "./get-headers.js";
 
 export type CSRFErrorCode =
@@ -199,6 +199,7 @@ export class CSRF {
 	private verifySignature(token: string) {
 		if (!this.secret) return true;
 		let [value, signature] = token.split(".");
+		if (!value) return false;
 		let expectedSignature = this.sign(value);
 		return signature === expectedSignature;
 	}

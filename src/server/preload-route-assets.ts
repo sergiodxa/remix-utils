@@ -1,4 +1,4 @@
-import { EntryContext } from "@remix-run/server-runtime";
+import type { EntryContext } from "react-router";
 
 type Link = { href: string; as: string };
 
@@ -120,6 +120,9 @@ export function preloadModuleAssets(context: EntryContext, headers: Headers) {
 
 	for (let match of context.staticHandlerContext.matches) {
 		let route = context.manifest.routes[match.route.id];
+		if (!route) {
+			continue;
+		}
 		urls.push(route.module, ...(route.imports ?? []));
 	}
 

@@ -1,6 +1,6 @@
-import type { SubmitFunction, SubmitOptions } from "@remix-run/react";
-import { useSubmit } from "@remix-run/react";
 import { useCallback, useEffect, useRef } from "react";
+import type { SubmitFunction, SubmitOptions } from "react-router";
+import { useSubmit } from "react-router";
 
 type SubmitTarget = Parameters<SubmitFunction>["0"];
 

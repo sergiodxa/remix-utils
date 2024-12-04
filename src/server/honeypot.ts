@@ -40,7 +40,7 @@ export interface HoneypotConfig {
  * the form and the request is probably spam.
  */
 export class SpamError extends Error {
-	readonly name = "SpamError";
+	override readonly name = "SpamError";
 }
 
 const DEFAULT_NAME_FIELD_NAME = "name__confirm";
