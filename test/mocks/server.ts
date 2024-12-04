@@ -1,3 +1,3 @@
-import { setupServer } from "msw/node";
+import { setupServer } from "msw/native";
 
 export const server = setupServer();
