@@ -54,6 +54,9 @@ export function useLocales(): Locales {
 	) {
 		return locales;
 	}
+
+	if (typeof locales === "string") return [locales];
+
 	// finally, return undefined
 	return undefined;
 }

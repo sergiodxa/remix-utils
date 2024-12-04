@@ -8,30 +8,45 @@ import {
 	test,
 } from "bun:test";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import * as React from "react";
+import { Outlet, createRoutesStub } from "react-router";
 import { PrefetchPageAnchors } from "./use-delegated-anchors";
 
 const navigate = mock();
 
-// biome-ignore lint/suspicious/noSkippedTests: Fix
-describe.skip(PrefetchPageAnchors.name, () => {
-	test("it treats child anchors as links", () => {
-		render(
-			<PrefetchPageAnchors>
-				<a href="/link">Some link</a>
-			</PrefetchPageAnchors>,
-		);
+describe(PrefetchPageAnchors.name, () => {
+	// This test is not really testing anything useful
+	test("treats child anchors as links", async () => {
+		let user = userEvent.setup();
 
-		fireEvent.click(screen.getByText("Some link"));
+		let Stub = createRoutesStub([
+			{
+				id: "root",
+				Component: Outlet,
+				children: [
+					{
+						id: "index",
+						index: true,
+						Component() {
+							return (
+								<PrefetchPageAnchors>
+									<a href="/link">Some link</a>
+								</PrefetchPageAnchors>
+							);
+						},
+					},
+				],
+			},
+		]);
 
-		expect(navigate).toHaveBeenCalledWith({
-			hash: "",
-			pathname: "/link",
-			search: "",
-		});
+		render(<Stub hydrationData={{ loaderData: {} }} />);
+
+		await user.click(screen.getByRole("link", { name: "Some link" }));
 	});
 
-	test("handles query string and hash", () => {
+	// biome-ignore lint/suspicious/noSkippedTests: Fix later
+	test.skip("handles query string and hash", () => {
 		render(
 			<PrefetchPageAnchors>
 				<a href="/link?query=string#hash">Some link</a>
@@ -47,7 +62,8 @@ describe.skip(PrefetchPageAnchors.name, () => {
 		});
 	});
 
-	test("handles children inside anchor", () => {
+	// biome-ignore lint/suspicious/noSkippedTests: Fix later
+	test.skip("handles children inside anchor", () => {
 		render(
 			<PrefetchPageAnchors>
 				<a href="/link">
@@ -67,7 +83,8 @@ describe.skip(PrefetchPageAnchors.name, () => {
 		});
 	});
 
-	test("ignores non-anchors", () => {
+	// biome-ignore lint/suspicious/noSkippedTests: Fix later
+	test.skip("ignores non-anchors", () => {
 		render(
 			<PrefetchPageAnchors>
 				<div>Not a link</div>
@@ -79,7 +96,8 @@ describe.skip(PrefetchPageAnchors.name, () => {
 		expect(navigate).not.toHaveBeenCalled();
 	});
 
-	test("ignores external links", () => {
+	// biome-ignore lint/suspicious/noSkippedTests: Fix later
+	test.skip("ignores external links", () => {
 		render(
 			<PrefetchPageAnchors>
 				<a href="https://example.com">A link</a>
@@ -91,7 +109,8 @@ describe.skip(PrefetchPageAnchors.name, () => {
 		expect(navigate).not.toHaveBeenCalled();
 	});
 
-	test("ignores internal download links", () => {
+	// biome-ignore lint/suspicious/noSkippedTests: Fix later
+	test.skip("ignores internal download links", () => {
 		render(
 			<PrefetchPageAnchors>
 				<a href="/download" download>
@@ -105,7 +124,8 @@ describe.skip(PrefetchPageAnchors.name, () => {
 		expect(navigate).not.toHaveBeenCalled();
 	});
 
-	test("ignore clicks with modifiers and right clicks", () => {
+	// biome-ignore lint/suspicious/noSkippedTests: Fix later
+	test.skip("ignore clicks with modifiers and right clicks", () => {
 		render(
 			<PrefetchPageAnchors>
 				<a href="/link">A link</a>
@@ -128,7 +148,8 @@ describe.skip(PrefetchPageAnchors.name, () => {
 		expect(navigate).not.toHaveBeenCalled();
 	});
 
-	test("ignores links with target=_blank", () => {
+	// biome-ignore lint/suspicious/noSkippedTests: Fix later
+	test.skip("ignores links with target=_blank", () => {
 		render(
 			<PrefetchPageAnchors>
 				<a href="/link" target="_blank" rel="noreferrer">
@@ -142,7 +163,8 @@ describe.skip(PrefetchPageAnchors.name, () => {
 		expect(navigate).not.toHaveBeenCalled();
 	});
 
-	describe("nested configuration checks", () => {
+	// biome-ignore lint/suspicious/noSkippedTests: Fix later
+	describe.skip("nested configuration checks", () => {
 		const mockedConsoleError = mock();
 
 		beforeAll(() => {
@@ -161,7 +183,7 @@ describe.skip(PrefetchPageAnchors.name, () => {
 			</PrefetchPageAnchors>
 		);
 
-		test("it only calls navigate once", () => {
+		test("only calls navigate once", () => {
 			render(nested);
 			fireEvent.click(screen.getByText("A link"));
 

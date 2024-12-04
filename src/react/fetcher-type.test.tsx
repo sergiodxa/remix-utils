@@ -77,17 +77,12 @@ describe(useFetcherType.name, () => {
 		return <h1>{fetcherType}</h1>;
 	}
 
-	let RemixStub = createRoutesStub([
+	let Stub = createRoutesStub([
 		{ id: "root", path: "/", index: true, Component },
 	]);
 
 	test("renders init", () => {
-		render(
-			<RemixStub
-				initialEntries={["/"]}
-				future={{ v2_normalizeFormMethod: true }}
-			/>,
-		);
+		render(<Stub initialEntries={["/"]} />);
 
 		let $h1 = screen.getByRole("heading", { level: 1 });
 
