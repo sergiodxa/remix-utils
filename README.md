@@ -1432,7 +1432,7 @@ export let handleDataRequest: HandleDataRequestFunction = async (
 ### Named actions
 
 > **Note**
-> This depends on a Remix server runtime.
+> This depends on React Router.
 
 It's common to need to handle more than one action in the same route, there are many options here like [sending the form to a resource route](https://sergiodxa.com/articles/multiple-forms-per-route-in-remix#using-resource-routes) or using an [action reducer](https://sergiodxa.com/articles/multiple-forms-per-route-in-remix#the-action-reducer-pattern), the `namedAction` function uses some conventions to implement the action reducer pattern.
 
@@ -1440,7 +1440,7 @@ It's common to need to handle more than one action in the same route, there are 
 import { namedAction } from "remix-utils/named-action";
 
 export async function action({ request }: ActionFunctionArgs) {
-  return namedAction(request, {
+  return namedAction(await request.formData(), {
     async create() {
       // do create
     },
@@ -1456,15 +1456,18 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function Component() {
   return (
     <>
-      <Form method="post" action="?/create">
+      <Form method="post">
+        <input type="hidden" name="intent" value="create" />
         ...
       </Form>
 
-      <Form method="post" action="?/update">
+      <Form method="post">
+        <input type="hidden" name="intent" value="update" />
         ...
       </Form>
 
-      <Form method="post" action="?/delete">
+      <Form method="post">
+        <input type="hidden" name="intent" value="delete" />
         ...
       </Form>
     </>
@@ -1472,28 +1475,9 @@ export default function Component() {
 }
 ```
 
-This function can follow many conventions
+This function can follow this convention:
 
-You can pass a FormData object to the `namedAction`, then it will try to
-
-- Find a field named `/something` and use it as the action name removing the `/`
-- Find a field named `intent` and use the value as the action name
-- Find a field named `action` and use the value as the action name
-- Find a field named `_action` and use the value as the action name
-
-You can pass an URLSearchParams object to the `namedAction`, then it will try to
-
-- Find a query parameter named `/something` and use it as the action name removing the `/`
-- Find a query parameter named `intent` and use the value as the action name
-- Find a query parameter named `action` and use the value as the action name
-- Find a query parameter named `_action` and use the value as the action name
-
-You can pass an URL object to the `namedAction`, it will behave as with a URLSearchParams object.
-
-You can pass a Request object to the `namedAction`, then it will try to
-
-- Call `new URL(request.url)` and use it as the URL object
-- Call `request.formData()` and use it as the FormData object
+You can pass a FormData object to the `namedAction`, then it will try to find a field named `intent` and use the value as the action name.
 
 If, in any case, the action name is not found, the `actionName` then the library will try to call an action named `default`, similar to a `switch` in JavaScript.
 
@@ -2042,17 +2026,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 ### Timers
 
 The timers utils gives you a way to wait a certain amount of time before doing something or to run some code every certain amount of time.
-
-Using the `wait` combined with an AbortSignal we can cancel a timeout if the user navigates away from the page.
-
-```ts
-import { wait } from "remix-utils/timers";
-
-export async function loader({ request }: LoaderFunctionArgs) {
-  await wait(1000, { signal: request.signal });
-  // do something after 1 second
-}
-```
 
 Using the `interval` combined with `eventStream` we could send a value to the client every certain amount of time. And ensure the interval is cancelled if the connection is closed.
 
