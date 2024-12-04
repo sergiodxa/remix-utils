@@ -1,7 +1,7 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test } from "bun:test";
 import { promiseHash, timeout } from "../../src/common/promise";
 
-describe(promiseHash, () => {
+describe(promiseHash.name, () => {
 	test("should await all promises in a hash and return them with the same name", async () => {
 		let result = await promiseHash({
 			a: Promise.resolve(1),
@@ -25,13 +25,13 @@ describe(promiseHash, () => {
 	});
 });
 
-describe(timeout, () => {
+describe(timeout.name, () => {
 	test("resolves if the promise resolves before the timeout", async () => {
-		await expect(timeout(Promise.resolve(1), { ms: 1000 })).resolves.toBe(1);
+		expect(timeout(Promise.resolve(1), { ms: 1000 })).resolves.toBe(1);
 	});
 
 	test("rejects if the promise rejects before the timeout", async () => {
-		await expect(timeout(Promise.reject(1), { ms: 1000 })).rejects.toBe(1);
+		expect(timeout(Promise.reject(1), { ms: 1000 })).rejects.toBe(1);
 	});
 
 	test("rejects if the timeout resolves first", async () => {
@@ -41,9 +41,9 @@ describe(timeout, () => {
 			timer = setTimeout(resolve, 1000);
 		});
 
-		await expect(timeout(promise, { ms: 1 })).rejects.toThrow(
-			"Timed out after 1ms",
-		);
+		expect(timeout(promise, { ms: 1 })).rejects.toThrow(
+      "Timed out after 1ms"
+    );
 
 		if (timer) clearTimeout(timer);
 	});
@@ -56,9 +56,9 @@ describe(timeout, () => {
 			timer = setTimeout(resolve, 1000);
 		});
 
-		await expect(timeout(promise, { ms: 10, controller })).rejects.toThrow(
-			"Timed out after 10ms",
-		);
+		expect(timeout(promise, { ms: 10, controller })).rejects.toThrow(
+      "Timed out after 10ms"
+    );
 
 		if (timer) clearTimeout(timer);
 

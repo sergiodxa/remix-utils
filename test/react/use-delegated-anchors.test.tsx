@@ -1,22 +1,19 @@
+import {
+	afterAll,
+	beforeAll,
+	describe,
+	expect,
+	mock,
+	spyOn,
+	test,
+} from "bun:test";
 import { fireEvent, render, screen } from "@testing-library/react";
-// @vitest-environment happy-dom
 import * as React from "react";
-import { useNavigate } from "react-router";
-import { MockedFunction, afterEach, beforeAll, expect, test, vi } from "vitest";
 import { PrefetchPageAnchors } from "../../src/react/use-delegated-anchors";
 
-// vi.mock("react-router");
+const navigate = mock();
 
-const navigate = vi.fn();
-
-beforeAll(() => {
-	(useNavigate as MockedFunction<typeof useNavigate>).mockReturnValue(navigate);
-});
-
-afterEach(() => {
-	vi.clearAllMocks();
-});
-// TODO Fix this
+// biome-ignore lint/suspicious/noSkippedTests: Fix
 describe.skip(PrefetchPageAnchors.name, () => {
 	test("it treats child anchors as links", () => {
 		render(
@@ -146,12 +143,14 @@ describe.skip(PrefetchPageAnchors.name, () => {
 	});
 
 	describe("nested configuration checks", () => {
-		const mockedConsoleError = vi.fn();
+		const mockedConsoleError = mock();
+
 		beforeAll(() => {
-			vi.spyOn(console, "error").mockImplementation(mockedConsoleError);
+			spyOn(console, "error").mockImplementation(mockedConsoleError);
 		});
+
 		afterAll(() => {
-			vi.spyOn(console, "error").mockRestore();
+			spyOn(console, "error").mockRestore();
 		});
 
 		const nested = (

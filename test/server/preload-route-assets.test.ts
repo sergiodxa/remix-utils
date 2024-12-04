@@ -1,5 +1,5 @@
+import { describe, expect, test } from "bun:test";
 import type { EntryContext } from "react-router";
-import { describe, expect, test } from "vitest";
 import { preloadRouteAssets } from "../../src/server/preload-route-assets";
 // TODO Fix this
 describe.skip(preloadRouteAssets.name, () => {

@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test } from "bun:test";
 import { isPrefetch } from "../../src/server/is-prefetch";
 
 describe(isPrefetch, () => {

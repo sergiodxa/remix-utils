@@ -1,16 +1,19 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test } from "bun:test";
 import { jsonHash } from "../../src/server/json-hash";
-// TODO Fix this
-describe.skip(jsonHash.name, () => {
+
+describe(jsonHash.name, () => {
 	test("should return a response with a status code", async () => {
 		let response = await jsonHash({}, 201);
-		await expect(response.json()).resolves.toEqual({});
-		expect(response.status).toBe(201);
+
+		expect(response.data).toEqual({});
+		expect(response.init?.status).toBe(201);
 	});
 
 	test("should return a response with custom headers", async () => {
 		let response = await jsonHash({}, { headers: { "Set-Cookie": "COOKIE" } });
-		expect(response.headers.get("Set-Cookie")).toBe("COOKIE");
+		expect(new Headers(response.init?.headers).get("Set-Cookie")).toBe(
+			"COOKIE",
+		);
 	});
 
 	test("should resolve loader data", async () => {
@@ -25,7 +28,7 @@ describe.skip(jsonHash.name, () => {
 			qux: Promise.resolve("qux"),
 		});
 
-		await expect(response.json()).resolves.toEqual({
+		expect(response.data).toEqual({
 			foo: "foo",
 			bar: "bar",
 			baz: "baz",

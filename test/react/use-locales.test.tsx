@@ -1,14 +1,12 @@
-// @vitest-environment happy-dom
-import { afterEach, describe, expect, test, vi } from "vitest";
+// @bun:test-environment happy-dom
+import { afterEach, describe, expect, mock, test } from "bun:test";
 import { useLocales } from "../../src/react/use-locales";
 import { fakeMatch } from "../helpers/fake-match";
 import { mockMatches } from "../helpers/mock-match";
-// TODO Fix this
-// biome-ignore lint/suspicious/noExplicitAny: Route data not exported anymore
-type RouteData = any;
-describe.skip(useLocales, () => {
+
+describe(useLocales.name, () => {
 	afterEach(() => {
-		vi.resetAllMocks();
+		mock.restore();
 	});
 
 	test("should return undefined if matches is empty", () => {
@@ -16,8 +14,8 @@ describe.skip(useLocales, () => {
 		expect(useLocales()).toBeUndefined();
 	});
 
-	test("should retur undefined if matches is undefined", () => {
-		mockMatches(undefined as unknown as []);
+	test("should return undefined if matches is undefined", () => {
+		mockMatches(undefined);
 		expect(useLocales()).toBeUndefined();
 	});
 
@@ -27,12 +25,12 @@ describe.skip(useLocales, () => {
 	});
 
 	test("should return undefined if root data is not an object", () => {
-		mockMatches([fakeMatch("" as unknown as RouteData)]);
+		mockMatches([fakeMatch("")]);
 		expect(useLocales()).toBeUndefined();
 	});
 
 	test("should return undefined if root data is null", () => {
-		mockMatches([fakeMatch(null as unknown as RouteData)]);
+		mockMatches([fakeMatch(null)]);
 		expect(useLocales()).toBeUndefined();
 	});
 
@@ -60,7 +58,7 @@ describe.skip(useLocales, () => {
 		test("String", () => {
 			mockMatches.mockReturnValue([fakeMatch({ locales: "en" })]);
 			// mockMatches([fakeMatch({ locales: "en" })]);
-			expect(useLocales()).toBe("en");
+			expect(useLocales()).toBe(["en"]);
 		});
 
 		test("Array", () => {

@@ -1,32 +1,8 @@
+import { describe, expect, test } from "bun:test";
 import { ActionFunctionArgs, data } from "react-router";
-/* eslint-disable unicorn/consistent-function-scoping */
-import { describe, expect, test } from "vitest";
 import { namedAction } from "../../src/server/named-action";
-// TODO Fix this
-describe.skip(namedAction.name, () => {
-	test("FormData - Convention /", async () => {
-		let formData = new FormData();
-		formData.append("/create", "");
 
-		let request = new Request("https://remix.utils", {
-			method: "POST",
-			body: formData,
-		});
-
-		async function action({ request }: ActionFunctionArgs) {
-			let formData = await request.formData();
-			return await namedAction(formData, {
-				async create() {
-					return data("created");
-				},
-			});
-		}
-
-		let response = await action({ request, params: {}, context: {} });
-
-		await expect(response.json()).resolves.toEqual("created");
-	});
-
+describe(namedAction.name, () => {
 	test("FormData - Convention intent", async () => {
 		let formData = new FormData();
 		formData.append("intent", "update");
@@ -46,214 +22,26 @@ describe.skip(namedAction.name, () => {
 		}
 
 		let response = await action({ request, params: {}, context: {} });
-		await expect(response.json()).resolves.toEqual("updated");
-	});
-
-	test("FormData - Convention action", async () => {
-		let formData = new FormData();
-		formData.append("action", "delete");
-
-		let request = new Request("https://remix.utils", {
-			method: "POST",
-			body: formData,
-		});
-
-		async function action({ request }: ActionFunctionArgs) {
-			let formData = await request.formData();
-			return await namedAction(formData, {
-				async delete() {
-					return data("deleted");
-				},
-			});
-		}
-
-		let response = await action({ request, params: {}, context: {} });
-		await expect(response.json()).resolves.toEqual("deleted");
-	});
-
-	test("FormData - Convention _action", async () => {
-		let formData = new FormData();
-		formData.append("_action", "delete");
-
-		let request = new Request("https://remix.utils", {
-			method: "POST",
-			body: formData,
-		});
-
-		async function action({ request }: ActionFunctionArgs) {
-			let formData = await request.formData();
-			return await namedAction(formData, {
-				async delete() {
-					return data("deleted");
-				},
-			});
-		}
-
-		let response = await action({ request, params: {}, context: {} });
-		await expect(response.json()).resolves.toEqual("deleted");
-	});
-
-	test("URLSearchParams - Convention /", async () => {
-		let request = new Request("https://remix.utils?/delete", {
-			method: "POST",
-		});
-
-		async function action({ request }: ActionFunctionArgs) {
-			let url = new URL(request.url);
-			return await namedAction(url, {
-				async delete() {
-					return data("deleted");
-				},
-			});
-		}
-
-		let response = await action({ request, params: {}, context: {} });
-		await expect(response.json()).resolves.toEqual("deleted");
-	});
-
-	test("URLSearchParams - Convention intent", async () => {
-		let request = new Request("https://remix.utils?/update", {
-			method: "POST",
-		});
-
-		async function action({ request }: ActionFunctionArgs) {
-			let url = new URL(request.url);
-			return await namedAction(url, {
-				async update() {
-					return data("updated");
-				},
-			});
-		}
-
-		let response = await action({ request, params: {}, context: {} });
-		await expect(response.json()).resolves.toEqual("updated");
-	});
-
-	test("URLSearchParams - Convention action", async () => {
-		let request = new Request("https://remix.utils?/update", {
-			method: "POST",
-		});
-
-		async function action({ request }: ActionFunctionArgs) {
-			let url = new URL(request.url);
-			return await namedAction(url, {
-				async update() {
-					return data("updated");
-				},
-			});
-		}
-
-		let response = await action({ request, params: {}, context: {} });
-		await expect(response.json()).resolves.toEqual("updated");
-	});
-
-	test("URLSearchParams - Convention _action", async () => {
-		let url = new URL("https://remix.utils?_action=update");
-
-		let request = new Request(url, { method: "POST" });
-
-		async function action({ request }: ActionFunctionArgs) {
-			let url = new URL(request.url);
-			return await namedAction(url, {
-				async update() {
-					return data("updated");
-				},
-			});
-		}
-
-		let response = await action({ request, params: {}, context: {} });
-		await expect(response.json()).resolves.toEqual("updated");
-	});
-
-	test("URL", async () => {
-		let url = new URL("https://remix.utils?/update");
-
-		let request = new Request(url, { method: "POST" });
-
-		async function action({ request }: ActionFunctionArgs) {
-			return await namedAction(request, {
-				async update() {
-					return data("updated");
-				},
-			});
-		}
-
-		let response = await action({ request, params: {}, context: {} });
-		await expect(response.json()).resolves.toEqual("updated");
-	});
-
-	test("Request - URL", async () => {
-		let request = new Request("https://remix.utils?/create", {
-			method: "POST",
-		});
-
-		async function action({ request }: ActionFunctionArgs) {
-			return await namedAction(request, {
-				async create() {
-					return data("created");
-				},
-			});
-		}
-
-		let response = await action({ request, params: {}, context: {} });
-		await expect(response.json()).resolves.toEqual("created");
-	});
-
-	test("Request - FormData", async () => {
-		let formData = new FormData();
-		formData.append("action", "update");
-
-		let request = new Request("https://remix.utils", {
-			method: "POST",
-			body: formData,
-		});
-
-		async function action({ request }: ActionFunctionArgs) {
-			return await namedAction(request, {
-				async update() {
-					return data("updated");
-				},
-			});
-		}
-
-		let response = await action({ request, params: {}, context: {} });
-		await expect(response.json()).resolves.toEqual("updated");
-	});
-
-	test("Default", async () => {
-		let request = new Request("https://remix.utils", {
-			method: "POST",
-			body: new FormData(),
-		});
-
-		async function action({ request }: ActionFunctionArgs) {
-			return await namedAction(request, {
-				async default() {
-					return data("default");
-				},
-			});
-		}
-
-		let response = await action({ request, params: {}, context: {} });
-		await expect(response.json()).resolves.toEqual("default");
+		expect(response.data).toEqual("updated");
 	});
 
 	test("Error - No action with name", async () => {
-		let request = new Request("https://remix.utils?/update", {
+		let formData = new FormData();
+		formData.set("intent", "update");
+		let request = new Request("https://remix.utils", {
 			method: "POST",
-			body: new FormData(),
+			body: formData,
 		});
 
-		// eslint-disable-next-line unicorn/consistent-function-scoping
 		async function action({ request }: ActionFunctionArgs) {
-			return await namedAction(request, {
+			return await namedAction(await request.formData(), {
 				async create() {
 					return data("created");
 				},
 			});
 		}
 
-		await expect(action({ request, params: {}, context: {} })).rejects.toThrow(
+		expect(action({ request, params: {}, context: {} })).rejects.toThrow(
 			'Action "update" not found',
 		);
 	});
@@ -264,24 +52,22 @@ describe.skip(namedAction.name, () => {
 			body: new FormData(),
 		});
 
-		// eslint-disable-next-line unicorn/consistent-function-scoping
 		async function action({ request }: ActionFunctionArgs) {
-			return await namedAction(request, {
+			return await namedAction(await request.formData(), {
 				async create() {
 					return data("created");
 				},
 			});
 		}
 
-		await expect(action({ request, params: {}, context: {} })).rejects.toThrow(
+		expect(action({ request, params: {}, context: {} })).rejects.toThrow(
 			"Action name not found",
 		);
 	});
 
 	test("Typed Response", async () => {
-		// eslint-disable-next-line unicorn/consistent-function-scoping
 		async function action({ request }: ActionFunctionArgs) {
-			return await namedAction(request, {
+			return await namedAction(await request.formData(), {
 				async create() {
 					return data("created" as const);
 				},
@@ -300,7 +86,7 @@ describe.skip(namedAction.name, () => {
 			});
 		}
 
-		await expect(
+		expect(
 			action({
 				request: new Request("https://remix.utils", {
 					method: "POST",
@@ -308,10 +94,10 @@ describe.skip(namedAction.name, () => {
 				}),
 				params: {},
 				context: {},
-			}).then((res) => res.json()),
+			}).then((res) => res.data),
 		).resolves.toBe("created");
 
-		await expect(
+		expect(
 			action({
 				request: new Request("https://remix.utils", {
 					method: "POST",
@@ -319,10 +105,10 @@ describe.skip(namedAction.name, () => {
 				}),
 				params: {},
 				context: {},
-			}).then((res) => res.json()),
+			}).then((res) => res.data),
 		).resolves.toBe("updated");
 
-		await expect(
+		expect(
 			action({
 				request: new Request("https://remix.utils", {
 					method: "POST",
@@ -330,10 +116,10 @@ describe.skip(namedAction.name, () => {
 				}),
 				params: {},
 				context: {},
-			}).then((res) => res.json()),
+			}).then((res) => res.data),
 		).resolves.toBe("deleted");
 
-		await expect(
+		expect(
 			action({
 				request: new Request("https://remix.utils", {
 					method: "POST",
@@ -341,7 +127,7 @@ describe.skip(namedAction.name, () => {
 				}),
 				params: {},
 				context: {},
-			}).then((res) => res.json()),
+			}).then((res) => res.data),
 		).resolves.toBe("default");
 	});
 });

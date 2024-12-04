@@ -1,5 +1,5 @@
+import { describe, expect, test } from "bun:test";
 import { createCookie } from "react-router";
-import { describe, expect, test } from "vitest";
 import { z } from "zod";
 import { rollingCookie } from "../../src/server/rolling-cookie";
 import { createTypedCookie } from "../../src/server/typed-cookie";

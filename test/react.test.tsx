@@ -1,12 +1,12 @@
+import { describe, test } from "bun:test";
 import { render } from "@testing-library/react";
 import * as React from "react";
-// @vitest-environment happy-dom
-import { describe, test } from "vitest";
 import {
 	AuthenticityTokenInput,
 	AuthenticityTokenProvider,
 } from "../src/react/authenticity-token";
-// TODO Fix this
+
+// biome-ignore lint/suspicious/noSkippedTests: Fix this
 describe.skip("React Utils", () => {
 	describe("CSRF", () => {
 		test("should work", () => {

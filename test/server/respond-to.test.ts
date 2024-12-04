@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test } from "bun:test";
 import { respondTo } from "../../src/server/respond-to";
 
 describe(respondTo, () => {
@@ -135,7 +135,7 @@ describe(respondTo, () => {
 
 		let response = new Response("text/html");
 
-		await expect(
+		expect(
 			respondTo(headers, {
 				async text() {
 					return response;

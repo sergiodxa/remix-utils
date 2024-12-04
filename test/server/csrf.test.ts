@@ -1,5 +1,5 @@
+import { describe, expect, test } from "bun:test";
 import { createCookie } from "react-router";
-import { describe, expect, test } from "vitest";
 import { CSRF, CSRFError } from "../../src/server/csrf";
 
 describe("CSRF", () => {
@@ -39,7 +39,7 @@ describe("CSRF", () => {
 		let formData = new FormData();
 		formData.set("csrf", token);
 
-		await expect(csrf.validate(formData, headers)).resolves.toBeUndefined();
+		expect(csrf.validate(formData, headers)).resolves.toBeUndefined();
 	});
 
 	test("verify tokens using Request", async () => {
@@ -58,7 +58,7 @@ describe("CSRF", () => {
 			body: formData,
 		});
 
-		await expect(csrf.validate(request)).resolves.toBeUndefined();
+		expect(csrf.validate(request)).resolves.toBeUndefined();
 	});
 
 	test('throws "Can\'t find CSRF token in cookie" if cookie is not set', async () => {
@@ -67,7 +67,7 @@ describe("CSRF", () => {
 		let formData = new FormData();
 		formData.set("csrf", "token");
 
-		await expect(csrf.validate(formData, headers)).rejects.toThrow(
+		expect(csrf.validate(formData, headers)).rejects.toThrow(
 			new CSRFError(
 				"missing_token_in_cookie",
 				"Can't find CSRF token in cookie.",
@@ -83,7 +83,7 @@ describe("CSRF", () => {
 		let formData = new FormData();
 		formData.set("csrf", "token");
 
-		await expect(csrf.validate(formData, headers)).rejects.toThrow(
+		expect(csrf.validate(formData, headers)).rejects.toThrow(
 			new CSRFError("invalid_token_in_cookie", "Invalid CSRF token in cookie."),
 		);
 	});
@@ -97,7 +97,7 @@ describe("CSRF", () => {
 
 		let formData = new FormData();
 
-		await expect(csrf.validate(formData, headers)).rejects.toThrow(
+		expect(csrf.validate(formData, headers)).rejects.toThrow(
 			new CSRFError("missing_token_in_body", "Can't find CSRF token in body."),
 		);
 	});
@@ -112,7 +112,7 @@ describe("CSRF", () => {
 		let formData = new FormData();
 		formData.set("csrf", "wrong token");
 
-		await expect(csrf.validate(formData, headers)).rejects.toThrow(
+		expect(csrf.validate(formData, headers)).rejects.toThrow(
 			new CSRFError(
 				"mismatched_token",
 				"Can't verify CSRF token authenticity.",
@@ -134,7 +134,7 @@ describe("CSRF", () => {
 			),
 		});
 
-		await expect(securetCSRF.validate(formData, headers)).rejects.toThrow(
+		expect(securetCSRF.validate(formData, headers)).rejects.toThrow(
 			new CSRFError(
 				"tampered_token_in_cookie",
 				"Tampered CSRF token in cookie.",

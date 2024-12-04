@@ -1,13 +1,11 @@
+import { describe, expect, test } from "bun:test";
 import { render, screen } from "@testing-library/react";
-// @vitest-environment happy-dom
 import * as React from "react";
-import { createRoutesStub } from "react-router";
-import { describe, expect, test } from "vitest";
+import { createRoutesStub, useFetcher } from "react-router";
 
-import { useFetcher } from "react-router";
 import { getFetcherType, useFetcherType } from "../../src/react/fetcher-type";
 
-describe(getFetcherType, () => {
+describe(getFetcherType.name, () => {
 	test("returns done", () => {
 		expect(
 			getFetcherType(
@@ -72,7 +70,7 @@ describe(getFetcherType, () => {
 	});
 });
 
-describe(useFetcherType, () => {
+describe(useFetcherType.name, () => {
 	function Component() {
 		let fetcher = useFetcher();
 		let fetcherType = useFetcherType(fetcher);

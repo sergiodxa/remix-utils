@@ -1,9 +1,9 @@
+import { describe, expect, test } from "bun:test";
 import {
 	createCookie,
 	createCookieSessionStorage,
 	isCookie,
 } from "react-router";
-import { describe, expect, test } from "vitest";
 import { ZodError, z } from "zod";
 import {
 	createTypedCookie,
@@ -23,18 +23,14 @@ describe.skip("Typed Cookie", () => {
 	});
 
 	test("throw if serialized type is not valid", async () => {
-		await expect(() => typedCookie.serialize("a")).rejects.toThrowError(
-			ZodError,
-		);
+		expect(() => typedCookie.serialize("a")).rejects.toThrowError(ZodError);
 		// @ts-expect-error We now this will be a TS error
-		await expect(() => typedCookie.serialize(123)).rejects.toThrowError(
-			ZodError,
-		);
+		expect(() => typedCookie.serialize(123)).rejects.toThrowError(ZodError);
 	});
 
 	test("throw if parsed type is not valid", async () => {
 		let cookieHeader = await cookie.serialize("a");
-		await expect(() => typedCookie.parse(cookieHeader)).rejects.toThrowError(
+		expect(() => typedCookie.parse(cookieHeader)).rejects.toThrowError(
 			ZodError,
 		);
 	});
@@ -55,9 +51,9 @@ describe.skip("Typed Cookie", () => {
 
 		session.unset("token");
 
-		await expect(() =>
-			sessionStorage.commitSession(session),
-		).rejects.toThrowError(ZodError);
+		expect(() => sessionStorage.commitSession(session)).rejects.toThrowError(
+			ZodError,
+		);
 	});
 
 	test("supports async schemas", async () => {
@@ -70,7 +66,7 @@ describe.skip("Typed Cookie", () => {
 
 		let typedCookie = createTypedCookie({ cookie, schema });
 
-		await expect(() =>
+		expect(() =>
 			typedCookie.serialize({ token: "a-b-c" }),
 		).rejects.toThrowError(ZodError);
 	});
@@ -88,7 +84,7 @@ describe.skip("Typed Cookie", () => {
 			}),
 		});
 
-		await expect(
+		expect(
 			typedCookie.parse(
 				// @ts-expect-error serialized doesn't directly expect flash keys as
 				// valids, use sessionStorage to make them work
@@ -103,7 +99,7 @@ describe.skip("Typed Cookie", () => {
 			schema: z.array(z.string()),
 		});
 
-		await expect(
+		expect(
 			typedCookie.parse(await typedCookie.serialize(["a", "b", "c"])),
 		).resolves.toEqual(["a", "b", "c"]);
 	});
@@ -114,7 +110,7 @@ describe.skip("Typed Cookie", () => {
 			schema: z.function().args(z.string()).returns(z.string()),
 		});
 
-		await expect(
+		expect(
 			typedCookie.parse(await typedCookie.serialize((a: string) => a)),
 		).rejects.toThrowError(
 			new ZodError([
@@ -135,11 +131,11 @@ describe.skip("Typed Cookie", () => {
 			schema: z.boolean(),
 		});
 
-		await expect(
+		expect(
 			typedCookie.parse(await typedCookie.serialize(true)),
 		).resolves.toEqual(true);
 
-		await expect(
+		expect(
 			typedCookie.parse(await typedCookie.serialize(false)),
 		).resolves.toEqual(false);
 	});
@@ -150,7 +146,7 @@ describe.skip("Typed Cookie", () => {
 			schema: z.number(),
 		});
 
-		await expect(
+		expect(
 			typedCookie.parse(await typedCookie.serialize(123)),
 		).resolves.toEqual(123);
 	});
@@ -165,7 +161,7 @@ describe.skip("Typed Cookie", () => {
 			}, z.date()),
 		});
 
-		await expect(
+		expect(
 			typedCookie.parse(await typedCookie.serialize(new Date())),
 		).resolves.toBeInstanceOf(Date);
 	});
@@ -178,7 +174,7 @@ describe.skip("Typed Cookie", () => {
 			}),
 		});
 
-		await expect(
+		expect(
 			typedCookie.parse(await typedCookie.serialize({ token: "a-b-c" })),
 		).resolves.toEqual({ token: "a-b-c" });
 	});
@@ -189,7 +185,7 @@ describe.skip("Typed Cookie", () => {
 			schema: z.null(),
 		});
 
-		await expect(
+		expect(
 			typedCookie.parse(await typedCookie.serialize(null)),
 		).resolves.toEqual(null);
 	});
@@ -200,7 +196,7 @@ describe.skip("Typed Cookie", () => {
 			schema: z.undefined(),
 		});
 
-		await expect(
+		expect(
 			typedCookie.parse(await typedCookie.serialize(void 0)),
 		).rejects.toThrowError(
 			new ZodError([

@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test } from "bun:test";
 import { getClientIPAddress } from "../../src/server/get-client-ip-address";
 
 const VALID_IP = "192.168.0.1";

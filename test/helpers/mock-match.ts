@@ -1,5 +1,5 @@
+import { vi } from "bun:test";
 import { RouteMatch } from "react-router";
-import { vi } from "vitest";
 
 const { mockMatches } = vi.hoisted(() => {
 	return { mockMatches: vi.fn<never, RouteMatch[]>() };

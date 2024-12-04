@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, spyOn, test } from "bun:test";
 import { eventStream } from "../../src/server/event-stream";
 
-describe(eventStream, () => {
+describe(eventStream.name, () => {
 	test("returns a response", () => {
 		let controller = new AbortController();
 		let response = eventStream(controller.signal, (_, __) => {
@@ -53,7 +52,7 @@ describe(eventStream, () => {
 	describe("Headers Overrides", () => {
 		test("overrrides Content-Type header", () => {
 			// biome-ignore lint/suspicious/noEmptyBlockStatements: Test
-			let spy = vi.spyOn(console, "warn").mockImplementation(() => {});
+			let spy = spyOn(console, "warn").mockImplementation(() => {});
 
 			let response = eventStream(
 				new AbortController().signal,
@@ -72,7 +71,7 @@ describe(eventStream, () => {
 
 		test("overrides Cache-Control", () => {
 			// biome-ignore lint/suspicious/noEmptyBlockStatements: Test
-			let spy = vi.spyOn(console, "warn").mockImplementation(() => {});
+			let spy = spyOn(console, "warn").mockImplementation(() => {});
 
 			let response = eventStream(
 				new AbortController().signal,
@@ -91,7 +90,7 @@ describe(eventStream, () => {
 
 		test("overrides Connection", () => {
 			// biome-ignore lint/suspicious/noEmptyBlockStatements: Test
-			let spy = vi.spyOn(console, "warn").mockImplementation(() => {});
+			let spy = spyOn(console, "warn").mockImplementation(() => {});
 
 			let response = eventStream(
 				new AbortController().signal,

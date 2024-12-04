@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test } from "bun:test";
 
 import { cors } from "../../src/server/cors";
 
@@ -7,7 +7,7 @@ function createRequest(headers: Headers = new Headers()) {
 	return new Request("http://remix.utils/test", { method: "OPTIONS", headers });
 }
 
-describe(cors, () => {
+describe(cors.name, () => {
 	test("change the Content-Length to 0 for preflight requests", async () => {
 		let request = createRequest();
 		let response = new Response("", { status: 204 });

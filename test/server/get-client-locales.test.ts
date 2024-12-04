@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test } from "bun:test";
 import { getClientLocales } from "../../src/server/get-client-locales";
 
 describe(getClientLocales, () => {

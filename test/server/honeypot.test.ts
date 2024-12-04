@@ -1,5 +1,5 @@
+import { describe, expect, test } from "bun:test";
 import CryptoJS from "crypto-js";
-import { describe, expect, test } from "vitest";
 
 import { Honeypot, SpamError } from "../../src/server/honeypot";
 

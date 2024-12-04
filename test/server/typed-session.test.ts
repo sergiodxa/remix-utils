@@ -1,3 +1,4 @@
+import { describe, expect, test } from "bun:test";
 import {
 	ActionFunctionArgs,
 	LoaderFunctionArgs,
@@ -6,7 +7,6 @@ import {
 	data,
 	isSession,
 } from "react-router";
-import { describe, expect, test } from "vitest";
 import { z } from "zod";
 import { createTypedCookie } from "../../src/server/typed-cookie";
 import {
@@ -151,7 +151,7 @@ describe("Typed Sessions", () => {
 			context: { sessionStorage: typedSessionStorage, key: "message" },
 		});
 
-		await expect(response.json()).resolves.toEqual({
+		expect(response.data).toEqual({
 			value: "normal value",
 		});
 
@@ -196,7 +196,7 @@ describe("Typed Sessions", () => {
 			context: { sessionStorage: typedSessionStorage, key: "message" },
 		});
 
-		await expect(response.json()).resolves.toEqual({
+		expect(response.data).toEqual({
 			value: "flash value",
 		});
 
