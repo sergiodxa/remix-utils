@@ -8,6 +8,7 @@
 		"formulahendry.auto-rename-tag",
 		"github.vscode-github-actions",
 		"vscode-icons-team.vscode-icons",
-		"waderyan.gitblame"
+		"waderyan.gitblame",
+		"oven.bun-vscode"
 	]
 }
