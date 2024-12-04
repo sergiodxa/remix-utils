@@ -146,5 +146,6 @@
 	},
 	"dependencies": {
 		"type-fest": "^4.30.0"
-	}
+	},
+	"files": ["build", "package.json", "README.md"]
 }
