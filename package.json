@@ -49,7 +49,6 @@
 	},
 	"sideEffects": false,
 	"scripts": {
-		"prepare": "bun run build",
 		"build": "tsc",
 		"typecheck": "tsc --noEmit",
 		"quality": "biome check .",
