@@ -15,6 +15,27 @@ Then remove any `@remix-run/*` package you have. After that you should be good t
 
 Note the following breaking changes:
 
+## Switch from crypto-js to Oslo
+
+If you were using Honeypot and CSRF utils, you should switch from `crypto-js` to `@oslo/crypto` and `@oslo/encoding`.
+
+```sh
+npm remove crypto-js @types/crypto-js
+npm install @oslo/crypto @oslo/encoding
+```
+
+This change also introduced a breaking change in Honeypot `getInputProps` and `check` methods which is now async
+
+```diff
+- let inputProps = honeypot.getInputProps()
++ let inputProps = await honeypot.getInputProps()
+```
+
+```diff
+- honeypot.check()
++ await honeypot.check()
+```
+
 ## namedAction
 
 If you're using namedAction util, note that it has dropped support for receiving a URL, URLSearchParams or Request objects, and now only accepts a FormData.
