@@ -49,16 +49,12 @@
 	},
 	"sideEffects": false,
 	"scripts": {
-		"prepare": "npm run build",
-		"build": "tsc --project tsconfig.json --outDir ./build",
-		"format": "biome format --write .",
-		"typecheck": "tsc --project tsconfig.json --noEmit",
-		"check": "biome check .",
-		"lint": "biome lint .",
-		"test": "vitest --run",
-		"test:watch": "vitest",
-		"test:coverage": "vitest --coverage",
-		"test:exports": "bun scripts/check-pkg-exports.ts"
+		"prepare": "bun run build",
+		"build": "tsc",
+		"typecheck": "tsc --noEmit",
+		"quality": "biome check .",
+		"quality:fix": "biome check . --write --unsafe",
+		"exports": "bun run ./scripts/exports.ts"
 	},
 	"author": {
 		"name": "Sergio Xalambrí",
