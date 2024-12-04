@@ -1,6 +1,4 @@
-import { data, UNSAFE_DataWithResponseInit } from "react-router";
-
- 
+import { data } from "react-router";
 
 type ResponseResult<LoaderData> = {
 	[Key in keyof LoaderData]: LoaderData[Key] extends () => infer ReturnValue
@@ -15,7 +13,7 @@ type ResponseResult<LoaderData> = {
 export async function jsonHash<LoaderData extends Record<string, unknown>>(
 	input: LoaderData,
 	init?: ResponseInit | number,
-): Promise<UNSAFE_DataWithResponseInit<ResponseResult<LoaderData>>> {
+) {
 	let result: ResponseResult<LoaderData> = {} as ResponseResult<LoaderData>;
 
 	let resolvedResults = await Promise.all(
