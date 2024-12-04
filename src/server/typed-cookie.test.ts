@@ -20,16 +20,14 @@ describe("Typed Cookie", () => {
 	});
 
 	test("throw if serialized type is not valid", async () => {
-		expect(() => typedCookie.serialize("a")).rejects.toThrowError(ZodError);
+		expect(typedCookie.serialize("a")).rejects.toThrowError(ZodError);
 		// @ts-expect-error We now this will be a TS error
-		expect(() => typedCookie.serialize(123)).rejects.toThrowError(ZodError);
+		expect(typedCookie.serialize(123)).rejects.toThrowError(ZodError);
 	});
 
 	test("throw if parsed type is not valid", async () => {
 		let cookieHeader = await cookie.serialize("a");
-		expect(() => typedCookie.parse(cookieHeader)).rejects.toThrowError(
-			ZodError,
-		);
+		expect(typedCookie.parse(cookieHeader)).rejects.toThrowError(ZodError);
 	});
 
 	test("sessionStorage must accepts typed-cookie", async () => {
@@ -48,7 +46,7 @@ describe("Typed Cookie", () => {
 
 		session.unset("token");
 
-		expect(() => sessionStorage.commitSession(session)).rejects.toThrowError(
+		expect(sessionStorage.commitSession(session)).rejects.toThrowError(
 			ZodError,
 		);
 	});
@@ -63,9 +61,9 @@ describe("Typed Cookie", () => {
 
 		let typedCookie = createTypedCookie({ cookie, schema });
 
-		expect(() =>
-			typedCookie.serialize({ token: "a-b-c" }),
-		).rejects.toThrowError(ZodError);
+		expect(typedCookie.serialize({ token: "a-b-c" })).rejects.toThrowError(
+			ZodError,
+		);
 	});
 
 	test("pass isTypedCookie", async () => {
@@ -87,6 +85,7 @@ describe("Typed Cookie", () => {
 				// valids, use sessionStorage to make them work
 				await typedCookie.serialize({ __flash_token__: "a-b-c" }),
 			),
+			// @ts-expect-error serialized doesn't directly expect flash keys as valids, use sessionStorage to make them work
 		).resolves.toEqual({ __flash_token__: "a-b-c" });
 	});
 

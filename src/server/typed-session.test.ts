@@ -143,9 +143,12 @@ describe("Typed Sessions", () => {
 		headers.delete("Cookie");
 		headers.set("Set-Cookie", await typedSessionStorage.commitSession(session));
 
-		let response: Response = await loader({
+		let response = await loader({
 			request: new Request("http://remix.utils", {
-				headers: { Cookie: actionResponse.headers.get("Set-Cookie") ?? "" },
+				headers: {
+					Cookie:
+						new Headers(actionResponse.init?.headers).get("Set-Cookie") ?? "",
+				},
 			}),
 			params: {},
 			context: { sessionStorage: typedSessionStorage, key: "message" },
@@ -155,7 +158,7 @@ describe("Typed Sessions", () => {
 			value: "normal value",
 		});
 
-		expect(response.headers.get("Set-Cookie")).toEqual(
+		expect(new Headers(response.init?.headers).get("Set-Cookie")).toEqual(
 			headers.get("Set-Cookie"),
 		);
 	});
@@ -185,12 +188,15 @@ describe("Typed Sessions", () => {
 		});
 
 		session = await typedSessionStorage.getSession(
-			actionResponse.headers.get("Set-Cookie"),
+			new Headers(actionResponse.init?.headers).get("Set-Cookie"),
 		);
 
-		let response: Response = await loader({
+		let response = await loader({
 			request: new Request("http://remix.utils", {
-				headers: { Cookie: actionResponse.headers.get("Set-Cookie") ?? "" },
+				headers: {
+					Cookie:
+						new Headers(actionResponse.init?.headers).get("Set-Cookie") ?? "",
+				},
 			}),
 			params: {},
 			context: { sessionStorage: typedSessionStorage, key: "message" },
@@ -200,7 +206,7 @@ describe("Typed Sessions", () => {
 			value: "flash value",
 		});
 
-		expect(response.headers.get("Set-Cookie")).toEqual(
+		expect(new Headers(response.init?.headers).get("Set-Cookie")).toEqual(
 			headers.get("Set-Cookie"),
 		);
 	});

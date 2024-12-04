@@ -4,7 +4,7 @@ import { getClientIPAddress } from "./get-client-ip-address";
 const VALID_IP = "192.168.0.1";
 const INVALID_IP = "abc.def.ghi.jkl";
 
-const headerNames = Object.freeze([
+const headerNames = [
 	"X-Client-IP",
 	"X-Forwarded-For",
 	"HTTP-X-Forwarded-For",
@@ -19,9 +19,9 @@ const headerNames = Object.freeze([
 	"Forwarded",
 	"DO-Connecting-IP" /** Digital ocean app platform */,
 	"oxygen-buyer-ip" /** Shopify oxygen platform */,
-] as const);
+];
 
-describe(getClientIPAddress, () => {
+describe(getClientIPAddress.name, () => {
 	describe("Get the IP if it's valid", () => {
 		test.each(headerNames)("%s", (headerName) => {
 			let headers = new Headers();
@@ -35,6 +35,7 @@ describe(getClientIPAddress, () => {
 			if (headerName === "Forwarded") {
 				headers.set(headerName, serializeForwardedHeader(VALID_IP));
 			} else headers.set(headerName, VALID_IP);
+
 			expect(getClientIPAddress(headers)).toBe(VALID_IP);
 		});
 

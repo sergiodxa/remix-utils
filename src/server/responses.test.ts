@@ -11,8 +11,6 @@ import {
 	xml,
 } from "./responses";
 
-let jsonContentType = "application/json; charset=utf-8";
-
 describe("Responses", () => {
 	describe(notModified.name, () => {
 		test("Should return Response with status 304", async () => {

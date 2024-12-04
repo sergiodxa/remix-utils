@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { respondTo } from "./respond-to";
 
-describe(respondTo, () => {
+describe(respondTo.name, () => {
 	test("uses default handler", () => {
 		let headers = new Headers({ accept: "text/html" });
 

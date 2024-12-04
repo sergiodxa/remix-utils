@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { isPrefetch } from "./is-prefetch";
 
-describe(isPrefetch, () => {
+describe(isPrefetch.name, () => {
 	test.each([
 		"Purpose",
 		"X-Purpose",

@@ -3,8 +3,7 @@ import { createCookie } from "react-router";
 import { z } from "zod";
 import { rollingCookie } from "./rolling-cookie";
 import { createTypedCookie } from "./typed-cookie";
-// install globals removal makes these crash
-// TODO Fix this
+
 describe(rollingCookie.name, () => {
 	describe("Remix Cookie", () => {
 		let cookie = createCookie("name", { secrets: ["secret"] });
@@ -16,7 +15,7 @@ describe(rollingCookie.name, () => {
 			await rollingCookie(cookie, request, headers);
 
 			expect(headers.has("set-cookie")).toBe(false);
-			expect(headers.get("Set-Cookie")).toMatchInlineSnapshot("null");
+			expect(headers.get("Set-Cookie")).toMatchSnapshot("null");
 		});
 
 		test("should roll the cookie if the headers didn't set it", async () => {
@@ -28,7 +27,7 @@ describe(rollingCookie.name, () => {
 			await rollingCookie(cookie, request, headers);
 
 			expect(headers.has("set-cookie")).toBe(true);
-			expect(headers.get("Set-Cookie")).toMatchInlineSnapshot(
+			expect(headers.get("Set-Cookie")).toMatchSnapshot(
 				'"name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"',
 			);
 		});
@@ -44,7 +43,7 @@ describe(rollingCookie.name, () => {
 			await rollingCookie(cookie, request, headers);
 
 			expect(headers.has("set-cookie")).toBe(true);
-			expect(headers.get("Set-Cookie")).toMatchInlineSnapshot(
+			expect(headers.get("Set-Cookie")).toMatchSnapshot(
 				'"name=InZhbHVlIGZyb20gaGVhZGVycyI%3D.bLpX1ehfp7NZe7E9yNSkd56WbnG3QdHLmfwxt%2BxfkfA; Path=/; SameSite=Lax"',
 			);
 		});
@@ -63,7 +62,7 @@ describe(rollingCookie.name, () => {
 			await rollingCookie(cookie, request, headers);
 
 			expect(headers.has("set-cookie")).toBe(true);
-			expect(headers.get("Set-Cookie")).toMatchInlineSnapshot(
+			expect(headers.get("Set-Cookie")).toMatchSnapshot(
 				'"other=InZhbHVlIGZyb20gb3RoZXIgY29va2llIg%3D%3D.wn3PvV5dGwPg2Ql8wMy1Q%2B0v%2BU0UQjrI7SBgR6W51QQ; Path=/; SameSite=Lax, name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"',
 			);
 		});
@@ -83,7 +82,7 @@ describe(rollingCookie.name, () => {
 			await rollingCookie(typedCookie, request, headers);
 
 			expect(headers.has("set-cookie")).toBe(false);
-			expect(headers.get("Set-Cookie")).toMatchInlineSnapshot("null");
+			expect(headers.get("Set-Cookie")).toMatchSnapshot("null");
 		});
 
 		test("should roll the cookie if the headers didn't set it", async () => {
@@ -95,7 +94,7 @@ describe(rollingCookie.name, () => {
 			await rollingCookie(typedCookie, request, headers);
 
 			expect(headers.has("set-cookie")).toBe(true);
-			expect(headers.get("Set-Cookie")).toMatchInlineSnapshot(
+			expect(headers.get("Set-Cookie")).toMatchSnapshot(
 				'"name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"',
 			);
 		});
@@ -111,7 +110,7 @@ describe(rollingCookie.name, () => {
 			await rollingCookie(typedCookie, request, headers);
 
 			expect(headers.has("set-cookie")).toBe(true);
-			expect(headers.get("Set-Cookie")).toMatchInlineSnapshot(
+			expect(headers.get("Set-Cookie")).toMatchSnapshot(
 				'"name=InZhbHVlIGZyb20gaGVhZGVycyI%3D.bLpX1ehfp7NZe7E9yNSkd56WbnG3QdHLmfwxt%2BxfkfA; Path=/; SameSite=Lax"',
 			);
 		});
@@ -130,7 +129,7 @@ describe(rollingCookie.name, () => {
 			await rollingCookie(typedCookie, request, headers);
 
 			expect(headers.has("set-cookie")).toBe(true);
-			expect(headers.get("Set-Cookie")).toMatchInlineSnapshot(
+			expect(headers.get("Set-Cookie")).toMatchSnapshot(
 				'"other=InZhbHVlIGZyb20gb3RoZXIgY29va2llIg%3D%3D.wn3PvV5dGwPg2Ql8wMy1Q%2B0v%2BU0UQjrI7SBgR6W51QQ; Path=/; SameSite=Lax, name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"',
 			);
 		});
