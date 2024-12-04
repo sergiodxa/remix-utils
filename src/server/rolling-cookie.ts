@@ -1,6 +1,6 @@
 import type { Cookie } from "react-router";
 import { z } from "zod";
-import { TypedCookie } from "./typed-cookie.js";
+import type { TypedCookie } from "./typed-cookie.js";
 
 export async function rollingCookie<Schema extends z.ZodTypeAny>(
 	cookie: Cookie | TypedCookie<Schema>,

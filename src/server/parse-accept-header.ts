@@ -8,17 +8,21 @@
 export function parseAcceptHeader(header: string) {
 	let types = header.split(",").map((type) => type.trim());
 
-	let parsedTypes = types.map((value) => {
-		let [mediaType, ...params] = value.split(";");
+	let parsedTypes = types
+		.map((value) => {
+			let [mediaType, ...params] = value.split(";");
 
-		let [type, subtype] = mediaType.split("/").map((part) => part.trim());
+			if (!mediaType) return;
 
-		let parsedParams = Object.fromEntries(
-			params.map((param) => param.split("=")),
-		);
+			let [type, subtype] = mediaType.split("/").map((part) => part.trim());
 
-		return { type, subtype, params: parsedParams };
-	});
+			let parsedParams = Object.fromEntries(
+				params.map((param) => param.split("=")),
+			);
+
+			return { type, subtype, params: parsedParams };
+		})
+		.filter((v) => v !== undefined);
 
 	return parsedTypes;
 }

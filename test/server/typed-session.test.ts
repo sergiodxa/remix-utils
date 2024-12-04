@@ -114,7 +114,7 @@ describe("Typed Sessions", () => {
 		expect(typedSession.get("count")).toBe(1);
 	});
 	// TODO Fix this
-	test.skip("use session.set", async () => {
+	test("use session.set", async () => {
 		let formData = new FormData();
 		formData.set("message", "normal value");
 
@@ -160,7 +160,7 @@ describe("Typed Sessions", () => {
 		);
 	});
 	// TODO Fix this
-	test.skip("use session.flash", async () => {
+	test("use session.flash", async () => {
 		let formData = new FormData();
 		formData.set("message", "flash value");
 

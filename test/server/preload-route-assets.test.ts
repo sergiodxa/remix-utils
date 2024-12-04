@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import type { EntryContext } from "react-router";
 import { preloadRouteAssets } from "../../src/server/preload-route-assets";
 // TODO Fix this
-describe.skip(preloadRouteAssets.name, () => {
+describe(preloadRouteAssets.name, () => {
 	let context: EntryContext = {
 		isSpaMode: false,
 		manifest: {

@@ -31,9 +31,12 @@ export async function namedAction<Actions extends ActionsRecord>(
 	let name = findNameInFormData(formData);
 
 	if (name && name in actions) {
-		return actions[name]() as unknown as UNSAFE_DataWithResponseInit<
-			ResponsesUnion<Actions>
-		>;
+		let fn = actions[name];
+		if (fn) {
+			return fn() as unknown as UNSAFE_DataWithResponseInit<
+				ResponsesUnion<Actions>
+			>;
+		}
 	}
 
 	if (name === null && "default" in actions) {

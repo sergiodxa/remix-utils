@@ -1,7 +1,7 @@
 import {
-	Cookie,
-	CookieParseOptions,
-	CookieSerializeOptions,
+	type Cookie,
+	type CookieParseOptions,
+	type CookieSerializeOptions,
 	isCookie,
 } from "react-router";
 import type { z } from "zod";

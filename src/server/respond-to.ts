@@ -63,9 +63,9 @@ export function respondTo(
 	for (let { type, subtype } of types) {
 		let handler = handlers[`${type}/${subtype}`];
 		if (handler) return handler();
-		handler = handlers[subtype];
+		handler = handlers[subtype as string];
 		if (handler) return handler();
-		handler = handlers[type];
+		handler = handlers[type as string];
 		if (handler) return handler();
 	}
 

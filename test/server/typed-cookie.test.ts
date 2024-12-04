@@ -11,7 +11,7 @@ import {
 } from "../../src/server/typed-cookie";
 // TODO Fix this
 // install globals removal makes these crash
-describe.skip("Typed Cookie", () => {
+describe("Typed Cookie", () => {
 	let cookie = createCookie("name", { secrets: ["secret"] });
 	let typedCookie = createTypedCookie({
 		cookie,

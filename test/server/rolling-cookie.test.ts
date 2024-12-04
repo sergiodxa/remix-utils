@@ -5,7 +5,7 @@ import { rollingCookie } from "../../src/server/rolling-cookie";
 import { createTypedCookie } from "../../src/server/typed-cookie";
 // install globals removal makes these crash
 // TODO Fix this
-describe.skip(rollingCookie.name, () => {
+describe(rollingCookie.name, () => {
 	describe("Remix Cookie", () => {
 		let cookie = createCookie("name", { secrets: ["secret"] });
 

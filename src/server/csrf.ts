@@ -199,6 +199,7 @@ export class CSRF {
 	private verifySignature(token: string) {
 		if (!this.secret) return true;
 		let [value, signature] = token.split(".");
+		if (!value) return false;
 		let expectedSignature = this.sign(value);
 		return signature === expectedSignature;
 	}

@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, jest, test } from "bun:test";
 import { TimersError, interval, wait } from "../../src/common/timers";
 
-describe.skip("Timers", () => {
+describe("Timers", () => {
 	beforeAll(() => {
 		jest.useFakeTimers();
 	});
@@ -11,7 +11,7 @@ describe.skip("Timers", () => {
 	});
 
 	// TODO Fix this
-	describe.skip(wait.name, () => {
+	describe(wait.name, () => {
 		// TODO Fix this
 		test("should resolve after the specified time", async () => {
 			let start = Date.now();
@@ -33,9 +33,9 @@ describe.skip("Timers", () => {
 		});
 	});
 
-	describe.skip(interval.name, () => {
+	describe(interval.name, () => {
 		// TODO Fix this
-		test.skip("should resolve after the specified time", async () => {
+		test("should resolve after the specified time", async () => {
 			let controller = new AbortController();
 			let start = Date.now();
 			mock.advanceTimersByTimeAsync(100);

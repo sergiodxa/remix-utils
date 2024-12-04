@@ -1,4 +1,4 @@
-import { EntryContext } from "react-router";
+import type { EntryContext } from "react-router";
 
 type Link = { href: string; as: string };
 

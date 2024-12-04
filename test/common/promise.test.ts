@@ -41,9 +41,7 @@ describe(timeout.name, () => {
 			timer = setTimeout(resolve, 1000);
 		});
 
-		expect(timeout(promise, { ms: 1 })).rejects.toThrow(
-      "Timed out after 1ms"
-    );
+		expect(timeout(promise, { ms: 1 })).rejects.toThrow("Timed out after 1ms");
 
 		if (timer) clearTimeout(timer);
 	});
@@ -57,8 +55,8 @@ describe(timeout.name, () => {
 		});
 
 		expect(timeout(promise, { ms: 10, controller })).rejects.toThrow(
-      "Timed out after 10ms"
-    );
+			"Timed out after 10ms",
+		);
 
 		if (timer) clearTimeout(timer);
 
