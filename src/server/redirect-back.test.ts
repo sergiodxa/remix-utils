@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { redirectBack } from "../../src/server/redirect-back";
+import { redirectBack } from "./redirect-back";
 
 describe(redirectBack, () => {
 	test("uses the referer if available", () => {

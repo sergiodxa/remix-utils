@@ -4,7 +4,7 @@ import * as React from "react";
 import {
 	AuthenticityTokenInput,
 	AuthenticityTokenProvider,
-} from "../src/react/authenticity-token";
+} from "./authenticity-token";
 
 // biome-ignore lint/suspicious/noSkippedTests: Fix this
 describe.skip("React Utils", () => {

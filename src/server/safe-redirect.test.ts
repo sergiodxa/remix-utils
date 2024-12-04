@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { safeRedirect } from "../../src/server/safe-redirect";
+import { safeRedirect } from "./safe-redirect";
 
 describe(safeRedirect.name, () => {
 	test.each(["/home", "/home?foo=bar", "/home#foo"])("Is valid %s", (to) => {

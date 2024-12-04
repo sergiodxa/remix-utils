@@ -1,5 +1,5 @@
 import { describe, expect, spyOn, test } from "bun:test";
-import { eventStream } from "../../src/server/event-stream";
+import { eventStream } from "./event-stream";
 
 describe(eventStream.name, () => {
 	test("returns a response", () => {

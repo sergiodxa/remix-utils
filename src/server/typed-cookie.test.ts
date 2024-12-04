@@ -5,10 +5,7 @@ import {
 	isCookie,
 } from "react-router";
 import { ZodError, z } from "zod";
-import {
-	createTypedCookie,
-	isTypedCookie,
-} from "../../src/server/typed-cookie";
+import { createTypedCookie, isTypedCookie } from "./typed-cookie";
 // TODO Fix this
 // install globals removal makes these crash
 describe("Typed Cookie", () => {

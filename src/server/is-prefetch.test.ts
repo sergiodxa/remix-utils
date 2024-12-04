@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { isPrefetch } from "../../src/server/is-prefetch";
+import { isPrefetch } from "./is-prefetch";
 
 describe(isPrefetch, () => {
 	test.each([

@@ -1,8 +1,8 @@
 // @bun:test-environment happy-dom
 import { afterEach, describe, expect, mock, test } from "bun:test";
-import { useLocales } from "../../src/react/use-locales";
 import { fakeMatch } from "../helpers/fake-match";
 import { mockMatches } from "../helpers/mock-match";
+import { useLocales } from "./use-locales";
 
 describe(useLocales.name, () => {
 	afterEach(() => {

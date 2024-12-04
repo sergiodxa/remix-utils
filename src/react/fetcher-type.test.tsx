@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import * as React from "react";
 import { createRoutesStub, useFetcher } from "react-router";
 
-import { getFetcherType, useFetcherType } from "../../src/react/fetcher-type";
+import { getFetcherType, useFetcherType } from "./fetcher-type";
 
 describe(getFetcherType.name, () => {
 	test("returns done", () => {

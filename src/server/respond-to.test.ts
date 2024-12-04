@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { respondTo } from "../../src/server/respond-to";
+import { respondTo } from "./respond-to";
 
 describe(respondTo, () => {
 	test("uses default handler", () => {

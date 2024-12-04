@@ -9,7 +9,7 @@ import {
 	stylesheet,
 	txt,
 	xml,
-} from "../../src/server/responses";
+} from "./responses";
 
 let jsonContentType = "application/json; charset=utf-8";
 

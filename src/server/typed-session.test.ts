@@ -8,12 +8,12 @@ import {
 	isSession,
 } from "react-router";
 import { z } from "zod";
-import { createTypedCookie } from "../../src/server/typed-cookie";
+import { createTypedCookie } from "./typed-cookie";
 import {
 	TypedSessionStorage,
 	createTypedSessionStorage,
 	isTypedSession,
-} from "../../src/server/typed-session";
+} from "./typed-session";
 
 let cookie = createCookie("session", { secrets: ["secret"] });
 let schema = z.object({

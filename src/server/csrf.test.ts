@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { createCookie } from "react-router";
-import { CSRF, CSRFError } from "../../src/server/csrf";
+import { CSRF, CSRFError } from "./csrf";
 
 describe("CSRF", () => {
 	let cookie = createCookie("csrf", { secrets: ["s3cr3t"] });

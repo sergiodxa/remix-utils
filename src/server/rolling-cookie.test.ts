@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { createCookie } from "react-router";
 import { z } from "zod";
-import { rollingCookie } from "../../src/server/rolling-cookie";
-import { createTypedCookie } from "../../src/server/typed-cookie";
+import { rollingCookie } from "./rolling-cookie";
+import { createTypedCookie } from "./typed-cookie";
 // install globals removal makes these crash
 // TODO Fix this
 describe(rollingCookie.name, () => {

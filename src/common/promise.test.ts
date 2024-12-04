@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { promiseHash, timeout } from "../../src/common/promise";
+import { promiseHash, timeout } from "./promise";
 
 describe(promiseHash.name, () => {
 	test("should await all promises in a hash and return them with the same name", async () => {
@@ -35,7 +35,7 @@ describe(timeout.name, () => {
 	});
 
 	test("rejects if the timeout resolves first", async () => {
-		let timer: NodeJS.Timeout | null = null;
+		let timer: Timer | null = null;
 
 		let promise = new Promise((resolve) => {
 			timer = setTimeout(resolve, 1000);
@@ -48,7 +48,7 @@ describe(timeout.name, () => {
 
 	test("timeout aborts the controller", async () => {
 		let controller = new AbortController();
-		let timer: NodeJS.Timeout | null = null;
+		let timer: Timer | null = null;
 
 		let promise = new Promise((resolve) => {
 			timer = setTimeout(resolve, 1000);

@@ -9,7 +9,7 @@ import {
 } from "bun:test";
 import { fireEvent, render, screen } from "@testing-library/react";
 import * as React from "react";
-import { PrefetchPageAnchors } from "../../src/react/use-delegated-anchors";
+import { PrefetchPageAnchors } from "./use-delegated-anchors";
 
 const navigate = mock();
 

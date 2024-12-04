@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { jsonHash } from "../../src/server/json-hash";
+import { jsonHash } from "./json-hash";
 
 describe(jsonHash.name, () => {
 	test("should return a response with a status code", async () => {
