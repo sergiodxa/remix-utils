@@ -31,18 +31,23 @@ export function eventStream(
 	let stream = new ReadableStream({
 		start(controller) {
 			let encoder = new TextEncoder();
+			let closed = false;
 
 			function send({ event = "message", data }: SendFunctionArgs) {
+				if (closed) return; // If already closed, not enqueue anything
 				controller.enqueue(encoder.encode(`event: ${event}\n`));
-				data.split("\n").forEach((line) => {
-					controller.enqueue(encoder.encode(`data: ${line}\n`));
-				})
-				controller.enqueue(encoder.encode("\n"));
+
+				if (closed) return; // If already closed, not enqueue anything
+
+				data.split("\n").forEach((line, index, array) => {
+					if (closed) return; // If already closed, not enqueue anything
+					let value = `data: ${line}\n`;
+					if (index === array.length - 1) value += "\n";
+					controller.enqueue(encoder.encode(value));
+				});
 			}
 
 			let cleanup = init(send, close);
-
-			let closed = false;
 
 			function close() {
 				if (closed) return;
