@@ -15,13 +15,13 @@ Then remove any `@remix-run/*` package you have. After that you should be good t
 
 Note the following breaking changes:
 
-## Switch from crypto-js to Oslo
+## Switch from crypto-js to [Oslo](https://github.com/oslo-project)
 
-If you were using Honeypot and CSRF utils, you should switch from `crypto-js` to `@oslo/crypto` and `@oslo/encoding`.
+If you were using Honeypot and CSRF utils, you should switch from `crypto-js` to `@oslojs/crypto` and `@oslojs/encoding`.
 
 ```sh
 npm remove crypto-js @types/crypto-js
-npm install @oslo/crypto @oslo/encoding
+npm install @oslojs/crypto @oslojs/encoding
 ```
 
 This change also introduced a breaking change in Honeypot `getInputProps` and `check` methods which is now async
