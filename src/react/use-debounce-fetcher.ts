@@ -34,7 +34,7 @@ type DebouncedFetcher<Data = unknown> = Omit<
 	"submit"
 > & { submit: DebounceSubmitFunction };
 
-export function useDebounceFetcher<Data>() {
+export function useDebounceFetcher<Data>(opts?: Parameters<typeof useFetcher>[0],) {
 	let timeoutRef = useRef<Timer | undefined>();
 
 	useEffect(() => {
@@ -45,7 +45,7 @@ export function useDebounceFetcher<Data>() {
 		};
 	}, []);
 
-	let fetcher = useFetcher<Data>() as DebouncedFetcher<Data>;
+	let fetcher = useFetcher<Data>(opts) as DebouncedFetcher<Data>;
 
 	// Clone the original submit to avoid a recursive loop
 	const originalSubmit = fetcher.submit;
