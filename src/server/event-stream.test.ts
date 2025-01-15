@@ -54,6 +54,19 @@ describe(eventStream.name, () => {
 		expect(done).toBe(true);
 	});
 
+	test("accepts custom queuing strategy", () => {
+		expect(() =>
+			eventStream(
+				new AbortController().signal,
+				(_, abort) => {
+					return () => abort();
+				},
+				undefined,
+				new CountQueuingStrategy({ highWaterMark: 2 }),
+			),
+		).not.toThrow();
+	});
+
 	describe("Headers Overrides", () => {
 		test("overrrides Content-Type header", () => {
 			// biome-ignore lint/suspicious/noEmptyBlockStatements: Test
