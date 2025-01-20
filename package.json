@@ -130,7 +130,7 @@
 		"@testing-library/user-event": "^14.5.2",
 		"@total-typescript/tsconfig": "^1.0.4",
 		"@types/bun": "^1.1.14",
-		"@types/react": "^18.2.78",
+		"@types/react": "^19.0.7",
 		"@vitejs/plugin-react": "^4.3.4",
 		"intl-parse-accept-language": "^1.0.0",
 		"is-ip": "5.0.1",
