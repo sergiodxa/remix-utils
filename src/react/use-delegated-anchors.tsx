@@ -1,5 +1,5 @@
-import { PrefetchPageLinks, useNavigate } from "@remix-run/react";
 import * as React from "react";
+import { PrefetchPageLinks, useNavigate } from "react-router";
 
 const context = React.createContext(false);
 
@@ -10,7 +10,9 @@ export function isLinkEvent(event: MouseEvent) {
 	return;
 }
 
-export function useDelegatedAnchors(nodeRef: React.RefObject<HTMLElement>) {
+export function useDelegatedAnchors(
+	nodeRef: React.RefObject<HTMLElement | null>,
+) {
 	let navigate = useNavigate();
 	let hasParentPrefetch = React.useContext(context);
 

@@ -1,10 +1,10 @@
+import { useCallback, useEffect, useRef } from "react";
 import type {
 	FetcherWithComponents,
 	SubmitFunction,
 	SubmitOptions,
-} from "@remix-run/react";
-import { useFetcher } from "@remix-run/react";
-import { useCallback, useEffect, useRef } from "react";
+} from "react-router";
+import { useFetcher } from "react-router";
 
 type SubmitTarget = Parameters<SubmitFunction>["0"];
 
@@ -34,8 +34,10 @@ type DebouncedFetcher<Data = unknown> = Omit<
 	"submit"
 > & { submit: DebounceSubmitFunction };
 
-export function useDebounceFetcher<Data>() {
-	let timeoutRef = useRef<Timer | undefined>();
+export function useDebounceFetcher<Data>(
+	opts?: Parameters<typeof useFetcher>[0],
+) {
+	let timeoutRef = useRef<Timer>(null);
 
 	useEffect(() => {
 		// no initialize step required since timeoutRef defaults undefined
@@ -45,7 +47,7 @@ export function useDebounceFetcher<Data>() {
 		};
 	}, []);
 
-	let fetcher = useFetcher<Data>() as DebouncedFetcher<Data>;
+	let fetcher = useFetcher<Data>(opts) as DebouncedFetcher<Data>;
 
 	// Clone the original submit to avoid a recursive loop
 	const originalSubmit = fetcher.submit;

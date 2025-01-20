@@ -1,5 +1,5 @@
-import type { Location, Params, useMatches } from "@remix-run/react";
-import type { RouterState } from "@remix-run/router";
+import type { RouterState } from "react-router";
+import type { Location, Params, useMatches } from "react-router";
 
 export type HandleConventionArguments<Data = unknown> = {
 	id: string;

@@ -1,10 +1,10 @@
 import {
-	CookieParseOptions,
-	CookieSerializeOptions,
-	Session,
-	SessionStorage,
+	type CookieParseOptions,
+	type CookieSerializeOptions,
+	type Session,
+	type SessionStorage,
 	isSession,
-} from "@remix-run/server-runtime";
+} from "react-router";
 import { z } from "zod";
 
 export interface TypedSession<Schema extends z.ZodTypeAny> {

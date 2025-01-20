@@ -34,12 +34,19 @@ export async function cacheAssets({
 function getFilePaths() {
 	try {
 		return unique([
-			...Object.values(window.__remixManifest.routes).flatMap((route) => {
-				return [route.module, ...(route.imports ?? [])];
-			}),
-			window.__remixManifest.url,
-			window.__remixManifest.entry.module,
-			...window.__remixManifest.entry.imports,
+			// biome-ignore lint/suspicious/noExplicitAny: global window type is missing proper typing
+			...Object.values((window as any).__reactRouterManifest.routes).flatMap(
+				// biome-ignore lint/suspicious/noExplicitAny: global window type is missing proper typing
+				(route: any) => {
+					return [route.module, ...(route.imports ?? [])];
+				},
+			),
+			// biome-ignore lint/suspicious/noExplicitAny: global window type is missing proper typing
+			(window as any).__reactRouterManifest.url,
+			// biome-ignore lint/suspicious/noExplicitAny: global window type is missing proper typing
+			(window as any).__reactRouterManifest.entry.module,
+			// biome-ignore lint/suspicious/noExplicitAny: global window type is missing proper typing
+			...(window as any).__reactRouterManifest.entry.imports,
 		]);
 	} catch {
 		throw new Error("Failed to get file paths from Remix manifest");

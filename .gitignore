@@ -1,6 +1,6 @@
 /build
 /coverage
-/docs
+/pages
 /node_modules
 
 *.log

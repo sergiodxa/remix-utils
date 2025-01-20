@@ -1,4 +1,4 @@
-import CryptoJS from "crypto-js";
+import { decrypt, encrypt, randomString } from "../common/crypto.js";
 
 export interface HoneypotInputProps {
 	/**
@@ -40,7 +40,7 @@ export interface HoneypotConfig {
  * the form and the request is probably spam.
  */
 export class SpamError extends Error {
-	readonly name = "SpamError";
+	override readonly name = "SpamError";
 }
 
 const DEFAULT_NAME_FIELD_NAME = "name__confirm";
@@ -63,21 +63,21 @@ export class Honeypot {
 
 	/**
 	 * Get the HoneypotInputProps to be used in your forms.
-	 * @param {Object} options The options for the input props.
-	 * @param {number} options.validFromTimestamp Since when the timestamp is valid.
-	 * @returns {HoneypotInputProps} The props to be used in the form.
+	 * @param options The options for the input props.
+	 * @param options.validFromTimestamp Since when the timestamp is valid.
+	 * @returns The props to be used in the form.
 	 */
-	public getInputProps({
+	public async getInputProps({
 		validFromTimestamp = Date.now(),
-	} = {}): HoneypotInputProps {
+	} = {}): Promise<HoneypotInputProps> {
 		return {
 			nameFieldName: this.nameFieldName,
 			validFromFieldName: this.validFromFieldName,
-			encryptedValidFrom: this.encrypt(validFromTimestamp.toString()),
+			encryptedValidFrom: await this.encrypt(validFromTimestamp.toString()),
 		};
 	}
 
-	public check(formData: FormData) {
+	public async check(formData: FormData) {
 		let nameFieldName = this.config.nameFieldName ?? DEFAULT_NAME_FIELD_NAME;
 		if (this.config.randomizeNameFieldName) {
 			let actualName = this.getRandomizedNameFieldName(nameFieldName, formData);
@@ -99,7 +99,7 @@ export class Honeypot {
 
 		if (!validFrom) throw new SpamError("Missing honeypot valid from input");
 
-		let time = this.decrypt(validFrom as string);
+		let time = await this.decrypt(validFrom as string);
 		if (!time) throw new SpamError("Invalid honeypot valid from input");
 		if (!this.isValidTimeStamp(Number(time))) {
 			throw new SpamError("Invalid honeypot valid from input");
@@ -148,17 +148,15 @@ export class Honeypot {
 	}
 
 	protected randomValue() {
-		return CryptoJS.lib.WordArray.random(128 / 8).toString();
+		return randomString();
 	}
 
 	protected encrypt(value: string) {
-		return CryptoJS.AES.encrypt(value, this.encryptionSeed).toString();
+		return encrypt(value, this.encryptionSeed);
 	}
 
 	protected decrypt(value: string) {
-		return CryptoJS.AES.decrypt(value, this.encryptionSeed).toString(
-			CryptoJS.enc.Utf8,
-		);
+		return decrypt(value, this.encryptionSeed);
 	}
 
 	protected isFuture(timestamp: number) {

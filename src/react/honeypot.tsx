@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/autocomplete-valid */
 import * as React from "react";
 import type { HoneypotInputProps } from "../server/honeypot.js";
 
@@ -11,8 +10,8 @@ export function HoneypotInputs({
 	nonce,
 }: {
 	label?: string;
-	nonce?: string
-}): JSX.Element {
+	nonce?: string;
+}) {
 	let context = React.useContext(HoneypotContext);
 
 	let {
@@ -24,7 +23,7 @@ export function HoneypotInputs({
 	return (
 		<div
 			id={`${nameFieldName}_wrap`}
-			className='__honeypot_inputs'
+			className="__honeypot_inputs"
 			aria-hidden="true"
 		>
 			<style nonce={nonce}>{`.__honeypot_inputs { display: none; }`}</style>

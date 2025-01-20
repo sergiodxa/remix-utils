@@ -1,9 +1,9 @@
 import {
-	Cookie,
-	CookieParseOptions,
-	CookieSerializeOptions,
+	type Cookie,
+	type CookieParseOptions,
+	type CookieSerializeOptions,
 	isCookie,
-} from "@remix-run/server-runtime";
+} from "react-router";
 import type { z } from "zod";
 
 export interface TypedCookie<Schema extends z.ZodTypeAny> extends Cookie {
