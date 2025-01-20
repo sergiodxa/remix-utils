@@ -27,41 +27,45 @@ export function eventStream(
 	signal: AbortSignal,
 	init: InitFunction,
 	options: ResponseInit = {},
+	strategy?: QueuingStrategy,
 ) {
-	let stream = new ReadableStream({
-		start(controller) {
-			let encoder = new TextEncoder();
-			let closed = false;
+	let stream = new ReadableStream(
+		{
+			start(controller) {
+				let encoder = new TextEncoder();
+				let closed = false;
 
-			function send({ event = "message", data }: SendFunctionArgs) {
-				if (closed) return; // If already closed, not enqueue anything
-				controller.enqueue(encoder.encode(`event: ${event}\n`));
-
-				if (closed) return; // If already closed, not enqueue anything
-
-				data.split("\n").forEach((line, index, array) => {
+				function send({ event = "message", data }: SendFunctionArgs) {
 					if (closed) return; // If already closed, not enqueue anything
-					let value = `data: ${line}\n`;
-					if (index === array.length - 1) value += "\n";
-					controller.enqueue(encoder.encode(value));
-				});
-			}
+					controller.enqueue(encoder.encode(`event: ${event}\n`));
 
-			let cleanup = init(send, close);
+					if (closed) return; // If already closed, not enqueue anything
 
-			function close() {
-				if (closed) return;
-				cleanup();
-				closed = true;
-				signal.removeEventListener("abort", close);
-				controller.close();
-			}
+					data.split("\n").forEach((line, index, array) => {
+						if (closed) return; // If already closed, not enqueue anything
+						let value = `data: ${line}\n`;
+						if (index === array.length - 1) value += "\n";
+						controller.enqueue(encoder.encode(value));
+					});
+				}
 
-			signal.addEventListener("abort", close);
+				let cleanup = init(send, close);
 
-			if (signal.aborted) return close();
+				function close() {
+					if (closed) return;
+					cleanup();
+					closed = true;
+					signal.removeEventListener("abort", close);
+					controller.close();
+				}
+
+				signal.addEventListener("abort", close);
+
+				if (signal.aborted) return close();
+			},
 		},
-	});
+		strategy,
+	);
 
 	let headers = new Headers(options.headers);
 
