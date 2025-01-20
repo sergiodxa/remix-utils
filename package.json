@@ -122,7 +122,7 @@
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.17.0",
 		"@biomejs/biome": "^1.7.2",
-		"@happy-dom/global-registrator": "^15.11.7",
+		"@happy-dom/global-registrator": "^16.6.0",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
 		"@testing-library/jest-dom": "^6.1.3",
