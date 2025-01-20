@@ -9,7 +9,7 @@ export function HoneypotInputs({
 	label = "Please leave this field blank",
 }: {
 	label?: string;
-}): JSX.Element {
+}) {
 	let context = React.useContext(HoneypotContext);
 
 	let {

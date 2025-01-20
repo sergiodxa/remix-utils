@@ -28,7 +28,7 @@ describe(eventStream.name, () => {
 	test("can send data to the client with the send function", async () => {
 		let controller = new AbortController();
 		let response = eventStream(controller.signal, (send, _) => {
-			send({ data: "hello" });
+			send({ data: "hello\nworld" });
 			// biome-ignore lint/suspicious/noEmptyBlockStatements: Test
 			return () => {};
 		});
@@ -39,14 +39,32 @@ describe(eventStream.name, () => {
 
 		let reader = response.body.getReader();
 
-		let { value: event } = await reader.read();
-		expect(event).toEqual(new TextEncoder().encode("event: message\n"));
+		let encoder = new TextEncoder();
 
-		let { value: data } = await reader.read();
-		expect(data).toEqual(new TextEncoder().encode("data: hello\n\n"));
+		let { value: event } = await reader.read();
+		expect(event).toEqual(encoder.encode("event: message\n"));
+
+		let { value: line1 } = await reader.read();
+		expect(line1).toEqual(encoder.encode("data: hello\n"));
+
+		let { value: line2 } = await reader.read();
+		expect(line2).toEqual(encoder.encode("data: world\n\n"));
 
 		let { done } = await reader.read();
 		expect(done).toBe(true);
+	});
+
+	test("accepts custom queuing strategy", () => {
+		expect(() =>
+			eventStream(
+				new AbortController().signal,
+				(_, abort) => {
+					return () => abort();
+				},
+				undefined,
+				new CountQueuingStrategy({ highWaterMark: 2 }),
+			),
+		).not.toThrow();
 	});
 
 	describe("Headers Overrides", () => {

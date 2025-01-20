@@ -10,7 +10,9 @@ export function isLinkEvent(event: MouseEvent) {
 	return;
 }
 
-export function useDelegatedAnchors(nodeRef: React.RefObject<HTMLElement>) {
+export function useDelegatedAnchors(
+	nodeRef: React.RefObject<HTMLElement | null>,
+) {
 	let navigate = useNavigate();
 	let hasParentPrefetch = React.useContext(context);
 

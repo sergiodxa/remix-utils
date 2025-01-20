@@ -1,6 +1,6 @@
 {
 	"name": "remix-utils",
-	"version": "7.7.0",
+	"version": "8.0.0",
 	"license": "MIT",
 	"engines": {
 		"node": ">=20.0.0"
@@ -92,13 +92,17 @@
 		"@oslojs/encoding": "^1.1.0",
 		"intl-parse-accept-language": "^1.0.0",
 		"is-ip": "^5.0.1",
-		"react": "^18.0.0",
+		"react": "^18.0.0 || ^19.0.0",
 		"react-router": "^7.0.0",
 		"zod": "^3.22.4"
 	},
 	"peerDependenciesMeta": {
-		"@oslojs/crypto": { "optional": true },
-		"@oslojs/encoding": { "optional": true },
+		"@oslojs/crypto": {
+			"optional": true
+		},
+		"@oslojs/encoding": {
+			"optional": true
+		},
 		"react-router": {
 			"optional": true
 		},
@@ -116,33 +120,30 @@
 		}
 	},
 	"devDependencies": {
-		"@arethetypeswrong/cli": "^0.17.0",
+		"@arethetypeswrong/cli": "^0.17.3",
 		"@biomejs/biome": "^1.7.2",
-		"@happy-dom/global-registrator": "^15.11.7",
+		"@happy-dom/global-registrator": "^16.7.0",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
 		"@testing-library/jest-dom": "^6.1.3",
-		"@testing-library/react": "^16.0.1",
-		"@testing-library/user-event": "^14.5.2",
+		"@testing-library/react": "^16.2.0",
+		"@testing-library/user-event": "^14.6.0",
 		"@total-typescript/tsconfig": "^1.0.4",
-		"@types/bun": "^1.1.14",
-		"@types/react": "^18.2.78",
-		"@vitejs/plugin-react": "^4.3.4",
+		"@types/bun": "^1.1.17",
+		"@types/react": "^19.0.7",
 		"intl-parse-accept-language": "^1.0.0",
 		"is-ip": "5.0.1",
-		"msw": "^2.6.6",
-		"react": "^18.0.0",
-		"react-dom": "^18.0.0",
-		"react-router": "^7.0.2",
+		"msw": "^2.7.0",
+		"react": "^19.0.0",
+		"react-router": "^7.1.3",
 		"ts-node": "^10.9.1",
-		"typedoc": "^0.27.2",
-		"typedoc-plugin-mdn-links": "^4.0.3",
-		"typescript": "^5.7.2",
-		"vite": "^6.0.2",
-		"zod": "^3.22.4"
+		"typedoc": "^0.27.6",
+		"typedoc-plugin-mdn-links": "^4.0.9",
+		"typescript": "^5.7.3",
+		"zod": "^3.24.1"
 	},
 	"dependencies": {
-		"type-fest": "^4.30.0"
+		"type-fest": "^4.33.0"
 	},
 	"files": ["build", "package.json", "README.md"]
 }
