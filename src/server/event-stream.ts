@@ -3,6 +3,7 @@ interface SendFunctionArgs {
 	 * @default "message"
 	 */
 	event?: string;
+	id?: string;
 	data: string;
 }
 
@@ -35,8 +36,9 @@ export function eventStream(
 				let encoder = new TextEncoder();
 				let closed = false;
 
-				function send({ event = "message", data }: SendFunctionArgs) {
+				function send({ event = "message", data, id }: SendFunctionArgs) {
 					if (closed) return; // If already closed, not enqueue anything
+					if (id) controller.enqueue(encoder.encode(`id: ${id}\n`));
 					controller.enqueue(encoder.encode(`event: ${event}\n`));
 
 					if (closed) return; // If already closed, not enqueue anything
