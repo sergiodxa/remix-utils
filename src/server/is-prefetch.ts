@@ -18,6 +18,9 @@ export function isPrefetch(request: Request): boolean;
 export function isPrefetch(headers: Headers): boolean;
 export function isPrefetch(requestOrHeaders: Request | Headers): boolean {
 	let headers = getHeaders(requestOrHeaders);
+	if (!headers) {
+		return false;
+	}
 	let purpose =
 		headers.get("Purpose") ||
 		headers.get("X-Purpose") ||

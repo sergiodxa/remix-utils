@@ -1,6 +1,4 @@
-import type { TypedResponse } from "@remix-run/server-runtime";
-
-import { json as remixJson } from "@remix-run/server-runtime";
+import { data } from "react-router";
 
 type ResponseResult<LoaderData> = {
 	[Key in keyof LoaderData]: LoaderData[Key] extends () => infer ReturnValue
@@ -15,7 +13,7 @@ type ResponseResult<LoaderData> = {
 export async function jsonHash<LoaderData extends Record<string, unknown>>(
 	input: LoaderData,
 	init?: ResponseInit | number,
-): Promise<TypedResponse<ResponseResult<LoaderData>>> {
+) {
 	let result: ResponseResult<LoaderData> = {} as ResponseResult<LoaderData>;
 
 	let resolvedResults = await Promise.all(
@@ -31,5 +29,5 @@ export async function jsonHash<LoaderData extends Record<string, unknown>>(
 			value as unknown as ResponseResult<LoaderData>[keyof LoaderData];
 	}
 
-	return remixJson<ResponseResult<LoaderData>>(result, init);
+	return data<ResponseResult<LoaderData>>(result, init);
 }

@@ -1,4 +1,4 @@
-import { useMatches } from "@remix-run/react";
+import { useMatches } from "react-router";
 import type { Locales } from "../server/get-client-locales.js";
 
 /**
@@ -54,6 +54,9 @@ export function useLocales(): Locales {
 	) {
 		return locales;
 	}
+
+	if (typeof locales === "string") return [locales];
+
 	// finally, return undefined
 	return undefined;
 }

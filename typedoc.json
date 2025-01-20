@@ -41,9 +41,10 @@
 		"./src/server/typed-cookie.ts",
 		"./src/server/typed-session.ts"
 	],
-	"out": "docs",
-	"json": "docs/index.json",
+	"out": "pages",
+	"json": "pages/index.json",
 	"cleanOutputDir": true,
+	"projectDocuments": ["./docs/*.md"],
 	"exclude": [
 		"./src/server/get-headers.ts",
 		"./src/react/handle-conventions.ts"

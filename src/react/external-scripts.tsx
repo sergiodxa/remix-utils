@@ -1,6 +1,6 @@
-import { useLocation, useMatches } from "@remix-run/react";
 import * as React from "react";
-import { HandleConventionArguments } from "./handle-conventions.js";
+import { useLocation, useMatches } from "react-router";
+import type { HandleConventionArguments } from "./handle-conventions.js";
 import { useHydrated } from "./use-hydrated.js";
 
 export type ReferrerPolicy =
