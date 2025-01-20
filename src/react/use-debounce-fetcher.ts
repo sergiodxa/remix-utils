@@ -34,7 +34,9 @@ type DebouncedFetcher<Data = unknown> = Omit<
 	"submit"
 > & { submit: DebounceSubmitFunction };
 
-export function useDebounceFetcher<Data>(opts?: Parameters<typeof useFetcher>[0],) {
+export function useDebounceFetcher<Data>(
+	opts?: Parameters<typeof useFetcher>[0],
+) {
 	let timeoutRef = useRef<Timer>(null);
 
 	useEffect(() => {
