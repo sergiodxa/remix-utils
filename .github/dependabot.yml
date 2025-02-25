@@ -1,17 +1,17 @@
 version: 2
+enable-beta-ecosystems: true
 
 updates:
-  # GitHub Action workflows
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "monthly"
     reviewers:
       - "sergiodxa"
     assignees:
       - "sergiodxa"
-  # Website
-  - package-ecosystem: npm
+
+  - package-ecosystem: bun
     directory: /
     schedule:
       interval: "weekly"
