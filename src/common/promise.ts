@@ -3,9 +3,11 @@
  */
 export type PromiseHash = Record<string, Promise<unknown>>;
 
-export type AwaitedPromiseHash<Hash> = Hash extends PromiseHash ? {
-	[Key in keyof Hash]: Awaited<Hash[Key]>;
-} : never;
+export type AwaitedPromiseHash<Hash> = Hash extends PromiseHash
+	? {
+			[Key in keyof Hash]: Awaited<Hash[Key]>;
+		}
+	: never;
 
 /**
  * Get a hash of promises and await them all.
