@@ -397,7 +397,7 @@ You will need to save this token in a cookie and also return it from the loader.
 import { csrf } from "~/utils/csrf.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  let [token, cookieHeader] = await csrf.commitToken();
+  let [token, cookieHeader] = await csrf.commitToken(request);
   return json({ token }, { headers: { "set-cookie": cookieHeader } });
 }
 ```
