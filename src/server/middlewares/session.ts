@@ -52,7 +52,7 @@ export type unstable_createSessionMiddlewareReturnType<Data, FlashData> = [
  *
  * // app/root.tsx
  * import { sessionMiddleware } from "~/middlewares/session";
- * export const unstable_middlewares = [sessionMiddleware];
+ * export const unstable_middleware = [sessionMiddleware];
  *
  * // app/routes/_index.tsx
  * import { getSession } from "~/middlewares/session";
