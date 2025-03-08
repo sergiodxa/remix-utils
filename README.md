@@ -1,6 +1,6 @@
 # Remix Utils
 
-This package contains simple utility functions to use with [React Router](https://reactrouter.com/home).
+This package contains simple utility functions to use with [React Router](https://reactrouter.com/).
 
 ## Installation
 
@@ -114,7 +114,7 @@ Here after 100ms, `timeout` will call `controller.abort()` which will mark the `
 
 ### cacheAssets
 
-> **Note**
+> [!NOTE]
 > This can only be run inside `entry.client`.
 
 This function lets you easily cache inside the [browser's Cache Storage](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage) every JS file built by Remix.
@@ -148,7 +148,7 @@ cacheAssests({ cacheName: "assets", buildPath: "/build/" }).catch((error) => {
 
 ### ClientOnly
 
-> **Note**
+> [!NOTE]
 > This depends on `react`.
 
 The ClientOnly component lets you render the children element only on the client-side, avoiding rendering it the server-side.
@@ -180,7 +180,7 @@ This component uses the `useHydrated` hook internally.
 
 ### ServerOnly
 
-> **Note**
+> [!NOTE]
 > This depends on `react`.
 
 The ServerOnly component is the opposite of the ClientOnly component, it lets you render the children element only on the server-side, avoiding rendering it the client-side.
@@ -344,7 +344,7 @@ Additionally, the `cors` function accepts a `options` object as a third optional
 
 ### CSRF
 
-> **Note**
+> [!NOTE]
 > This depends on `react`, `@oslojs/crypto`, `@oslojs/encoding`, and React Router.
 
 The CSRF related functions let you implement CSRF protection on your application.
@@ -402,7 +402,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 ```
 
-> **Note**
+> [!NOTE]
 > You could do this on any route, but I recommend you to do it on the `root` loader.
 
 Now that you returned the token and set it in a cookie, you can use the `AuthenticityTokenProvider` component to provide the token to your React components.
@@ -497,7 +497,7 @@ try {
 }
 ```
 
-> **Warning**
+> [!WARNING]
 > If you call `CSRF#validate` with the request instance, but you already read its body, it will throw an error.
 
 In case the CSRF validation fails, it will throw a `CSRFError` which can be used to correctly identify it against other possible errors that may get thrown.
@@ -512,7 +512,7 @@ The list of possible error messages are:
 
 You can use `error.code` to check one of the error codes above, and `error.message` to get a human friendly description.
 
-> **Warning**
+> [!WARNING]
 > Don't send those error messages to the end-user, they are meant to be used for debugging purposes only.
 
 ### Existing Search Params
@@ -521,7 +521,7 @@ You can use `error.code` to check one of the error codes above, and `error.messa
 import { ExistingSearchParams } from "remix-utils/existing-search-params";
 ```
 
-> **Note**
+> [!NOTE]
 > This depends on `react` and `react-router`
 
 When you submit a GET form, the browser will replace all of the search params in the URL with your form data. This component copies existing search params into hidden inputs so they will not be overwritten.
@@ -560,7 +560,7 @@ By excluding the `page` param, from the search form, the user will return to the
 
 ### External Scripts
 
-> **Note**
+> [!NOTE]
 > This depends on `react`, and `react-router`.
 
 If you need to load different external scripts on certain routes, you can use the `ExternalScripts` component together with the `ExternalScriptsFunction` and `ScriptDescriptor` types.
@@ -698,7 +698,7 @@ return (
 
 ### useGlobalNavigationState
 
-> **Note**
+> [!NOTE]
 > This depends on `react`, and `react-router`.
 
 This hook allows you to read the value of `transition.state`, every `fetcher.state` in the app, and `revalidator.state`.
@@ -723,12 +723,12 @@ export function GlobalPendingUI() {
 
 The return value of `useGlobalNavigationState` can be `"idle"`, `"loading"` or `"submitting"`
 
-> **Note**
+> [!NOTE]
 > This is used by the hooks below to determine if the app is loading, submitting or both (pending).
 
 ### useGlobalPendingState
 
-> **Note**
+> [!NOTE]
 > This depends on `react`, and `react-router`.
 
 This hook lets you know if the global navigation, if one of any active fetchers is either loading or submitting, or if the revalidator is running.
@@ -746,13 +746,15 @@ export function GlobalPendingUI() {
 
 The return value of `useGlobalPendingState` is either `"idle"` or `"pending"`.
 
-> **Note**: This hook combines the `useGlobalSubmittingState` and `useGlobalLoadingState` hooks to determine if the app is pending.
+> [!NOTE]
+> This hook combines the `useGlobalSubmittingState` and `useGlobalLoadingState` hooks to determine if the app is pending.
 
-> **Note**: The `pending` state is a combination of the `loading` and `submitting` states introduced by this hook.
+> [!NOTE]
+> The `pending` state is a combination of the `loading` and `submitting` states introduced by this hook.
 
 ### useGlobalSubmittingState
 
-> **Note**
+> [!NOTE]
 > This depends on `react`, and `react-router`.
 
 This hook lets you know if the global transition or if one of any active fetchers is submitting.
@@ -772,7 +774,7 @@ The return value of `useGlobalSubmittingState` is either `"idle"` or `"submittin
 
 ### useGlobalLoadingState
 
-> **Note**
+> [!NOTE]
 > This depends on `react`, and `react-router`.
 
 This hook lets you know if the global transition, if one of any active fetchers is loading, or if the revalidator is running
@@ -792,7 +794,7 @@ The return value of `useGlobalLoadingState` is either `"idle"` or `"loading"`.
 
 ### useHydrated
 
-> **Note**
+> [!NOTE]
 > This depends on `react`.
 
 This hook lets you detect if your component is already hydrated. This means the JS for the element loaded client-side and React is running.
@@ -819,7 +821,7 @@ After the first client-side render, future components rendered calling this hook
 
 ### useLocales
 
-> **Note**
+> [!NOTE]
 > This depends on `react`.
 
 This hook lets you get the locales returned by the root loader. It follows a simple convention, your root loader return value should be an object with the key `locales`.
@@ -850,7 +852,7 @@ The return type of `useLocales` is ready to be used with the Intl API.
 
 ### useShouldHydrate
 
-> **Note**
+> [!NOTE]
 > This depends on `react-router` and `react`.
 
 If you are building a Remix application where most routes are static, and you want to avoid loading client-side JS, you can use this hook, plus some conventions, to detect if one or more active routes needs JS and only render the Scripts component in that case.
@@ -910,7 +912,7 @@ The `useShouldHydrate` hook will detect `hydrate` as a function and call it usin
 
 ### getClientIPAddress
 
-> **Note**
+> [!NOTE]
 > This depends on `is-ip`.
 
 This function receives a Request or Headers objects and will try to get the IP address of the client (the user) who originated the request.
@@ -947,12 +949,12 @@ The function uses the following list of headers, in order of preference:
 
 When a header is found that contains a valid IP address, it will return without checking the other headers.
 
-> **Warning**
+> [!WARNING]
 > On local development the function is most likely to return `null`. This is because the browser doesn't send any of the above headers, if you want to simulate those headers you will need to either add it to the request Remix receives in your HTTP server or run a reverse proxy like NGINX that can add them for you.
 
 ### getClientLocales
 
-> **Note**
+> [!NOTE]
 > This depends on `intl-parse-accept-language`.
 
 This function let you get the locales of the client (the user) who originated the request.
@@ -1128,7 +1130,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 ### Typed Cookies
 
-> **Note**
+> [!NOTE]
 > This depends on `zod`, and React Router.
 
 Cookie objects in Remix allows any type, the typed cookies from Remix Utils lets you use Zod to parse the cookie values and ensure they conform to a schema.
@@ -1178,7 +1180,7 @@ await sessionStorage.commitSession(session);
 
 Now Zod will ensure the data you try to save to the session is valid removing any extra field and throwing if you don't set the correct data in the session.
 
-> **Note**
+> [!IMPORTANT]
 > The session object is not really typed so doing session.get will not return the correct type, you can do `schema.parse(session.data)` to get the typed version of the session data.
 
 You can also use async refinements in your schemas because typed cookies uses parseAsync method from Zod.
@@ -1223,7 +1225,7 @@ await typedCookie.serialize("some fake url to pass schema validation", {
 
 ### Typed Sessions
 
-> **Note**
+> [!NOTE]
 > This depends on `zod`, and React Router.
 
 Session objects in Remix allows any type, the typed sessions from Remix Utils lets you use Zod to parse the session data and ensure they conform to a schema.
@@ -1264,7 +1266,7 @@ session.set("token", 123);
 
 Now Zod will ensure the data you try to save to the session is valid by not allowing you to get, set or unset data.
 
-> **Note**
+> [!TIP]
 > Remember that you either need to mark fields as optional or set a default value in the schema, otherwise it will be impossible to call getSession to get a new session object.
 
 You can also use async refinements in your schemas because typed sesions uses parseAsync method from Zod.
@@ -1289,7 +1291,7 @@ typedSessionStorage.getSession(request.headers.get("Cookie"));
 
 ### Server-Sent Events
 
-> **Note**
+> [!NOTE]
 > This depends on `react`.
 
 Server-Sent Events are a way to send data from the server to the client without the need for the client to request it. This is useful for things like chat applications, live updates, and more.
@@ -1366,7 +1368,7 @@ This way, you can overwrite the map with a new one for a specific part of your a
 
 ### Rolling Cookies
 
-> **Note**
+> [!NOTE]
 > This depends on `zod`, and React Router.
 
 Rolling cookies allows you to prolong the expiration of a cookie by updating the expiration date of every cookie.
@@ -1428,11 +1430,11 @@ export let handleDataRequest: HandleDataRequestFunction = async (
 };
 ```
 
-> **Note** > [Read more about rolling cookies in Remix](https://sergiodxa.com/articles/add-rolling-sessions-to-remix).
+> [!NOTE] > [Read more about rolling cookies in Remix](https://sergiodxa.com/articles/add-rolling-sessions-to-remix).
 
 ### Named actions
 
-> **Note**
+> [!NOTE]
 > This depends on React Router.
 
 It's common to need to handle more than one action in the same route, there are many options here like [sending the form to a resource route](https://sergiodxa.com/articles/multiple-forms-per-route-in-remix#using-resource-routes) or using an [action reducer](https://sergiodxa.com/articles/multiple-forms-per-route-in-remix#the-action-reducer-pattern), the `namedAction` function uses some conventions to implement the action reducer pattern.
@@ -1502,17 +1504,21 @@ You can do this with the functions `preloadRouteAssets`, `preloadLinkedAssets` a
 All functions follows the same signature:
 
 ```ts
-import { preloadRouteAssets, preloadLinkedAssets, preloadModuleAssets } from "remix-utils/preload-route-assets";
+import {
+  preloadRouteAssets,
+  preloadLinkedAssets,
+  preloadModuleAssets,
+} from "remix-utils/preload-route-assets";
 
 // entry.server.tsx
 export default function handleRequest(
   request: Request,
   statusCode: number,
   headers: Headers,
-  context: EntryContext,
+  context: EntryContext
 ) {
   let markup = renderToString(
-    <RemixServer context={context} url={request.url} />,
+    <RemixServer context={context} url={request.url} />
   );
   headers.set("Content-Type", "text/html");
 
@@ -1543,7 +1549,7 @@ https://remix.utills/?redirectTo=https://malicious.app
 
 To help you prevent this Remix Utils gives you a `safeRedirect` function which can be used to check if the URL is "safe".
 
-> **Note**
+> [!NOTE]
 > In this context, safe means the URL starts with `/` but not `//`, this means the URL is a pathname inside the same app and not an external link.
 
 ```ts
@@ -1687,7 +1693,7 @@ Now you can see in your DevTools that when the user hovers an anchor it will pre
 
 ### Debounced Fetcher and Submit
 
-> **Note**
+> [!NOTE]
 > This depends on `react`, and `react-router`.
 
 `useDebounceFetcher` and `useDebounceSubmit` are wrappers of `useFetcher` and `useSubmit` that add debounce support.
@@ -1745,7 +1751,7 @@ export function Component({ name }) {
 
 ### Derive Fetcher Type
 
-> **Note**
+> [!NOTE]
 > This depends on `@remix-route/react`.
 
 Derive the value of the deprecated `fetcher.type` from the fetcher and navigation data.
@@ -1858,7 +1864,7 @@ This means that the `respondTo` helper will prioritize any handler that match `t
 
 ### Form Honeypot
 
-> **Note**
+> [!NOTE]
 > This depends on `react` and `@oslojs/crypto`, and `@oslojs/encoding`.
 
 Honeypot is a simple technique to prevent spam bots from submitting forms. It works by adding a hidden field to the form that bots will fill, but humans won't.
@@ -1924,7 +1930,7 @@ function SomePublicForm() {
 }
 ```
 
-> **Note**
+> [!NOTE]
 > The label value above is the default one, use it to allow the label to be localized, or remove it if you don't want to change it.
 
 Finally, in the action the form submits to, you can call `honeypot.check`.
@@ -1950,7 +1956,7 @@ export async function action({ request }) {
 
 ### Sec-Fetch Parsers
 
-> **Note**
+> [!NOTE]
 > This depends on `zod`.
 
 The `Sec-Fetch` headers include information about the request, e.g. where is the data going to be used, or if it was initiated by the user.
@@ -2047,6 +2053,91 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 ```
 
+### Middlewares
+
+> [!NOTE]
+> This depends on `react-router` and specifically v7.3.0 or later.
+
+Since React Router v7.3.0 you can use middlewares to run code before and after the routes loaders and actions. In Remix Utils some (unstable) middlewares are provided to help you with common tasks.
+
+> [!CAUTION]
+> Middlewares are still unstable in React Router, this means they can change or be removed in future versions, and it's why every middleware in Remix Utils is marked as unstable as well.
+
+#### Session Middlewares
+
+The session middleware let's you save a session object in the Router context so you can access it in any loader and ensure you're always working with the same Session instance.
+
+```ts
+import { unstable_createSessionMiddleware } from "remix-utils/middlewares/session";
+```
+
+To use it, you need to create a session storage object and pass it to the middleware.
+
+```ts
+import { createCookieSessionStorage } from "react-router";
+
+let sessionStorage = createCookieSessionStorage({
+  cookie: createCookie("session", { path: "/", sameSite: "lax" }),
+});
+
+let [sessionMiddleware, getSession] =
+  unstable_createSessionMiddleware(sessionStorage);
+```
+
+Then you can use the `sessionMiddleware` in your `app/root.tsx` function.
+
+```ts
+import { sessionMiddleware } from "~/session.server";
+
+export const unstable_middlewares = [sessionMiddleware];
+```
+
+And you can use the `getSession` function in your loaders to get the session object.
+
+```ts
+import { getSession } from "~/session.server";
+
+export async function loader({ context }: Route.LoaderArgs) {
+  let session = await getSession(request);
+  let user = await getUser();
+  session.set("user", user);
+  return json({ user });
+}
+```
+
+By default the middleware will automaticaly commit the session at the end of the request, but you can customize this behavior by passing a second argument to the `unstable_createSessionMiddleware` function.
+
+```ts
+let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
+  sessionStorage,
+  shouldCommit
+);
+```
+
+The `shouldCommit` function will be called at the end of the request with the previous session data and the session data before the request, if it returns `true` the session will be committed, if it returns `false` the session will be discarded.
+
+If you want to commit the session only if the session data changed you can use a library like `dequal` to compare the session data.
+
+```ts
+import { dequal } from "dequal";
+
+let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
+  sessionStorage,
+  (previous, next) => !dequal(previous, next) // Only commit if session changed
+);
+```
+
+Or you can use a custom function to compare the session data, maybe only if some specific fields changed.
+
+```ts
+let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
+  sessionStorage,
+  (previous, next) => {
+    return current.user.id !== previous.user.id;
+  }
+);
+```
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)
@@ -2054,3 +2145,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 ## License
 
 - MIT License
+
+```
+
+```
