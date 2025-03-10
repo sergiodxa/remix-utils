@@ -2068,7 +2068,7 @@ Since React Router v7.3.0 you can use middleware to run code before and after th
 The session middleware let's you save a session object in the Router context so you can access it in any loader and ensure you're always working with the same Session instance.
 
 ```ts
-import { unstable_createSessionMiddleware } from "remix-utils/middlewares/session";
+import { unstable_createSessionMiddleware } from "remix-utils/middleware/session";
 ```
 
 To use it, you need to create a session storage object and pass it to the middleware.
@@ -2089,7 +2089,7 @@ Then you can use the `sessionMiddleware` in your `app/root.tsx` function.
 ```ts
 import { sessionMiddleware } from "~/session.server";
 
-export const unstable_middlewares = [sessionMiddleware];
+export const unstable_middleware = [sessionMiddleware];
 ```
 
 And you can use the `getSession` function in your loaders to get the session object.
@@ -2143,16 +2143,16 @@ let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
 The logger middleware let's you log the request and response information to the console, this can be useful to debug issues with the request and response.
 
 ```ts
-import { unstable_createLoggerMiddleware } from "remix-utils/middlewares/logger";
+import { unstable_createLoggerMiddleware } from "remix-utils/middleware/logger";
 
 export const [loggerMiddleware] = unstable_createLoggerMiddleware();
 ```
 
-To use it, you need to add it to the `unstable_middlewares` array in your `app/root.tsx` file.
+To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
 
 ```ts
 import { loggerMiddleware } from "~/logger.server";
-export const unstable_middlewares = [loggerMiddleware];
+export const unstable_middleware = [loggerMiddleware];
 ```
 
 Now, every request and response will be logged to the console.
@@ -2160,8 +2160,6 @@ Now, every request and response will be logged to the console.
 The logger middleware can be customized by passing an options object to the `unstable_createLoggerMiddleware` function.
 
 ```ts
-import { unstable_createLoggerMiddleware } from "remix-utils/middlewares/logger";
-
 let [loggerMiddleware] = unstable_createLoggerMiddleware({
   logger: console,
   precision: 2,

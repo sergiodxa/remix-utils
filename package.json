@@ -9,13 +9,13 @@
 	"funding": ["https://github.com/sponsors/sergiodxa"],
 	"exports": {
 		"./package.json": "./package.json",
-		"./middlewares/logger": {
-			"types": "./build/server/middlewares/logger.d.ts",
-			"default": "./build/server/middlewares/logger.js"
+		"./middleware/logger": {
+			"types": "./build/server/middleware/logger.d.ts",
+			"default": "./build/server/middleware/logger.js"
 		},
-		"./middlewares/session": {
-			"types": "./build/server/middlewares/session.d.ts",
-			"default": "./build/server/middlewares/session.js"
+		"./middleware/session": {
+			"types": "./build/server/middleware/session.d.ts",
+			"default": "./build/server/middleware/session.js"
 		},
 		"./promise": {
 			"types": "./build/common/promise.d.ts",
