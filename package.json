@@ -207,6 +207,7 @@
 		"named action"
 	],
 	"peerDependencies": {
+		"@edgefirst-dev/server-timing": "^0.0.1",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
 		"intl-parse-accept-language": "^1.0.0",
@@ -216,6 +217,9 @@
 		"zod": "^3.22.4"
 	},
 	"peerDependenciesMeta": {
+		"@edgefirst-dev/server-timing": {
+			"optional": true
+		},
 		"@oslojs/crypto": {
 			"optional": true
 		},
@@ -241,6 +245,7 @@
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.17.4",
 		"@biomejs/biome": "^1.7.2",
+		"@edgefirst-dev/server-timing": "^0.0.1",
 		"@happy-dom/global-registrator": "^17.4.3",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
