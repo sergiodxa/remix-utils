@@ -2098,7 +2098,7 @@ And you can use the `getSession` function in your loaders to get the session obj
 import { getSession } from "~/session.server";
 
 export async function loader({ context }: Route.LoaderArgs) {
-  let session = await getSession(request);
+  let session = await getSession(context);
   let user = await getUser();
   session.set("user", user);
   return json({ user });
