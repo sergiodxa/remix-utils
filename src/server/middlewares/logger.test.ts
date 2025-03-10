@@ -72,4 +72,23 @@ describe(unstable_createLoggerMiddleware.name, () => {
 
 		expect(logger.error).toHaveBeenCalledWith("GET / 500 0.00 ms");
 	});
+
+	test("the logged message can be customized", async () => {
+		let [middleware] = unstable_createLoggerMiddleware({
+			logger,
+			formatMessage(request, response, responseTime) {
+				return `${request.method}`;
+			},
+		});
+
+		let request = new Request("https://example.com");
+		let params = {};
+		let context = new unstable_RouterContextProvider();
+
+		await middleware({ request, params, context }, async () => {
+			return new Response("Hello, World!");
+		});
+
+		expect(logger.info).toHaveBeenCalledWith("GET");
+	});
 });
