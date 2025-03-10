@@ -2171,6 +2171,40 @@ let [loggerMiddleware] = unstable_createLoggerMiddleware({
 
 The `logger` option let's you pass a custom logger, the `precision` option let's you set the number of decimal places to use in the response time, and the `formatMessage` option let's you customize the message that will be logged.
 
+#### Server Timing
+
+The server timing middleware let's you add a `Server-Timing` header to the response with the time it took to run the loaders and actions.
+
+```ts
+import { unstable_createServerTimingMiddleware } from "remix-utils/middleware/server-timing";
+
+export const [serverTimingMiddleware, getTimingCollector] =
+  unstable_createServerTimingMiddleware();
+```
+
+To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
+
+```ts
+import { serverTimingMiddleware } from "~/server-timing.server";
+
+export const unstable_middleware = [serverTimingMiddleware];
+```
+
+And you can use the `getTimingCollector` function in your loaders and actions to add timings to the response.
+
+```ts
+import { getTimingCollector } from "~/server-timing.server";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  let collector = getTimingCollector();
+  return await collector.measure("name", "optional description", async () => {
+    return await getData();
+  });
+}
+```
+
+The `measure` function will measure the time it took to run the function passed as the last argument and add it to the `Server-Timing` header.
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)
