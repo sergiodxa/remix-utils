@@ -2053,17 +2053,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 ```
 
-### Middlewares
+### Middleware
 
 > [!NOTE]
 > This depends on `react-router` and specifically v7.3.0 or later.
 
-Since React Router v7.3.0 you can use middlewares to run code before and after the routes loaders and actions. In Remix Utils some (unstable) middlewares are provided to help you with common tasks.
+Since React Router v7.3.0 you can use middleware to run code before and after the routes loaders and actions. In Remix Utils some (unstable) middleware are provided to help you with common tasks.
 
 > [!CAUTION]
-> Middlewares are still unstable in React Router, this means they can change or be removed in future versions, and it's why every middleware in Remix Utils is marked as unstable as well.
+> Middleware are still unstable in React Router, this means they can change or be removed in future versions, and it's why every middleware in Remix Utils is marked as unstable as well.
 
-#### Session Middlewares
+#### Session Middleware
 
 The session middleware let's you save a session object in the Router context so you can access it in any loader and ensure you're always working with the same Session instance.
 
@@ -2137,6 +2137,41 @@ let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
   }
 );
 ```
+
+#### Logger Middleware
+
+The logger middleware let's you log the request and response information to the console, this can be useful to debug issues with the request and response.
+
+```ts
+import { unstable_createLoggerMiddleware } from "remix-utils/middlewares/logger";
+
+export const [loggerMiddleware] = unstable_createLoggerMiddleware();
+```
+
+To use it, you need to add it to the `unstable_middlewares` array in your `app/root.tsx` file.
+
+```ts
+import { loggerMiddleware } from "~/logger.server";
+export const unstable_middlewares = [loggerMiddleware];
+```
+
+Now, every request and response will be logged to the console.
+
+The logger middleware can be customized by passing an options object to the `unstable_createLoggerMiddleware` function.
+
+```ts
+import { unstable_createLoggerMiddleware } from "remix-utils/middlewares/logger";
+
+let [loggerMiddleware] = unstable_createLoggerMiddleware({
+  logger: console,
+  precision: 2,
+  formatMessage(request, response, time) {
+    return `${request.method} ${request.url} - ${response.status} - ${time}ms`;
+  },
+});
+```
+
+The `logger` option let's you pass a custom logger, the `precision` option let's you set the number of decimal places to use in the response time, and the `formatMessage` option let's you customize the message that will be logged.
 
 ## Author
 
