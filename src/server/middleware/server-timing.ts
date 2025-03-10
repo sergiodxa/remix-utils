@@ -23,8 +23,8 @@ import { unstable_createContext } from "react-router";
  *
  * export async function loader({ context }: Route.LoaderArgs) {
  *  let collector = getTimingCollector(context);
- *  return await collector.measure("Database", async () => {
- *    return await db.query(query);
+ *  return await collector.measure("name", "optional description", () => {
+ *    return getData();
  *  });
  * }
  */
