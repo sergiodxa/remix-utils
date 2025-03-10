@@ -11,6 +11,7 @@ npm install remix-utils
 Additional optional dependencies may be needed, all optional dependencies are:
 
 - `react-router`
+- `@edgefirst-dev/server-timing`
 - `@oslojs/crypto`
 - `@oslojs/encoding`
 - `is-ip`
@@ -23,7 +24,7 @@ The utils that require an extra optional dependency mention it in their document
 If you want to install them all run:
 
 ```sh
-npm add @oslojs/crypto @oslojs/encoding is-ip intl-parse-accept-language zod
+npm add @edgefirst-dev/server-timing @oslojs/crypto @oslojs/encoding is-ip intl-parse-accept-language zod
 ```
 
 React and React Router packages should be already installed in your project.
@@ -2173,6 +2174,9 @@ The `logger` option let's you pass a custom logger, the `precision` option let's
 
 #### Server Timing
 
+> [!NOTE]
+> This depends on `@edgefirst-dev/server-timing`.
+
 The server timing middleware let's you add a `Server-Timing` header to the response with the time it took to run the loaders and actions.
 
 ```ts
@@ -2212,7 +2216,3 @@ The `measure` function will measure the time it took to run the function passed 
 ## License
 
 - MIT License
-
-```
-
-```
