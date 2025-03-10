@@ -8,20 +8,6 @@ import type {
 
 import { unstable_createContext } from "react-router";
 
-export type unstable_GetSessionFunction<Data, FlashData> = (
-	context: unstable_RouterContextProvider,
-) => Session<Data, FlashData>;
-
-export type unstable_ShouldCommitFunction<Data> = (
-	prev: Partial<Data>,
-	next: Partial<Data>,
-) => boolean;
-
-export type unstable_createSessionMiddlewareReturnType<Data, FlashData> = [
-	unstable_MiddlewareFunction<Response>,
-	unstable_GetSessionFunction<Data, FlashData>,
-];
-
 /**
  * Creates a session middleware that uses the provided session storage object
  * to manage session data.
@@ -68,8 +54,8 @@ export function unstable_createSessionMiddleware<
 	FlashData = Data,
 >(
 	sessionStorage: SessionStorage<Data, FlashData>,
-	shouldCommit: unstable_ShouldCommitFunction<Data> = defaultShouldCommit,
-): unstable_createSessionMiddlewareReturnType<Data, FlashData> {
+	shouldCommit: unstable_createSessionMiddleware.ShouldCommitFunction<Data> = defaultShouldCommit,
+): unstable_createSessionMiddleware.ReturnType<Data, FlashData> {
 	let sessionContext = unstable_createContext<Session<Data, FlashData>>();
 
 	return [
@@ -96,6 +82,22 @@ export function unstable_createSessionMiddleware<
 		function getSession(context) {
 			return context.get(sessionContext);
 		},
+	];
+}
+
+export namespace unstable_createSessionMiddleware {
+	export type GetSessionFunction<Data, FlashData> = (
+		context: unstable_RouterContextProvider,
+	) => Session<Data, FlashData>;
+
+	export type ShouldCommitFunction<Data> = (
+		prev: Partial<Data>,
+		next: Partial<Data>,
+	) => boolean;
+
+	export type ReturnType<Data, FlashData> = [
+		unstable_MiddlewareFunction<Response>,
+		GetSessionFunction<Data, FlashData>,
 	];
 }
 
