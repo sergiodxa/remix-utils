@@ -11,6 +11,7 @@ npm install remix-utils
 Additional optional dependencies may be needed, all optional dependencies are:
 
 - `react-router`
+- `@edgefirst-dev/batcher`
 - `@edgefirst-dev/server-timing`
 - `@oslojs/crypto`
 - `@oslojs/encoding`
@@ -24,7 +25,7 @@ The utils that require an extra optional dependency mention it in their document
 If you want to install them all run:
 
 ```sh
-npm add @edgefirst-dev/server-timing @oslojs/crypto @oslojs/encoding is-ip intl-parse-accept-language zod
+npm add @edgefirst-dev/batcher @edgefirst-dev/server-timing @oslojs/crypto @oslojs/encoding is-ip intl-parse-accept-language zod
 ```
 
 React and React Router packages should be already installed in your project.
@@ -2274,6 +2275,43 @@ export const unstable_middleware = [
   singletonMiddleware,
   anotherSingletonMiddleware,
 ];
+```
+
+#### Batcher Middleware
+
+> [!NOTE]
+> This depends on `@edgefirst-dev/batcher`.
+
+The batcher middleware let's you get a per request instance of a batcher object that will dedupe and batch multiple calls to the same function.
+
+This is specially useful to avoid making multiple API calls to the same endpoint in a single request, or DB queries. The batcher will call the function only once and return the same result to all calls.
+
+```ts
+import { unstable_createBatcherMiddleware } from "remix-utils/middleware/batcher";
+
+export const [batcherMiddleware, getBatcher] =
+  unstable_createBatcherMiddleware();
+```
+
+To use it, you need to add it to the `unstable_middleware` array in the route where you want to use it.
+
+```ts
+import { batcherMiddleware } from "~/batcher.server";
+export const unstable_middleware = [batcherMiddleware];
+```
+
+And you can use the `getBatcher` function in your loaders to get the batcher object.
+
+```ts
+import { getBatcher } from "~/batcher.server";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  let batcher = getBatcher();
+  let result = await batcher.batch("key", async () => {
+    return await getData();
+  });
+  // ...
+}
 ```
 
 ## Author
