@@ -17,6 +17,10 @@
 			"types": "./build/server/middleware/session.d.ts",
 			"default": "./build/server/middleware/session.js"
 		},
+		"./middleware/singleton": {
+			"types": "./build/server/middleware/singleton.d.ts",
+			"default": "./build/server/middleware/singleton.js"
+		},
 		"./promise": {
 			"types": "./build/common/promise.d.ts",
 			"default": "./build/common/promise.js"
