@@ -2172,7 +2172,7 @@ let [loggerMiddleware] = unstable_createLoggerMiddleware({
 
 The `logger` option let's you pass a custom logger, the `precision` option let's you set the number of decimal places to use in the response time, and the `formatMessage` option let's you customize the message that will be logged.
 
-#### Server Timing
+#### Server Timing Middleware
 
 > [!NOTE]
 > This depends on `@edgefirst-dev/server-timing`.
@@ -2208,6 +2208,73 @@ export async function loader({ request }: LoaderFunctionArgs) {
 ```
 
 The `measure` function will measure the time it took to run the function passed as the last argument and add it to the `Server-Timing` header.
+
+#### Singleton Middleware
+
+The singleton middleware let's you create a singleton object that will be shared between loaders of a single requests.
+
+This is specially useful to share objects that needs to be created only once per request, like a cache, but not shared between requests.
+
+```ts
+import { unstable_createSingletonMiddleware } from "remix-utils/middleware/singleton";
+
+export const [singletonMiddleware, getSingleton] =
+  unstable_createSingletonMiddleware({
+    Class: MySingletonClass,
+    arguments: [], // List here the arguments to pass to the constructor
+  });
+```
+
+To use it, you need to add it to the `unstable_middleware` array in the route where you want to use it.
+
+```ts
+import { singletonMiddleware } from "~/singleton.server";
+export const unstable_middleware = [singletonMiddleware];
+```
+
+And you can use the `getSingleton` function in your loaders to get the singleton object.
+
+```ts
+import { getSingleton } from "~/singleton.server";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  let singleton = getSingleton();
+  let result = await singleton.method();
+  // ...
+}
+```
+
+The singleton middleware can be created with different classes and arguments, so you can have multiple singletons in the same request.
+
+```ts
+import { unstable_createSingletonMiddleware } from "remix-utils/middleware/singleton";
+
+export const [singletonMiddleware, getSingleton] =
+  unstable_createSingletonMiddleware({
+    Class: MySingletonClass,
+    arguments: ["arg1", "arg2"],
+  });
+
+export const [anotherSingletonMiddleware, getAnotherSingleton] =
+  unstable_createSingletonMiddleware({
+    Class: AnotherSingletonClass,
+    arguments: ["arg1", "arg2"],
+  });
+```
+
+And use it in a route like this.
+
+```ts
+import {
+  singletonMiddleware,
+  anotherSingletonMiddleware,
+} from "~/singleton.server";
+
+export const unstable_middleware = [
+  singletonMiddleware,
+  anotherSingletonMiddleware,
+];
+```
 
 ## Author
 
