@@ -9,6 +9,10 @@
 	"funding": ["https://github.com/sponsors/sergiodxa"],
 	"exports": {
 		"./package.json": "./package.json",
+		"./middleware/batcher": {
+			"types": "./build/server/middleware/batcher.d.ts",
+			"default": "./build/server/middleware/batcher.js"
+		},
 		"./middleware/logger": {
 			"types": "./build/server/middleware/logger.d.ts",
 			"default": "./build/server/middleware/logger.js"
@@ -211,6 +215,7 @@
 		"named action"
 	],
 	"peerDependencies": {
+		"@edgefirst-dev/batcher": "^1.0.0",
 		"@edgefirst-dev/server-timing": "^0.0.1",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
@@ -221,6 +226,9 @@
 		"zod": "^3.22.4"
 	},
 	"peerDependenciesMeta": {
+		"@edgefirst-dev/batcher": {
+			"optional": true
+		},
 		"@edgefirst-dev/server-timing": {
 			"optional": true
 		},
@@ -249,6 +257,7 @@
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.17.4",
 		"@biomejs/biome": "^1.7.2",
+		"@edgefirst-dev/batcher": "^1.0.1",
 		"@edgefirst-dev/server-timing": "^0.0.1",
 		"@happy-dom/global-registrator": "^17.4.3",
 		"@oslojs/crypto": "^1.0.1",
