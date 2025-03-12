@@ -2314,6 +2314,39 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 ```
 
+#### Context Storage Middleware
+
+The Context Storage middleware stores the Router context provider and request in AsyncLocalStorage and gives you functions to access it in your code.
+
+```ts
+import { unstable_createContextStorageMiddleware } from "remix-utils/middleware/context-storage";
+
+export const [contextStorageMiddleware, getContext, getRequest] =
+  unstable_createContextStorageMiddleware();
+```
+
+To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
+
+```ts
+import { contextStorageMiddleware } from "~/context-storage.server";
+
+export const unstable_middleware = [contextStorageMiddleware];
+```
+
+And you can use the `getContext` and `getRequest` functions in your function to get the context and request objects.
+
+```ts
+import { getContext, getRequest } from "~/context-storage.server";
+
+export async function doSomething() {
+  let context = getContext();
+  let request = getRequest();
+  // ...
+}
+```
+
+Then call `doSomething` in any loader, action, or another middleware, and you will have access to the context and request objects without passing them around.
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)
