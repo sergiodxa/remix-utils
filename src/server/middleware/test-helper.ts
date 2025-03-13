@@ -7,7 +7,7 @@ import {
 
 const defaultNext = mock().mockImplementation(() => Response.json(null));
 
-export function runMiddleware<T = Response>(
+export async function runMiddleware<T = Response>(
 	middleware: unstable_MiddlewareFunction<T>,
 	{
 		request = new Request("https://remix.utils"),
@@ -21,5 +21,15 @@ export function runMiddleware<T = Response>(
 		next?: () => T | Promise<T>;
 	} = {},
 ) {
-	return middleware({ request, params, context }, next);
+	return await middleware({ request, params, context }, next);
+}
+
+export async function catchResponse<T>(promise: Promise<T>) {
+	try {
+		await promise;
+		throw new Error("Expected promise to reject");
+	} catch (exception) {
+		if (exception instanceof Response) return exception;
+		throw exception;
+	}
 }
