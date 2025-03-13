@@ -25,7 +25,9 @@ export function unstable_createBasicAuthMiddleware(
 		);
 	}
 
-	const realm = (options.realm ?? "Secure Area").replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+	const realm = (options.realm ?? "Secure Area")
+		.replace(/\\/g, "\\\\")
+		.replace(/"/g, '\\"');
 
 	const userContext = unstable_createContext<string>();
 
