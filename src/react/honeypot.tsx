@@ -7,19 +7,22 @@ const HoneypotContext = React.createContext<HoneypotContextType>({});
 
 export function HoneypotInputs({
 	label = "Please leave this field blank",
-	nonce,
-	className = "__honeypot_inputs",
 }: HoneypotInputs.Props) {
 	let context = React.useContext(HoneypotContext);
 
 	let {
+		nonce,
 		nameFieldName = "name__confirm",
 		validFromFieldName = "from__confirm",
 		encryptedValidFrom,
 	} = context;
 
 	return (
-		<div id={`${nameFieldName}_wrap`} className={className} aria-hidden="true">
+		<div
+			id={`${nameFieldName}_wrap`}
+			className="__honeypot_inputs"
+			aria-hidden="true"
+		>
 			<style nonce={nonce}>{".__honeypot_inputs { display: none; }"}</style>
 			<label htmlFor={nameFieldName}>{label}</label>
 			<input
@@ -49,15 +52,7 @@ export function HoneypotInputs({
 }
 
 export namespace HoneypotInputs {
-	export type Props = {
-		label?: string;
-		nonce?: string;
-		/**
-		 * The classname used to link the Honeypot input with the CSS that hides it.
-		 * @default "__honeypot_inputs"
-		 */
-		className?: string;
-	};
+	export type Props = { label?: string };
 }
 
 export type HoneypotProviderProps = HoneypotContextType & {
