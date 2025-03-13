@@ -1,6 +1,7 @@
-import { describe, expect, mock, test } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { unstable_RouterContextProvider } from "react-router";
 import { unstable_createRequestIDMiddleware } from "./request-id";
+import { runMiddleware } from "./test-helper";
 
 describe(unstable_createRequestIDMiddleware.name, () => {
 	test("gets the request id from the X-Request-ID header", async () => {
@@ -11,12 +12,9 @@ describe(unstable_createRequestIDMiddleware.name, () => {
 				"X-Request-ID": "test-request-id",
 			},
 		});
-		let params = {};
 		let context = new unstable_RouterContextProvider();
 
-		let next = mock().mockImplementation(() => Response.json(null));
-
-		await middleware({ request, params, context }, next);
+		await runMiddleware(middleware, { request, context });
 
 		let requestId = getRequestID(context);
 
@@ -28,13 +26,9 @@ describe(unstable_createRequestIDMiddleware.name, () => {
 			generator: () => "test-request-id",
 		});
 
-		let request = new Request("https://remix.run");
-		let params = {};
 		let context = new unstable_RouterContextProvider();
 
-		let next = mock().mockImplementation(() => Response.json(null));
-
-		await middleware({ request, params, context }, next);
+		await runMiddleware(middleware, { context });
 
 		let requestId = getRequestID(context);
 
@@ -52,12 +46,9 @@ describe(unstable_createRequestIDMiddleware.name, () => {
 			},
 		});
 
-		let params = {};
 		let context = new unstable_RouterContextProvider();
 
-		let next = mock().mockImplementation(() => Response.json(null));
-
-		await middleware({ request, params, context }, next);
+		await runMiddleware(middleware, { request, context });
 
 		let requestId = getRequestID(context);
 
@@ -75,12 +66,9 @@ describe(unstable_createRequestIDMiddleware.name, () => {
 			},
 		});
 
-		let params = {};
 		let context = new unstable_RouterContextProvider();
 
-		let next = mock().mockImplementation(() => Response.json(null));
-
-		await middleware({ request, params, context }, next);
+		await runMiddleware(middleware, { request, context });
 
 		let requestId = getRequestID(context);
 
@@ -90,13 +78,9 @@ describe(unstable_createRequestIDMiddleware.name, () => {
 	test("uses default generator if none is provided", async () => {
 		let [middleware, getRequestID] = unstable_createRequestIDMiddleware();
 
-		let request = new Request("https://remix.run");
-		let params = {};
 		let context = new unstable_RouterContextProvider();
 
-		let next = mock().mockImplementation(() => Response.json(null));
-
-		await middleware({ request, params, context }, next);
+		await runMiddleware(middleware, { context });
 
 		let requestId = getRequestID(context);
 
@@ -114,12 +98,9 @@ describe(unstable_createRequestIDMiddleware.name, () => {
 			},
 		});
 
-		let params = {};
 		let context = new unstable_RouterContextProvider();
 
-		let next = mock().mockImplementation(() => Response.json(null));
-
-		await middleware({ request, params, context }, next);
+		await runMiddleware(middleware, { request, context });
 
 		let requestId = getRequestID(context);
 

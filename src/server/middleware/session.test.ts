@@ -1,4 +1,4 @@
-import { describe, expect, mock, test } from "bun:test";
+import { describe, expect, test } from "bun:test";
 
 import {
 	createMemorySessionStorage,
@@ -6,18 +6,11 @@ import {
 	unstable_RouterContextProvider,
 } from "react-router";
 import { unstable_createSessionMiddleware } from "./session";
+import { runMiddleware } from "./test-helper";
 
 describe(unstable_createSessionMiddleware.name, () => {
 	let sessionStorage = createMemorySessionStorage({
 		cookie: { name: "session", secrets: ["test"] },
-	});
-
-	test("returns an array with two functions", () => {
-		let result = unstable_createSessionMiddleware(sessionStorage);
-		expect(result).toBeArray();
-		expect(result).toHaveLength(2);
-		expect(result[0]).toBeFunction();
-		expect(result[1]).toBeFunction();
 	});
 
 	test("the middleware sets the Session instance in the context and can be retrieved", async () => {
@@ -25,10 +18,8 @@ describe(unstable_createSessionMiddleware.name, () => {
 			unstable_createSessionMiddleware(sessionStorage);
 
 		let context = new unstable_RouterContextProvider();
-		let request = new Request("https://remix.utils");
-		let next = mock().mockImplementation((res = new Response(null)) => res);
 
-		await middleware({ request, context, params: {} }, next);
+		await runMiddleware(middleware, { context });
 
 		let session = getSession(context);
 
@@ -41,14 +32,15 @@ describe(unstable_createSessionMiddleware.name, () => {
 			unstable_createSessionMiddleware(sessionStorage);
 
 		let context = new unstable_RouterContextProvider();
-		let request = new Request("https://remix.utils");
-		let next = mock().mockImplementation(() => {
-			let session = getSession(context);
-			session.set("key", "value");
-			return new Response(null);
-		});
 
-		let response = await middleware({ request, context, params: {} }, next);
+		let response = await runMiddleware(middleware, {
+			context,
+			next() {
+				let session = getSession(context);
+				session.set("key", "value");
+				return new Response(null);
+			},
+		});
 
 		expect(response.headers.get("Set-Cookie")).toBeString();
 	});
@@ -60,14 +52,15 @@ describe(unstable_createSessionMiddleware.name, () => {
 		);
 
 		let context = new unstable_RouterContextProvider();
-		let request = new Request("https://remix.utils");
-		let next = mock().mockImplementation(() => {
-			let session = getSession(context);
-			session.set("key", "value");
-			return new Response(null);
-		});
 
-		let response = await middleware({ request, context, params: {} }, next);
+		let response = await runMiddleware(middleware, {
+			context,
+			next() {
+				let session = getSession(context);
+				session.set("key", "value");
+				return new Response(null);
+			},
+		});
 
 		expect(response.headers.get("Set-Cookie")).toBeNull();
 	});
@@ -79,25 +72,19 @@ describe(unstable_createSessionMiddleware.name, () => {
 		);
 
 		let context = new unstable_RouterContextProvider();
-		let request = new Request("https://remix.utils");
 
-		let response = await middleware(
-			{ request, context, params: {} },
-			mock().mockImplementation(() => {
+		let response = await runMiddleware(middleware, {
+			context,
+			next() {
 				let session = getSession(context);
 				session.set("key", "value");
 				return new Response(null);
-			}),
-		);
+			},
+		});
 
 		expect(response.headers.get("Set-Cookie")).toBeString();
 
-		response = await middleware(
-			{ request, context, params: {} },
-			mock().mockImplementation(() => {
-				return new Response(null);
-			}),
-		);
+		response = await runMiddleware(middleware, { context });
 
 		expect(response.headers.get("Set-Cookie")).toBeNull();
 	});

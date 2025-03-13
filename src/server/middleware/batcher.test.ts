@@ -1,19 +1,16 @@
-import { describe, expect, mock, test } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { Batcher } from "@edgefirst-dev/batcher";
 import { unstable_RouterContextProvider } from "react-router";
 import { unstable_createBatcherMiddleware } from "./batcher";
+import { runMiddleware } from "./test-helper";
 
 describe(unstable_createBatcherMiddleware.name, () => {
 	test("creates a singleton middleware for a Batcher", async () => {
 		let [middleware, getBatcher] = unstable_createBatcherMiddleware();
 
-		let request = new Request("https://remix.utils");
-		let params = {};
 		let context = new unstable_RouterContextProvider();
 
-		let next = mock().mockImplementation(() => Response.json(null));
-
-		await middleware({ request, params, context }, next);
+		await runMiddleware(middleware, { context });
 
 		let batcher = getBatcher(context);
 

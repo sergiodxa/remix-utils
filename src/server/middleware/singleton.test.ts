@@ -1,14 +1,11 @@
-import { describe, expect, mock, test } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { unstable_RouterContextProvider } from "react-router";
 import { unstable_createSingletonMiddleware } from "./singleton";
+import { runMiddleware } from "./test-helper";
 
 describe(unstable_createSingletonMiddleware.name, () => {
 	test("creates an instance of a given class without arguments", async () => {
-		let request = new Request("https://remix.utils");
-		let params = {};
 		let context = new unstable_RouterContextProvider();
-
-		let next = mock().mockImplementation(() => Response.json(null));
 
 		class Test {}
 
@@ -17,17 +14,13 @@ describe(unstable_createSingletonMiddleware.name, () => {
 			arguments: [],
 		});
 
-		await middleware({ request, params, context }, next);
+		await runMiddleware(middleware, { context });
 
 		expect(getInstance(context)).toBeInstanceOf(Test);
 	});
 
 	test("creates an instance of a given class with arguments", async () => {
-		let request = new Request("https://remix.utils");
-		let params = {};
 		let context = new unstable_RouterContextProvider();
-
-		let next = mock().mockImplementation(() => Response.json(null));
 
 		class Test {
 			constructor(public arg: string) {}
@@ -38,17 +31,13 @@ describe(unstable_createSingletonMiddleware.name, () => {
 			arguments: ["test"],
 		});
 
-		await middleware({ request, params, context }, next);
+		await runMiddleware(middleware, { context });
 
 		expect(getInstance(context)).toBeInstanceOf(Test);
 	});
 
 	test("returns the existing instance if it already exists", async () => {
-		let request = new Request("https://remix.utils");
-		let params = {};
 		let context = new unstable_RouterContextProvider();
-
-		let next = mock().mockImplementation(() => Response.json(null));
 
 		class Test {}
 
@@ -57,17 +46,16 @@ describe(unstable_createSingletonMiddleware.name, () => {
 			arguments: [],
 		});
 
-		await middleware({ request, params, context }, next);
+		await runMiddleware(middleware, { context });
+
 		let instance = getInstance(context);
 
-		await middleware({ request, params, context }, next);
+		await runMiddleware(middleware, { context });
 
 		expect(getInstance(context)).toBe(instance);
 	});
 
 	test("throws an error if the instance does not exist", async () => {
-		let request = new Request("https://remix.utils");
-		let params = {};
 		let context = new unstable_RouterContextProvider();
 
 		class Test {}
