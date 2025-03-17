@@ -44,9 +44,11 @@ export function useDebounceSubmit() {
 				return originalSubmit(target, options);
 			}
 
-			timeoutRef.current = setTimeout(() => {
-				originalSubmit(target, options);
-			}, options.debounceTimeout);
+			return new Promise<void>((resolve) => {
+				timeoutRef.current = setTimeout(() => {
+					resolve(originalSubmit(target, options));
+				}, options.debounceTimeout);
+			});
 		},
 		[originalSubmit],
 	);
