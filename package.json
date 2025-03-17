@@ -292,7 +292,7 @@
 		"react": "^19.0.0",
 		"react-router": "^7.3.0",
 		"ts-node": "^10.9.1",
-		"typedoc": "^0.27.9",
+		"typedoc": "^0.28.0",
 		"typedoc-plugin-mdn-links": "^5.0.1",
 		"typescript": "^5.8.2",
 		"zod": "^3.24.2"
