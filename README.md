@@ -12,6 +12,7 @@ Additional optional dependencies may be needed, all optional dependencies are:
 
 - `react-router`
 - `@edgefirst-dev/batcher`
+- `@edgefirst-dev/jwt`
 - `@edgefirst-dev/server-timing`
 - `@oslojs/crypto`
 - `@oslojs/encoding`
@@ -25,7 +26,7 @@ The utils that require an extra optional dependency mention it in their document
 If you want to install them all run:
 
 ```sh
-npm add @edgefirst-dev/batcher @edgefirst-dev/server-timing @oslojs/crypto @oslojs/encoding is-ip intl-parse-accept-language zod
+npm add @edgefirst-dev/batcher @edgefirst-dev/jwt @edgefirst-dev/server-timing @oslojs/crypto @oslojs/encoding is-ip intl-parse-accept-language zod
 ```
 
 React and React Router packages should be already installed in your project.
@@ -2089,7 +2090,7 @@ let [sessionMiddleware, getSession] =
 Then you can use the `sessionMiddleware` in your `app/root.tsx` function.
 
 ```ts
-import { sessionMiddleware } from "~/session.server";
+import { sessionMiddleware } from "~/middleware/session.server";
 
 export const unstable_middleware = [sessionMiddleware];
 ```
@@ -2097,7 +2098,7 @@ export const unstable_middleware = [sessionMiddleware];
 And you can use the `getSession` function in your loaders to get the session object.
 
 ```ts
-import { getSession } from "~/session.server";
+import { getSession } from "~/middleware/session.server";
 
 export async function loader({ context }: Route.LoaderArgs) {
   let session = await getSession(context);
@@ -2153,7 +2154,7 @@ export const [loggerMiddleware] = unstable_createLoggerMiddleware();
 To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
 
 ```ts
-import { loggerMiddleware } from "~/logger.server";
+import { loggerMiddleware } from "~/middleware/logger.server";
 export const unstable_middleware = [loggerMiddleware];
 ```
 
@@ -2190,7 +2191,7 @@ export const [serverTimingMiddleware, getTimingCollector] =
 To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
 
 ```ts
-import { serverTimingMiddleware } from "~/server-timing.server";
+import { serverTimingMiddleware } from "~/middleware/server-timing.server";
 
 export const unstable_middleware = [serverTimingMiddleware];
 ```
@@ -2198,7 +2199,7 @@ export const unstable_middleware = [serverTimingMiddleware];
 And you can use the `getTimingCollector` function in your loaders and actions to add timings to the response.
 
 ```ts
-import { getTimingCollector } from "~/server-timing.server";
+import { getTimingCollector } from "~/middleware/server-timing.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   let collector = getTimingCollector();
@@ -2229,14 +2230,14 @@ export const [singletonMiddleware, getSingleton] =
 To use it, you need to add it to the `unstable_middleware` array in the route where you want to use it.
 
 ```ts
-import { singletonMiddleware } from "~/singleton.server";
+import { singletonMiddleware } from "~/middleware/singleton.server";
 export const unstable_middleware = [singletonMiddleware];
 ```
 
 And you can use the `getSingleton` function in your loaders to get the singleton object.
 
 ```ts
-import { getSingleton } from "~/singleton.server";
+import { getSingleton } from "~/middleware/singleton.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   let singleton = getSingleton();
@@ -2269,7 +2270,7 @@ And use it in a route like this.
 import {
   singletonMiddleware,
   anotherSingletonMiddleware,
-} from "~/singleton.server";
+} from "~/middleware/singleton.server";
 
 export const unstable_middleware = [
   singletonMiddleware,
@@ -2296,14 +2297,14 @@ export const [batcherMiddleware, getBatcher] =
 To use it, you need to add it to the `unstable_middleware` array in the route where you want to use it.
 
 ```ts
-import { batcherMiddleware } from "~/batcher.server";
+import { batcherMiddleware } from "~/middleware/batcher.server";
 export const unstable_middleware = [batcherMiddleware];
 ```
 
 And you can use the `getBatcher` function in your loaders to get the batcher object.
 
 ```ts
-import { getBatcher } from "~/batcher.server";
+import { getBatcher } from "~/middleware/batcher.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   let batcher = getBatcher();
@@ -2328,7 +2329,7 @@ export const [contextStorageMiddleware, getContext, getRequest] =
 To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
 
 ```ts
-import { contextStorageMiddleware } from "~/context-storage.server";
+import { contextStorageMiddleware } from "~/middleware/context-storage.server";
 
 export const unstable_middleware = [contextStorageMiddleware];
 ```
@@ -2336,7 +2337,7 @@ export const unstable_middleware = [contextStorageMiddleware];
 And you can use the `getContext` and `getRequest` functions in your function to get the context and request objects.
 
 ```ts
-import { getContext, getRequest } from "~/context-storage.server";
+import { getContext, getRequest } from "~/middleware/context-storage.server";
 
 export async function doSomething() {
   let context = getContext();
@@ -2361,7 +2362,7 @@ export const [requestIDMiddleware, getRequestID] =
 To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
 
 ```ts
-import { requestIDMiddleware } from "~/request-id.server";
+import { requestIDMiddleware } from "~/middleware/request-id.server";
 
 export const unstable_middleware = [requestIDMiddleware];
 ```
@@ -2369,7 +2370,7 @@ export const unstable_middleware = [requestIDMiddleware];
 And you can use the `getRequestID` function in your loaders, actions, and other middleware to get the request ID.
 
 ```ts
-import { getRequestID } from "~/request-id.server";
+import { getRequestID } from "~/middleware/request-id.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   let requestID = getRequestID();
@@ -2410,7 +2411,7 @@ export const [requestIDMiddleware, getRequestID] =
 
 The Basic Auth middleware let's you add a basic authentication to your routes, this can be useful to protect routes that need to be private.
 
-> [!WARN]
+> [!WARNING]
 > Basic Auth is not secure by itself, it should be used with HTTPS to ensure the username and password are encrypted. Do not use it to protect sensitive data, use a more secure method instead.
 
 ```ts
@@ -2424,7 +2425,7 @@ export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
 To use it, you need to add it to the `unstable_middleware` array in the route where you want to use it.
 
 ```ts
-import { basicAuthMiddleware } from "~/basic-auth.server";
+import { basicAuthMiddleware } from "~/middleware/basic-auth.server";
 export const unstable_middleware = [basicAuthMiddleware];
 ```
 
@@ -2520,6 +2521,158 @@ HTTP/1.1 401 Unauthorized
 WWW-Authenticate: Basic realm="My Realm"
 
 {"message":"Invalid username or password"}
+```
+
+#### JWK Auth Middleware
+
+> [!NOTE]
+> This depends on `@edgefirst-dev/jwt`.
+
+The JWK Auth middleware let's you add a JSON Web Key authentication to your routes, this can be useful to protect routes that need to be private and will be accessed by other services.
+
+> [!WARNING]
+> JWK Auth is more secure than Basic Auth, but it should be used with HTTPS to ensure the token is encrypted.
+
+```ts
+import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+
+export const [jwkAuthMiddleware, getJWTPayload] =
+  unstable_createJWKAuthMiddleware({
+    jwksUri: "https://auth.example.com/.well-known/jwks.json",
+  });
+```
+
+The `jwksUri` option let's you set the URL to the JWKS endpoint, this is the URL where the public keys are stored.
+
+To use the middleware, you need to add it to the `unstable_middleware` array in the route where you want to use it.
+
+```ts
+import { jwkAuthMiddleware } from "~/middleware/jwk-auth";
+export const unstable_middleware = [jwkAuthMiddleware];
+```
+
+Now, when you access the route it will check the JWT token in the `Authorization` header.
+
+In case of an invalid token the middleware will return a `401` status code with a `WWW-Authenticate` header.
+
+```http
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Bearer realm="Secure Area"
+
+Unauthorized
+```
+
+The `realm` option let's you set the realm for the authentication, this is the name of the protected area.
+
+```ts
+import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+
+export const [jwkAuthMiddleware] = unstable_createJWKAuthMiddleware({
+  realm: "My Realm",
+  jwksUri: "https://auth.example.com/.well-known/jwks.json",
+});
+```
+
+If you want to customize the message sent when the token is invalid you can use the `invalidTokenMessage` option.
+
+```ts
+import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+
+export const [jwkAuthMiddleware] = unstable_createJWKAuthMiddleware({
+  invalidTokenMessage: "Invalid token",
+  jwksUri: "https://auth.example.com/.well-known/jwks.json",
+});
+```
+
+And this will be the response when the token is invalid.
+
+```http
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Bearer realm="Secure Area"
+
+Invalid token
+```
+
+You can also customize the `invalidTokenMessage` by passing a function which will receive the Request and context objects.
+
+```ts
+import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+
+export const [jwkAuthMiddleware] = unstable_createJWKAuthMiddleware({
+  invalidTokenMessage({ request, context }) {
+    // do something with request or context here
+    return { message: `Invalid token` };
+  },
+  jwksUri: "https://auth.example.com/.well-known/jwks.json",
+});
+```
+
+In both cases, with a hard-coded value or a function, the invalid message can be a string or an object, if it's an object it will be converted to JSON.
+
+```http
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Bearer realm="Secure Area"
+
+{"message":"Invalid token"}
+```
+
+If you want to get the JWT payload in your loaders, actions, or other middleware you can use the `getJWTPayload` function.
+
+```ts
+import { getJWTPayload } from "~/middleware/jwk-auth.server";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  let payload = getJWTPayload();
+  // ...
+}
+```
+
+And you can use the payload to get the subject, scope, issuer, audience, or any other information stored in the token.
+
+##### With a Custom Header
+
+If your app receives the JWT in a custom header instead of the `Authorization` header you can tell the middleware to look for the token in that header.
+
+```ts
+import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+
+export const [jwkAuthMiddleware, getJWTPayload] =
+  unstable_createJWKAuthMiddleware({ header: "X-API-Key" });
+```
+
+Now use the middleware as usual, but now instead of looking for the token in the `Authorization` header it will look for it in the `X-API-Key` header.
+
+```ts
+import { jwkAuthMiddleware } from "~/middleware/jwk-auth";
+
+export const unstable_middleware = [jwkAuthMiddleware];
+```
+
+##### With a Cookie
+
+If you save a JWT in a cookie using React Router's Cookie API, you can tell the middleware to look for the token in the cookie instead of the `Authorization` header.
+
+```ts
+import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+import { createCookie } from "react-router";
+
+export const cookie = createCookie("jwt", {
+  path: "/",
+  sameSite: "lax",
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "true",
+});
+
+export const [jwkAuthMiddleware, getJWTPayload] =
+  unstable_createJWKAuthMiddleware({ cookie });
+```
+
+Then use the middleware as usual, but now instead of looking for the token in the `Authorization` header it will look for it in the cookie.
+
+```ts
+import { jwkAuthMiddleware } from "~/middleware/jwk-auth";
+
+export const unstable_middleware = [jwkAuthMiddleware];
 ```
 
 ## Author
