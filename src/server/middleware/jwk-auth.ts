@@ -17,14 +17,20 @@ export function unstable_createJWKAuthMiddleware({
 	const remote = JWK.importRemote(new URL(jwksUri), { alg });
 
 	const cookieInOptions = "cookie" in options;
-	const headerInOptions = "headerName" in options;
 
 	return [
 		async function jwkAuthMiddleware({ request, context }, next) {
 			let token: string | null = null;
 
-			if (headerInOptions) {
-				let authorization = request.headers.get(options.headerName);
+			if (cookieInOptions) {
+				token = await options.cookie.parse(request.headers.get("Cookie"));
+				if (!token) throw await unauthorized(request, context);
+			}
+
+			if (!cookieInOptions) {
+				let authorization = request.headers.get(
+					options.headerName ?? "Authorization",
+				);
 				if (!authorization) throw await unauthorized(request, context);
 
 				let type = authorization[0];
@@ -34,15 +40,14 @@ export function unstable_createJWKAuthMiddleware({
 				if (!token) throw await unauthorized(request, context);
 			}
 
-			if (cookieInOptions) {
-				token = await options.cookie.parse(request.headers.get("Cookie"));
-				if (!token) throw await unauthorized(request, context);
+			try {
+				context.set(
+					tokenContext,
+					await JWT.verify("token", await remote, options),
+				);
+			} catch {
+				throw await unauthorized(request, context);
 			}
-
-			context.set(
-				tokenContext,
-				await JWT.verify("token", await remote, options),
-			);
 
 			return await next();
 		},
@@ -147,7 +152,7 @@ export namespace unstable_createBearerAuthMiddleware {
 		 * The name of the header to use for the bearer token.
 		 * @default "Authorization"
 		 */
-		headerName: string;
+		headerName?: string;
 	}
 
 	export interface CookieOptions extends BaseOptions {

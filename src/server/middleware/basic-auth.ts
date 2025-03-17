@@ -34,24 +34,10 @@ export function unstable_createBasicAuthMiddleware(
 	return [
 		async function basicAuthMiddleware({ request, context }, next) {
 			let authorization = getAuthorization(request);
-
-			if (!authorization) {
-				throw Response.json(await getInvalidUserMessage({ request, context }), {
-					status: 401,
-					statusText: "Unauthorized",
-					headers: { "WWW-Authenticate": `Basic realm="${realm}"` },
-				});
-			}
+			if (!authorization) throw unauthorized(request, context);
 
 			let { username, password } = authorization;
-
-			if (!username || !password) {
-				throw Response.json(await getInvalidUserMessage({ request, context }), {
-					status: 401,
-					statusText: "Unauthorized",
-					headers: { "WWW-Authenticate": `Basic realm="${realm}"` },
-				});
-			}
+			if (!username || !password) throw unauthorized(request, context);
 
 			if (verifyUserInOptions) {
 				let isValid = await options.verifyUser(username, password, {
@@ -66,11 +52,11 @@ export function unstable_createBasicAuthMiddleware(
 			} else {
 				if (Array.isArray(options.user)) {
 					for (let user of options.user) {
-						if (user.username === username && user.password === password) {
-							if (await validateCredentials(user, username, password)) {
-								context.set(userContext, username);
-								return await next();
-							}
+						if (user.username !== username) continue;
+						if (user.password !== password) continue;
+						if (await validateCredentials(user, username, password)) {
+							context.set(userContext, username);
+							return await next();
 						}
 					}
 				} else {
@@ -81,13 +67,7 @@ export function unstable_createBasicAuthMiddleware(
 				}
 			}
 
-			throw Response.json(await getInvalidUserMessage({ request, context }), {
-				status: 401,
-				statusText: "Unauthorized",
-				headers: {
-					"WWW-Authenticate": `Basic realm="${realm}"`,
-				},
-			});
+			throw unauthorized(request, context);
 		},
 
 		function getUser(context) {
@@ -119,6 +99,18 @@ export function unstable_createBasicAuthMiddleware(
 		]);
 
 		return usernameEqual && passwordEqual;
+	}
+
+	async function unauthorized(
+		request: Request,
+		context: unstable_RouterContextProvider,
+	) {
+		let message = await getInvalidUserMessage({ request, context });
+		return Response.json(message, {
+			status: 401,
+			statusText: "Unauthorized",
+			headers: { "WWW-Authenticate": `Bearer realm="${realm}"` },
+		});
 	}
 }
 
