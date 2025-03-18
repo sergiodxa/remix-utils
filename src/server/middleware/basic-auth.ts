@@ -34,10 +34,10 @@ export function unstable_createBasicAuthMiddleware(
 	return [
 		async function basicAuthMiddleware({ request, context }, next) {
 			let authorization = getAuthorization(request);
-			if (!authorization) throw unauthorized(request, context);
+			if (!authorization) throw await unauthorized(request, context);
 
 			let { username, password } = authorization;
-			if (!username || !password) throw unauthorized(request, context);
+			if (!username || !password) throw await unauthorized(request, context);
 
 			if (verifyUserInOptions) {
 				let isValid = await options.verifyUser(username, password, {
@@ -67,7 +67,7 @@ export function unstable_createBasicAuthMiddleware(
 				}
 			}
 
-			throw unauthorized(request, context);
+			throw await unauthorized(request, context);
 		},
 
 		function getUser(context) {
@@ -109,7 +109,7 @@ export function unstable_createBasicAuthMiddleware(
 		return Response.json(message, {
 			status: 401,
 			statusText: "Unauthorized",
-			headers: { "WWW-Authenticate": `Bearer realm="${realm}"` },
+			headers: { "WWW-Authenticate": `Basic realm="${realm}"` },
 		});
 	}
 }
