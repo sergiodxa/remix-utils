@@ -6,9 +6,7 @@
 		"node": ">=20.0.0"
 	},
 	"type": "module",
-	"funding": [
-		"https://github.com/sponsors/sergiodxa"
-	],
+	"funding": ["https://github.com/sponsors/sergiodxa"],
 	"exports": {
 		"./package.json": "./package.json",
 		"./middleware/basic-auth": {
@@ -294,7 +292,7 @@
 		"@testing-library/react": "^16.2.0",
 		"@testing-library/user-event": "^14.6.1",
 		"@total-typescript/tsconfig": "^1.0.4",
-		"@types/bun": "^1.2.4",
+		"@types/bun": "^1.2.5",
 		"@types/react": "^19.0.10",
 		"intl-parse-accept-language": "^1.0.0",
 		"is-ip": "5.0.1",
@@ -310,9 +308,5 @@
 	"dependencies": {
 		"type-fest": "^4.37.0"
 	},
-	"files": [
-		"build",
-		"package.json",
-		"README.md"
-	]
+	"files": ["build", "package.json", "README.md"]
 }
