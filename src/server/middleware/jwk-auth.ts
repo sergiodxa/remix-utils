@@ -24,26 +24,30 @@ export function unstable_createJWKAuthMiddleware({
 
 			if (cookieInOptions) {
 				token = await options.cookie.parse(request.headers.get("Cookie"));
-				if (!token) throw await unauthorized(request, context);
 			}
 
 			if (!cookieInOptions) {
 				let authorization = request.headers.get(
 					options.headerName ?? "Authorization",
 				);
+
 				if (!authorization) throw await unauthorized(request, context);
 
-				let type = authorization[0];
-				if (type !== "Bearer") throw await unauthorized(request, context);
+				let [type, ...rest] = authorization.split(" ");
 
-				token = authorization[1] ?? null;
-				if (!token) throw await unauthorized(request, context);
+				if (type?.toLowerCase() !== "bearer") {
+					throw await unauthorized(request, context);
+				}
+
+				token = rest[0] ?? null;
 			}
+
+			if (!token) throw await unauthorized(request, context);
 
 			try {
 				context.set(
 					tokenContext,
-					await JWT.verify("token", await remote, options),
+					await JWT.verify(token, await remote, options.verifyOptions),
 				);
 			} catch {
 				throw await unauthorized(request, context);
@@ -92,7 +96,7 @@ export namespace unstable_createBearerAuthMiddleware {
 		args: Args,
 	) => string | object | Promise<string | object>;
 
-	export interface BaseOptions extends Omit<JWT.VerifyOptions, "algorithm"> {
+	export interface BaseOptions {
 		/**
 		 * The URL of the JWKS endpoint.
 		 * @example
