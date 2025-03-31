@@ -3,6 +3,7 @@ import {
 	unstable_RouterContextProvider,
 	unstable_createContext,
 } from "react-router";
+import type { unstable_MiddlewareGetter } from "./utils.js";
 
 export function unstable_createRequestIDMiddleware({
 	generator = defaultGenerator,
@@ -57,7 +58,7 @@ export namespace unstable_createRequestIDMiddleware {
 
 	export type ReturnType = [
 		unstable_MiddlewareFunction<Response>,
-		(context: unstable_RouterContextProvider) => string,
+		unstable_MiddlewareGetter<string>,
 	];
 }
 

@@ -5,6 +5,7 @@ import {
 	type unstable_RouterContextProvider,
 	unstable_createContext,
 } from "react-router";
+import type { unstable_MiddlewareGetter } from "./utils.js";
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
@@ -162,8 +163,8 @@ export namespace unstable_createBasicAuthMiddleware {
 	export type Options = HardCodedUserOptions | DynamicUserOptions;
 
 	export type ReturnType = [
-		middleware: unstable_MiddlewareFunction<Response>,
-		(context: unstable_RouterContextProvider) => User["username"],
+		unstable_MiddlewareFunction<Response>,
+		unstable_MiddlewareGetter<User["username"]>,
 	];
 
 	export type HashFunction = (data: Uint8Array) => Uint8Array;

@@ -1,9 +1,7 @@
 import { TimingCollector } from "@edgefirst-dev/server-timing";
-import type {
-	unstable_MiddlewareFunction,
-	unstable_RouterContextProvider,
-} from "react-router";
+import type { unstable_MiddlewareFunction } from "react-router";
 import { unstable_createContext } from "react-router";
+import type { unstable_MiddlewareGetter } from "./utils.js";
 
 /**
  * Create a middleware that gives you access to a `TimingCollector` instance,
@@ -52,7 +50,7 @@ export namespace unstable_createServerTimingMiddleware {
 	 */
 	export type ReturnType = [
 		unstable_MiddlewareFunction<Response>,
-		(context: unstable_RouterContextProvider) => TimingCollector,
+		unstable_MiddlewareGetter<TimingCollector>,
 	];
 }
 

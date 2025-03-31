@@ -4,6 +4,7 @@ import type {
 } from "react-router";
 import { unstable_createContext } from "react-router";
 import type { Class } from "type-fest";
+import type { unstable_MiddlewareGetter } from "./utils.js";
 
 /**
  * Creates a singleton middleware that creates an instance of a class and stores
@@ -51,6 +52,6 @@ export namespace unstable_createSingletonMiddleware {
 
 	export type ReturnType<T> = [
 		unstable_MiddlewareFunction<unstable_RouterContextProvider>,
-		(context: unstable_RouterContextProvider) => T,
+		unstable_MiddlewareGetter<T>,
 	];
 }

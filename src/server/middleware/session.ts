@@ -3,10 +3,10 @@ import type {
 	SessionData,
 	SessionStorage,
 	unstable_MiddlewareFunction,
-	unstable_RouterContextProvider,
 } from "react-router";
 
 import { unstable_createContext } from "react-router";
+import type { unstable_MiddlewareGetter } from "./utils.js";
 
 /**
  * Creates a session middleware that uses the provided session storage object
@@ -86,10 +86,6 @@ export function unstable_createSessionMiddleware<
 }
 
 export namespace unstable_createSessionMiddleware {
-	export type GetSessionFunction<Data, FlashData> = (
-		context: unstable_RouterContextProvider,
-	) => Session<Data, FlashData>;
-
 	export type ShouldCommitFunction<Data> = (
 		prev: Partial<Data>,
 		next: Partial<Data>,
@@ -97,7 +93,7 @@ export namespace unstable_createSessionMiddleware {
 
 	export type ReturnType<Data, FlashData> = [
 		unstable_MiddlewareFunction<Response>,
-		GetSessionFunction<Data, FlashData>,
+		unstable_MiddlewareGetter<Session<Data, FlashData>>,
 	];
 }
 
