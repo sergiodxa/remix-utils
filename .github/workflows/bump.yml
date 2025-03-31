@@ -33,4 +33,5 @@ jobs:
           git config user.email 'hello@sergiodxa.com'
 
       - run: npm version ${{ github.event.inputs.version }}
+      - run: bun run quality:fix
       - run: git push origin main --follow-tags
