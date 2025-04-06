@@ -2675,6 +2675,31 @@ import { jwkAuthMiddleware } from "~/middleware/jwk-auth";
 export const unstable_middleware = [jwkAuthMiddleware];
 ```
 
+#### Secure headers Middleware
+
+The secure headers middleware simplifies the setup of security headers. Inspired in part by the version from [hono secure headers middleware](https://hono.dev/docs/middleware/builtin/secure-headers).
+
+```ts
+import { unstable_createSecureHeadersMiddleware } from "remix-utils/middleware/secure-headers";
+
+export const [secureHeadersMiddleware] = unstable_createSecureHeadersMiddleware();
+```
+
+To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
+
+```ts
+import { secureHeadersMiddleware } from "~/middleware/secure-headers.server";
+export const unstable_middleware = [secureHeadersMiddleware];
+```
+
+Now, every response will have the security header responses.
+
+The secure headers middleware middleware can be customized by passing an options object to the `unstable_createSecureHeadersMiddleware` function.
+
+---
+
+The options let's you configure the headers key values. [More info here](https://hono.dev/docs/middleware/builtin/secure-headers#supported-options) .
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)
