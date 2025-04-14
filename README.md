@@ -1699,6 +1699,9 @@ Now you can see in your DevTools that when the user hovers an anchor it will pre
 > [!NOTE]
 > This depends on `react`, and `react-router`.
 
+> [!WARN]
+> These hooks are marked as deprecated, instead of debouncing at the component-level, do it at the route-level. See https://sergiodxa.com/tutorials/debounce-loaders-and-actions-in-react-router.
+
 `useDebounceFetcher` and `useDebounceSubmit` are wrappers of `useFetcher` and `useSubmit` that add debounce support.
 
 These hooks are based on [@JacobParis](https://github.com/JacobParis)' [article](https://www.jacobparis.com/content/use-debounce-fetcher).
