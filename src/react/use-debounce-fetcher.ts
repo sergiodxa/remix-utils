@@ -34,6 +34,10 @@ type DebouncedFetcher<Data = unknown> = Omit<
 	"submit"
 > & { submit: DebounceSubmitFunction };
 
+/**
+ * @deprecated Debounce at the route level instead of the component level.
+ * @see https://sergiodxa.com/tutorials/debounce-loaders-and-actions-in-react-router
+ */
 export function useDebounceFetcher<Data>(
 	opts?: Parameters<typeof useFetcher>[0],
 ) {
