@@ -1,17 +1,18 @@
 import { describe, expect, test } from "bun:test";
 
 import {
+	createCookie,
 	createMemorySessionStorage,
 	isSession,
+	redirect,
 	unstable_RouterContextProvider,
 } from "react-router";
 import { unstable_createSessionMiddleware } from "./session";
 import { runMiddleware } from "./test-helper";
 
 describe(unstable_createSessionMiddleware.name, () => {
-	let sessionStorage = createMemorySessionStorage({
-		cookie: { name: "session", secrets: ["test"] },
-	});
+	let cookie = createCookie("session", { secrets: ["test"] });
+	let sessionStorage = createMemorySessionStorage({ cookie });
 
 	test("the middleware sets the Session instance in the context and can be retrieved", async () => {
 		let [middleware, getSession] =
@@ -87,5 +88,49 @@ describe(unstable_createSessionMiddleware.name, () => {
 		response = await runMiddleware(middleware, { context });
 
 		expect(response.headers.get("Set-Cookie")).toBeNull();
+	});
+
+	test("a returned redirect has the session set", async () => {
+		let [middleware, getSession] =
+			unstable_createSessionMiddleware(sessionStorage);
+
+		let context = new unstable_RouterContextProvider();
+
+		let response = await runMiddleware(middleware, {
+			context,
+			next() {
+				let session = getSession(context);
+				session.set("key", "value");
+				return redirect("/test");
+			},
+		});
+
+		let session = await sessionStorage.getSession(
+			response.headers.get("set-cookie"),
+		);
+
+		expect(session.get("key")).toEqual("value");
+	});
+
+	test.failing("a thrown redirect has the session set", async () => {
+		let [middleware, getSession] =
+			unstable_createSessionMiddleware(sessionStorage);
+
+		let context = new unstable_RouterContextProvider();
+
+		let response = await runMiddleware(middleware, {
+			context,
+			next() {
+				let session = getSession(context);
+				session.set("key", "value");
+				throw redirect("/test");
+			},
+		});
+
+		let session = await sessionStorage.getSession(
+			response.headers.get("set-cookie"),
+		);
+
+		expect(session.get("key")).toEqual("value");
 	});
 });
