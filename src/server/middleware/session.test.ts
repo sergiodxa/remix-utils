@@ -5,6 +5,7 @@ import {
 	createMemorySessionStorage,
 	isSession,
 	redirect,
+	redirectDocument,
 	unstable_RouterContextProvider,
 } from "react-router";
 import { unstable_createSessionMiddleware } from "./session";
@@ -112,6 +113,28 @@ describe(unstable_createSessionMiddleware.name, () => {
 		expect(session.get("key")).toEqual("value");
 	});
 
+	test("a returned redirectDocument has the session set", async () => {
+		let [middleware, getSession] =
+			unstable_createSessionMiddleware(sessionStorage);
+
+		let context = new unstable_RouterContextProvider();
+
+		let response = await runMiddleware(middleware, {
+			context,
+			next() {
+				let session = getSession(context);
+				session.set("key", "value");
+				return redirectDocument("/test");
+			},
+		});
+
+		let session = await sessionStorage.getSession(
+			response.headers.get("set-cookie"),
+		);
+
+		expect(session.get("key")).toEqual("value");
+	});
+
 	test.failing("a thrown redirect has the session set", async () => {
 		let [middleware, getSession] =
 			unstable_createSessionMiddleware(sessionStorage);
@@ -124,6 +147,28 @@ describe(unstable_createSessionMiddleware.name, () => {
 				let session = getSession(context);
 				session.set("key", "value");
 				throw redirect("/test");
+			},
+		});
+
+		let session = await sessionStorage.getSession(
+			response.headers.get("set-cookie"),
+		);
+
+		expect(session.get("key")).toEqual("value");
+	});
+
+	test.failing("a thrown redirectDocument has the session set", async () => {
+		let [middleware, getSession] =
+			unstable_createSessionMiddleware(sessionStorage);
+
+		let context = new unstable_RouterContextProvider();
+
+		let response = await runMiddleware(middleware, {
+			context,
+			next() {
+				let session = getSession(context);
+				session.set("key", "value");
+				throw redirectDocument("/test");
 			},
 		});
 
