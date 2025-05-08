@@ -31,11 +31,11 @@ type GlobalAttributesDescriptor = {
 	 */
 	accessKey?: React.HTMLAttributes<HTMLScriptElement>["accessKey"];
 	/**
+	 * Experimental
 	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/anchor
 	 */
 	anchor?: string; // doesn't exist in React types yet
 	/**
-	 * Experimental
 	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/autocapitalize
 	 */
 	autoCapitalize?: React.HTMLAttributes<HTMLScriptElement>["autoCapitalize"];
