@@ -2696,8 +2696,6 @@ Now, every response will have the security header responses.
 
 The secure headers middleware middleware can be customized by passing an options object to the `unstable_createSecureHeadersMiddleware` function.
 
----
-
 The options let's you configure the headers key values. [More info here](https://hono.dev/docs/middleware/builtin/secure-headers#supported-options) .
 
 ## Author
