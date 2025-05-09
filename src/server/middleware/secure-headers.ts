@@ -116,7 +116,8 @@ type PermissionsPolicyDirective =
 	| ExperimentalFeatures;
 
 /**
- * These features have been declared in a published version of the respective specification.
+ * These features have been declared in a published version of the respective
+ * specification.
  */
 type StandardizedFeatures =
 	| "accelerometer"
@@ -167,7 +168,8 @@ type StandardizedFeatures =
 	| "xrSpatialTracking";
 
 /**
- * These features have been proposed, but the definitions have not yet been integrated into their respective specs.
+ * These features have been proposed, but the definitions have not yet been
+ * integrated into their respective specs.
  */
 type ProposedFeatures =
 	| "clipboardRead"
@@ -177,7 +179,8 @@ type ProposedFeatures =
 	| "speakerSelection";
 
 /**
- * These features generally have an explainer only, but may be available for experimentation by web developers.
+ * These features generally have an explainer only, but may be available for
+ * experimentation by web developers.
  */
 type ExperimentalFeatures =
 	| "allScreensCapture"
@@ -256,7 +259,7 @@ type HeadersMap = {
 	];
 };
 
-let HEADERS_MAP: HeadersMap = {
+const HEADERS_MAP: HeadersMap = {
 	crossOriginEmbedderPolicy: ["Cross-Origin-Embedder-Policy", "require-corp"],
 	crossOriginResourcePolicy: ["Cross-Origin-Resource-Policy", "same-origin"],
 	crossOriginOpenerPolicy: ["Cross-Origin-Opener-Policy", "same-origin"],
@@ -274,7 +277,7 @@ let HEADERS_MAP: HeadersMap = {
 	xXssProtection: ["X-XSS-Protection", "0"],
 };
 
-let DEFAULT_OPTIONS: unstable_createSecureHeadersMiddleware.SecureHeadersOptions =
+const DEFAULT_OPTIONS: unstable_createSecureHeadersMiddleware.SecureHeadersOptions =
 	{
 		crossOriginEmbedderPolicy: false,
 		crossOriginResourcePolicy: true,
@@ -385,15 +388,4 @@ function setHeaders(response: Response, headersToSet: Array<[string, string]>) {
 	for (let [header, value] of headersToSet) {
 		response.headers.set(header, value);
 	}
-}
-
-// This approach is written in MDN.
-// btoa does not support utf-8 characters. So we need a little bit hack.
-export function encodeBase64(buf: ArrayBufferLike): string {
-	let binary = "";
-	let bytes = new Uint8Array(buf);
-	for (let byte of bytes) {
-		binary += String.fromCharCode(byte);
-	}
-	return btoa(binary);
 }
