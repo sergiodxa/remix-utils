@@ -1,5 +1,5 @@
 import { describe, expect, mock, test } from "bun:test";
-import { redirect, unstable_RouterContextProvider } from "react-router";
+import { redirect } from "react-router";
 import { unstable_createHoneypotMiddleware } from "./honeypot";
 import { runMiddleware } from "./test-helper";
 
