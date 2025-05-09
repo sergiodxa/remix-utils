@@ -3,7 +3,6 @@ import type {
 	unstable_RouterContextProvider,
 } from "react-router";
 import { unstable_createContext } from "react-router";
-import type { Class } from "type-fest";
 import type { unstable_MiddlewareGetter } from "./utils.js";
 
 /**
@@ -17,20 +16,15 @@ import type { unstable_MiddlewareGetter } from "./utils.js";
  * @returns A tuple containing the middleware function and a function to get the
  * singleton instance from the context.
  */
-export function unstable_createSingletonMiddleware<
-	T,
-	// biome-ignore lint/suspicious/noExplicitAny: This any is needed
-	A extends unknown[] = any[],
->(
-	options: unstable_createSingletonMiddleware.Options<T, A>,
+export function unstable_createSingletonMiddleware<T>(
+	options: unstable_createSingletonMiddleware.Options<T>,
 ): unstable_createSingletonMiddleware.ReturnType<T> {
 	let singletonContext = unstable_createContext<T | null>(null);
 
 	return [
-		async function singletonMiddleware({ context }, next) {
-			let instance = context.get(singletonContext);
-			if (instance) return await next();
-			instance = new options.Class(...options.arguments);
+		async function singletonMiddleware({ request, context }, next) {
+			let instance =
+				context.get(singletonContext) ?? options.instantiator(request, context);
 			context.set(singletonContext, instance);
 			return await next();
 		},
@@ -44,10 +38,8 @@ export function unstable_createSingletonMiddleware<
 }
 
 export namespace unstable_createSingletonMiddleware {
-	// biome-ignore lint/suspicious/noExplicitAny: This any is needed
-	export interface Options<T, A extends unknown[] = any[]> {
-		Class: Class<T, A>;
-		arguments: A;
+	export interface Options<T> {
+		instantiator(request: Request, context: unstable_RouterContextProvider): T;
 	}
 
 	export type ReturnType<T> = [

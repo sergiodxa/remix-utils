@@ -10,8 +10,7 @@ describe(unstable_createSingletonMiddleware.name, () => {
 		class Test {}
 
 		let [middleware, getInstance] = unstable_createSingletonMiddleware({
-			Class: Test,
-			arguments: [],
+			instantiator: () => new Test(),
 		});
 
 		await runMiddleware(middleware, { context });
@@ -27,8 +26,7 @@ describe(unstable_createSingletonMiddleware.name, () => {
 		}
 
 		let [middleware, getInstance] = unstable_createSingletonMiddleware({
-			Class: Test,
-			arguments: ["test"],
+			instantiator: () => new Test("test"),
 		});
 
 		await runMiddleware(middleware, { context });
@@ -42,8 +40,7 @@ describe(unstable_createSingletonMiddleware.name, () => {
 		class Test {}
 
 		let [middleware, getInstance] = unstable_createSingletonMiddleware({
-			Class: Test,
-			arguments: [],
+			instantiator: () => new Test(),
 		});
 
 		await runMiddleware(middleware, { context });
@@ -61,12 +58,37 @@ describe(unstable_createSingletonMiddleware.name, () => {
 		class Test {}
 
 		let [_, getInstance] = unstable_createSingletonMiddleware({
-			Class: Test,
-			arguments: [],
+			instantiator: () => new Test(),
 		});
 
 		expect(() => getInstance(context)).toThrowError(
 			"Singleton instance not found",
 		);
+	});
+
+	test("instantiator can access request and context", async () => {
+		let context = new unstable_RouterContextProvider();
+		let request = new Request("http://localhost");
+
+		class Test {
+			constructor(
+				private request: Request,
+				public context: unstable_RouterContextProvider,
+			) {}
+
+			get url() {
+				return this.request.url;
+			}
+		}
+
+		let [middleware, getInstance] = unstable_createSingletonMiddleware({
+			instantiator: (req, ctx) => new Test(req, ctx),
+		});
+
+		await runMiddleware(middleware, { request, context });
+		let instance = getInstance(context);
+		expect(instance).toBeInstanceOf(Test);
+		expect(instance.url).toBe(request.url);
+		expect(instance.context).toBe(context);
 	});
 });
