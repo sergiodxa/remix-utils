@@ -1,7 +1,6 @@
 import type { unstable_MiddlewareFunction } from "react-router";
 import type { HoneypotConfig, HoneypotInputProps } from "../honeypot.js";
 import { Honeypot, SpamError } from "../honeypot.js";
-import type { unstable_MiddlewareGetter } from "./utils.js";
 
 export function unstable_createHoneypotMiddleware({
 	onSpam,
