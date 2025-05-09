@@ -4,6 +4,10 @@ import { useSubmit } from "react-router";
 
 type SubmitTarget = Parameters<SubmitFunction>["0"];
 
+/**
+ * @deprecated Debounce at the route level instead of the component level.
+ * @see https://sergiodxa.com/tutorials/debounce-loaders-and-actions-in-react-router
+ */
 export function useDebounceSubmit() {
 	let timeoutRef = useRef<Timer | undefined>(null);
 

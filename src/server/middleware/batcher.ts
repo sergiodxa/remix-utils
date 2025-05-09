@@ -8,7 +8,8 @@ import { unstable_createSingletonMiddleware } from "./singleton.js";
  */
 export function unstable_createBatcherMiddleware() {
 	return unstable_createSingletonMiddleware({
-		Class: Batcher,
-		arguments: [],
+		instantiator: () => new Batcher(),
 	});
 }
+
+export type { Batcher };

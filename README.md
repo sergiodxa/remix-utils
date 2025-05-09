@@ -1699,6 +1699,9 @@ Now you can see in your DevTools that when the user hovers an anchor it will pre
 > [!NOTE]
 > This depends on `react`, and `react-router`.
 
+> [!WARN]
+> These hooks are marked as deprecated, instead of debouncing at the component-level, do it at the route-level. See https://sergiodxa.com/tutorials/debounce-loaders-and-actions-in-react-router.
+
 `useDebounceFetcher` and `useDebounceSubmit` are wrappers of `useFetcher` and `useSubmit` that add debounce support.
 
 These hooks are based on [@JacobParis](https://github.com/JacobParis)' [article](https://www.jacobparis.com/content/use-debounce-fetcher).
@@ -2222,8 +2225,7 @@ import { unstable_createSingletonMiddleware } from "remix-utils/middleware/singl
 
 export const [singletonMiddleware, getSingleton] =
   unstable_createSingletonMiddleware({
-    Class: MySingletonClass,
-    arguments: [], // List here the arguments to pass to the constructor
+    instantiator: () => new MySingletonClass(),
   });
 ```
 
@@ -2239,8 +2241,8 @@ And you can use the `getSingleton` function in your loaders to get the singleton
 ```ts
 import { getSingleton } from "~/middleware/singleton.server";
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  let singleton = getSingleton();
+export async function loader({ context }: LoaderFunctionArgs) {
+  let singleton = getSingleton(context);
   let result = await singleton.method();
   // ...
 }
@@ -2253,14 +2255,12 @@ import { unstable_createSingletonMiddleware } from "remix-utils/middleware/singl
 
 export const [singletonMiddleware, getSingleton] =
   unstable_createSingletonMiddleware({
-    Class: MySingletonClass,
-    arguments: ["arg1", "arg2"],
+    instantiator: () => new MySingletonClass("arg1", "arg2"),
   });
 
 export const [anotherSingletonMiddleware, getAnotherSingleton] =
   unstable_createSingletonMiddleware({
-    Class: AnotherSingletonClass,
-    arguments: ["arg1", "arg2"],
+    instantiator: () => new AnotherSingletonClass("arg1", "arg2"),
   });
 ```
 
@@ -2277,6 +2277,22 @@ export const unstable_middleware = [
   anotherSingletonMiddleware,
 ];
 ```
+
+You can also access the `request` and `context` objects in the `instantiator` function, so you can create the singleton based on the request or context.
+
+```ts
+import { unstable_createSingletonMiddleware } from "remix-utils/middleware/singleton";
+import { MySingletonClass } from "~/singleton";
+
+export const [singletonMiddleware, getSingleton] =
+  unstable_createSingletonMiddleware({
+    instantiator: (request, context) => {
+      return new MySingletonClass(request, context);
+    },
+  });
+```
+
+This can allows you to create a class that depends on the request, maybe to read the URL or body, or depends on the context, maybe to read the session or some other data.
 
 #### Batcher Middleware
 
@@ -2306,11 +2322,37 @@ And you can use the `getBatcher` function in your loaders to get the batcher obj
 ```ts
 import { getBatcher } from "~/middleware/batcher.server";
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  let batcher = getBatcher();
+export async function loader({ context }: LoaderFunctionArgs) {
+  let batcher = getBatcher(context);
   let result = await batcher.batch("key", async () => {
     return await getData();
   });
+  // ...
+}
+```
+
+If you move your `batcher.batch` call to a separate function, you can use it in different route loaders and actions, and the batcher will still dedupe the calls.
+
+```ts
+import type { Batcher } from "remix-utils/middleware/batcher";
+import { getData } from "~/data";
+
+export function getDataBatched(batcher: Batcher) {
+  return batcher.batch("key", async () => {
+    return await getData();
+  });
+}
+```
+
+Then you can call it in any route loader who has access to the batcher.
+
+```ts
+import { getBatcher } from "~/middleware/batcher.server";
+import { getDataBatched } from "~/data";
+
+export async function loader({ context }: LoaderFunctionArgs) {
+  let batcher = getBatcher(context);
+  let result = await getDataBatched(batcher);
   // ...
 }
 ```
@@ -2347,6 +2389,37 @@ export async function doSomething() {
 ```
 
 Then call `doSomething` in any loader, action, or another middleware, and you will have access to the context and request objects without passing them around.
+
+You can pair this with any other middleware that uses the context to simplify using their returned getters.
+
+```ts
+import { unstable_createBatcherMiddleware } from "remix-utils/middleware/batcher";
+import { getContext } from "~/middleware/context-storage.server";
+
+const [batcherMiddleware, getBatcherFromContext] =
+  unstable_createBatcherMiddleware();
+
+export { bathcherMiddleware };
+
+export function getBatcher() {
+  let context = getContext();
+  return getBatcherFromContext(context);
+}
+```
+
+Now instead of calling `getBatcher(context)` you can just call `getBatcher()` and it will return the batcher instance.
+
+```ts
+import { getBatcher } from "~/middleware/batcher.server";
+
+export async function loader(_: LoaderFunctionArgs) {
+  let batcher = getBatcher();
+  let result = await batcher.batch("key", async () => {
+    return await getData();
+  });
+  // ...
+}
+```
 
 #### Request ID Middleware
 
@@ -2674,6 +2747,98 @@ import { jwkAuthMiddleware } from "~/middleware/jwk-auth";
 
 export const unstable_middleware = [jwkAuthMiddleware];
 ```
+
+#### Honeypot Middleware
+
+> [!NOTE]
+> This depends on `react`, `@oslojs/crypto`, and `@oslojs/encoding`.
+
+The Honeypot middleware allows you to add a honeypot mechanism to your routes, providing a simple yet effective way to protect public forms from spam bots.
+
+To use the Honeypot middleware, first import and configure it:
+
+```ts
+import { unstable_createHoneypotMiddleware } from "remix-utils/middleware/honeypot";
+
+export const [honeypotMiddleware, getHoneypotInputProps] =
+  unstable_createHoneypotMiddleware({
+    randomizeNameFieldName: false, // Randomize the honeypot field name
+    nameFieldName: "name__confirm", // Default honeypot field name
+    validFromFieldName: "from__confirm", // Optional timestamp field for validation
+    encryptionSeed: undefined, // Unique seed for encryption (recommended for extra security)
+
+    onSpam(error) {
+      // Handle SpamError here and return a Response
+      return new Response("Spam detected", { status: 400 });
+    },
+  });
+```
+
+Add the `honeypotMiddleware` to the `unstable_middleware` array in the route where you want to enable spam protection, use it in your `app/root.tsx` file to apply it globally:
+
+```ts
+import { honeypotMiddleware } from "~/middleware/honeypot";
+
+export const unstable_middleware = [honeypotMiddleware];
+```
+
+Use the `getHoneypotInputProps` function in your root loader to retrieve the honeypot input properties:
+
+```ts
+import { getHoneypotInputProps } from "~/middleware/honeypot";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  let honeypotInputProps = await getHoneypotInputProps();
+  return json({ honeypotInputProps });
+}
+```
+
+Wrap your application in the `HoneypotProvider` component to make the honeypot input properties available throughout your app:
+
+```tsx
+import { HoneypotProvider } from "remix-utils/honeypot/react";
+
+export default function RootComponent() {
+  return (
+    <HoneypotProvider {...honeypotInputProps}>
+      <Outlet />
+    </HoneypotProvider>
+  );
+}
+```
+
+In any public form, include the `HoneypotInputs` component to add the honeypot fields:
+
+```tsx
+import { HoneypotInputs } from "remix-utils/honeypot/react";
+
+function PublicForm() {
+  return (
+    <Form method="post">
+      <HoneypotInputs label="Please leave this field blank" />
+      <input type="text" name="name" placeholder="Your Name" />
+      <input type="email" name="email" placeholder="Your Email" />
+      <button type="submit">Submit</button>
+    </Form>
+  );
+}
+```
+
+For requests with a body (e.g., POST, PUT, DELETE) and a content type of `application/x-www-form-urlencoded` or `multipart/form-data`, the middleware validates the honeypot fields. If the request passes the honeypot check, it proceeds to the action handler. If the honeypot check fails, the `onSpam` handler is invoked, allowing you to handle spam requests appropriately.
+
+In your action handlers, you can process the form data as usual, without worrying about spam checks—they are already handled by the middleware:
+
+```ts
+export async function action({ request }: ActionFunctionArgs) {
+  // If this code runs, the honeypot check passed
+  let formData = await request.formData();
+  let name = formData.get("name");
+  let email = formData.get("email");
+  // Process the form data
+}
+```
+
+The honeypot middleware is designed to be lightweight and effective against basic spam bots. For advanced spam protection, consider combining this with other techniques like CAPTCHA or rate limiting.
 
 #### Secure Headers Middleware
 

@@ -3,34 +3,27 @@ import type {
 	unstable_RouterContextProvider,
 } from "react-router";
 import { unstable_createContext } from "react-router";
-import type { Class } from "type-fest";
 import type { unstable_MiddlewareGetter } from "./utils.js";
 
 /**
- * Creates a singleton middleware that creates an instance of a class and stores
- * it in the context. If the instance already exists in the context, it will
- * return the existing instance.
+ * Creates a singleton middleware that creates an instance of an object and
+ * stores it in the context. If the instance already exists in the context, it
+ * will return the existing instance.
  *
  * @param options - Options for the singleton middleware.
- * @param options.Class - The class to create an instance of.
- * @param options.arguments - Arguments to pass to the class constructor.
+ * @param options.instantiator - A function that takes the request and context and returns a new instance of the object to be stored in the context.
  * @returns A tuple containing the middleware function and a function to get the
  * singleton instance from the context.
  */
-export function unstable_createSingletonMiddleware<
-	T,
-	// biome-ignore lint/suspicious/noExplicitAny: This any is needed
-	A extends unknown[] = any[],
->(
-	options: unstable_createSingletonMiddleware.Options<T, A>,
+export function unstable_createSingletonMiddleware<T>(
+	options: unstable_createSingletonMiddleware.Options<T>,
 ): unstable_createSingletonMiddleware.ReturnType<T> {
 	let singletonContext = unstable_createContext<T | null>(null);
 
 	return [
-		async function singletonMiddleware({ context }, next) {
-			let instance = context.get(singletonContext);
-			if (instance) return await next();
-			instance = new options.Class(...options.arguments);
+		async function singletonMiddleware({ request, context }, next) {
+			let instance =
+				context.get(singletonContext) ?? options.instantiator(request, context);
 			context.set(singletonContext, instance);
 			return await next();
 		},
@@ -44,10 +37,8 @@ export function unstable_createSingletonMiddleware<
 }
 
 export namespace unstable_createSingletonMiddleware {
-	// biome-ignore lint/suspicious/noExplicitAny: This any is needed
-	export interface Options<T, A extends unknown[] = any[]> {
-		Class: Class<T, A>;
-		arguments: A;
+	export interface Options<T> {
+		instantiator(request: Request, context: unstable_RouterContextProvider): T;
 	}
 
 	export type ReturnType<T> = [
