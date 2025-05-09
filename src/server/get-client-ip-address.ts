@@ -6,6 +6,7 @@ import { getHeaders } from "./get-headers.js";
  * determine the client's IP address.
  */
 const headerNames = Object.freeze([
+	"X-Azure-ClientIP" /** Azure Front Door */,
 	"X-Client-IP",
 	"X-Forwarded-For",
 	"HTTP-X-Forwarded-For",

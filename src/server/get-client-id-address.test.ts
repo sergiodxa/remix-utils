@@ -5,6 +5,7 @@ const VALID_IP = "192.168.0.1";
 const INVALID_IP = "abc.def.ghi.jkl";
 
 const headerNames = [
+	"X-Azure-ClientIP" /** Azure Front Door */,
 	"X-Client-IP",
 	"X-Forwarded-For",
 	"HTTP-X-Forwarded-For",
