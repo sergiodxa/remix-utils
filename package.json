@@ -33,6 +33,10 @@
 			"types": "./build/server/middleware/request-id.d.ts",
 			"default": "./build/server/middleware/request-id.js"
 		},
+		"./middleware/secure-headers": {
+			"types": "./build/server/middleware/secure-headers.d.ts",
+			"default": "./build/server/middleware/secure-headers.js"
+		},
 		"./middleware/server-timing": {
 			"types": "./build/server/middleware/server-timing.d.ts",
 			"default": "./build/server/middleware/server-timing.js"
