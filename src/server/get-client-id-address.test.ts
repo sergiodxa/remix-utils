@@ -22,7 +22,7 @@ const headerNames = [
 	"oxygen-buyer-ip" /** Shopify oxygen platform */,
 ];
 
-describe(getClientIPAddress.name, () => {
+describe(getClientIPAddress, () => {
 	describe("Get the IP if it's valid", () => {
 		test.each(headerNames)("%s", (headerName) => {
 			let headers = new Headers();

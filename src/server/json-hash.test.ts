@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { jsonHash } from "./json-hash";
 
-describe(jsonHash.name, () => {
+describe(jsonHash, () => {
 	test("should return a response with a status code", async () => {
 		let response = await jsonHash({}, 201);
 

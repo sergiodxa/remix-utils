@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { redirectBack } from "./redirect-back";
 
-describe(redirectBack.name, () => {
+describe(redirectBack, () => {
 	test("uses the referer if available", () => {
 		let request = new Request("http://remix.utils/", {
 			headers: { Referer: "/referer" },

@@ -12,7 +12,7 @@ import {
 } from "./responses";
 
 describe("Responses", () => {
-	describe(notModified.name, () => {
+	describe(notModified, () => {
 		test("Should return Response with status 304", async () => {
 			let response = notModified();
 			expect(response.text()).resolves.toBe("");
@@ -29,7 +29,7 @@ describe("Responses", () => {
 		});
 	});
 
-	describe(javascript.name, () => {
+	describe(javascript, () => {
 		let content = "console.log('hello world');";
 		test("Should return Response with status 200", async () => {
 			let response = javascript(content);
@@ -62,7 +62,7 @@ describe("Responses", () => {
 		});
 	});
 
-	describe(stylesheet.name, () => {
+	describe(stylesheet, () => {
 		let content = "body { color: red; }";
 		test("Should return Response with status 200", async () => {
 			let response = stylesheet(content);
@@ -95,7 +95,7 @@ describe("Responses", () => {
 		});
 	});
 
-	describe(pdf.name, () => {
+	describe(pdf, () => {
 		test("Should return Response with status 200", async () => {
 			let blob = new Blob();
 			let response = pdf(blob);
@@ -121,7 +121,7 @@ describe("Responses", () => {
 		});
 	});
 
-	describe(html.name, () => {
+	describe(html, () => {
 		let content = "<h1>Hello World</h1>";
 		test("Should return Response with status 200", async () => {
 			let response = html(content);
@@ -154,7 +154,7 @@ describe("Responses", () => {
 		});
 	});
 
-	describe(xml.name, () => {
+	describe(xml, () => {
 		let content = "<?xml version='1.0'?><catalog></catalog>";
 		test("Should return Response with status 200", async () => {
 			let response = xml(content);
@@ -187,7 +187,7 @@ describe("Responses", () => {
 		});
 	});
 
-	describe(txt.name, () => {
+	describe(txt, () => {
 		let content = `
       User-agent: *
       Allow: /
@@ -223,7 +223,7 @@ describe("Responses", () => {
 		});
 	});
 
-	describe(image.name, () => {
+	describe(image, () => {
 		let content = new ArrayBuffer(0);
 		test.each([
 			"image/webp",

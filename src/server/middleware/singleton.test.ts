@@ -3,7 +3,7 @@ import { unstable_RouterContextProvider } from "react-router";
 import { unstable_createSingletonMiddleware } from "./singleton";
 import { runMiddleware } from "./test-helper";
 
-describe(unstable_createSingletonMiddleware.name, () => {
+describe(unstable_createSingletonMiddleware, () => {
 	test("creates an instance of a given class without arguments", async () => {
 		let context = new unstable_RouterContextProvider();
 

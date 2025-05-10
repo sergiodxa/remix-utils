@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { unstable_createSecureHeadersMiddleware } from "./secure-headers";
 import { runMiddleware } from "./test-helper";
 
-describe(unstable_createSecureHeadersMiddleware.name, () => {
+describe(unstable_createSecureHeadersMiddleware, () => {
 	test("returns a middleware function", () => {
 		let [middleware] = unstable_createSecureHeadersMiddleware();
 		expect(middleware).toBeFunction();

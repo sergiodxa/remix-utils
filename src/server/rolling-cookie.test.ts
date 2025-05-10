@@ -4,7 +4,7 @@ import { z } from "zod";
 import { rollingCookie } from "./rolling-cookie";
 import { createTypedCookie } from "./typed-cookie";
 
-describe(rollingCookie.name, () => {
+describe(rollingCookie, () => {
 	describe("Remix Cookie", () => {
 		let cookie = createCookie("name", { secrets: ["secret"] });
 

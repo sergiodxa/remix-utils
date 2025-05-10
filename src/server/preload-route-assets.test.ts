@@ -3,7 +3,7 @@ import type { EntryContext } from "react-router";
 import { preloadRouteAssets } from "./preload-route-assets";
 
 // TODO Fix this
-describe(preloadRouteAssets.name, () => {
+describe(preloadRouteAssets, () => {
 	let context: EntryContext = {
 		isSpaMode: false,
 		manifest: {

@@ -5,7 +5,7 @@ import { runMiddleware } from "./test-helper";
 
 const cookie = createCookie("name", { maxAge: 60 * 60 * 24 });
 
-describe(unstable_createRollingCookieMiddleware.name, () => {
+describe(unstable_createRollingCookieMiddleware, () => {
 	test("if the request has no cookie the middleware does nothing", async () => {
 		let [middleware] = unstable_createRollingCookieMiddleware({ cookie });
 		let response = await runMiddleware(middleware);

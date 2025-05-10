@@ -8,7 +8,7 @@ function invariant(condition: any, message: string): asserts condition {
 	if (!condition) throw new Error(message);
 }
 
-describe(Honeypot.name, () => {
+describe(Honeypot, () => {
 	test("generates input props", () => {
 		let props = new Honeypot().getInputProps();
 		expect(props).resolves.toEqual({

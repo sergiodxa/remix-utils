@@ -2,7 +2,7 @@ import { describe, expect, setSystemTime, test } from "bun:test";
 import { interval } from "./timers";
 
 describe("Timers", () => {
-	describe(interval.name, () => {
+	describe(interval, () => {
 		// TODO Fix this
 		test("should resolve after the specified time", async () => {
 			setSystemTime(0);

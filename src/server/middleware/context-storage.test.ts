@@ -3,7 +3,7 @@ import { unstable_RouterContextProvider } from "react-router";
 import { unstable_createContextStorageMiddleware } from "./context-storage";
 import { runMiddleware } from "./test-helper";
 
-describe(unstable_createContextStorageMiddleware.name, () => {
+describe(unstable_createContextStorageMiddleware, () => {
 	test("sets the RouterContextProvider in AsyncLocalStorage", async () => {
 		let [middleware, getContext] = unstable_createContextStorageMiddleware();
 

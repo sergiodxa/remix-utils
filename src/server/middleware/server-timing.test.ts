@@ -4,7 +4,7 @@ import { unstable_RouterContextProvider } from "react-router";
 import { unstable_createServerTimingMiddleware } from "./server-timing";
 import { runMiddleware } from "./test-helper";
 
-describe(unstable_createServerTimingMiddleware.name, () => {
+describe(unstable_createServerTimingMiddleware, () => {
 	test("the middleware function sets a TimingCollector instance in the context and adds the server timing headers to the response", async () => {
 		let [middleware, getTimingCollector] =
 			unstable_createServerTimingMiddleware();

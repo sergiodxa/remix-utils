@@ -7,7 +7,7 @@ function createRequest(headers: Headers = new Headers()) {
 	return new Request("http://remix.utils/test", { method: "OPTIONS", headers });
 }
 
-describe(cors.name, () => {
+describe(cors, () => {
 	test("change the Content-Length to 0 for preflight requests", async () => {
 		let request = createRequest();
 		let response = new Response("", { status: 204 });

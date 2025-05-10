@@ -11,7 +11,7 @@ import {
 import { unstable_createSessionMiddleware } from "./session";
 import { runMiddleware } from "./test-helper";
 
-describe(unstable_createSessionMiddleware.name, () => {
+describe(unstable_createSessionMiddleware, () => {
 	let cookie = createCookie("session", { secrets: ["test"] });
 	let sessionStorage = createMemorySessionStorage({ cookie });
 

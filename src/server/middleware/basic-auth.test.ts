@@ -5,7 +5,7 @@ import { unstable_RouterContextProvider } from "react-router";
 import { unstable_createBasicAuthMiddleware } from "./basic-auth";
 import { catchResponse, runMiddleware } from "./test-helper";
 
-describe(unstable_createBasicAuthMiddleware.name, () => {
+describe(unstable_createBasicAuthMiddleware, () => {
 	const username = "test";
 	const password = "password";
 

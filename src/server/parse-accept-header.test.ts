@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { parseAcceptHeader } from "./parse-accept-header";
 
-describe(parseAcceptHeader.name, () => {
+describe(parseAcceptHeader, () => {
 	test("parses a simple accept header", () => {
 		let header = "text/html";
 

@@ -4,7 +4,7 @@ import { unstable_RouterContextProvider } from "react-router";
 import { unstable_createBatcherMiddleware } from "./batcher";
 import { runMiddleware } from "./test-helper";
 
-describe(unstable_createBatcherMiddleware.name, () => {
+describe(unstable_createBatcherMiddleware, () => {
 	test("creates a singleton middleware for a Batcher", async () => {
 		let [middleware, getBatcher] = unstable_createBatcherMiddleware();
 

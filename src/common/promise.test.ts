@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { promiseHash, timeout } from "./promise";
 
-describe(promiseHash.name, () => {
+describe(promiseHash, () => {
 	test("should await all promises in a hash and return them with the same name", async () => {
 		let result = await promiseHash({
 			a: Promise.resolve(1),
@@ -25,7 +25,7 @@ describe(promiseHash.name, () => {
 	});
 });
 
-describe(timeout.name, () => {
+describe(timeout, () => {
 	test("resolves if the promise resolves before the timeout", async () => {
 		expect(timeout(Promise.resolve(1), { ms: 1000 })).resolves.toBe(1);
 	});

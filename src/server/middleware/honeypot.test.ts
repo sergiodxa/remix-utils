@@ -3,7 +3,7 @@ import { redirect } from "react-router";
 import { unstable_createHoneypotMiddleware } from "./honeypot";
 import { runMiddleware } from "./test-helper";
 
-describe(unstable_createHoneypotMiddleware.name, () => {
+describe(unstable_createHoneypotMiddleware, () => {
 	test("can get the Honeypot input props", async () => {
 		let [, getInputProps] = unstable_createHoneypotMiddleware();
 		let props = await getInputProps();

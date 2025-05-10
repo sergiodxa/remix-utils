@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { ActionFunctionArgs, data } from "react-router";
 import { namedAction } from "./named-action";
 
-describe(namedAction.name, () => {
+describe(namedAction, () => {
 	test("FormData - Convention intent", async () => {
 		let formData = new FormData();
 		formData.append("intent", "update");

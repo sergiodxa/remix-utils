@@ -16,7 +16,7 @@ const server = setupServer(
 	),
 );
 
-describe(unstable_createJWKAuthMiddleware.name, () => {
+describe(unstable_createJWKAuthMiddleware, () => {
 	beforeAll(() => server.listen());
 	afterAll(() => server.close());
 

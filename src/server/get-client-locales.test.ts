@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { getClientLocales } from "./get-client-locales";
 
-describe(getClientLocales.name, () => {
+describe(getClientLocales, () => {
 	test("should return undefined if no Accept-Language header is not present", () => {
 		let request = new Request("http://remix.utils/");
 		expect(getClientLocales(request)).toBeUndefined();

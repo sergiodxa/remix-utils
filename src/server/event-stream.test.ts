@@ -1,7 +1,7 @@
 import { describe, expect, spyOn, test } from "bun:test";
 import { eventStream } from "./event-stream";
 
-describe(eventStream.name, () => {
+describe(eventStream, () => {
 	test("returns a response", () => {
 		let controller = new AbortController();
 		let response = eventStream(controller.signal, (_, __) => {
