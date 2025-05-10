@@ -1,4 +1,6 @@
 /**
+ * > This depends on `zod`, and React Router.
+ *
  * The rolling cookie middleware allows you to prolong the expiration of a
  * cookie by updating the expiration date on every request.
  *
