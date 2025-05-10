@@ -12,6 +12,9 @@ on:
           - minor
           - patch
 
+permissions:
+  contents: write
+
 jobs:
   bump-version:
     name: Bump version
