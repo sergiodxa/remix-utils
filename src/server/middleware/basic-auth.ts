@@ -1,3 +1,132 @@
+/**
+ *> This depends on `@oslojs/crypto`, and `@oslojs/encoding`.
+ *
+ * The Basic Auth middleware let's you add a basic authentication to your
+ * routes, this can be useful to protect routes that need to be private.
+ *
+ * > **Warning**: Basic Auth is not secure by itself, it should be used with
+ * > HTTPS to ensure the username and password are encrypted. Do not use it to
+ * > protect sensitive data, use a more secure method instead.
+ *
+ * ```ts
+ * import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ *
+ * export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+ *   user: { username: "admin", password: "password" },
+ * });
+ * ```
+ *
+ * To use it, you need to add it to the `unstable_middleware` array in the
+ * route where you want to use it.
+ *
+ * ```ts
+ * import { basicAuthMiddleware } from "~/middleware/basic-auth.server";
+ * export const unstable_middleware = [basicAuthMiddleware];
+ * ```
+ *
+ * Now, when you access the route you will be prompted to enter the username and password.
+ *
+ * The `realm` option let's you set the realm for the authentication, this is the name of the protected area.
+ *
+ * ```ts
+ * import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ *
+ * export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+ *   realm: "My Realm",
+ *   user: { username: "admin", password: "password" },
+ * });
+ * ```
+ *
+ * The `user` option let's you set the username and password to authenticate,
+ * you can also pass an array of users.
+ *
+ * ```ts
+ * import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ *
+ * export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+ *   user: [
+ *     { username: "admin", password: "password" },
+ *     { username: "user", password: "password" },
+ *   ],
+ * });
+ * ```
+ *
+ * The `verifyUser` option let's you pass a function to verify the user, this
+ * can be useful to check the user against a database.
+ *
+ * ```ts
+ * import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ *
+ * export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+ *   verifyUser(username, password) {
+ *     let user = await getUser(username);
+ *     if (!user) return false;
+ *     return await verifyPassword(password, user.password);
+ *   },
+ * });
+ * ```
+ *
+ * The `verifyUser` function should return `true` if the user is authenticated,
+ * and `false` otherwise.
+ *
+ * In case of an invalid username or password the middleware will return a
+ * `401` status code with a `WWW-Authenticate` header.
+ *
+ * ```http
+ * HTTP/1.1 401 Unauthorized
+ * WWW-Authenticate: Basic realm="My Realm"
+ *
+ * Unauthorized
+ * ```
+ *
+ * The `invalidUserMessage` option let's you customize the message sent when
+ * the user is invalid.
+ *
+ * ```ts
+ * import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ *
+ * export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+ *   invalidUserMessage: "Invalid username or password",
+ *   user: { username: "admin", password: "password" },
+ * });
+ * ```
+ *
+ * And this will be the response when the user is invalid.
+ *
+ * ```http
+ * HTTP/1.1 401 Unauthorized
+ * WWW-Authenticate: Basic realm="My Realm"
+ *
+ * Invalid username or password
+ * ```
+ *
+ * You can also customize the `invalidUserMessage` by passing a function which
+ * will receive the Request and context objects.
+ *
+ * ```ts
+ * import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ *
+ * export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+ *   invalidUserMessage({ request, context }) {
+ *     // do something with request or context here
+ *     return { message: `Invalid username or password for ${username}` };
+ *   },
+ *   user: { username: "admin", password: "password" },
+ * });
+ * ```
+ *
+ * In both cases, with a hard-coded value or a function, the invalid message
+ * can be a string or an object, if it's an object it will be converted to JSON.
+ *
+ * ```http
+ * HTTP/1.1 401 Unauthorized
+ * WWW-Authenticate: Basic realm="My Realm"
+ *
+ * {"message":"Invalid username or password"}
+ * ```
+ * @author Sergio Xalambrí
+ * @module Server/Middleware/Basic Auth
+ */
 import { sha256 } from "@oslojs/crypto/sha2";
 import { decodeBase64 } from "@oslojs/encoding";
 import {
