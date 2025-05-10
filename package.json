@@ -41,6 +41,10 @@
 			"types": "./build/server/middleware/request-id.d.ts",
 			"default": "./build/server/middleware/request-id.js"
 		},
+		"./middleware/rolling-cookie": {
+			"types": "./build/server/middleware/rolling-cookie.d.ts",
+			"default": "./build/server/middleware/rolling-cookie.js"
+		},
 		"./middleware/secure-headers": {
 			"types": "./build/server/middleware/secure-headers.d.ts",
 			"default": "./build/server/middleware/secure-headers.js"

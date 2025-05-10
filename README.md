@@ -2905,6 +2905,39 @@ export const [corsMiddleware] = unstable_createCorsMiddleware({
 
 The [accepted `options`](#options) are the same as those accepted by the `cors` util.
 
+#### Rolling Cookie Middleware
+
+> [!NOTE]
+> This depends on `zod`, and React Router.
+
+The rolling cookie middleware allows you to prolong the expiration of a cookie by updating the expiration date on every request.
+
+First, create a rolling cookie middleware instance:
+
+```ts
+import { unstable_createRollingCookieMiddleware } from "remix-utils/middleware/rolling-cookie";
+
+// This must be a Cookie or TypedCookie instance
+import { cookie } from "~/cookies";
+
+export const [rollingCookieMiddleware] = unstable_createRollingCookieMiddleware(
+  { cookie }
+);
+```
+
+Then, add the `rollingCookieMiddleware` to the `unstable_middleware` array in your `app/root.tsx` file.
+
+```ts
+import { rollingCookieMiddleware } from "~/middleware/rolling-cookie.server";
+
+export const unstable_middleware = [rollingCookieMiddleware];
+```
+
+Now, every request will have the cookie updated with a new expiration date.
+
+> [!NOTE]
+> If you set the same cookie in your own loaders or actions, the middleware will detect this and do nothing, so you can use the middleware and set the cookie in your own code without worrying about it.
+
 ## Author
 
 - [Sergio Xalambrí](https://sergiodxa.com)
