@@ -1,60 +1,18 @@
 import type { Promisable } from "type-fest";
 
-type Origin = boolean | string | RegExp | Array<string | RegExp>;
-
-interface CORSOptions {
-	/**
-	 * Configures the **Access-Control-Allow-Origin** CORS header.
-	 *
-	 * Possible values:
-	 * - true: Enable CORS for any origin (same as "*")
-	 * - false: Don't setup CORS
-	 * - string: Set to a specific origin, if set to "*" it will allow any origin
-	 * - RegExp: Set to a RegExp to match against the origin
-	 * - Array<string | RegExp>: Set to an array of origins to match against the
-	 *  string or RegExp
-	 * - Function: Set to a function that will be called with the request origin
-	 * and should return a boolean indicating if the origin is allowed or not.
-	 * @default true
-	 */
-	origin?: Origin | ((origin: string) => Promisable<Origin>);
-	/**
-	 * Configures the **Access-Control-Allow-Methods** CORS header.
-	 * @default ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"]
-	 */
-	methods?: Array<string>;
-	/**
-	 * Configures the **Access-Control-Allow-Headers** CORS header.
-	 * @default []
-	 */
-	allowedHeaders?: string[];
-	/**
-	 * Configures the **Access-Control-Expose-Headers** CORS header.
-	 * @default []
-	 */
-	exposedHeaders?: string[];
-	/**
-	 * Configures the **Access-Control-Allow-Credentials** CORS header.
-	 * @default false
-	 */
-	credentials?: boolean;
-	/**
-	 * Configures the **Access-Control-Max-Age** CORS header.
-	 * @default 0
-	 */
-	maxAge?: number;
-}
-
-const DEFAULT_OPTIONS: CORSOptions = {
+const DEFAULT_OPTIONS: cors.Options = {
 	origin: true,
 	methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
 	allowedHeaders: [],
 	exposedHeaders: [],
 };
 
-class CORS {
-	private options: CORSOptions;
-	constructor(options: CORSOptions) {
+/**
+ * @private You should not use this class directly, use the `cors` function instead, or the `unstable_createCorsMiddleware`
+ */
+export class CORS {
+	private options: cors.Options;
+	constructor(options: cors.Options) {
 		// Merge user options with default options
 		this.options = Object.assign({}, DEFAULT_OPTIONS, options);
 	}
@@ -172,7 +130,7 @@ class CORS {
 		return headers;
 	}
 
-	private isOriginAllowed(origin: string, allowedOrigin: Origin) {
+	private isOriginAllowed(origin: string, allowedOrigin: cors.Origin) {
 		if (Array.isArray(allowedOrigin)) {
 			for (let element of allowedOrigin) {
 				if (this.isOriginAllowed(origin, element)) return true;
@@ -258,7 +216,54 @@ class CORS {
 export async function cors(
 	request: Request,
 	response: Response,
-	options: CORSOptions = DEFAULT_OPTIONS,
+	options: cors.Options = DEFAULT_OPTIONS,
 ): Promise<Response> {
 	return new CORS(options).exec(request, response);
+}
+
+export namespace cors {
+	export type Origin = boolean | string | RegExp | Array<string | RegExp>;
+
+	export interface Options {
+		/**
+		 * Configures the **Access-Control-Allow-Origin** CORS header.
+		 *
+		 * Possible values:
+		 * - true: Enable CORS for any origin (same as "*")
+		 * - false: Don't setup CORS
+		 * - string: Set to a specific origin, if set to "*" it will allow any origin
+		 * - RegExp: Set to a RegExp to match against the origin
+		 * - Array<string | RegExp>: Set to an array of origins to match against the
+		 *  string or RegExp
+		 * - Function: Set to a function that will be called with the request origin
+		 * and should return a boolean indicating if the origin is allowed or not.
+		 * @default true
+		 */
+		origin?: Origin | ((origin: string) => Promisable<Origin>);
+		/**
+		 * Configures the **Access-Control-Allow-Methods** CORS header.
+		 * @default ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"]
+		 */
+		methods?: Array<string>;
+		/**
+		 * Configures the **Access-Control-Allow-Headers** CORS header.
+		 * @default []
+		 */
+		allowedHeaders?: string[];
+		/**
+		 * Configures the **Access-Control-Expose-Headers** CORS header.
+		 * @default []
+		 */
+		exposedHeaders?: string[];
+		/**
+		 * Configures the **Access-Control-Allow-Credentials** CORS header.
+		 * @default false
+		 */
+		credentials?: boolean;
+		/**
+		 * Configures the **Access-Control-Max-Age** CORS header.
+		 * @default 0
+		 */
+		maxAge?: number;
+	}
 }
