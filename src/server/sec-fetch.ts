@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { getHeaders } from "./get-headers.js";
 
-const FetchDestSchema = z.enum([
+export const FetchDestSchema = z.enum([
 	"audio",
 	"audioworklet",
 	"document",
@@ -52,7 +52,7 @@ export function fetchDest(input: Request | Headers): FetchDest | null {
 	return null;
 }
 
-const FetchModeSchema = z.enum([
+export const FetchModeSchema = z.enum([
 	"cors",
 	"navigate",
 	"no-cors",
@@ -74,7 +74,7 @@ export function fetchMode(input: Request | Headers): FetchMode | null {
 	return null;
 }
 
-const FetchSiteSchema = z.enum([
+export const FetchSiteSchema = z.enum([
 	"cross-site",
 	"same-origin",
 	"same-site",
@@ -95,7 +95,7 @@ export function fetchSite(input: Request | Headers): FetchSite | null {
 	return null;
 }
 
-const FetchUserSchema = z.literal("?1");
+export const FetchUserSchema = z.literal("?1");
 
 export type FetchUser = z.output<typeof FetchUserSchema>;
 
