@@ -2862,7 +2862,48 @@ Now, every response will have the security header responses.
 
 The secure headers middleware middleware can be customized by passing an options object to the `unstable_createSecureHeadersMiddleware` function.
 
-The options let's you configure the headers key values. [More info here](https://hono.dev/docs/middleware/builtin/secure-headers#supported-options) .
+The options let's you configure the headers key values. [More info here](https://hono.dev/docs/middleware/builtin/secure-headers#supported-options).
+
+#### CORS Middleware
+
+The CORS middleware simplifies the setup of CORS headers. Internally it uses the same [CORS](#cors) utils exported from `remix-utils/cors`.
+
+To use it, first create a CORS middleware instance:
+
+```ts
+import { unstable_createCorsMiddleware } from "remix-utils/middleware/cors";
+
+export const [corsMiddleware] = unstable_createCorsMiddleware();
+```
+
+Add the `corsMiddleware` to the `unstable_middleware` array in the route where you want to configure CORS, use it in your `app/root.tsx` file to apply it globally:
+
+```ts
+import { corsMiddleware } from "~/middleware/cors.server";
+
+export const unstable_middleware = [corsMiddleware];
+```
+
+Now, every request will have the CORS headers set.
+
+You can customize the CORS middleware by passing an options object to the `unstable_createCorsMiddleware` function.
+
+The options lets you configure the CORS headers, e.g. `origin`, `methods`, `allowedHeaders`, etc.
+
+```ts
+import { unstable_createCorsMiddleware } from "remix-utils/middleware/cors";
+
+export const [corsMiddleware] = unstable_createCorsMiddleware({
+  origin: "https://example.com",
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  exposedHeaders: ["X-My-Custom-Header"],
+  maxAge: 3600,
+  credentials: true,
+});
+```
+
+The [accepted `options`](#options) are the same as those accepted by the `cors` util.
 
 ## Author
 
