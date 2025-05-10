@@ -1,12 +1,14 @@
 {
 	"name": "remix-utils",
-	"version": "8.6.0",
+	"version": "8.7.0",
 	"license": "MIT",
 	"engines": {
 		"node": ">=20.0.0"
 	},
 	"type": "module",
-	"funding": ["https://github.com/sponsors/sergiodxa"],
+	"funding": [
+		"https://github.com/sponsors/sergiodxa"
+	],
 	"exports": {
 		"./package.json": "./package.json",
 		"./middleware/basic-auth": {
@@ -324,5 +326,9 @@
 	"dependencies": {
 		"type-fest": "^4.37.0"
 	},
-	"files": ["build", "package.json", "README.md"]
+	"files": [
+		"build",
+		"package.json",
+		"README.md"
+	]
 }
