@@ -1,3 +1,68 @@
+/**
+ * The Context Storage middleware stores the Router context provider and request in AsyncLocalStorage and gives you functions to access it in your code.
+ *
+ * ```ts
+ * import { unstable_createContextStorageMiddleware } from "remix-utils/middleware/context-storage";
+ *
+ * export const [contextStorageMiddleware, getContext, getRequest] =
+ *   unstable_createContextStorageMiddleware();
+ * ```
+ *
+ * To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
+ *
+ * ```ts
+ * import { contextStorageMiddleware } from "~/middleware/context-storage.server";
+ *
+ * export const unstable_middleware = [contextStorageMiddleware];
+ * ```
+ *
+ * And you can use the `getContext` and `getRequest` functions in your function to get the context and request objects.
+ *
+ * ```ts
+ * import { getContext, getRequest } from "~/middleware/context-storage.server";
+ *
+ * export async function doSomething() {
+ *   let context = getContext();
+ *   let request = getRequest();
+ *   // ...
+ * }
+ * ```
+ *
+ * Then call `doSomething` in any loader, action, or another middleware, and you will have access to the context and request objects without passing them around.
+ *
+ * You can pair this with any other middleware that uses the context to simplify using their returned getters.
+ *
+ * ```ts
+ * import { unstable_createBatcherMiddleware } from "remix-utils/middleware/batcher";
+ * import { getContext } from "~/middleware/context-storage.server";
+ *
+ * const [batcherMiddleware, getBatcherFromContext] =
+ *   unstable_createBatcherMiddleware();
+ *
+ * export { bathcherMiddleware };
+ *
+ * export function getBatcher() {
+ *   let context = getContext();
+ *   return getBatcherFromContext(context);
+ * }
+ * ```
+ *
+ * Now instead of calling `getBatcher(context)` you can just call `getBatcher()` and it will return the batcher instance.
+ *
+ * ```ts
+ * import { getBatcher } from "~/middleware/batcher.server";
+ *
+ * export async function loader(_: LoaderFunctionArgs) {
+ *   let batcher = getBatcher();
+ *   let result = await batcher.batch("key", async () => {
+ *     return await getData();
+ *   });
+ *   // ...
+ * }
+ * ```
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Middleware/Context Storage
+ */
 import { AsyncLocalStorage } from "node:async_hooks";
 import type {
 	unstable_MiddlewareFunction,

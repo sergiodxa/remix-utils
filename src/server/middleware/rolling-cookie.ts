@@ -31,7 +31,7 @@
  * will detect this and do nothing, so you can use the middleware and set the
  * cookie in your own code without worrying about it.
  * @author Sergio Xalambrí
- * @module Server/Middleware/Rolling Cookie
+ * @module Middleware/Rolling Cookie
  */
 import type { Cookie, unstable_MiddlewareFunction } from "react-router";
 import { rollingCookie } from "../rolling-cookie.js";

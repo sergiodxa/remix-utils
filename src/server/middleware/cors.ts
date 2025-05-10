@@ -1,3 +1,45 @@
+/**
+ * The CORS middleware simplifies the setup of CORS headers. Internally it uses the same {@link cors | CORS} utils exported from `remix-utils/cors`.
+ *
+ * To use it, first create a CORS middleware instance:
+ *
+ * ```ts
+ * import { unstable_createCorsMiddleware } from "remix-utils/middleware/cors";
+ *
+ * export const [corsMiddleware] = unstable_createCorsMiddleware();
+ * ```
+ *
+ * Add the `corsMiddleware` to the `unstable_middleware` array in the route where you want to configure CORS, use it in your `app/root.tsx` file to apply it globally:
+ *
+ * ```ts
+ * import { corsMiddleware } from "~/middleware/cors.server";
+ *
+ * export const unstable_middleware = [corsMiddleware];
+ * ```
+ *
+ * Now, every request will have the CORS headers set.
+ *
+ * You can customize the CORS middleware by passing an options object to the `unstable_createCorsMiddleware` function.
+ *
+ * The options lets you configure the CORS headers, e.g. `origin`, `methods`, `allowedHeaders`, etc.
+ *
+ * ```ts
+ * import { unstable_createCorsMiddleware } from "remix-utils/middleware/cors";
+ *
+ * export const [corsMiddleware] = unstable_createCorsMiddleware({
+ *   origin: "https://example.com",
+ *   methods: ["GET", "POST"],
+ *   allowedHeaders: ["Content-Type", "Authorization"],
+ *   exposedHeaders: ["X-My-Custom-Header"],
+ *   maxAge: 3600,
+ *   credentials: true,
+ * });
+ * ```
+ *
+ * The {@link cors.Options | accepted `options`} are the same as those accepted by the `cors` util.
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Middleware/CORS
+ */
 import type { unstable_MiddlewareFunction } from "react-router";
 import { CORS, type cors } from "../cors.js";
 

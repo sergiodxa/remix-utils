@@ -1,3 +1,90 @@
+/**
+ * The session middleware let's you save a session object in the Router context
+ * so you can access it in any loader and ensure you're always working with the
+ * same Session instance.
+ *
+ * ```ts
+ * import { unstable_createSessionMiddleware } from "remix-utils/middleware/session";
+ * ```
+ *
+ * To use it, you need to create a session storage object and pass it to the
+ * middleware.
+ *
+ * ```ts
+ * import { createCookieSessionStorage } from "react-router";
+ *
+ * let sessionStorage = createCookieSessionStorage({
+ *   cookie: createCookie("session", { path: "/", sameSite: "lax" }),
+ * });
+ *
+ * let [sessionMiddleware, getSession] =
+ *   unstable_createSessionMiddleware(sessionStorage);
+ * ```
+ *
+ * Then you can use the `sessionMiddleware` in your `app/root.tsx` function.
+ *
+ * ```ts
+ * import { sessionMiddleware } from "~/middleware/session.server";
+ *
+ * export const unstable_middleware = [sessionMiddleware];
+ * ```
+ *
+ * And you can use the `getSession` function in your loaders to get the session
+ * object.
+ *
+ * ```ts
+ * import { getSession } from "~/middleware/session.server";
+ *
+ * export async function loader({ context }: Route.LoaderArgs) {
+ *   let session = await getSession(context);
+ *   let user = await getUser();
+ *   session.set("user", user);
+ *   return json({ user });
+ * }
+ * ```
+ *
+ * By default the middleware will automaticaly commit the session at the end of
+ * the request, but you can customize this behavior by passing a second
+ * argument to the `unstable_createSessionMiddleware` function.
+ *
+ * ```ts
+ * let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
+ *   sessionStorage,
+ *   shouldCommit
+ * );
+ * ```
+ *
+ * The `shouldCommit` function will be called at the end of the request with
+ * the previous session data and the session data before the request, if it
+ * returns `true` the session will be committed, if it returns `false` the
+ * session will be discarded.
+ *
+ * If you want to commit the session only if the session data changed you can
+ * use a library like `dequal` to compare the session data.
+ *
+ * ```ts
+ * import { dequal } from "dequal";
+ *
+ * let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
+ *   sessionStorage,
+ *   (previous, next) => !dequal(previous, next) // Only commit if session changed
+ * );
+ * ```
+ *
+ * Or you can use a custom function to compare the session data, maybe only if
+ * some specific fields changed.
+ *
+ * ```ts
+ * let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
+ *   sessionStorage,
+ *   (previous, next) => {
+ *     return current.user.id !== previous.user.id;
+ *   }
+ * );
+ * ```
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Middleware/Session
+ */
 import type {
 	Session,
 	SessionData,

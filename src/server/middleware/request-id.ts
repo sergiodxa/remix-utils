@@ -1,3 +1,60 @@
+/**
+ * The Request ID middleware generates a unique ID for each request and stores it in the Router context, this can be useful to log the request and response information and correlate them.
+ *
+ * ```ts
+ * import { unstable_createRequestIDMiddleware } from "remix-utils/middleware/request-id";
+ *
+ * export const [requestIDMiddleware, getRequestID] =
+ *   unstable_createRequestIDMiddleware();
+ * ```
+ *
+ * To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
+ *
+ * ```ts
+ * import { requestIDMiddleware } from "~/middleware/request-id.server";
+ *
+ * export const unstable_middleware = [requestIDMiddleware];
+ * ```
+ *
+ * And you can use the `getRequestID` function in your loaders, actions, and other middleware to get the request ID.
+ *
+ * ```ts
+ * import { getRequestID } from "~/middleware/request-id.server";
+ *
+ * export async function loader({ request }: LoaderFunctionArgs) {
+ *   let requestID = getRequestID();
+ *   // ...
+ * }
+ * ```
+ *
+ * By default the request ID is a UUID, but you can customize it by passing a function to the `unstable_createRequestIDMiddleware` function.
+ *
+ * ```ts
+ * import { unstable_createRequestIDMiddleware } from "remix-utils/middleware/request-id";
+ *
+ * export const [requestIDMiddleware, getRequestID] =
+ *   unstable_createRequestIDMiddleware({
+ *     generator() {
+ *       return Math.random().toString(36).slice(2);
+ *     },
+ *   });
+ * ```
+ *
+ * The middleware also gets the request ID from the `X-Request-ID` header if it's present, this can be useful to correlate requests between services.
+ *
+ * If you want to use a different header you can pass the header name to the `unstable_createRequestIDMiddleware` function.
+ *
+ * ```ts
+ * import { unstable_createRequestIDMiddleware } from "remix-utils/middleware/request-id";
+ *
+ * export const [requestIDMiddleware, getRequestID] =
+ *   unstable_createRequestIDMiddleware({
+ *     header: "X-Correlation-ID",
+ *   });
+ * ```
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Middleware/Request ID
+ */
 import type { unstable_MiddlewareFunction } from "react-router";
 import {
 	unstable_RouterContextProvider,

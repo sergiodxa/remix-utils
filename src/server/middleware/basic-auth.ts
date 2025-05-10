@@ -124,8 +124,8 @@
  *
  * {"message":"Invalid username or password"}
  * ```
- * @author Sergio Xalambrí
- * @module Server/Middleware/Basic Auth
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Middleware/Basic Auth
  */
 import { sha256 } from "@oslojs/crypto/sha2";
 import { decodeBase64 } from "@oslojs/encoding";

@@ -1,3 +1,84 @@
+/**
+ * The singleton middleware let's you create a singleton object that will be shared between loaders of a single requests.
+ *
+ * This is specially useful to share objects that needs to be created only once per request, like a cache, but not shared between requests.
+ *
+ * ```ts
+ * import { unstable_createSingletonMiddleware } from "remix-utils/middleware/singleton";
+ *
+ * export const [singletonMiddleware, getSingleton] =
+ *   unstable_createSingletonMiddleware({
+ *     instantiator: () => new MySingletonClass(),
+ *   });
+ * ```
+ *
+ * To use it, you need to add it to the `unstable_middleware` array in the route where you want to use it.
+ *
+ * ```ts
+ * import { singletonMiddleware } from "~/middleware/singleton.server";
+ * export const unstable_middleware = [singletonMiddleware];
+ * ```
+ *
+ * And you can use the `getSingleton` function in your loaders to get the singleton object.
+ *
+ * ```ts
+ * import { getSingleton } from "~/middleware/singleton.server";
+ *
+ * export async function loader({ context }: LoaderFunctionArgs) {
+ *   let singleton = getSingleton(context);
+ *   let result = await singleton.method();
+ *   // ...
+ * }
+ * ```
+ *
+ * The singleton middleware can be created with different classes and arguments, so you can have multiple singletons in the same request.
+ *
+ * ```ts
+ * import { unstable_createSingletonMiddleware } from "remix-utils/middleware/singleton";
+ *
+ * export const [singletonMiddleware, getSingleton] =
+ *   unstable_createSingletonMiddleware({
+ *     instantiator: () => new MySingletonClass("arg1", "arg2"),
+ *   });
+ *
+ * export const [anotherSingletonMiddleware, getAnotherSingleton] =
+ *   unstable_createSingletonMiddleware({
+ *     instantiator: () => new AnotherSingletonClass("arg1", "arg2"),
+ *   });
+ * ```
+ *
+ * And use it in a route like this.
+ *
+ * ```ts
+ * import {
+ *   singletonMiddleware,
+ *   anotherSingletonMiddleware,
+ * } from "~/middleware/singleton.server";
+ *
+ * export const unstable_middleware = [
+ *   singletonMiddleware,
+ *   anotherSingletonMiddleware,
+ * ];
+ * ```
+ *
+ * You can also access the `request` and `context` objects in the `instantiator` function, so you can create the singleton based on the request or context.
+ *
+ * ```ts
+ * import { unstable_createSingletonMiddleware } from "remix-utils/middleware/singleton";
+ * import { MySingletonClass } from "~/singleton";
+ *
+ * export const [singletonMiddleware, getSingleton] =
+ *   unstable_createSingletonMiddleware({
+ *     instantiator: (request, context) => {
+ *       return new MySingletonClass(request, context);
+ *     },
+ *   });
+ * ```
+ *
+ * This can allows you to create a class that depends on the request, maybe to read the URL or body, or depends on the context, maybe to read the session or some other data.
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Middleware/Singleton
+ */
 import type {
 	unstable_MiddlewareFunction,
 	unstable_RouterContextProvider,

@@ -10,8 +10,10 @@
 	"exclude": [
 		"./src/test/*.ts",
 		"./src/**/*.test.ts",
+		"./src/react/handle-conventions.ts",
 		"./src/server/get-headers.ts",
-		"./src/react/handle-conventions.ts"
+		"./src/server/middleware/test-helper.ts",
+		"./src/server/middleware/utils.ts"
 	],
 	"plugin": ["typedoc-plugin-mdn-links"],
 	"categorizeByGroup": false

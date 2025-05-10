@@ -1,3 +1,43 @@
+/**
+ * The logger middleware let's you log the request and response information to
+ * the console, this can be useful to debug issues with the request and response.
+ *
+ * ```ts
+ * import { unstable_createLoggerMiddleware } from "remix-utils/middleware/logger";
+ *
+ * export const [loggerMiddleware] = unstable_createLoggerMiddleware();
+ * ```
+ *
+ * To use it, you need to add it to the `unstable_middleware` array in your
+ * `app/root.tsx` file.
+ *
+ * ```ts
+ * import { loggerMiddleware } from "~/middleware/logger.server";
+ * export const unstable_middleware = [loggerMiddleware];
+ * ```
+ *
+ * Now, every request and response will be logged to the console.
+ *
+ * The logger middleware can be customized by passing an options object to the
+ * `unstable_createLoggerMiddleware` function.
+ *
+ * ```ts
+ * let [loggerMiddleware] = unstable_createLoggerMiddleware({
+ *   logger: console,
+ *   precision: 2,
+ *   formatMessage(request, response, time) {
+ *     return `${request.method} ${request.url} - ${response.status} - ${time}ms`;
+ *   },
+ * });
+ * ```
+ *
+ * The `logger` option let's you pass a custom logger, the `precision` option
+ * let's you set the number of decimal places to use in the response time, and
+ * the `formatMessage` option let's you customize the message that will be
+ * logged.
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Middleware/Logger
+ */
 import type { unstable_MiddlewareFunction } from "react-router";
 
 function defaultFormatMessage(
