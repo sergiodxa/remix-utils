@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { createCookie } from "react-router";
 import { z } from "zod";
 import { rollingCookie } from "./rolling-cookie";
-import { createTypedCookie } from "./typed-cookie";
+import { ValidationError, createTypedCookie } from "./typed-cookie";
 
 describe(rollingCookie, () => {
 	describe("Remix Cookie", () => {
@@ -103,6 +103,7 @@ describe(rollingCookie, () => {
 			let headers = new Headers({
 				"Set-Cookie": await typedCookie.serialize("value from headers"),
 			});
+
 			let request = new Request("http://remix.utils", {
 				headers: { Cookie: await typedCookie.serialize("value from request") },
 			});
@@ -117,19 +118,21 @@ describe(rollingCookie, () => {
 
 		test("should roll the cookie if the headers set another different cookie", async () => {
 			let otherCookie = createCookie("other", { secrets: ["secret"] });
-			let headers = new Headers({
+
+			let responseHeaders = new Headers({
 				"Set-Cookie": await otherCookie.serialize("value from other cookie"),
 			});
+
 			let request = new Request("http://remix.utils", {
 				headers: { Cookie: await typedCookie.serialize("value from request") },
 			});
 
-			expect(headers.has("set-cookie")).toBe(true);
+			expect(responseHeaders.has("set-cookie")).toBe(true);
 
-			await rollingCookie(typedCookie, request, headers);
+			await rollingCookie(typedCookie, request, responseHeaders);
 
-			expect(headers.has("set-cookie")).toBe(true);
-			expect(headers.get("Set-Cookie")).toMatchSnapshot(
+			expect(responseHeaders.has("set-cookie")).toBe(true);
+			expect(responseHeaders.get("Set-Cookie")).toMatchSnapshot(
 				'"other=InZhbHVlIGZyb20gb3RoZXIgY29va2llIg%3D%3D.wn3PvV5dGwPg2Ql8wMy1Q%2B0v%2BU0UQjrI7SBgR6W51QQ; Path=/; SameSite=Lax, name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"',
 			);
 		});

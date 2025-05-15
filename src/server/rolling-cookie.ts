@@ -1,5 +1,5 @@
+import type { StandardSchemaV1 } from "@standard-schema/spec";
 import type { Cookie } from "react-router";
-import { z } from "zod";
 import type { TypedCookie } from "./typed-cookie.js";
 
 /**
@@ -70,15 +70,15 @@ import type { TypedCookie } from "./typed-cookie.js";
  * @returns A promise that resolves when the cookie has been set in the response
  * @see https://sergiodxa.com/articles/add-rolling-sessions-to-remix
  */
-export async function rollingCookie<Schema extends z.ZodTypeAny>(
+export async function rollingCookie<Schema extends StandardSchemaV1>(
 	cookie: Cookie | TypedCookie<Schema>,
 	request: Request,
 	responseHeaders: Headers,
 ) {
-	const requestCookie = await cookie.parse(request.headers.get("Cookie"));
+	let requestCookie = await cookie.parse(request.headers.get("Cookie"));
 	if (!requestCookie) return;
 
-	const responseCookie = await cookie.parse(responseHeaders.get("Set-Cookie"));
+	let responseCookie = await cookie.parse(responseHeaders.get("Set-Cookie"));
 	if (responseCookie !== null) return;
 
 	responseHeaders.append("Set-Cookie", await cookie.serialize(requestCookie));
