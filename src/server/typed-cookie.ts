@@ -1,43 +1,34 @@
+import type { StandardSchemaV1 } from "@standard-schema/spec";
 import {
 	type Cookie,
 	type CookieParseOptions,
 	type CookieSerializeOptions,
 	isCookie,
 } from "react-router";
-import type { z } from "zod";
 
-export interface TypedCookie<Schema extends z.ZodTypeAny> extends Cookie {
+export interface TypedCookie<Schema extends StandardSchemaV1> extends Cookie {
 	isTyped: true;
 
 	parse(
 		cookieHeader: string | null,
 		options?: CookieParseOptions,
-	): Promise<z.infer<Schema> | null>;
+	): Promise<StandardSchemaV1.InferOutput<Schema> | null>;
 
 	serialize(
-		value: z.input<Schema>,
+		value: StandardSchemaV1.InferInput<Schema>,
 		options?: CookieSerializeOptions,
 	): Promise<string>;
 }
 
-export function createTypedCookie<Schema extends z.ZodTypeAny>({
+export function createTypedCookie<Schema extends StandardSchemaV1>({
 	cookie,
 	schema,
 }: {
 	cookie: Cookie;
 	schema: Schema;
 }): TypedCookie<Schema> {
-	if (schema._def.typeName === "ZodObject") {
-		let flashSchema: z.ZodRawShape = {};
-		for (let key in (schema as unknown as z.AnyZodObject).shape) {
-			flashSchema[flash(key)] = (schema as unknown as z.AnyZodObject).shape[
-				key
-			].optional();
-		}
-	}
-
 	return {
-		isTyped: true,
+		isTyped: true as const,
 		get name() {
 			return cookie.name;
 		},
@@ -50,11 +41,15 @@ export function createTypedCookie<Schema extends z.ZodTypeAny>({
 		async parse(cookieHeader, options) {
 			if (!cookieHeader) return null;
 			let value = await cookie.parse(cookieHeader, options);
-			return await parseSchemaWithFlashKeys(schema, value);
+			if (value === null) return null;
+			let result = await schema["~standard"].validate(value);
+			if (result.issues) throw new ValidationError(result.issues);
+			return result.value;
 		},
 		async serialize(value, options) {
-			let parsedValue = await parseSchemaWithFlashKeys(schema, value);
-			return cookie.serialize(parsedValue, options);
+			let result = await schema["~standard"].validate(value);
+			if (result.issues) throw new ValidationError(result.issues);
+			return cookie.serialize(result.value, options);
 		},
 	};
 }
@@ -64,7 +59,7 @@ export function createTypedCookie<Schema extends z.ZodTypeAny>({
  *
  * @see https://github.com/sergiodxa/remix-utils#typed-cookies
  */
-export function isTypedCookie<Schema extends z.ZodTypeAny>(
+export function isTypedCookie<Schema extends StandardSchemaV1>(
 	value: unknown,
 ): value is TypedCookie<Schema> {
 	return (
@@ -77,22 +72,23 @@ function flash<Key extends string>(name: Key): `__flash_${Key}__` {
 	return `__flash_${name}__`;
 }
 
-function parseSchemaWithFlashKeys<Schema extends z.ZodTypeAny>(
+async function parseSchemaWithFlashKeys<Schema extends StandardSchemaV1>(
 	schema: Schema,
-	value: z.infer<Schema>,
-): Promise<z.infer<Schema>> {
-	// if the Schema is not a ZodObject, we use it directly
-	if (schema._def.typeName !== "ZodObject") {
-		return schema.nullable().parseAsync(value);
-	}
+	value: StandardSchemaV1.InferInput<Schema>,
+): Promise<StandardSchemaV1.InferOutput<Schema> | null> {
+	let result = await schema["~standard"].validate(value);
+	if (result.issues) throw new ValidationError(result.issues);
+	return result.value;
+}
 
-	// but if it's a ZodObject, we need to add support for flash keys, so we
-	// get the shape of the schema, create a flash key for each key, and then we
-	// extend the original schema with the flash schema and parse the value
-	let objectSchema = schema as unknown as z.AnyZodObject;
-	let flashSchema: z.ZodRawShape = {};
-	for (let key in objectSchema.shape) {
-		flashSchema[flash(key)] = objectSchema.shape[key].optional();
+export class ValidationError extends Error {
+	override name = "ValidationError";
+	constructor(public readonly issues: Readonly<StandardSchemaV1.Issue[]>) {
+		super("Validation error");
+		this.name = "ValidationError";
 	}
-	return objectSchema.extend(flashSchema).parseAsync(value);
+}
+
+function isObject(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null && !Array.isArray(value);
 }
