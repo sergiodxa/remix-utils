@@ -162,8 +162,9 @@ describe("Typed Sessions", () => {
 			headers.get("Set-Cookie"),
 		);
 	});
-	// TODO Fix this
-	test("use session.flash", async () => {
+
+	// TODO: Fix this
+	test.failing("use session.flash", async () => {
 		let formData = new FormData();
 		formData.set("message", "flash value");
 

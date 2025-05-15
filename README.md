@@ -46,7 +46,7 @@ This function is an object version of `Promise.all` which lets you pass an objec
 ```ts
 import { promiseHash } from "remix-utils/promise";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   return json(
     await promiseHash({
       user: getUser(request),
@@ -61,7 +61,7 @@ You can use nested `promiseHash` to get a nested object with resolved values.
 ```ts
 import { promiseHash } from "remix-utils/promise";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   return json(
     await promiseHash({
       user: getUser(request),
@@ -229,7 +229,7 @@ If you want to use it on every loader/action, you can do it like this:
 ```ts
 import { cors } from "remix-utils/cors";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   let data = await getData(request);
   let response = json<LoaderData>(data);
   return await cors(request, response);
@@ -241,7 +241,7 @@ You could also do the `json` and `cors` call in one line.
 ```ts
 import { cors } from "remix-utils/cors";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   let data = await getData(request);
   return await cors(request, json<LoaderData>(data));
 }
@@ -252,7 +252,7 @@ And because `cors` mutates the response, you can also call it and later return.
 ```ts
 import { cors } from "remix-utils/cors";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   let data = await getData(request);
   let response = json<LoaderData>(data);
   await cors(request, response); // this mutates the Response object
@@ -383,7 +383,7 @@ Then you can use `csrf` to generate a new token.
 ```ts
 import { csrf } from "~/utils/csrf.server";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   let token = csrf.generate();
 }
 ```
@@ -399,7 +399,7 @@ You will need to save this token in a cookie and also return it from the loader.
 ```ts
 import { csrf } from "~/utils/csrf.server";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   let [token, cookieHeader] = await csrf.commitToken(request);
   return json({ token }, { headers: { "set-cookie": cookieHeader } });
 }
@@ -474,7 +474,7 @@ import { CSRFError } from "remix-utils/csrf/server";
 import { redirectBack } from "remix-utils/redirect-back";
 import { csrf } from "~/utils/csrf.server";
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
   try {
     await csrf.validate(request);
   } catch (error) {
@@ -836,7 +836,7 @@ import { useLocales } from "remix-utils/locales/react";
 import { getClientLocales } from "remix-utils/locales/server";
 
 // in the root loader
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   let locales = getClientLocales(request);
   return json({ locales });
 }
@@ -923,7 +923,7 @@ This function receives a Request or Headers objects and will try to get the IP a
 ```ts
 import { getClientIPAddress } from "remix-utils/get-client-ip-address";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   // using the request
   let ipAddress = getClientIPAddress(request);
   // or using the headers
@@ -965,7 +965,7 @@ This function let you get the locales of the client (the user) who originated th
 ```ts
 import { getClientLocales } from "remix-utils/locales/server";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   // using the request
   let locales = getClientLocales(request);
   // or using the headers
@@ -979,7 +979,7 @@ The returned locales can be directly used on the Intl API when formatting dates,
 
 ```ts
 import { getClientLocales } from "remix-utils/locales/server";
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   let locales = getClientLocales(request);
   let nowDate = new Date();
   let formatter = new Intl.DateTimeFormat(locales, {
@@ -1002,7 +1002,7 @@ This will let you implement a short cache only for prefetch requests so you [avo
 ```ts
 import { isPrefetch } from "remix-utils/is-prefetch";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   let data = await getData(request);
   let headers = new Headers();
 
@@ -1025,7 +1025,7 @@ The response created with this function will have the `Location` header pointing
 ```ts
 import { redirectBack } from "remix-utils/redirect-back";
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
   throw redirectBack(request, { fallback: "/" });
 }
 ```
@@ -1039,7 +1039,7 @@ Helper function to create a Not Modified (304) response without a body and any h
 ```ts
 import { notModified } from "remix-utils/responses";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   return notModified();
 }
 ```
@@ -1053,7 +1053,7 @@ This is useful to create JS files based on data inside a Resource Route.
 ```ts
 import { javascript } from "remix-utils/responses";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   return javascript("console.log('Hello World')");
 }
 ```
@@ -1067,7 +1067,7 @@ This is useful to create CSS files based on data inside a Resource Route.
 ```ts
 import { stylesheet } from "remix-utils/responses";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   return stylesheet("body { color: red; }");
 }
 ```
@@ -1081,7 +1081,7 @@ This is useful to create PDF files based on data inside a Resource Route.
 ```ts
 import { pdf } from "remix-utils/responses";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   return pdf(await generatePDF(request.formData()));
 }
 ```
@@ -1095,7 +1095,7 @@ This is useful to create HTML files based on data inside a Resource Route.
 ```ts
 import { html } from "remix-utils/responses";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   return html("<h1>Hello World</h1>");
 }
 ```
@@ -1109,7 +1109,7 @@ This is useful to create XML files based on data inside a Resource Route.
 ```ts
 import { xml } from "remix-utils/responses";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   return xml("<?xml version='1.0'?><catalog></catalog>");
 }
 ```
@@ -1123,7 +1123,7 @@ This is useful to create TXT files based on data inside a Resource Route.
 ```ts
 import { txt } from "remix-utils/responses";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   return txt(`
     User-agent: *
     Allow: /
@@ -1134,14 +1134,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 ### Typed Cookies
 
 > [!NOTE]
-> This depends on `zod`, and React Router.
+> This depends on `@standard-schema/spec`, and React Router.
 
 Cookie objects in Remix allows any type, the typed cookies from Remix Utils lets you use Zod to parse the cookie values and ensure they conform to a schema.
 
 ```ts
 import { createCookie } from "react-router";
 import { createTypedCookie } from "remix-utils/typed-cookie";
-import { z } from "zod";
+import { z } from "zod"; //or another Standard Schema compatible library
 
 let cookie = createCookie("returnTo", cookieOptions);
 // I recommend you to always add `nullable` to your schema, if a cookie didn't
@@ -1228,6 +1228,9 @@ await typedCookie.serialize("some fake url to pass schema validation", {
 
 ### Typed Sessions
 
+> [!WARN]
+> This util is marked as deprecated and will be removed in the next major version. Use the generic accepted by React Router's `createSessionStorage` helpers instead.
+
 > [!NOTE]
 > This depends on `zod`, and React Router.
 
@@ -1311,7 +1314,7 @@ The `eventStream` function is used to create a new event stream response needed 
 import { eventStream } from "remix-utils/sse/server";
 import { interval } from "remix-utils/timers";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   return eventStream(request.signal, function setup(send) {
     async function run() {
       for await (let _ of interval(1000, { signal: request.signal })) {
@@ -1445,7 +1448,7 @@ It's common to need to handle more than one action in the same route, there are 
 ```tsx
 import { namedAction } from "remix-utils/named-action";
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
   return namedAction(await request.formData(), {
     async create() {
       // do create
@@ -1558,7 +1561,7 @@ To help you prevent this Remix Utils gives you a `safeRedirect` function which c
 ```ts
 import { safeRedirect } from "remix-utils/safe-redirect";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   let { searchParams } = new URL(request.url);
   let redirectTo = searchParams.get("redirectTo");
   return redirect(safeRedirect(redirectTo, "/home"));
@@ -1812,7 +1815,7 @@ If you're building a resource route and wants to send a different response based
 ```ts
 import { respondTo } from "remix-utils/respond-to";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   // do any work independent of the response type before respondTo
   let data = await getData(request);
 
@@ -1987,7 +1990,7 @@ If the value is `empty` it means it will be used by a `fetch` call, this means y
 ```ts
 import { fetchDest } from "remix-utils/sec-fetch";
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
   let data = await getDataSomehow();
 
   // if the request was made with JS, we can just return json
@@ -2004,7 +2007,7 @@ The `Sec-Fetch-Mode` header indicates how the request was initiated, e.g. if the
 ```ts
 import { fetchMode } from "remix-utils/sec-fetch";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   let mode = fetchMode(request);
   // do something based on the mode value
 }
@@ -2017,7 +2020,7 @@ The `Sec-Fetch-Site` header indicates where the request is being made, e.g. `sam
 ```ts
 import { fetchSite } from "remix-utils/sec-fetch";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   let site = fetchSite(request);
   // do something based on the site value
 }
@@ -2030,7 +2033,7 @@ The `Sec-Fetch-User` header indicates if the request was initiated by the user, 
 ```ts
 import { isUserInitiated } from "remix-utils/sec-fetch";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   let userInitiated = isUserInitiated(request);
   // do something based on the userInitiated value
 }
@@ -2046,7 +2049,7 @@ Using the `interval` combined with `eventStream` we could send a value to the cl
 import { eventStream } from "remix-utils/sse/server";
 import { interval } from "remix-utils/timers";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   return eventStream(request.signal, function setup(send) {
     async function run() {
       for await (let _ of interval(1000, { signal: request.signal })) {
@@ -2204,7 +2207,7 @@ And you can use the `getTimingCollector` function in your loaders and actions to
 ```ts
 import { getTimingCollector } from "~/middleware/server-timing.server";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   let collector = getTimingCollector();
   return await collector.measure("name", "optional description", async () => {
     return await getData();
@@ -2241,7 +2244,7 @@ And you can use the `getSingleton` function in your loaders to get the singleton
 ```ts
 import { getSingleton } from "~/middleware/singleton.server";
 
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ context }: Route.LoaderArgs) {
   let singleton = getSingleton(context);
   let result = await singleton.method();
   // ...
@@ -2322,7 +2325,7 @@ And you can use the `getBatcher` function in your loaders to get the batcher obj
 ```ts
 import { getBatcher } from "~/middleware/batcher.server";
 
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ context }: Route.LoaderArgs) {
   let batcher = getBatcher(context);
   let result = await batcher.batch("key", async () => {
     return await getData();
@@ -2350,7 +2353,7 @@ Then you can call it in any route loader who has access to the batcher.
 import { getBatcher } from "~/middleware/batcher.server";
 import { getDataBatched } from "~/data";
 
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ context }: Route.LoaderArgs) {
   let batcher = getBatcher(context);
   let result = await getDataBatched(batcher);
   // ...
@@ -2412,7 +2415,7 @@ Now instead of calling `getBatcher(context)` you can just call `getBatcher()` an
 ```ts
 import { getBatcher } from "~/middleware/batcher.server";
 
-export async function loader(_: LoaderFunctionArgs) {
+export async function loader(_: Route.LoaderArgs) {
   let batcher = getBatcher();
   let result = await batcher.batch("key", async () => {
     return await getData();
@@ -2445,7 +2448,7 @@ And you can use the `getRequestID` function in your loaders, actions, and other 
 ```ts
 import { getRequestID } from "~/middleware/request-id.server";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   let requestID = getRequestID();
   // ...
 }
@@ -2694,7 +2697,7 @@ If you want to get the JWT payload in your loaders, actions, or other middleware
 ```ts
 import { getJWTPayload } from "~/middleware/jwk-auth.server";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   let payload = getJWTPayload();
   // ...
 }
@@ -2787,7 +2790,7 @@ Use the `getHoneypotInputProps` function in your root loader to retrieve the hon
 ```ts
 import { getHoneypotInputProps } from "~/middleware/honeypot";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   let honeypotInputProps = await getHoneypotInputProps();
   return json({ honeypotInputProps });
 }
@@ -2829,7 +2832,7 @@ For requests with a body (e.g., POST, PUT, DELETE) and a content type of `applic
 In your action handlers, you can process the form data as usual, without worrying about spam checks—they are already handled by the middleware:
 
 ```ts
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
   // If this code runs, the honeypot check passed
   let formData = await request.formData();
   let name = formData.get("name");

@@ -5,7 +5,7 @@ import { getHeaders } from "./get-headers.js";
  * <Link prefetch="intent"> or <Link prefetch="render">.
  *
  * @example
- * export async function loader({ request }: LoaderFunctionArgs) {
+ * export async function loader({ request }: Route.LoaderArgs) {
  *   let data = await getData(request)
  *   let headers = new Headers()
  *   if (isPrefetch(request)) {

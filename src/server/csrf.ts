@@ -108,18 +108,18 @@ export class CSRF {
 	/**
 	 * Verify if a request and cookie has a valid CSRF token.
 	 * @example
-	 * export async function action({ request }: ActionFunctionArgs) {
+	 * export async function action({ request }: Route.ActionArgs) {
 	 *   await csrf.validate(request);
 	 *   // the request is authenticated and you can do anything here
 	 * }
 	 * @example
-	 * export async function action({ request }: ActionFunctionArgs) {
+	 * export async function action({ request }: Route.ActionArgs) {
 	 *   let formData = await request.formData()
 	 *   await csrf.validate(formData, request.headers);
 	 *   // the request is authenticated and you can do anything here
 	 * }
 	 * @example
-	 * export async function action({ request }: ActionFunctionArgs) {
+	 * export async function action({ request }: Route.ActionArgs) {
 	 *   let formData = await parseMultipartFormData(request);
 	 *   await csrf.validate(formData, request.headers);
 	 *   // the request is authenticated and you can do anything here

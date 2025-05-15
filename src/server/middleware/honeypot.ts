@@ -39,7 +39,7 @@
  * ```ts
  * import { getHoneypotInputProps } from "~/middleware/honeypot";
  *
- * export async function loader({ request }: LoaderFunctionArgs) {
+ * export async function loader({ request }: Route.LoaderArgs) {
  *   let honeypotInputProps = await getHoneypotInputProps();
  *   return json({ honeypotInputProps });
  * }
@@ -81,7 +81,7 @@
  * In your action handlers, you can process the form data as usual, without worrying about spam checks—they are already handled by the middleware:
  *
  * ```ts
- * export async function action({ request }: ActionFunctionArgs) {
+ * export async function action({ request }: Route.ActionArgs) {
  *   // If this code runs, the honeypot check passed
  *   let formData = await request.formData();
  *   let name = formData.get("name");

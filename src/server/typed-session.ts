@@ -74,6 +74,9 @@ export interface TypedSessionStorage<Schema extends z.ZodTypeAny> {
 	): Promise<string>;
 }
 
+/**
+ * @deprecated The createSessionStorage utils from React Router already supports typed sessions using a generic
+ */
 export function createTypedSessionStorage<Schema extends z.AnyZodObject>({
 	sessionStorage,
 	schema,

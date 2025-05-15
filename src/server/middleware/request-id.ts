@@ -21,7 +21,7 @@
  * ```ts
  * import { getRequestID } from "~/middleware/request-id.server";
  *
- * export async function loader({ request }: LoaderFunctionArgs) {
+ * export async function loader({ request }: Route.LoaderArgs) {
  *   let requestID = getRequestID();
  *   // ...
  * }

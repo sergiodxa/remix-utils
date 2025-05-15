@@ -22,7 +22,7 @@
  * ```ts
  * import { getTimingCollector } from "~/middleware/server-timing.server";
  *
- * export async function loader({ request }: LoaderFunctionArgs) {
+ * export async function loader({ request }: Route.LoaderArgs) {
  *   let collector = getTimingCollector();
  *   return await collector.measure("name", "optional description", async () => {
  *     return await getData();

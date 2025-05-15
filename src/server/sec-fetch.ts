@@ -37,7 +37,7 @@ export type FetchDest = z.output<typeof FetchDestSchema>;
  * @example
  * // Detect if the request came from a fetch call and return
  * // json, otherwise return a redirect
- * export async function action({ request }: ActionFunctionArgs) {
+ * export async function action({ request }: Route.ActionArgs) {
  *   let dest = fetchDest(request);
  *   if (dest === "empty") return json(data)
  *   return redirect(destination)
