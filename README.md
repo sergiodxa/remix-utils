@@ -1134,14 +1134,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 ### Typed Cookies
 
 > [!NOTE]
-> This depends on `zod`, and React Router.
+> This depends on `@standard-schema/spec`, and React Router.
 
 Cookie objects in Remix allows any type, the typed cookies from Remix Utils lets you use Zod to parse the cookie values and ensure they conform to a schema.
 
 ```ts
 import { createCookie } from "react-router";
 import { createTypedCookie } from "remix-utils/typed-cookie";
-import { z } from "zod";
+import { z } from "zod"; //or another Standard Schema compatible library
 
 let cookie = createCookie("returnTo", cookieOptions);
 // I recommend you to always add `nullable` to your schema, if a cookie didn't
@@ -1227,6 +1227,9 @@ await typedCookie.serialize("some fake url to pass schema validation", {
 ```
 
 ### Typed Sessions
+
+> [!WARN]
+> This util is marked as deprecated and will be removed in the next major version. Use the generic accepted by React Router's `createSessionStorage` helpers instead.
 
 > [!NOTE]
 > This depends on `zod`, and React Router.
