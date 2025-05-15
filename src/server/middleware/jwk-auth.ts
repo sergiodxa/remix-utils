@@ -93,7 +93,7 @@
  * ```ts
  * import { getJWTPayload } from "~/middleware/jwk-auth.server";
  *
- * export async function loader({ request }: LoaderFunctionArgs) {
+ * export async function loader({ request }: Route.LoaderArgs) {
  *   let payload = getJWTPayload();
  *   // ...
  * }

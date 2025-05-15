@@ -24,7 +24,7 @@
  * ```ts
  * import { getSingleton } from "~/middleware/singleton.server";
  *
- * export async function loader({ context }: LoaderFunctionArgs) {
+ * export async function loader({ context }: Route.LoaderArgs) {
  *   let singleton = getSingleton(context);
  *   let result = await singleton.method();
  *   // ...

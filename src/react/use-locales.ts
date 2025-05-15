@@ -10,7 +10,7 @@ import type { Locales } from "../server/get-client-locales.js";
  *
  * @example
  * // in the root loader
- * export async function loader({ request }: LoaderFunctionArgs) {
+ * export async function loader({ request }: Route.LoaderArgs) {
  *   let locales = getClientLocales(request);
  *   return json({ locales });
  * }

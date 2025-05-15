@@ -52,7 +52,7 @@
  * ```ts
  * import { getBatcher } from "~/middleware/batcher.server";
  *
- * export async function loader(_: LoaderFunctionArgs) {
+ * export async function loader(_: Route.LoaderArgs) {
  *   let batcher = getBatcher();
  *   let result = await batcher.batch("key", async () => {
  *     return await getData();
