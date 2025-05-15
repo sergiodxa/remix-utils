@@ -1312,17 +1312,14 @@ The `eventStream` function is used to create a new event stream response needed 
 ```ts
 // app/routes/sse.time.ts
 import { eventStream } from "remix-utils/sse/server";
-import { interval } from "remix-utils/timers";
 
 export async function loader({ request }: Route.LoaderArgs) {
   return eventStream(request.signal, function setup(send) {
-    async function run() {
-      for await (let _ of interval(1000, { signal: request.signal })) {
-        send({ event: "time", data: new Date().toISOString() });
-      }
-    }
+    let intervalId = setInterval(() => {
+      send({ event: "time", data: new Date().toISOString() });
+    }, 1000);
 
-    run();
+    return () => void clearInterval(intervalId); // Cleanup function
   });
 }
 ```
