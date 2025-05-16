@@ -60,6 +60,10 @@ export type ScriptDescriptor = {
 	 * Optional element ID. Use only if the script element needs to be explicitly referenced later.
 	 */
 	id?: string;
+	/**
+	 * Optional data-* attributes for defining additional data on the script tag.
+	 */
+	[key: `data-${string}`]: string | undefined;
 };
 
 export type ExternalScriptsFunction<Loader = unknown> = (
@@ -173,9 +177,22 @@ export function ExternalScript({
 	noModule,
 	nonce,
 	id,
+	...unfilteredDataAttrs
 }: ScriptDescriptor) {
 	let isHydrated = useHydrated();
 	let startsHydrated = React.useRef(isHydrated);
+	const dataAttributes = Object.fromEntries(
+		Object.entries(unfilteredDataAttrs).filter(
+			([key, _]) => key.indexOf("data-") === 0,
+		),
+	);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: for small objects using JSON.stringify shouldn't impact performance. We also can't explicitly declare each possible global attribute especially data-* attributes.
+	const memoizedDataAttrs = React.useMemo(
+		() => ({
+			...dataAttributes,
+		}),
+		[JSON.stringify(dataAttributes)],
+	);
 
 	React.useEffect(() => {
 		if (!startsHydrated.current && isHydrated) return;
@@ -193,6 +210,7 @@ export function ExternalScript({
 			noModule,
 			nonce,
 			id,
+			...memoizedDataAttrs,
 		};
 
 		for (let [key, value] of Object.entries(attributes)) {
@@ -214,6 +232,7 @@ export function ExternalScript({
 		src,
 		type,
 		id,
+		memoizedDataAttrs,
 	]);
 
 	if (startsHydrated.current && isHydrated) return null;
@@ -244,6 +263,7 @@ export function ExternalScript({
 				crossOrigin={crossOrigin}
 				integrity={integrity}
 				referrerPolicy={referrerPolicy}
+				{...dataAttributes}
 			/>
 		</>
 	);
