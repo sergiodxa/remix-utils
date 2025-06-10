@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 import { getHeaders } from "./get-headers.js";
 
 export const FetchDestSchema = z.enum([

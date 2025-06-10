@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { createCookie } from "react-router";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { rollingCookie } from "./rolling-cookie";
 import { ValidationError, createTypedCookie } from "./typed-cookie";
 

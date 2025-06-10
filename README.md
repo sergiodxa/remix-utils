@@ -1141,13 +1141,13 @@ Cookie objects in Remix allows any type, the typed cookies from Remix Utils lets
 ```ts
 import { createCookie } from "react-router";
 import { createTypedCookie } from "remix-utils/typed-cookie";
-import { z } from "zod"; //or another Standard Schema compatible library
+import { z } from "zod/v4"; //or another Standard Schema compatible library
 
 let cookie = createCookie("returnTo", cookieOptions);
 // I recommend you to always add `nullable` to your schema, if a cookie didn't
 // come with the request Cookie header Remix will return null, and it can be
 // useful to remove it later when clearing the cookie
-let schema = z.string().url().nullable();
+let schema = z.url().nullable();
 
 // pass the cookie and the schema
 let typedCookie = createTypedCookie({ cookie, schema });
@@ -1217,7 +1217,7 @@ If you didn't add `.nullable()` to your schema, you will need to provide a mock 
 
 ```ts
 let cookie = createCookie("returnTo", cookieOptions);
-let schema = z.string().url().nullable();
+let schema = z.url().nullable();
 
 let typedCookie = createTypedCookie({ cookie, schema });
 
@@ -1239,7 +1239,7 @@ Session objects in Remix allows any type, the typed sessions from Remix Utils le
 ```ts
 import { createCookieSessionStorage } from "react-router";
 import { createTypedSessionStorage } from "remix-utils/typed-session";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 let schema = z.object({
   token: z.string().optional(),

@@ -7,7 +7,7 @@ import {
 	data,
 	isSession,
 } from "react-router";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { createTypedCookie } from "./typed-cookie";
 import {
 	TypedSessionStorage,
