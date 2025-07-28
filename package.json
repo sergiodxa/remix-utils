@@ -325,7 +325,7 @@
 		"typedoc": "^0.28.4",
 		"typedoc-plugin-mdn-links": "^5.0.1",
 		"typescript": "^5.8.3",
-		"zod": "^3.24.4"
+		"zod": "^4.0.10"
 	},
 	"dependencies": {
 		"type-fest": "^4.41.0"
