@@ -82,6 +82,32 @@
  *   }
  * );
  * ```
+ *
+ * Optionally, you can also pass a getter function to
+ * `unstable_createSessionMiddleware` to dynamically create the session storage
+ * based on the request and context.
+ *
+ * ```ts
+ * import { unstable_createSessionMiddleware } from "remix-utils/middleware/session";
+ * import { createCookieSessionStorage } from "react-router";
+ *
+ * export const [sessionMiddleware, getSession] =
+ *  unstable_createSessionMiddleware((request, context) => {
+ *     let url = new URL(request.url);
+ *     let domain = url.hostname === "localhost" ? undefined : url.hostname;
+ *    return createCookieSessionStorage({
+ *     cookie: createCookie("session", { domain })
+ *    });
+ * });
+ * ```
+ *
+ * This allows you to create a session storage that is specific to the request
+ * and context, for example, to set a different cookie domain based on the
+ * request hostname.
+ *
+ * This is useful if you have a multi-tenant application where each tenant
+ * has its own domain and you want to use a different session cookie for each
+ * tenant.
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Session
  */
@@ -90,6 +116,7 @@ import type {
 	SessionData,
 	SessionStorage,
 	unstable_MiddlewareFunction,
+	unstable_RouterContextProvider,
 } from "react-router";
 
 import { unstable_createContext } from "react-router";
@@ -116,7 +143,7 @@ import type { unstable_MiddlewareGetter } from "./utils.js";
  * @returns The session middleware and a function to get the session from the context
  *
  * @example
- * // app/middlewares/session.ts
+ * // app/middleware/session.ts
  * import { sessionStorage } from "~/session";
  * import { unstable_createSessionMiddleware } from "remix-utils";
  *
@@ -124,32 +151,51 @@ import type { unstable_MiddlewareGetter } from "./utils.js";
  *   unstable_createSessionMiddleware(sessionStorage);
  *
  * // app/root.tsx
- * import { sessionMiddleware } from "~/middlewares/session";
+ * import { sessionMiddleware } from "~/middleware/session";
  * export const unstable_middleware = [sessionMiddleware];
  *
  * // app/routes/_index.tsx
- * import { getSession } from "~/middlewares/session";
+ * import { getSession } from "~/middleware/session";
  *
  * export async function loader({ context }: Route.LoaderArgs) {
  *   let session = getSession(context);
  *   session.set("key", "value"); // This will be commited automatically
  *   return { data: session.get("data") };
  * }
+ *
+ * @example
+ * // app/middleware/session.ts
+ * import { createCookieSessionStorage } from "react-router";
+ * import { unstable_createSessionMiddleware } from "remix-utils/middleware/session";
+ *
+ * export const [sessionMiddleware, getSession] =
+ *   unstable_createSessionMiddleware((request, context) => {
+ *   let url = new URL(request.url);
+ *   let domain = url.hostname === "localhost" ? undefined : url.hostname;
+ *   return createCookieSessionStorage({
+ *     cookie: createCookie("session", { domain })
+ *   })
+ * });
  */
 export function unstable_createSessionMiddleware<
 	Data = SessionData,
 	FlashData = Data,
 >(
-	sessionStorage: SessionStorage<Data, FlashData>,
+	sessionStorage:
+		| SessionStorage<Data, FlashData>
+		| unstable_createSessionMiddleware.SessionStorageGetter<Data, FlashData>,
 	shouldCommit: unstable_createSessionMiddleware.ShouldCommitFunction<Data> = defaultShouldCommit,
 ): unstable_createSessionMiddleware.ReturnType<Data, FlashData> {
 	let sessionContext = unstable_createContext<Session<Data, FlashData>>();
 
 	return [
 		async function middleware({ request, context }, next) {
-			let session = await sessionStorage.getSession(
-				request.headers.get("Cookie"),
-			);
+			let storage =
+				typeof sessionStorage === "function"
+					? sessionStorage(request, context)
+					: sessionStorage;
+
+			let session = await storage.getSession(request.headers.get("Cookie"));
 
 			let initialData = structuredClone(session.data);
 
@@ -160,12 +206,13 @@ export function unstable_createSessionMiddleware<
 			if (shouldCommit(initialData, structuredClone(session.data))) {
 				response.headers.append(
 					"Set-Cookie",
-					await sessionStorage.commitSession(session),
+					await storage.commitSession(session),
 				);
 			}
 
 			return response;
 		},
+
 		function getSession(context) {
 			return context.get(sessionContext);
 		},
@@ -173,6 +220,25 @@ export function unstable_createSessionMiddleware<
 }
 
 export namespace unstable_createSessionMiddleware {
+	/**
+	 * A function that returns a session storage object for the given request and
+	 * context.
+	 * @param request The request object
+	 * @param context The router context
+	 * @returns A session storage object
+	 */
+	export type SessionStorageGetter<Data, FlashData> = (
+		request: Request,
+		context: unstable_RouterContextProvider,
+	) => SessionStorage<Data, FlashData>;
+
+	/**
+	 * A function that compares the previous and next session data to determine
+	 * if it changed and needs to be committed.
+	 * @param prev The previous session data
+	 * @param next The next session data
+	 * @returns A boolean indicating if the session should be committed
+	 */
 	export type ShouldCommitFunction<Data> = (
 		prev: Partial<Data>,
 		next: Partial<Data>,
