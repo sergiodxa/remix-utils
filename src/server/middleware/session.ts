@@ -140,13 +140,20 @@ export function unstable_createSessionMiddleware<
 	Data = SessionData,
 	FlashData = Data,
 >(
-	sessionStorage: SessionStorage<Data, FlashData>,
+	sessionStorageGetter:
+		| SessionStorage<Data, FlashData>
+		| ((request: Request) => SessionStorage<Data, FlashData>),
 	shouldCommit: unstable_createSessionMiddleware.ShouldCommitFunction<Data> = defaultShouldCommit,
 ): unstable_createSessionMiddleware.ReturnType<Data, FlashData> {
 	let sessionContext = unstable_createContext<Session<Data, FlashData>>();
 
 	return [
 		async function middleware({ request, context }, next) {
+			let sessionStorage =
+				typeof sessionStorageGetter === "function"
+					? sessionStorageGetter(request)
+					: sessionStorageGetter;
+
 			let session = await sessionStorage.getSession(
 				request.headers.get("Cookie"),
 			);
