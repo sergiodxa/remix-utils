@@ -5,7 +5,7 @@ import {
 	type SessionStorage,
 	isSession,
 } from "react-router";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 export interface TypedSession<Schema extends z.ZodTypeAny> {
 	/**
@@ -77,7 +77,7 @@ export interface TypedSessionStorage<Schema extends z.ZodTypeAny> {
 /**
  * @deprecated The createSessionStorage utils from React Router already supports typed sessions using a generic
  */
-export function createTypedSessionStorage<Schema extends z.AnyZodObject>({
+export function createTypedSessionStorage<Schema extends z.ZodObject<any>>({
 	sessionStorage,
 	schema,
 }: {
@@ -102,7 +102,7 @@ export function createTypedSessionStorage<Schema extends z.AnyZodObject>({
 	};
 }
 
-async function createTypedSession<Schema extends z.AnyZodObject>({
+async function createTypedSession<Schema extends z.ZodObject<any>>({
 	session,
 	schema,
 }: {
@@ -111,16 +111,16 @@ async function createTypedSession<Schema extends z.AnyZodObject>({
 }): Promise<TypedSession<Schema>> {
 	// get a raw shape version of the schema but converting all the keys to their
 	// flash versions.
-	let flashSchema: z.ZodRawShape = {};
+	let flashSchemaShape: Record<string, z.ZodTypeAny> = {};
 	for (let key in schema.shape) {
-		flashSchema[flash(key)] = schema.shape[key].optional();
+		flashSchemaShape[flash(key)] = (schema.shape[key] as z.ZodTypeAny).optional();
 	}
 
 	// parse session.data to add default values and remove invalid ones
 	// we use strict mode here so we can throw an error if the session data
 	// contains any invalid key, which is a sign that the session data is
 	// corrupted.
-	let data = await schema.extend(flashSchema).strict().parseAsync(session.data);
+	let data = await schema.extend(flashSchemaShape).strict().parseAsync(session.data) as z.output<Schema>;
 
 	return {
 		get isTyped() {
@@ -138,27 +138,27 @@ async function createTypedSession<Schema extends z.AnyZodObject>({
 		},
 		get(name) {
 			let key = String(safeKey(schema, name));
-			if (key in data) return data[key];
+			if (key in data) return (data as any)[key];
 			let flashKey = flash(key);
 			if (flashKey in data) {
-				let value = data[flashKey];
-				delete data[flashKey];
+				let value = (data as any)[flashKey];
+				delete (data as any)[flashKey];
 				return value;
 			}
 			return;
 		},
 		set(name, value) {
 			let key = String(safeKey(schema, name));
-			data[key] = value;
+			(data as any)[key] = value;
 		},
 		flash(name, value) {
 			let key = String(safeKey(schema, name));
 			let flashKey = flash(key);
-			data[flashKey] = value;
+			(data as any)[flashKey] = value;
 		},
 		unset(name) {
 			let key = String(safeKey(schema, name));
-			delete data[key];
+			delete (data as any)[key];
 		},
 	};
 }
@@ -168,7 +168,7 @@ async function createTypedSession<Schema extends z.AnyZodObject>({
  *
  * @see https://github.com/sergiodxa/remix-utils#typed-session
  */
-export function isTypedSession<Schema extends z.AnyZodObject>(
+export function isTypedSession<Schema extends z.ZodObject<any>>(
 	value: unknown,
 ): value is TypedSession<Schema> {
 	return (
@@ -182,7 +182,7 @@ function flash<Key extends string>(name: Key): `__flash_${Key}__` {
 }
 
 // checks that the key is a valid key of the schema
-function safeKey<Schema extends z.AnyZodObject>(
+function safeKey<Schema extends z.ZodObject<any>>(
 	schema: Schema,
 	key: keyof z.infer<Schema>,
 ) {
