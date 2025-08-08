@@ -6,9 +6,7 @@
 		"node": ">=20.0.0"
 	},
 	"type": "module",
-	"funding": [
-		"https://github.com/sponsors/sergiodxa"
-	],
+	"funding": ["https://github.com/sponsors/sergiodxa"],
 	"exports": {
 		"./package.json": "./package.json",
 		"./middleware/basic-auth": {
@@ -322,7 +320,7 @@
 		"msw": "^2.8.2",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
-		"react-router": "^7.6.0",
+		"react-router": "^7.8.0",
 		"ts-node": "^10.9.1",
 		"typedoc": "^0.28.4",
 		"typedoc-plugin-mdn-links": "^5.0.1",
@@ -332,9 +330,5 @@
 	"dependencies": {
 		"type-fest": "^4.41.0"
 	},
-	"files": [
-		"build",
-		"package.json",
-		"README.md"
-	]
+	"files": ["build", "package.json", "README.md"]
 }

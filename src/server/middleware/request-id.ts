@@ -83,7 +83,7 @@ export function unstable_createRequestIDMiddleware({
 			return next();
 		},
 
-		function getRequestID(context: unstable_RouterContextProvider) {
+		function getRequestID(context: Readonly<unstable_RouterContextProvider>) {
 			return context.get(requestIdContext);
 		},
 	];

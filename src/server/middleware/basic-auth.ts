@@ -207,7 +207,7 @@ export function unstable_createBasicAuthMiddleware(
 
 	async function getInvalidUserMessage(args: {
 		request: Request;
-		context: unstable_RouterContextProvider;
+		context: Readonly<unstable_RouterContextProvider>;
 	}): Promise<string | object> {
 		let invalidUserMessage = options.invalidUserMessage;
 		if (invalidUserMessage === undefined) return "Unauthorized";
@@ -233,7 +233,7 @@ export function unstable_createBasicAuthMiddleware(
 
 	async function unauthorized(
 		request: Request,
-		context: unstable_RouterContextProvider,
+		context: Readonly<unstable_RouterContextProvider>,
 	) {
 		let message = await getInvalidUserMessage({ request, context });
 		return Response.json(message, {
@@ -247,7 +247,7 @@ export function unstable_createBasicAuthMiddleware(
 export namespace unstable_createBasicAuthMiddleware {
 	export type Args = {
 		request: Request;
-		context: unstable_RouterContextProvider;
+		context: Readonly<unstable_RouterContextProvider>;
 	};
 
 	export type MessageFunction = (
