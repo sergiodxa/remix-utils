@@ -70,7 +70,7 @@ import type {
 } from "react-router";
 
 const storage = new AsyncLocalStorage<{
-	context: unstable_RouterContextProvider;
+	context: Readonly<unstable_RouterContextProvider>;
 	request: Request;
 }>();
 
@@ -137,7 +137,7 @@ export function unstable_createContextStorageMiddleware(): unstable_createContex
 export namespace unstable_createContextStorageMiddleware {
 	export type ReturnType = [
 		unstable_MiddlewareFunction<Response>,
-		() => unstable_RouterContextProvider,
+		() => Readonly<unstable_RouterContextProvider>,
 		() => Request,
 	];
 }

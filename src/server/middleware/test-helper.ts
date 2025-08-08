@@ -17,8 +17,8 @@ export async function runMiddleware<T = Response>(
 	}: {
 		request?: Request;
 		params?: Params;
-		context?: unstable_RouterContextProvider;
-		next?: () => T | Promise<T>;
+		context?: Readonly<unstable_RouterContextProvider>;
+		next?: () => Promise<T>;
 	} = {},
 ) {
 	return await middleware({ request, params, context }, next);

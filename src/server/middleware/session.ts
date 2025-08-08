@@ -229,7 +229,7 @@ export namespace unstable_createSessionMiddleware {
 	 */
 	export type SessionStorageGetter<Data, FlashData> = (
 		request: Request,
-		context: unstable_RouterContextProvider,
+		context: Readonly<unstable_RouterContextProvider>,
 	) => SessionStorage<Data, FlashData>;
 
 	/**

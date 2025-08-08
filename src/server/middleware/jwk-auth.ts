@@ -215,7 +215,7 @@ export function unstable_createJWKAuthMiddleware({
 
 	async function getInvalidUserMessage(args: {
 		request: Request;
-		context: unstable_RouterContextProvider;
+		context: Readonly<unstable_RouterContextProvider>;
 	}): Promise<string | object> {
 		if (invalidUserMessage === undefined) return "Unauthorized";
 		if (typeof invalidUserMessage === "string") return invalidUserMessage;
@@ -227,7 +227,7 @@ export function unstable_createJWKAuthMiddleware({
 
 	async function unauthorized(
 		request: Request,
-		context: unstable_RouterContextProvider,
+		context: Readonly<unstable_RouterContextProvider>,
 	) {
 		let message = await getInvalidUserMessage({ request, context });
 		return Response.json(message, {
@@ -241,7 +241,7 @@ export function unstable_createJWKAuthMiddleware({
 export namespace unstable_createBearerAuthMiddleware {
 	export type Args = {
 		request: Request;
-		context: unstable_RouterContextProvider;
+		context: Readonly<unstable_RouterContextProvider>;
 	};
 
 	export type MessageFunction = (
