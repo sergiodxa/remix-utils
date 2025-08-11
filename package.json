@@ -302,7 +302,7 @@
 	},
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.18.1",
-		"@biomejs/biome": "^1.7.2",
+		"@biomejs/biome": "^2.1.4",
 		"@edgefirst-dev/batcher": "^1.0.1",
 		"@edgefirst-dev/jwt": "^1.2.0",
 		"@edgefirst-dev/server-timing": "^0.0.1",
