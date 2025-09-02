@@ -37,7 +37,7 @@ describe(unstable_createSessionMiddleware, () => {
 
 		let response = await runMiddleware(middleware, {
 			context,
-			next() {
+			async next() {
 				let session = getSession(context);
 				session.set("key", "value");
 				return new Response(null);
@@ -57,7 +57,7 @@ describe(unstable_createSessionMiddleware, () => {
 
 		let response = await runMiddleware(middleware, {
 			context,
-			next() {
+			async next() {
 				let session = getSession(context);
 				session.set("key", "value");
 				return new Response(null);
@@ -77,7 +77,7 @@ describe(unstable_createSessionMiddleware, () => {
 
 		let response = await runMiddleware(middleware, {
 			context,
-			next() {
+			async next() {
 				let session = getSession(context);
 				session.set("key", "value");
 				return new Response(null);
@@ -99,7 +99,7 @@ describe(unstable_createSessionMiddleware, () => {
 
 		let response = await runMiddleware(middleware, {
 			context,
-			next() {
+			async next() {
 				let session = getSession(context);
 				session.set("key", "value");
 				return redirect("/test");
@@ -121,7 +121,7 @@ describe(unstable_createSessionMiddleware, () => {
 
 		let response = await runMiddleware(middleware, {
 			context,
-			next() {
+			async next() {
 				let session = getSession(context);
 				session.set("key", "value");
 				return redirectDocument("/test");

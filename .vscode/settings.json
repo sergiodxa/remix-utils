@@ -21,8 +21,7 @@
 		"editor.wordWrap": "on"
 	},
 	"editor.codeActionsOnSave": {
-		"source.organizeImports.biome": "explicit",
-		"quickfix.biome": "explicit"
+		"source.fixAll.biome": "explicit"
 	},
 	"editor.formatOnPaste": true,
 	"editor.formatOnSave": true,

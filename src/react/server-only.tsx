@@ -25,5 +25,5 @@ type Props = {
  * ```
  */
 export function ServerOnly({ children, fallback = null }: Props) {
-	return useHydrated() ? <>{fallback}</> : <>{children()}</>;
+	return useHydrated() ? fallback : children();
 }

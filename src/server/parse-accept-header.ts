@@ -12,7 +12,7 @@ export function parseAcceptHeader(header: string) {
 		.map((value) => {
 			let [mediaType, ...params] = value.split(";");
 
-			if (!mediaType) return;
+			if (!mediaType) return void 0;
 
 			let [type, subtype] = mediaType.split("/").map((part) => part.trim());
 

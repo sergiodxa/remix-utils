@@ -1,4 +1,4 @@
-import { type UNSAFE_DataWithResponseInit, data } from "react-router";
+import { data, type UNSAFE_DataWithResponseInit } from "react-router";
 
 /**
  * Create a new Response with a redirect set to the URL the user was before.

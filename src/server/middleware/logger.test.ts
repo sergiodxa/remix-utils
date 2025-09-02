@@ -29,7 +29,7 @@ describe(unstable_createLoggerMiddleware, () => {
 		let [middleware] = unstable_createLoggerMiddleware({ logger });
 
 		await runMiddleware(middleware, {
-			next() {
+			async next() {
 				return new Response(null, {
 					status: 301,
 					headers: { location: "/new" },
@@ -44,7 +44,7 @@ describe(unstable_createLoggerMiddleware, () => {
 		let [middleware] = unstable_createLoggerMiddleware({ logger });
 
 		await runMiddleware(middleware, {
-			next() {
+			async next() {
 				return new Response("Not Found", { status: 404 });
 			},
 		});
@@ -56,7 +56,7 @@ describe(unstable_createLoggerMiddleware, () => {
 		let [middleware] = unstable_createLoggerMiddleware({ logger });
 
 		await runMiddleware(middleware, {
-			next() {
+			async next() {
 				return new Response("Internal Server Error", { status: 500 });
 			},
 		});
@@ -67,7 +67,7 @@ describe(unstable_createLoggerMiddleware, () => {
 	test("the logged message can be customized", async () => {
 		let [middleware] = unstable_createLoggerMiddleware({
 			logger,
-			formatMessage(request, response, responseTime) {
+			formatMessage(request, _response, _responseTime) {
 				return `${request.method}`;
 			},
 		});

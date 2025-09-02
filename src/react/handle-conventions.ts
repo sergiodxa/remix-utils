@@ -1,5 +1,4 @@
-import type { RouterState } from "react-router";
-import type { Location, Params, useMatches } from "react-router";
+import type { Location, Params, RouterState, useMatches } from "react-router";
 
 export type HandleConventionArguments<Data = unknown> = {
 	id: string;

@@ -1,11 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.7.1/schema.json",
-	"organizeImports": {
-		"enabled": true
-	},
-	"files": {
-		"ignore": ["src/server/json-hash.ts"]
-	},
+	"$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
 	"linter": {
 		"enabled": true,
 		"rules": {
@@ -24,7 +18,6 @@
 				"useImportType": "off"
 			},
 			"suspicious": {
-				"noConsoleLog": "warn",
 				"noEmptyBlockStatements": "warn",
 				"noSkippedTests": "error"
 			},
@@ -45,11 +38,5 @@
 		"clientKind": "git",
 		"defaultBranch": "main",
 		"useIgnoreFile": true
-	},
-	"overrides": [
-		{
-			"include": ["**/*.md"],
-			"formatter": { "indentStyle": "tab" }
-		}
-	]
+	}
 }
