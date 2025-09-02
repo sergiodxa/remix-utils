@@ -11,7 +11,7 @@ describe(unstable_createContextStorageMiddleware, () => {
 
 		await runMiddleware(middleware, {
 			context,
-			next() {
+			async next() {
 				expect(getContext()).toBe(context);
 				return Response.json(null);
 			},
@@ -25,7 +25,7 @@ describe(unstable_createContextStorageMiddleware, () => {
 
 		await runMiddleware(middleware, {
 			request,
-			next() {
+			async next() {
 				expect(getRequest()).toBe(request);
 				return Response.json(null);
 			},

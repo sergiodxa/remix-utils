@@ -119,11 +119,11 @@ export function unstable_createSingletonMiddleware<T>(
 
 export namespace unstable_createSingletonMiddleware {
 	export interface Options<T> {
-		instantiator(request: Request, context: unstable_RouterContextProvider): T;
+		instantiator(request: Request, context: Readonly<unstable_RouterContextProvider>): T;
 	}
 
 	export type ReturnType<T> = [
-		unstable_MiddlewareFunction<unstable_RouterContextProvider>,
+		unstable_MiddlewareFunction<Readonly<unstable_RouterContextProvider>>,
 		unstable_MiddlewareGetter<T>,
 	];
 }

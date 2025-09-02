@@ -16,7 +16,7 @@ describe(unstable_createCorsMiddleware, () => {
 
 		let response = await runMiddleware(middleware, {
 			request,
-			next() {
+			async next() {
 				return Response.json(null);
 			},
 		});
@@ -44,7 +44,7 @@ describe(unstable_createCorsMiddleware, () => {
 
 		let response = await runMiddleware(middleware, {
 			request,
-			next: () => Response.json(null),
+			next: async () => Response.json(null),
 		});
 
 		expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
