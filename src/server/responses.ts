@@ -78,7 +78,7 @@ export function stylesheet(
  * }
  */
 export function pdf(
-	content: Blob | Buffer | ArrayBuffer,
+	content: BodyInit | null | undefined,
 	init: number | ResponseInit = {},
 ): Response {
 	let responseInit = typeof init === "number" ? { status: init } : init;
@@ -202,7 +202,7 @@ export type ImageType =
  * }
  */
 export function image(
-	content: Buffer | ArrayBuffer | ReadableStream,
+	content: BodyInit | null | undefined,
 	{ type, ...init }: ResponseInit & { type: ImageType },
 ): Response {
 	let headers = new Headers(init.headers);
