@@ -6,8 +6,8 @@ type ResponseResult<LoaderData> = {
 			? Value
 			: ReturnValue
 		: LoaderData[Key] extends PromiseLike<infer Value>
-		? Value
-		: LoaderData[Key];
+			? Value
+			: LoaderData[Key];
 };
 
 export async function jsonHash<LoaderData extends Record<string, unknown>>(

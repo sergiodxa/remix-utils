@@ -130,9 +130,9 @@
 import { sha256 } from "@oslojs/crypto/sha2";
 import { decodeBase64 } from "@oslojs/encoding";
 import {
+	unstable_createContext,
 	type unstable_MiddlewareFunction,
 	type unstable_RouterContextProvider,
-	unstable_createContext,
 } from "react-router";
 import type { unstable_MiddlewareGetter } from "./utils.js";
 
@@ -304,7 +304,6 @@ async function timingSafeEqual(
 	b: string | object | boolean,
 	hashFunction?: unstable_createBasicAuthMiddleware.HashFunction,
 ): Promise<boolean> {
-	// biome-ignore lint/style/noParameterAssign: This is ok
 	if (!hashFunction) hashFunction = sha256;
 
 	let [sa, sb] = await Promise.all([

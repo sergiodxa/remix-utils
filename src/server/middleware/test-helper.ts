@@ -21,7 +21,7 @@ export async function runMiddleware<T = Response>(
 		next?: () => Promise<T>;
 	} = {},
 ) {
-	return await middleware({ request, params, context }, next) as T;
+	return (await middleware({ request, params, context }, next)) as T;
 }
 
 export async function catchResponse<T>(promise: Promise<T>) {

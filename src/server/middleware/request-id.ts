@@ -57,8 +57,8 @@
  */
 import type { unstable_MiddlewareFunction } from "react-router";
 import {
-	unstable_RouterContextProvider,
 	unstable_createContext,
+	unstable_RouterContextProvider,
 } from "react-router";
 import type { unstable_MiddlewareGetter } from "./utils.js";
 
@@ -75,7 +75,7 @@ export function unstable_createRequestIDMiddleware({
 			if (
 				!requestId ||
 				requestId.length > limitLength ||
-				/[^\w\-]/.test(requestId)
+				/[^\w-]/.test(requestId)
 			) {
 				requestId = generator();
 			}

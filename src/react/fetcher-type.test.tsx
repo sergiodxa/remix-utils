@@ -1,6 +1,5 @@
 import { describe, expect, test } from "bun:test";
 import { render, screen } from "@testing-library/react";
-import * as React from "react";
 import { createRoutesStub, useFetcher } from "react-router";
 
 import { getFetcherType, useFetcherType } from "./fetcher-type";

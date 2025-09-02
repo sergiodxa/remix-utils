@@ -67,7 +67,7 @@ describe(unstable_createLoggerMiddleware, () => {
 	test("the logged message can be customized", async () => {
 		let [middleware] = unstable_createLoggerMiddleware({
 			logger,
-			formatMessage(request, response, responseTime) {
+			formatMessage(request, _response, _responseTime) {
 				return `${request.method}`;
 			},
 		});
