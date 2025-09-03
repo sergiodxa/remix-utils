@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { cors } from "./cors";
+import { cors } from "./cors.js";
 
 function createRequest(headers: Headers = new Headers()) {
 	headers.set("Origin", "http://remix.utils");

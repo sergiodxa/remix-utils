@@ -1,5 +1,5 @@
 import { describe, expect, setSystemTime, test } from "bun:test";
-import { interval } from "./timers";
+import { interval } from "./timers.js";
 
 describe("Timers", () => {
 	describe(interval, () => {

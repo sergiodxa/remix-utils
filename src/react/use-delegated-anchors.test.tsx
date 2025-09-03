@@ -10,7 +10,7 @@ import {
 import { fireEvent, render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { createRoutesStub, Outlet } from "react-router";
-import { PrefetchPageAnchors } from "./use-delegated-anchors";
+import { PrefetchPageAnchors } from "./use-delegated-anchors.js";
 
 const navigate = mock();
 

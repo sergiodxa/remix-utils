@@ -19,14 +19,13 @@ Additional optional dependencies may be needed, all optional dependencies are:
 - `is-ip`
 - `intl-parse-accept-language`
 - `react`
-- `zod`
 
 The utils that require an extra optional dependency mention it in their documentation.
 
 If you want to install them all run:
 
 ```sh
-npm add @edgefirst-dev/batcher @edgefirst-dev/jwt @edgefirst-dev/server-timing @oslojs/crypto @oslojs/encoding is-ip intl-parse-accept-language zod
+npm add @edgefirst-dev/batcher @edgefirst-dev/jwt @edgefirst-dev/server-timing @oslojs/crypto @oslojs/encoding is-ip intl-parse-accept-language
 ```
 
 React and React Router packages should be already installed in your project.
@@ -51,7 +50,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     await promiseHash({
       user: getUser(request),
       posts: getPosts(request),
-    })
+    }),
   );
 }
 ```
@@ -72,7 +71,7 @@ export async function loader({ request }: Route.LoaderArgs) {
           likes: getLikes(request),
         }),
       }),
-    })
+    }),
   );
 }
 ```
@@ -104,7 +103,7 @@ try {
   let controller = new AbortController();
   let result = await timeout(
     fetch("https://example.com", { signal: controller.signal }),
-    { ms: 100, controller }
+    { ms: 100, controller },
   );
 } catch (error) {
   if (error instanceof TimeoutError) {
@@ -271,7 +270,7 @@ export default function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext
+  remixContext: EntryContext,
 ) {
   let callbackName = isbot(request.headers.get("user-agent"))
     ? "onAllReady"
@@ -293,7 +292,7 @@ export default function handleRequest(
             new Response(body, {
               headers: responseHeaders,
               status: didError ? 500 : responseStatusCode,
-            })
+            }),
           ).then((response) => {
             resolve(response);
           });
@@ -308,7 +307,7 @@ export default function handleRequest(
 
           console.error(error);
         },
-      }
+      },
     );
 
     setTimeout(abort, ABORT_DELAY);
@@ -317,7 +316,7 @@ export default function handleRequest(
 
 export let handleDataRequest: HandleDataRequestFunction = async (
   response,
-  { request }
+  { request },
 ) => {
   return await cors(request, response);
 };
@@ -461,7 +460,7 @@ export function useMarkAsRead() {
   return function submit(data) {
     fetcher.submit(
       { csrf, ...data },
-      { action: "/api/mark-as-read", method: "post" }
+      { action: "/api/mark-as-read", method: "post" },
     );
   };
 }
@@ -1136,7 +1135,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 > [!NOTE]
 > This depends on `@standard-schema/spec`, and React Router.
 
-Cookie objects in Remix allows any type, the typed cookies from Remix Utils lets you use Zod to parse the cookie values and ensure they conform to a schema.
+Cookie objects in Remix allows any type, the typed cookies from Remix Utils lets you use any Standard Schema compatible library to parse the cookie values and ensure they conform to a schema.
 
 ```ts
 import { createCookie } from "react-router";
@@ -1166,7 +1165,7 @@ You could also use typed cookies with any sessionStorage mechanism from Remix.
 
 ```ts
 let cookie = createCookie("session", cookieOptions);
-let schema = z.object({ token: z.string() }).nullable();
+let schema = z.object({ token: z.string().nullish() }).nullable();
 
 let sessionStorage = createCookieSessionStorage({
   cookie: createTypedCookie({ cookie, schema }),
@@ -1224,75 +1223,6 @@ let typedCookie = createTypedCookie({ cookie, schema });
 await typedCookie.serialize("some fake url to pass schema validation", {
   expires: new Date(Date.now() - 1),
 });
-```
-
-### Typed Sessions
-
-> [!WARN]
-> This util is marked as deprecated and will be removed in the next major version. Use the generic accepted by React Router's `createSessionStorage` helpers instead.
-
-> [!NOTE]
-> This depends on `zod`, and React Router.
-
-Session objects in Remix allows any type, the typed sessions from Remix Utils lets you use Zod to parse the session data and ensure they conform to a schema.
-
-```ts
-import { createCookieSessionStorage } from "react-router";
-import { createTypedSessionStorage } from "remix-utils/typed-session";
-import { z } from "zod";
-
-let schema = z.object({
-  token: z.string().optional(),
-  count: z.number().default(1),
-});
-
-// you can use a Remix's Cookie container or a Remix Utils' Typed Cookie container
-let sessionStorage = createCookieSessionStorage({ cookie });
-
-// pass the session storage and the schema
-let typedSessionStorage = createTypedSessionStorage({ sessionStorage, schema });
-```
-
-Now you can use typedSessionStorage as a drop-in replacement for your normal sessionStorage.
-
-```ts
-let session = typedSessionStorage.getSession(request.headers.get("Cookie"));
-
-session.get("token"); // this will be a string or undefined
-session.get("count"); // this will be a number
-session.get("random"); // this will make TS yell because it's not in the schema
-
-session.has("token"); // this will be a boolean
-session.has("count"); // this will be a boolean
-
-// this will make TS yell because it's not a string, if you ignore it it will
-// throw a ZodError
-session.set("token", 123);
-```
-
-Now Zod will ensure the data you try to save to the session is valid by not allowing you to get, set or unset data.
-
-> [!TIP]
-> Remember that you either need to mark fields as optional or set a default value in the schema, otherwise it will be impossible to call getSession to get a new session object.
-
-You can also use async refinements in your schemas because typed sesions uses parseAsync method from Zod.
-
-```ts
-let schema = z.object({
-  token: z
-    .string()
-    .optional()
-    .refine(async (token) => {
-      if (!token) return true; // handle optionallity
-      let user = await getUserByToken(token);
-      return user !== null;
-    }, "INVALID_TOKEN"),
-});
-
-let typedSessionStorage = createTypedSessionStorage({ sessionStorage, schema });
-
-// this will throw if the token stored in the session is not valid anymore
-typedSessionStorage.getSession(request.headers.get("Cookie"));
 ```
 
 ### Server-Sent Events
@@ -1389,7 +1319,7 @@ export default function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext
+  remixContext: EntryContext,
 ) {
   await rollingCookie(sessionCookie, request, responseHeaders);
 
@@ -1398,13 +1328,13 @@ export default function handleRequest(
         request,
         responseStatusCode,
         responseHeaders,
-        remixContext
+        remixContext,
       )
     : handleBrowserRequest(
         request,
         responseStatusCode,
         responseHeaders,
-        remixContext
+        remixContext,
       );
 }
 ```
@@ -1416,16 +1346,16 @@ import { rollingCookie } from "remix-utils/rolling-cookie";
 
 export let handleDataRequest: HandleDataRequestFunction = async (
   response: Response,
-  { request }
+  { request },
 ) => {
   let cookieValue = await sessionCookie.parse(
-    responseHeaders.get("set-cookie")
+    responseHeaders.get("set-cookie"),
   );
   if (!cookieValue) {
     cookieValue = await sessionCookie.parse(request.headers.get("cookie"));
     responseHeaders.append(
       "Set-Cookie",
-      await sessionCookie.serialize(cookieValue)
+      await sessionCookie.serialize(cookieValue),
     );
   }
 
@@ -1518,10 +1448,10 @@ export default function handleRequest(
   request: Request,
   statusCode: number,
   headers: Headers,
-  context: EntryContext
+  context: EntryContext,
 ) {
   let markup = renderToString(
-    <RemixServer context={context} url={request.url} />
+    <RemixServer context={context} url={request.url} />,
   );
   headers.set("Content-Type", "text/html");
 
@@ -1860,7 +1790,7 @@ Now, the `respondTo` function will check the `Accept` header and call the correc
 import { parseAcceptHeader } from "remix-utils/parse-accept-header";
 
 let parsed = parseAcceptHeader(
-  "text/html, application/xhtml+xml, application/xml;q=0.9, image/webp, image/*, */*;q=0.8"
+  "text/html, application/xhtml+xml, application/xml;q=0.9, image/webp, image/*, */*;q=0.8",
 );
 ```
 
@@ -2116,7 +2046,7 @@ By default the middleware will automaticaly commit the session at the end of the
 ```ts
 let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
   sessionStorage,
-  shouldCommit
+  shouldCommit,
 );
 ```
 
@@ -2129,7 +2059,7 @@ import { dequal } from "dequal";
 
 let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
   sessionStorage,
-  (previous, next) => !dequal(previous, next) // Only commit if session changed
+  (previous, next) => !dequal(previous, next), // Only commit if session changed
 );
 ```
 
@@ -2140,7 +2070,7 @@ let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
   sessionStorage,
   (previous, next) => {
     return current.user.id !== previous.user.id;
-  }
+  },
 );
 ```
 
@@ -2921,7 +2851,7 @@ import { unstable_createRollingCookieMiddleware } from "remix-utils/middleware/r
 import { cookie } from "~/cookies";
 
 export const [rollingCookieMiddleware] = unstable_createRollingCookieMiddleware(
-  { cookie }
+  { cookie },
 );
 ```
 

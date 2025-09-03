@@ -1,6 +1,6 @@
 import { describe, expect, mock, spyOn, test } from "bun:test";
-import { unstable_createLoggerMiddleware } from "./logger";
-import { runMiddleware } from "./test-helper";
+import { unstable_createLoggerMiddleware } from "./logger.js";
+import { runMiddleware } from "./test-helper.js";
 
 describe(unstable_createLoggerMiddleware, () => {
 	spyOn(performance, "now").mockImplementation(() => 0);

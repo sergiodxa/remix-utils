@@ -1,5 +1,4 @@
 import { describe, expect, test } from "bun:test";
-
 import {
 	createCookie,
 	createMemorySessionStorage,
@@ -8,8 +7,8 @@ import {
 	redirectDocument,
 	unstable_RouterContextProvider,
 } from "react-router";
-import { unstable_createSessionMiddleware } from "./session";
-import { runMiddleware } from "./test-helper";
+import { unstable_createSessionMiddleware } from "./session.js";
+import { runMiddleware } from "./test-helper.js";
 
 describe(unstable_createSessionMiddleware, () => {
 	let cookie = createCookie("session", { secrets: ["test"] });

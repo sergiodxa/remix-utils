@@ -1,8 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { render, screen } from "@testing-library/react";
 import { createRoutesStub, useFetcher } from "react-router";
-
-import { getFetcherType, useFetcherType } from "./fetcher-type";
+import { getFetcherType, useFetcherType } from "./fetcher-type.js";
 
 // biome-ignore lint/suspicious/noSkippedTests: Test pass with happy-dom but using it globally breaks other tests, so we skip it for now
 describe.skip(getFetcherType.name, () => {

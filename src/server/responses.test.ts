@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
 	html,
-	ImageType,
+	type ImageType,
 	image,
 	javascript,
 	notModified,
@@ -9,7 +9,7 @@ import {
 	stylesheet,
 	txt,
 	xml,
-} from "./responses";
+} from "./responses.js";
 
 describe("Responses", () => {
 	describe(notModified, () => {

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { promiseHash, timeout } from "./promise";
+import { promiseHash, timeout } from "./promise.js";
 
 describe(promiseHash, () => {
 	test("should await all promises in a hash and return them with the same name", async () => {

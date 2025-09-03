@@ -1,7 +1,7 @@
 import { describe, expect, mock, test } from "bun:test";
 import { redirect } from "react-router";
-import { unstable_createHoneypotMiddleware } from "./honeypot";
-import { runMiddleware } from "./test-helper";
+import { unstable_createHoneypotMiddleware } from "./honeypot.js";
+import { runMiddleware } from "./test-helper.js";
 
 describe(unstable_createHoneypotMiddleware, () => {
 	test("can get the Honeypot input props", async () => {

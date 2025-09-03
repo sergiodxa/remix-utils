@@ -9,7 +9,7 @@ import {
 	createTypedCookie,
 	isTypedCookie,
 	ValidationError,
-} from "./typed-cookie";
+} from "./typed-cookie.js";
 
 // TODO Fix this
 // install globals removal makes these crash
@@ -89,7 +89,10 @@ describe("Typed Cookie", () => {
 	test("can't store functions", async () => {
 		let typedCookie = createTypedCookie({
 			cookie,
-			schema: z.function().args(z.string()).returns(z.string()),
+			schema: z.function({
+				input: [z.string()],
+				output: z.string(),
+			}),
 		});
 
 		expect(

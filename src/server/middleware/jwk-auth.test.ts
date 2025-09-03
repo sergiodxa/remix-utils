@@ -4,8 +4,8 @@ import { MemoryFileStorage } from "@remix-run/file-storage/memory";
 import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/native";
 import { createCookie, unstable_RouterContextProvider } from "react-router";
-import { unstable_createJWKAuthMiddleware } from "./jwk-auth";
-import { catchResponse, runMiddleware } from "./test-helper";
+import { unstable_createJWKAuthMiddleware } from "./jwk-auth.js";
+import { catchResponse, runMiddleware } from "./test-helper.js";
 
 const storage = new MemoryFileStorage();
 const signingKeys = await JWK.signingKeys(storage);

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { isPrefetch } from "./is-prefetch";
+import { isPrefetch } from "./is-prefetch.js";
 
 describe(isPrefetch, () => {
 	test.each([

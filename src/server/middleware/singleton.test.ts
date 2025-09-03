@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { unstable_RouterContextProvider } from "react-router";
-import { unstable_createSingletonMiddleware } from "./singleton";
-import { runMiddleware } from "./test-helper";
+import { unstable_createSingletonMiddleware } from "./singleton.js";
+import { runMiddleware } from "./test-helper.js";
 
 describe(unstable_createSingletonMiddleware, () => {
 	test("creates an instance of a given class without arguments", async () => {

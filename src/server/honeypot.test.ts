@@ -1,7 +1,6 @@
 import { describe, expect, test } from "bun:test";
-
-import { encrypt } from "../common/crypto";
-import { Honeypot, SpamError } from "./honeypot";
+import { encrypt } from "../common/crypto.js";
+import { Honeypot, SpamError } from "./honeypot.js";
 
 // biome-ignore lint/suspicious/noExplicitAny: Test
 function invariant(condition: any, message: string): asserts condition {

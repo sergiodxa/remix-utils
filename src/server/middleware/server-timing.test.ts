@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { TimingCollector } from "@edgefirst-dev/server-timing";
 import { unstable_RouterContextProvider } from "react-router";
-import { unstable_createServerTimingMiddleware } from "./server-timing";
-import { runMiddleware } from "./test-helper";
+import { unstable_createServerTimingMiddleware } from "./server-timing.js";
+import { runMiddleware } from "./test-helper.js";
 
 describe(unstable_createServerTimingMiddleware, () => {
 	test("the middleware function sets a TimingCollector instance in the context and adds the server timing headers to the response", async () => {

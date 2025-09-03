@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { unstable_RouterContextProvider } from "react-router";
-import { unstable_createRequestIDMiddleware } from "./request-id";
-import { runMiddleware } from "./test-helper";
+import { unstable_createRequestIDMiddleware } from "./request-id.js";
+import { runMiddleware } from "./test-helper.js";
 
 describe(unstable_createRequestIDMiddleware, () => {
 	test("gets the request id from the X-Request-ID header", async () => {

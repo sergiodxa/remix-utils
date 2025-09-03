@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { unstable_createCorsMiddleware } from "./cors";
-import { runMiddleware } from "./test-helper";
+import { unstable_createCorsMiddleware } from "./cors.js";
+import { runMiddleware } from "./test-helper.js";
 
 describe(unstable_createCorsMiddleware, () => {
 	test("sets the CORS headers in the response", async () => {

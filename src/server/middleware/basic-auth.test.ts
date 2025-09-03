@@ -2,8 +2,8 @@ import { describe, expect, mock, test } from "bun:test";
 import { sha256 } from "@oslojs/crypto/sha2";
 import { encodeBase64 } from "@oslojs/encoding";
 import { unstable_RouterContextProvider } from "react-router";
-import { unstable_createBasicAuthMiddleware } from "./basic-auth";
-import { catchResponse, runMiddleware } from "./test-helper";
+import { unstable_createBasicAuthMiddleware } from "./basic-auth.js";
+import { catchResponse, runMiddleware } from "./test-helper.js";
 
 describe(unstable_createBasicAuthMiddleware, () => {
 	const username = "test";

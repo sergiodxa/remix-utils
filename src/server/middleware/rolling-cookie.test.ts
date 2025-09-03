@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { createCookie } from "react-router";
-import { unstable_createRollingCookieMiddleware } from "./rolling-cookie";
-import { runMiddleware } from "./test-helper";
+import { unstable_createRollingCookieMiddleware } from "./rolling-cookie.js";
+import { runMiddleware } from "./test-helper.js";
 
 const cookie = createCookie("name", { maxAge: 60 * 60 * 24 });
 
