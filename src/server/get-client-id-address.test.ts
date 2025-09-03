@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { getClientIPAddress } from "./get-client-ip-address";
+import { getClientIPAddress } from "./get-client-ip-address.js";
 
 const VALID_IP = "192.168.0.1";
 const INVALID_IP = "abc.def.ghi.jkl";

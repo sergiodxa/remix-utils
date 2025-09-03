@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { createCookie } from "react-router";
 import { z } from "zod";
-import { rollingCookie } from "./rolling-cookie";
-import { createTypedCookie } from "./typed-cookie";
+import { rollingCookie } from "./rolling-cookie.js";
+import { createTypedCookie } from "./typed-cookie.js";
 
 describe(rollingCookie, () => {
 	describe("Remix Cookie", () => {

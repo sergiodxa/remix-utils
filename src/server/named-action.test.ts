@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { ActionFunctionArgs, data } from "react-router";
-import { namedAction } from "./named-action";
+import { type ActionFunctionArgs, data } from "react-router";
+import { namedAction } from "./named-action.js";
 
 describe(namedAction, () => {
 	test("FormData - Convention intent", async () => {

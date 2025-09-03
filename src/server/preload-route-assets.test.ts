@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import type { EntryContext } from "react-router";
-import { preloadRouteAssets } from "./preload-route-assets";
+import { preloadRouteAssets } from "./preload-route-assets.js";
 
 // TODO Fix this
 describe(preloadRouteAssets, () => {
@@ -18,6 +18,11 @@ describe(preloadRouteAssets, () => {
 					id: "root",
 					module: "/root.js",
 					imports: ["/chunk-3.js", "/chunk-4.js"],
+					hasClientMiddleware: false,
+					clientActionModule: undefined,
+					clientLoaderModule: undefined,
+					clientMiddlewareModule: undefined,
+					hydrateFallbackModule: undefined,
 				},
 				"routes/index": {
 					hasAction: false,
@@ -28,6 +33,11 @@ describe(preloadRouteAssets, () => {
 					id: "routes/index",
 					imports: ["/chunk-5.js"],
 					module: "/routes/index.js",
+					hasClientMiddleware: false,
+					clientActionModule: undefined,
+					clientLoaderModule: undefined,
+					clientMiddlewareModule: undefined,
+					hydrateFallbackModule: undefined,
 				},
 			},
 			version: "latest",
@@ -53,14 +63,8 @@ describe(preloadRouteAssets, () => {
 			},
 		},
 		future: {
-			v2_meta: false,
-			v2_dev: false,
-			v2_errorBoundary: false,
-			v2_headers: false,
-			v2_normalizeFormMethod: false,
-			v2_routeConvention: false,
-			unstable_postcss: false,
-			unstable_tailwind: false,
+			unstable_middleware: true,
+			unstable_subResourceIntegrity: true,
 		},
 		staticHandlerContext: {
 			actionData: {},
@@ -98,6 +102,11 @@ describe(preloadRouteAssets, () => {
 		},
 		serializeError(error) {
 			return { message: error.message, stack: error.stack };
+		},
+		ssr: false,
+		routeDiscovery: {
+			mode: "lazy",
+			manifestPath: "",
 		},
 	};
 

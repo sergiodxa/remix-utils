@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { unstable_createSecureHeadersMiddleware } from "./secure-headers";
-import { runMiddleware } from "./test-helper";
+import { unstable_createSecureHeadersMiddleware } from "./secure-headers.js";
+import { runMiddleware } from "./test-helper.js";
 
 describe(unstable_createSecureHeadersMiddleware, () => {
 	test("returns a middleware function", () => {

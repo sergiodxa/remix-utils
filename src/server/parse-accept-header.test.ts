@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { parseAcceptHeader } from "./parse-accept-header";
+import { parseAcceptHeader } from "./parse-accept-header.js";
 
 describe(parseAcceptHeader, () => {
 	test("parses a simple accept header", () => {

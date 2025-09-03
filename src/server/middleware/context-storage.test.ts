@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { unstable_RouterContextProvider } from "react-router";
-import { unstable_createContextStorageMiddleware } from "./context-storage";
-import { runMiddleware } from "./test-helper";
+import { unstable_createContextStorageMiddleware } from "./context-storage.js";
+import { runMiddleware } from "./test-helper.js";
 
 describe(unstable_createContextStorageMiddleware, () => {
 	test("sets the RouterContextProvider in AsyncLocalStorage", async () => {

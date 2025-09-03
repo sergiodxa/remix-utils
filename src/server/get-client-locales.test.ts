@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { getClientLocales } from "./get-client-locales";
+import { getClientLocales } from "./get-client-locales.js";
 
 describe(getClientLocales, () => {
 	test("should return undefined if no Accept-Language header is not present", () => {
