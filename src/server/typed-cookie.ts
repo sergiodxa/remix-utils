@@ -68,11 +68,11 @@ export function isTypedCookie<Schema extends StandardSchemaV1>(
 	);
 }
 
-function flash<Key extends string>(name: Key): `__flash_${Key}__` {
+function _flash<Key extends string>(name: Key): `__flash_${Key}__` {
 	return `__flash_${name}__`;
 }
 
-async function parseSchemaWithFlashKeys<Schema extends StandardSchemaV1>(
+async function _parseSchemaWithFlashKeys<Schema extends StandardSchemaV1>(
 	schema: Schema,
 	value: StandardSchemaV1.InferInput<Schema>,
 ): Promise<StandardSchemaV1.InferOutput<Schema> | null> {
@@ -89,6 +89,6 @@ export class ValidationError extends Error {
 	}
 }
 
-function isObject(value: unknown): value is Record<string, unknown> {
+function _isObject(value: unknown): value is Record<string, unknown> {
 	return typeof value === "object" && value !== null && !Array.isArray(value);
 }

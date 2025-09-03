@@ -73,7 +73,7 @@ describe(unstable_createSingletonMiddleware, () => {
 		class Test {
 			constructor(
 				private request: Request,
-				public context: unstable_RouterContextProvider,
+				public context: Readonly<unstable_RouterContextProvider>,
 			) {}
 
 			get url() {

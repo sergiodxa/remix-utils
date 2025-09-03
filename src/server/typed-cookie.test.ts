@@ -6,9 +6,9 @@ import {
 } from "react-router";
 import { z } from "zod";
 import {
-	ValidationError,
 	createTypedCookie,
 	isTypedCookie,
+	ValidationError,
 } from "./typed-cookie";
 
 // TODO Fix this

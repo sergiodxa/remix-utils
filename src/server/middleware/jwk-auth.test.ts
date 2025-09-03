@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { JWK, JWT } from "@edgefirst-dev/jwt";
 import { MemoryFileStorage } from "@remix-run/file-storage/memory";
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/native";
 import { createCookie, unstable_RouterContextProvider } from "react-router";
 import { unstable_createJWKAuthMiddleware } from "./jwk-auth";

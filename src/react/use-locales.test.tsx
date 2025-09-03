@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
-import * as React from "react";
-import { Outlet, createRoutesStub } from "react-router";
+import { createRoutesStub, Outlet } from "react-router";
 import { useLocales } from "./use-locales";
 
 // biome-ignore lint/suspicious/noSkippedTests: Test pass with happy-dom but using it globally breaks other tests, so we skip it for now

@@ -57,8 +57,8 @@
  */
 import type { unstable_MiddlewareFunction } from "react-router";
 import {
-	unstable_RouterContextProvider,
 	unstable_createContext,
+	unstable_RouterContextProvider,
 } from "react-router";
 import type { unstable_MiddlewareGetter } from "./utils.js";
 
@@ -75,7 +75,7 @@ export function unstable_createRequestIDMiddleware({
 			if (
 				!requestId ||
 				requestId.length > limitLength ||
-				/[^\w\-]/.test(requestId)
+				/[^\w-]/.test(requestId)
 			) {
 				requestId = generator();
 			}
@@ -83,7 +83,7 @@ export function unstable_createRequestIDMiddleware({
 			return next();
 		},
 
-		function getRequestID(context: unstable_RouterContextProvider) {
+		function getRequestID(context: Readonly<unstable_RouterContextProvider>) {
 			return context.get(requestIdContext);
 		},
 	];

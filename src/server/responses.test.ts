@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
-	ImageType,
 	html,
+	ImageType,
 	image,
 	javascript,
 	notModified,

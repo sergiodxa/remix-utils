@@ -1,4 +1,4 @@
-import { type RandomReader, generateRandomString } from "@oslojs/crypto/random";
+import { generateRandomString, type RandomReader } from "@oslojs/crypto/random";
 
 /**
  * Uses Web Crypto API to encrypt a string using AES encryption.
