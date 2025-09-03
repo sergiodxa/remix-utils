@@ -123,10 +123,6 @@
 			"types": "./build/server/typed-cookie.d.ts",
 			"default": "./build/server/typed-cookie.js"
 		},
-		"./typed-session": {
-			"types": "./build/server/typed-session.d.ts",
-			"default": "./build/server/typed-session.js"
-		},
 		"./client-only": {
 			"types": "./build/react/client-only.d.ts",
 			"default": "./build/react/client-only.js"
@@ -262,8 +258,7 @@
 		"intl-parse-accept-language": "^1.0.0",
 		"is-ip": "^5.0.1",
 		"react": "^18.0.0 || ^19.0.0",
-		"react-router": "^7.0.0",
-		"zod": "^3.22.4"
+		"react-router": "^7.0.0"
 	},
 	"peerDependenciesMeta": {
 		"@edgefirst-dev/batcher": {
@@ -295,9 +290,6 @@
 		},
 		"react": {
 			"optional": true
-		},
-		"zod": {
-			"optional": true
 		}
 	},
 	"devDependencies": {
@@ -327,7 +319,7 @@
 		"typedoc": "^0.28.12",
 		"typedoc-plugin-mdn-links": "^5.0.9",
 		"typescript": "^5.9.2",
-		"zod": "^3.22.4"
+		"zod": "^4.1.5"
 	},
 	"dependencies": {
 		"type-fest": "^4.41.0"
