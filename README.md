@@ -19,14 +19,13 @@ Additional optional dependencies may be needed, all optional dependencies are:
 - `is-ip`
 - `intl-parse-accept-language`
 - `react`
-- `zod`
 
 The utils that require an extra optional dependency mention it in their documentation.
 
 If you want to install them all run:
 
 ```sh
-npm add @edgefirst-dev/batcher @edgefirst-dev/jwt @edgefirst-dev/server-timing @oslojs/crypto @oslojs/encoding is-ip intl-parse-accept-language zod
+npm add @edgefirst-dev/batcher @edgefirst-dev/jwt @edgefirst-dev/server-timing @oslojs/crypto @oslojs/encoding is-ip intl-parse-accept-language
 ```
 
 React and React Router packages should be already installed in your project.
@@ -1136,7 +1135,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 > [!NOTE]
 > This depends on `@standard-schema/spec`, and React Router.
 
-Cookie objects in Remix allows any type, the typed cookies from Remix Utils lets you use Zod to parse the cookie values and ensure they conform to a schema.
+Cookie objects in Remix allows any type, the typed cookies from Remix Utils lets you use any Standard Schema compatible library to parse the cookie values and ensure they conform to a schema.
 
 ```ts
 import { createCookie } from "react-router";
@@ -1166,7 +1165,7 @@ You could also use typed cookies with any sessionStorage mechanism from Remix.
 
 ```ts
 let cookie = createCookie("session", cookieOptions);
-let schema = z.object({ token: z.string() }).nullable();
+let schema = z.object({ token: z.string().nullish() }).nullable();
 
 let sessionStorage = createCookieSessionStorage({
   cookie: createTypedCookie({ cookie, schema }),
