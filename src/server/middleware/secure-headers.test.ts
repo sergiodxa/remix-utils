@@ -1,15 +1,15 @@
 import { describe, expect, test } from "bun:test";
-import { unstable_createSecureHeadersMiddleware } from "./secure-headers.js";
+import { createSecureHeadersMiddleware } from "./secure-headers.js";
 import { runMiddleware } from "./test-helper.js";
 
-describe(unstable_createSecureHeadersMiddleware, () => {
+describe(createSecureHeadersMiddleware, () => {
 	test("returns a middleware function", () => {
-		let [middleware] = unstable_createSecureHeadersMiddleware();
+		let [middleware] = createSecureHeadersMiddleware();
 		expect(middleware).toBeFunction();
 	});
 
 	test("the middleware should add the default headers", async () => {
-		let [middleware] = unstable_createSecureHeadersMiddleware();
+		let [middleware] = createSecureHeadersMiddleware();
 
 		let response = await runMiddleware(middleware);
 
@@ -42,7 +42,7 @@ describe(unstable_createSecureHeadersMiddleware, () => {
 	});
 
 	test("all headers enabled", async () => {
-		let [middleware] = unstable_createSecureHeadersMiddleware({
+		let [middleware] = createSecureHeadersMiddleware({
 			contentSecurityPolicy: {
 				defaultSrc: ["'self'"],
 			},
@@ -92,7 +92,7 @@ describe(unstable_createSecureHeadersMiddleware, () => {
 	});
 
 	test("specific headers disabled", async () => {
-		let [middleware] = unstable_createSecureHeadersMiddleware({
+		let [middleware] = createSecureHeadersMiddleware({
 			xFrameOptions: false,
 			xXssProtection: false,
 		});
@@ -123,7 +123,7 @@ describe(unstable_createSecureHeadersMiddleware, () => {
 	});
 
 	test("should use custom value when overridden", async () => {
-		let [middleware] = unstable_createSecureHeadersMiddleware({
+		let [middleware] = createSecureHeadersMiddleware({
 			strictTransportSecurity: "max-age=31536000; includeSubDomains; preload;",
 			xFrameOptions: "DENY",
 			xXssProtection: "1",
@@ -139,7 +139,7 @@ describe(unstable_createSecureHeadersMiddleware, () => {
 	});
 
 	test("should set Permission-Policy header correctly", async () => {
-		let [middleware] = unstable_createSecureHeadersMiddleware({
+		let [middleware] = createSecureHeadersMiddleware({
 			permissionsPolicy: {
 				fullscreen: ["self"],
 				bluetooth: ["none"],
@@ -176,7 +176,7 @@ describe(unstable_createSecureHeadersMiddleware, () => {
 		},
 	])("CSP Setting ($cspSettingName)", ({ cspSettingName, cspHeaderName }) => {
 		test("CSP Setting", async () => {
-			let [middleware] = unstable_createSecureHeadersMiddleware({
+			let [middleware] = createSecureHeadersMiddleware({
 				[cspSettingName]: {
 					defaultSrc: ["'self'"],
 					baseUri: ["'self'"],
@@ -198,7 +198,7 @@ describe(unstable_createSecureHeadersMiddleware, () => {
 		});
 
 		test("CSP Setting one only", async () => {
-			let [middleware] = unstable_createSecureHeadersMiddleware({
+			let [middleware] = createSecureHeadersMiddleware({
 				[cspSettingName]: {
 					defaultSrc: ["'self'"],
 				},
@@ -210,7 +210,7 @@ describe(unstable_createSecureHeadersMiddleware, () => {
 		});
 
 		test("No CSP Setting", async () => {
-			let [middleware] = unstable_createSecureHeadersMiddleware({
+			let [middleware] = createSecureHeadersMiddleware({
 				[cspSettingName]: {},
 			});
 
@@ -220,7 +220,7 @@ describe(unstable_createSecureHeadersMiddleware, () => {
 		});
 
 		test("CSP with reportTo 0", async () => {
-			let [middleware] = unstable_createSecureHeadersMiddleware({
+			let [middleware] = createSecureHeadersMiddleware({
 				reportingEndpoints: [
 					{
 						name: "endpoint-1",
@@ -243,7 +243,7 @@ describe(unstable_createSecureHeadersMiddleware, () => {
 			);
 		});
 		test("CSP with reportTo 1", async () => {
-			let [middleware] = unstable_createSecureHeadersMiddleware({
+			let [middleware] = createSecureHeadersMiddleware({
 				reportTo: [
 					{
 						group: "endpoint-1",
@@ -267,7 +267,7 @@ describe(unstable_createSecureHeadersMiddleware, () => {
 		});
 
 		test("CSP with reportTo 2", async () => {
-			let [middleware] = unstable_createSecureHeadersMiddleware({
+			let [middleware] = createSecureHeadersMiddleware({
 				reportTo: [
 					{
 						group: "g1",
@@ -303,7 +303,7 @@ describe(unstable_createSecureHeadersMiddleware, () => {
 		});
 
 		test("CSP with reportTo 3", async () => {
-			let [middleware] = unstable_createSecureHeadersMiddleware({
+			let [middleware] = createSecureHeadersMiddleware({
 				reportingEndpoints: [
 					{
 						name: "e1",

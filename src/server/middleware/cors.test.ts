@@ -1,10 +1,10 @@
 import { describe, expect, test } from "bun:test";
-import { unstable_createCorsMiddleware } from "./cors.js";
+import { createCorsMiddleware } from "./cors.js";
 import { runMiddleware } from "./test-helper.js";
 
-describe(unstable_createCorsMiddleware, () => {
+describe(createCorsMiddleware, () => {
 	test("sets the CORS headers in the response", async () => {
-		let [middleware] = unstable_createCorsMiddleware({
+		let [middleware] = createCorsMiddleware({
 			origin: "*",
 			methods: ["GET", "POST"],
 		});
@@ -28,7 +28,7 @@ describe(unstable_createCorsMiddleware, () => {
 	});
 
 	test("sets the CORS headers in the response with custom options", async () => {
-		let [middleware] = unstable_createCorsMiddleware({
+		let [middleware] = createCorsMiddleware({
 			origin: "https://example.com",
 			methods: ["GET", "POST"],
 			allowedHeaders: ["Content-Type"],

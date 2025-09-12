@@ -1,13 +1,13 @@
 import { describe, expect, test } from "bun:test";
-import { unstable_RouterContextProvider } from "react-router";
-import { unstable_createContextStorageMiddleware } from "./context-storage.js";
+import { RouterContextProvider } from "react-router";
+import { createContextStorageMiddleware } from "./context-storage.js";
 import { runMiddleware } from "./test-helper.js";
 
-describe(unstable_createContextStorageMiddleware, () => {
+describe(createContextStorageMiddleware, () => {
 	test("sets the RouterContextProvider in AsyncLocalStorage", async () => {
-		let [middleware, getContext] = unstable_createContextStorageMiddleware();
+		let [middleware, getContext] = createContextStorageMiddleware();
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		await runMiddleware(middleware, {
 			context,
@@ -19,7 +19,7 @@ describe(unstable_createContextStorageMiddleware, () => {
 	});
 
 	test("sets the Request in AsyncLocalStorage", async () => {
-		let [middleware, , getRequest] = unstable_createContextStorageMiddleware();
+		let [middleware, , getRequest] = createContextStorageMiddleware();
 
 		let request = new Request("https://remix.utils");
 

@@ -1992,19 +1992,16 @@ export async function loader({ request }: Route.LoaderArgs) {
 ### Middleware
 
 > [!NOTE]
-> This depends on `react-router`, and specifically v7.3.0 or later.
+> This depends on `react-router`, and specifically v7.9.0 or later.
 
-Since React Router v7.3.0 you can use middleware to run code before and after the routes loaders and actions. In Remix Utils some (unstable) middleware are provided to help you with common tasks.
-
-> [!CAUTION]
-> Middleware are still unstable in React Router, this means they can change or be removed in future versions, and it's why every middleware in Remix Utils is marked as unstable as well.
+Since React Router v7.9.0 you can use middleware to run code before and after the routes loaders and actions. In Remix Utils some middleware are provided to help you with common tasks.
 
 #### Session Middleware
 
 The session middleware let's you save a session object in the Router context so you can access it in any loader and ensure you're always working with the same Session instance.
 
 ```ts
-import { unstable_createSessionMiddleware } from "remix-utils/middleware/session";
+import { createSessionMiddleware } from "remix-utils/middleware/session";
 ```
 
 To use it, you need to create a session storage object and pass it to the middleware.
@@ -2017,7 +2014,7 @@ let sessionStorage = createCookieSessionStorage({
 });
 
 let [sessionMiddleware, getSession] =
-  unstable_createSessionMiddleware(sessionStorage);
+  createSessionMiddleware(sessionStorage);
 ```
 
 Then you can use the `sessionMiddleware` in your `app/root.tsx` function.
@@ -2025,7 +2022,7 @@ Then you can use the `sessionMiddleware` in your `app/root.tsx` function.
 ```ts
 import { sessionMiddleware } from "~/middleware/session.server";
 
-export const unstable_middleware = [sessionMiddleware];
+export const middleware: Route.MiddlewareFunction[] = [sessionMiddleware];
 ```
 
 And you can use the `getSession` function in your loaders to get the session object.
@@ -2041,10 +2038,10 @@ export async function loader({ context }: Route.LoaderArgs) {
 }
 ```
 
-By default the middleware will automaticaly commit the session at the end of the request, but you can customize this behavior by passing a second argument to the `unstable_createSessionMiddleware` function.
+By default the middleware will automaticaly commit the session at the end of the request, but you can customize this behavior by passing a second argument to the `createSessionMiddleware` function.
 
 ```ts
-let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
+let [sessionMiddleware, getSession] = createSessionMiddleware(
   sessionStorage,
   shouldCommit,
 );
@@ -2057,7 +2054,7 @@ If you want to commit the session only if the session data changed you can use a
 ```ts
 import { dequal } from "dequal";
 
-let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
+let [sessionMiddleware, getSession] = createSessionMiddleware(
   sessionStorage,
   (previous, next) => !dequal(previous, next), // Only commit if session changed
 );
@@ -2066,7 +2063,7 @@ let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
 Or you can use a custom function to compare the session data, maybe only if some specific fields changed.
 
 ```ts
-let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
+let [sessionMiddleware, getSession] = createSessionMiddleware(
   sessionStorage,
   (previous, next) => {
     return current.user.id !== previous.user.id;
@@ -2079,24 +2076,24 @@ let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
 The logger middleware let's you log the request and response information to the console, this can be useful to debug issues with the request and response.
 
 ```ts
-import { unstable_createLoggerMiddleware } from "remix-utils/middleware/logger";
+import { createLoggerMiddleware } from "remix-utils/middleware/logger";
 
-export const [loggerMiddleware] = unstable_createLoggerMiddleware();
+export const [loggerMiddleware] = createLoggerMiddleware();
 ```
 
-To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
+To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
 
 ```ts
 import { loggerMiddleware } from "~/middleware/logger.server";
-export const unstable_middleware = [loggerMiddleware];
+export const middleware: Route.MiddlewareFunction[] = [loggerMiddleware];
 ```
 
 Now, every request and response will be logged to the console.
 
-The logger middleware can be customized by passing an options object to the `unstable_createLoggerMiddleware` function.
+The logger middleware can be customized by passing an options object to the `createLoggerMiddleware` function.
 
 ```ts
-let [loggerMiddleware] = unstable_createLoggerMiddleware({
+let [loggerMiddleware] = createLoggerMiddleware({
   logger: console,
   precision: 2,
   formatMessage(request, response, time) {
@@ -2115,18 +2112,18 @@ The `logger` option let's you pass a custom logger, the `precision` option let's
 The server timing middleware let's you add a `Server-Timing` header to the response with the time it took to run the loaders and actions.
 
 ```ts
-import { unstable_createServerTimingMiddleware } from "remix-utils/middleware/server-timing";
+import { createServerTimingMiddleware } from "remix-utils/middleware/server-timing";
 
 export const [serverTimingMiddleware, getTimingCollector] =
-  unstable_createServerTimingMiddleware();
+  createServerTimingMiddleware();
 ```
 
-To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
+To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
 
 ```ts
 import { serverTimingMiddleware } from "~/middleware/server-timing.server";
 
-export const unstable_middleware = [serverTimingMiddleware];
+export const middleware: Route.MiddlewareFunction[] = [serverTimingMiddleware];
 ```
 
 And you can use the `getTimingCollector` function in your loaders and actions to add timings to the response.
@@ -2151,19 +2148,19 @@ The singleton middleware let's you create a singleton object that will be shared
 This is specially useful to share objects that needs to be created only once per request, like a cache, but not shared between requests.
 
 ```ts
-import { unstable_createSingletonMiddleware } from "remix-utils/middleware/singleton";
+import { createSingletonMiddleware } from "remix-utils/middleware/singleton";
 
 export const [singletonMiddleware, getSingleton] =
-  unstable_createSingletonMiddleware({
+  createSingletonMiddleware({
     instantiator: () => new MySingletonClass(),
   });
 ```
 
-To use it, you need to add it to the `unstable_middleware` array in the route where you want to use it.
+To use it, you need to add it to the `middleware` array in the route where you want to use it.
 
 ```ts
 import { singletonMiddleware } from "~/middleware/singleton.server";
-export const unstable_middleware = [singletonMiddleware];
+export const middleware: Route.MiddlewareFunction[] = [singletonMiddleware];
 ```
 
 And you can use the `getSingleton` function in your loaders to get the singleton object.
@@ -2181,15 +2178,15 @@ export async function loader({ context }: Route.LoaderArgs) {
 The singleton middleware can be created with different classes and arguments, so you can have multiple singletons in the same request.
 
 ```ts
-import { unstable_createSingletonMiddleware } from "remix-utils/middleware/singleton";
+import { createSingletonMiddleware } from "remix-utils/middleware/singleton";
 
 export const [singletonMiddleware, getSingleton] =
-  unstable_createSingletonMiddleware({
+  createSingletonMiddleware({
     instantiator: () => new MySingletonClass("arg1", "arg2"),
   });
 
 export const [anotherSingletonMiddleware, getAnotherSingleton] =
-  unstable_createSingletonMiddleware({
+  createSingletonMiddleware({
     instantiator: () => new AnotherSingletonClass("arg1", "arg2"),
   });
 ```
@@ -2202,7 +2199,7 @@ import {
   anotherSingletonMiddleware,
 } from "~/middleware/singleton.server";
 
-export const unstable_middleware = [
+export const middleware: Route.MiddlewareFunction[] = [
   singletonMiddleware,
   anotherSingletonMiddleware,
 ];
@@ -2211,11 +2208,11 @@ export const unstable_middleware = [
 You can also access the `request` and `context` objects in the `instantiator` function, so you can create the singleton based on the request or context.
 
 ```ts
-import { unstable_createSingletonMiddleware } from "remix-utils/middleware/singleton";
+import { createSingletonMiddleware } from "remix-utils/middleware/singleton";
 import { MySingletonClass } from "~/singleton";
 
 export const [singletonMiddleware, getSingleton] =
-  unstable_createSingletonMiddleware({
+  createSingletonMiddleware({
     instantiator: (request, context) => {
       return new MySingletonClass(request, context);
     },
@@ -2234,17 +2231,17 @@ The batcher middleware let's you get a per request instance of a batcher object 
 This is specially useful to avoid making multiple API calls to the same endpoint in a single request, or DB queries. The batcher will call the function only once and return the same result to all calls.
 
 ```ts
-import { unstable_createBatcherMiddleware } from "remix-utils/middleware/batcher";
+import { createBatcherMiddleware } from "remix-utils/middleware/batcher";
 
 export const [batcherMiddleware, getBatcher] =
-  unstable_createBatcherMiddleware();
+  createBatcherMiddleware();
 ```
 
-To use it, you need to add it to the `unstable_middleware` array in the route where you want to use it.
+To use it, you need to add it to the `middleware` array in the route where you want to use it.
 
 ```ts
 import { batcherMiddleware } from "~/middleware/batcher.server";
-export const unstable_middleware = [batcherMiddleware];
+export const middleware: Route.MiddlewareFunction[] = [batcherMiddleware];
 ```
 
 And you can use the `getBatcher` function in your loaders to get the batcher object.
@@ -2292,18 +2289,18 @@ export async function loader({ context }: Route.LoaderArgs) {
 The Context Storage middleware stores the Router context provider and request in AsyncLocalStorage and gives you functions to access it in your code.
 
 ```ts
-import { unstable_createContextStorageMiddleware } from "remix-utils/middleware/context-storage";
+import { createContextStorageMiddleware } from "remix-utils/middleware/context-storage";
 
 export const [contextStorageMiddleware, getContext, getRequest] =
-  unstable_createContextStorageMiddleware();
+  createContextStorageMiddleware();
 ```
 
-To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
+To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
 
 ```ts
 import { contextStorageMiddleware } from "~/middleware/context-storage.server";
 
-export const unstable_middleware = [contextStorageMiddleware];
+export const middleware: Route.MiddlewareFunction[] = [contextStorageMiddleware];
 ```
 
 And you can use the `getContext` and `getRequest` functions in your function to get the context and request objects.
@@ -2323,11 +2320,11 @@ Then call `doSomething` in any loader, action, or another middleware, and you wi
 You can pair this with any other middleware that uses the context to simplify using their returned getters.
 
 ```ts
-import { unstable_createBatcherMiddleware } from "remix-utils/middleware/batcher";
+import { createBatcherMiddleware } from "remix-utils/middleware/batcher";
 import { getContext } from "~/middleware/context-storage.server";
 
 const [batcherMiddleware, getBatcherFromContext] =
-  unstable_createBatcherMiddleware();
+  createBatcherMiddleware();
 
 export { bathcherMiddleware };
 
@@ -2356,18 +2353,18 @@ export async function loader(_: Route.LoaderArgs) {
 The Request ID middleware generates a unique ID for each request and stores it in the Router context, this can be useful to log the request and response information and correlate them.
 
 ```ts
-import { unstable_createRequestIDMiddleware } from "remix-utils/middleware/request-id";
+import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
 
 export const [requestIDMiddleware, getRequestID] =
-  unstable_createRequestIDMiddleware();
+  createRequestIDMiddleware();
 ```
 
-To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
+To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
 
 ```ts
 import { requestIDMiddleware } from "~/middleware/request-id.server";
 
-export const unstable_middleware = [requestIDMiddleware];
+export const middleware: Route.MiddlewareFunction[] = [requestIDMiddleware];
 ```
 
 And you can use the `getRequestID` function in your loaders, actions, and other middleware to get the request ID.
@@ -2381,13 +2378,13 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 ```
 
-By default the request ID is a UUID, but you can customize it by passing a function to the `unstable_createRequestIDMiddleware` function.
+By default the request ID is a UUID, but you can customize it by passing a function to the `createRequestIDMiddleware` function.
 
 ```ts
-import { unstable_createRequestIDMiddleware } from "remix-utils/middleware/request-id";
+import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
 
 export const [requestIDMiddleware, getRequestID] =
-  unstable_createRequestIDMiddleware({
+  createRequestIDMiddleware({
     generator() {
       return Math.random().toString(36).slice(2);
     },
@@ -2396,13 +2393,13 @@ export const [requestIDMiddleware, getRequestID] =
 
 The middleware also gets the request ID from the `X-Request-ID` header if it's present, this can be useful to correlate requests between services.
 
-If you want to use a different header you can pass the header name to the `unstable_createRequestIDMiddleware` function.
+If you want to use a different header you can pass the header name to the `createRequestIDMiddleware` function.
 
 ```ts
-import { unstable_createRequestIDMiddleware } from "remix-utils/middleware/request-id";
+import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
 
 export const [requestIDMiddleware, getRequestID] =
-  unstable_createRequestIDMiddleware({
+  createRequestIDMiddleware({
     header: "X-Correlation-ID",
   });
 ```
@@ -2418,18 +2415,18 @@ The Basic Auth middleware let's you add a basic authentication to your routes, t
 > Basic Auth is not secure by itself, it should be used with HTTPS to ensure the username and password are encrypted. Do not use it to protect sensitive data, use a more secure method instead.
 
 ```ts
-import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
 
-export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+export const [basicAuthMiddleware] = createBasicAuthMiddleware({
   user: { username: "admin", password: "password" },
 });
 ```
 
-To use it, you need to add it to the `unstable_middleware` array in the route where you want to use it.
+To use it, you need to add it to the `middleware` array in the route where you want to use it.
 
 ```ts
 import { basicAuthMiddleware } from "~/middleware/basic-auth.server";
-export const unstable_middleware = [basicAuthMiddleware];
+export const middleware: Route.MiddlewareFunction[] = [basicAuthMiddleware];
 ```
 
 Now, when you access the route you will be prompted to enter the username and password.
@@ -2437,9 +2434,9 @@ Now, when you access the route you will be prompted to enter the username and pa
 The `realm` option let's you set the realm for the authentication, this is the name of the protected area.
 
 ```ts
-import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
 
-export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+export const [basicAuthMiddleware] = createBasicAuthMiddleware({
   realm: "My Realm",
   user: { username: "admin", password: "password" },
 });
@@ -2448,9 +2445,9 @@ export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
 The `user` option let's you set the username and password to authenticate, you can also pass an array of users.
 
 ```ts
-import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
 
-export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+export const [basicAuthMiddleware] = createBasicAuthMiddleware({
   user: [
     { username: "admin", password: "password" },
     { username: "user", password: "password" },
@@ -2461,9 +2458,9 @@ export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
 The `verifyUser` option let's you pass a function to verify the user, this can be useful to check the user against a database.
 
 ```ts
-import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
 
-export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+export const [basicAuthMiddleware] = createBasicAuthMiddleware({
   verifyUser(username, password) {
     let user = await getUser(username);
     if (!user) return false;
@@ -2486,9 +2483,9 @@ Unauthorized
 The `invalidUserMessage` option let's you customize the message sent when the user is invalid.
 
 ```ts
-import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
 
-export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+export const [basicAuthMiddleware] = createBasicAuthMiddleware({
   invalidUserMessage: "Invalid username or password",
   user: { username: "admin", password: "password" },
 });
@@ -2506,9 +2503,9 @@ Invalid username or password
 You can also customize the `invalidUserMessage` by passing a function which will receive the Request and context objects.
 
 ```ts
-import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
 
-export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+export const [basicAuthMiddleware] = createBasicAuthMiddleware({
   invalidUserMessage({ request, context }) {
     // do something with request or context here
     return { message: `Invalid username or password for ${username}` };
@@ -2537,21 +2534,21 @@ The JWK Auth middleware let's you add a JSON Web Key authentication to your rout
 > JWK Auth is more secure than Basic Auth, but it should be used with HTTPS to ensure the token is encrypted.
 
 ```ts
-import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
 
 export const [jwkAuthMiddleware, getJWTPayload] =
-  unstable_createJWKAuthMiddleware({
+  createJWKAuthMiddleware({
     jwksUri: "https://auth.example.com/.well-known/jwks.json",
   });
 ```
 
 The `jwksUri` option let's you set the URL to the JWKS endpoint, this is the URL where the public keys are stored.
 
-To use the middleware, you need to add it to the `unstable_middleware` array in the route where you want to use it.
+To use the middleware, you need to add it to the `middleware` array in the route where you want to use it.
 
 ```ts
 import { jwkAuthMiddleware } from "~/middleware/jwk-auth";
-export const unstable_middleware = [jwkAuthMiddleware];
+export const middleware: Route.MiddlewareFunction[] = [jwkAuthMiddleware];
 ```
 
 Now, when you access the route it will check the JWT token in the `Authorization` header.
@@ -2568,9 +2565,9 @@ Unauthorized
 The `realm` option let's you set the realm for the authentication, this is the name of the protected area.
 
 ```ts
-import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
 
-export const [jwkAuthMiddleware] = unstable_createJWKAuthMiddleware({
+export const [jwkAuthMiddleware] = createJWKAuthMiddleware({
   realm: "My Realm",
   jwksUri: "https://auth.example.com/.well-known/jwks.json",
 });
@@ -2579,9 +2576,9 @@ export const [jwkAuthMiddleware] = unstable_createJWKAuthMiddleware({
 If you want to customize the message sent when the token is invalid you can use the `invalidTokenMessage` option.
 
 ```ts
-import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
 
-export const [jwkAuthMiddleware] = unstable_createJWKAuthMiddleware({
+export const [jwkAuthMiddleware] = createJWKAuthMiddleware({
   invalidTokenMessage: "Invalid token",
   jwksUri: "https://auth.example.com/.well-known/jwks.json",
 });
@@ -2599,9 +2596,9 @@ Invalid token
 You can also customize the `invalidTokenMessage` by passing a function which will receive the Request and context objects.
 
 ```ts
-import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
 
-export const [jwkAuthMiddleware] = unstable_createJWKAuthMiddleware({
+export const [jwkAuthMiddleware] = createJWKAuthMiddleware({
   invalidTokenMessage({ request, context }) {
     // do something with request or context here
     return { message: `Invalid token` };
@@ -2637,10 +2634,10 @@ And you can use the payload to get the subject, scope, issuer, audience, or any 
 If your app receives the JWT in a custom header instead of the `Authorization` header you can tell the middleware to look for the token in that header.
 
 ```ts
-import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
 
 export const [jwkAuthMiddleware, getJWTPayload] =
-  unstable_createJWKAuthMiddleware({ header: "X-API-Key" });
+  createJWKAuthMiddleware({ header: "X-API-Key" });
 ```
 
 Now use the middleware as usual, but now instead of looking for the token in the `Authorization` header it will look for it in the `X-API-Key` header.
@@ -2648,7 +2645,7 @@ Now use the middleware as usual, but now instead of looking for the token in the
 ```ts
 import { jwkAuthMiddleware } from "~/middleware/jwk-auth";
 
-export const unstable_middleware = [jwkAuthMiddleware];
+export const middleware: Route.MiddlewareFunction[] = [jwkAuthMiddleware];
 ```
 
 ##### With a Cookie
@@ -2656,7 +2653,7 @@ export const unstable_middleware = [jwkAuthMiddleware];
 If you save a JWT in a cookie using React Router's Cookie API, you can tell the middleware to look for the token in the cookie instead of the `Authorization` header.
 
 ```ts
-import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
 import { createCookie } from "react-router";
 
 export const cookie = createCookie("jwt", {
@@ -2667,7 +2664,7 @@ export const cookie = createCookie("jwt", {
 });
 
 export const [jwkAuthMiddleware, getJWTPayload] =
-  unstable_createJWKAuthMiddleware({ cookie });
+  createJWKAuthMiddleware({ cookie });
 ```
 
 Then use the middleware as usual, but now instead of looking for the token in the `Authorization` header it will look for it in the cookie.
@@ -2675,7 +2672,7 @@ Then use the middleware as usual, but now instead of looking for the token in th
 ```ts
 import { jwkAuthMiddleware } from "~/middleware/jwk-auth";
 
-export const unstable_middleware = [jwkAuthMiddleware];
+export const middleware: Route.MiddlewareFunction[] = [jwkAuthMiddleware];
 ```
 
 #### Honeypot Middleware
@@ -2688,10 +2685,10 @@ The Honeypot middleware allows you to add a honeypot mechanism to your routes, p
 To use the Honeypot middleware, first import and configure it:
 
 ```ts
-import { unstable_createHoneypotMiddleware } from "remix-utils/middleware/honeypot";
+import { createHoneypotMiddleware } from "remix-utils/middleware/honeypot";
 
 export const [honeypotMiddleware, getHoneypotInputProps] =
-  unstable_createHoneypotMiddleware({
+  createHoneypotMiddleware({
     randomizeNameFieldName: false, // Randomize the honeypot field name
     nameFieldName: "name__confirm", // Default honeypot field name
     validFromFieldName: "from__confirm", // Optional timestamp field for validation
@@ -2704,12 +2701,12 @@ export const [honeypotMiddleware, getHoneypotInputProps] =
   });
 ```
 
-Add the `honeypotMiddleware` to the `unstable_middleware` array in the route where you want to enable spam protection, use it in your `app/root.tsx` file to apply it globally:
+Add the `honeypotMiddleware` to the `middleware` array in the route where you want to enable spam protection, use it in your `app/root.tsx` file to apply it globally:
 
 ```ts
 import { honeypotMiddleware } from "~/middleware/honeypot";
 
-export const unstable_middleware = [honeypotMiddleware];
+export const middleware: Route.MiddlewareFunction[] = [honeypotMiddleware];
 ```
 
 Use the `getHoneypotInputProps` function in your root loader to retrieve the honeypot input properties:
@@ -2775,22 +2772,22 @@ The honeypot middleware is designed to be lightweight and effective against basi
 The secure headers middleware simplifies the setup of security headers. Inspired in part by the version from [Hono `secureHeaders` middleware](https://hono.dev/docs/middleware/builtin/secure-headers).
 
 ```ts
-import { unstable_createSecureHeadersMiddleware } from "remix-utils/middleware/secure-headers";
+import { createSecureHeadersMiddleware } from "remix-utils/middleware/secure-headers";
 
 export const [secureHeadersMiddleware] =
-  unstable_createSecureHeadersMiddleware();
+  createSecureHeadersMiddleware();
 ```
 
-To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
+To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
 
 ```ts
 import { secureHeadersMiddleware } from "~/middleware/secure-headers.server";
-export const unstable_middleware = [secureHeadersMiddleware];
+export const middleware: Route.MiddlewareFunction[] = [secureHeadersMiddleware];
 ```
 
 Now, every response will have the security header responses.
 
-The secure headers middleware middleware can be customized by passing an options object to the `unstable_createSecureHeadersMiddleware` function.
+The secure headers middleware middleware can be customized by passing an options object to the `createSecureHeadersMiddleware` function.
 
 The options let's you configure the headers key values. [More info here](https://hono.dev/docs/middleware/builtin/secure-headers#supported-options).
 
@@ -2801,29 +2798,29 @@ The CORS middleware simplifies the setup of CORS headers. Internally it uses the
 To use it, first create a CORS middleware instance:
 
 ```ts
-import { unstable_createCorsMiddleware } from "remix-utils/middleware/cors";
+import { createCorsMiddleware } from "remix-utils/middleware/cors";
 
-export const [corsMiddleware] = unstable_createCorsMiddleware();
+export const [corsMiddleware] = createCorsMiddleware();
 ```
 
-Add the `corsMiddleware` to the `unstable_middleware` array in the route where you want to configure CORS, use it in your `app/root.tsx` file to apply it globally:
+Add the `corsMiddleware` to the `middleware` array in the route where you want to configure CORS, use it in your `app/root.tsx` file to apply it globally:
 
 ```ts
 import { corsMiddleware } from "~/middleware/cors.server";
 
-export const unstable_middleware = [corsMiddleware];
+export const middleware: Route.MiddlewareFunction[] = [corsMiddleware];
 ```
 
 Now, every request will have the CORS headers set.
 
-You can customize the CORS middleware by passing an options object to the `unstable_createCorsMiddleware` function.
+You can customize the CORS middleware by passing an options object to the `createCorsMiddleware` function.
 
 The options lets you configure the CORS headers, e.g. `origin`, `methods`, `allowedHeaders`, etc.
 
 ```ts
-import { unstable_createCorsMiddleware } from "remix-utils/middleware/cors";
+import { createCorsMiddleware } from "remix-utils/middleware/cors";
 
-export const [corsMiddleware] = unstable_createCorsMiddleware({
+export const [corsMiddleware] = createCorsMiddleware({
   origin: "https://example.com",
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -2845,22 +2842,22 @@ The rolling cookie middleware allows you to prolong the expiration of a cookie b
 First, create a rolling cookie middleware instance:
 
 ```ts
-import { unstable_createRollingCookieMiddleware } from "remix-utils/middleware/rolling-cookie";
+import { createRollingCookieMiddleware } from "remix-utils/middleware/rolling-cookie";
 
 // This must be a Cookie or TypedCookie instance
 import { cookie } from "~/cookies";
 
-export const [rollingCookieMiddleware] = unstable_createRollingCookieMiddleware(
+export const [rollingCookieMiddleware] = createRollingCookieMiddleware(
   { cookie },
 );
 ```
 
-Then, add the `rollingCookieMiddleware` to the `unstable_middleware` array in your `app/root.tsx` file.
+Then, add the `rollingCookieMiddleware` to the `middleware` array in your `app/root.tsx` file.
 
 ```ts
 import { rollingCookieMiddleware } from "~/middleware/rolling-cookie.server";
 
-export const unstable_middleware = [rollingCookieMiddleware];
+export const middleware: Route.MiddlewareFunction[] = [rollingCookieMiddleware];
 ```
 
 Now, every request will have the cookie updated with a new expiration date.

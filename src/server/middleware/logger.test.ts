@@ -1,8 +1,8 @@
 import { describe, expect, mock, spyOn, test } from "bun:test";
-import { unstable_createLoggerMiddleware } from "./logger.js";
+import { createLoggerMiddleware } from "./logger.js";
 import { runMiddleware } from "./test-helper.js";
 
-describe(unstable_createLoggerMiddleware, () => {
+describe(createLoggerMiddleware, () => {
 	spyOn(performance, "now").mockImplementation(() => 0);
 
 	const logger = {
@@ -13,12 +13,12 @@ describe(unstable_createLoggerMiddleware, () => {
 	};
 
 	test("returns a middleware function", () => {
-		let [middleware] = unstable_createLoggerMiddleware();
+		let [middleware] = createLoggerMiddleware();
 		expect(middleware).toBeFunction();
 	});
 
 	test("on a 2xx logs info of the request/response", async () => {
-		let [middleware] = unstable_createLoggerMiddleware({ logger });
+		let [middleware] = createLoggerMiddleware({ logger });
 
 		await runMiddleware(middleware);
 
@@ -26,7 +26,7 @@ describe(unstable_createLoggerMiddleware, () => {
 	});
 
 	test("on a 3xx logs debug of the redirect", async () => {
-		let [middleware] = unstable_createLoggerMiddleware({ logger });
+		let [middleware] = createLoggerMiddleware({ logger });
 
 		await runMiddleware(middleware, {
 			async next() {
@@ -41,7 +41,7 @@ describe(unstable_createLoggerMiddleware, () => {
 	});
 
 	test("on a 4xx logs warn of the request/response", async () => {
-		let [middleware] = unstable_createLoggerMiddleware({ logger });
+		let [middleware] = createLoggerMiddleware({ logger });
 
 		await runMiddleware(middleware, {
 			async next() {
@@ -53,7 +53,7 @@ describe(unstable_createLoggerMiddleware, () => {
 	});
 
 	test("on a 5xx logs error of the request/response", async () => {
-		let [middleware] = unstable_createLoggerMiddleware({ logger });
+		let [middleware] = createLoggerMiddleware({ logger });
 
 		await runMiddleware(middleware, {
 			async next() {
@@ -65,7 +65,7 @@ describe(unstable_createLoggerMiddleware, () => {
 	});
 
 	test("the logged message can be customized", async () => {
-		let [middleware] = unstable_createLoggerMiddleware({
+		let [middleware] = createLoggerMiddleware({
 			logger,
 			formatMessage(request, _response, _responseTime) {
 				return `${request.method}`;

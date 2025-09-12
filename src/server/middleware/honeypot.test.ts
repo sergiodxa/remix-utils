@@ -1,11 +1,11 @@
 import { describe, expect, mock, test } from "bun:test";
 import { redirect } from "react-router";
-import { unstable_createHoneypotMiddleware } from "./honeypot.js";
+import { createHoneypotMiddleware } from "./honeypot.js";
 import { runMiddleware } from "./test-helper.js";
 
-describe(unstable_createHoneypotMiddleware, () => {
+describe(createHoneypotMiddleware, () => {
 	test("can get the Honeypot input props", async () => {
-		let [, getInputProps] = unstable_createHoneypotMiddleware();
+		let [, getInputProps] = createHoneypotMiddleware();
 		let props = await getInputProps();
 
 		expect(props).toEqual({
@@ -16,7 +16,7 @@ describe(unstable_createHoneypotMiddleware, () => {
 	});
 
 	test("if the request has no body the middleware does nothing", async () => {
-		let [middleware] = unstable_createHoneypotMiddleware();
+		let [middleware] = createHoneypotMiddleware();
 
 		let request = new Request("https://remix.utils");
 
@@ -31,7 +31,7 @@ describe(unstable_createHoneypotMiddleware, () => {
 	});
 
 	test("if the request is not a form submission the middleware does nothing", async () => {
-		let [middleware] = unstable_createHoneypotMiddleware();
+		let [middleware] = createHoneypotMiddleware();
 		let request = new Request("https://remix.utils", {
 			method: "POST",
 			body: JSON.stringify({}),
@@ -48,7 +48,7 @@ describe(unstable_createHoneypotMiddleware, () => {
 	});
 
 	test("if the request is x-www-form-urlencoded the spam check runs", async () => {
-		let [middleware, getInputProps] = unstable_createHoneypotMiddleware();
+		let [middleware, getInputProps] = createHoneypotMiddleware();
 		let inputProps = await getInputProps();
 
 		let body = new URLSearchParams();
@@ -74,7 +74,7 @@ describe(unstable_createHoneypotMiddleware, () => {
 	});
 
 	test("if the request is multipart/form-data the spam check runs", async () => {
-		let [middleware, getInputProps] = unstable_createHoneypotMiddleware();
+		let [middleware, getInputProps] = createHoneypotMiddleware();
 		let inputProps = await getInputProps();
 
 		let body = new FormData();
@@ -99,7 +99,7 @@ describe(unstable_createHoneypotMiddleware, () => {
 		let onSpam = mock().mockImplementation(() => redirect("/"));
 		let next = mock().mockImplementation(() => Response.json(null));
 
-		let [middleware, getInputProps] = unstable_createHoneypotMiddleware({
+		let [middleware, getInputProps] = createHoneypotMiddleware({
 			onSpam,
 		});
 
