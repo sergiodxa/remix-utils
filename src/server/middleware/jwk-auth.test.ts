@@ -3,8 +3,8 @@ import { JWK, JWT } from "@edgefirst-dev/jwt";
 import { MemoryFileStorage } from "@remix-run/file-storage/memory";
 import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/native";
-import { createCookie, unstable_RouterContextProvider } from "react-router";
-import { unstable_createJWKAuthMiddleware } from "./jwk-auth.js";
+import { createCookie, RouterContextProvider } from "react-router";
+import { createJWKAuthMiddleware } from "./jwk-auth.js";
 import { catchResponse, runMiddleware } from "./test-helper.js";
 
 const storage = new MemoryFileStorage();
@@ -16,7 +16,7 @@ const server = setupServer(
 	),
 );
 
-describe(unstable_createJWKAuthMiddleware, () => {
+describe(createJWKAuthMiddleware, () => {
 	beforeAll(() => server.listen());
 	afterAll(() => server.close());
 
@@ -29,7 +29,7 @@ describe(unstable_createJWKAuthMiddleware, () => {
 
 		let token = await jwt.sign(JWK.Algoritm.ES256, signingKeys);
 
-		let [middleware, getJWTPayload] = unstable_createJWKAuthMiddleware({
+		let [middleware, getJWTPayload] = createJWKAuthMiddleware({
 			jwksUri: "https://remix.utils/.well-known/jwks.json",
 			verifyOptions: {
 				issuer: "idp.remix.utils",
@@ -41,7 +41,7 @@ describe(unstable_createJWKAuthMiddleware, () => {
 			headers: { Authorization: `Bearer ${token}` },
 		});
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		await runMiddleware(middleware, { request, context });
 
@@ -59,7 +59,7 @@ describe(unstable_createJWKAuthMiddleware, () => {
 
 		let cookie = createCookie("token", { path: "/" });
 
-		let [middleware, getJWTPayload] = unstable_createJWKAuthMiddleware({
+		let [middleware, getJWTPayload] = createJWKAuthMiddleware({
 			jwksUri: "https://remix.utils/.well-known/jwks.json",
 			verifyOptions: {
 				issuer: "idp.remix.utils",
@@ -72,7 +72,7 @@ describe(unstable_createJWKAuthMiddleware, () => {
 			headers: { Cookie: await cookie.serialize(token) },
 		});
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		await runMiddleware(middleware, { request, context });
 
@@ -82,7 +82,7 @@ describe(unstable_createJWKAuthMiddleware, () => {
 	test("throw an error if there's no token in the cookie", async () => {
 		let cookie = createCookie("token", { path: "/" });
 
-		let [middleware] = unstable_createJWKAuthMiddleware({
+		let [middleware] = createJWKAuthMiddleware({
 			jwksUri: "https://remix.utils/.well-known/jwks.json",
 			verifyOptions: {
 				issuer: "idp.remix.utils",
@@ -106,7 +106,7 @@ describe(unstable_createJWKAuthMiddleware, () => {
 	});
 
 	test("throw an error if there's no Authorization header", async () => {
-		let [middleware] = unstable_createJWKAuthMiddleware({
+		let [middleware] = createJWKAuthMiddleware({
 			jwksUri: "https://remix.utils/.well-known/jwks.json",
 			verifyOptions: {
 				issuer: "idp.remix.utils",
@@ -127,7 +127,7 @@ describe(unstable_createJWKAuthMiddleware, () => {
 	});
 
 	test("throws an error if token type is not Bearer in header", async () => {
-		let [middleware] = unstable_createJWKAuthMiddleware({
+		let [middleware] = createJWKAuthMiddleware({
 			jwksUri: "https://remix.utils/.well-known/jwks.json",
 			verifyOptions: {
 				issuer: "idp.remix.utils",
@@ -154,7 +154,7 @@ describe(unstable_createJWKAuthMiddleware, () => {
 	});
 
 	test("throws an error if there's no token in the Authorization header", async () => {
-		let [middleware] = unstable_createJWKAuthMiddleware({
+		let [middleware] = createJWKAuthMiddleware({
 			jwksUri: "https://remix.utils/.well-known/jwks.json",
 			verifyOptions: {
 				issuer: "idp.remix.utils",
@@ -177,7 +177,7 @@ describe(unstable_createJWKAuthMiddleware, () => {
 	});
 
 	test("throws an error if the token is invalid", async () => {
-		let [middleware] = unstable_createJWKAuthMiddleware({
+		let [middleware] = createJWKAuthMiddleware({
 			jwksUri: "https://remix.utils/.well-known/jwks.json",
 			verifyOptions: {
 				issuer: "idp.remix.utils",

@@ -7,22 +7,22 @@
  * First, create a rolling cookie middleware instance:
  *
  * ```ts
- * import { unstable_createRollingCookieMiddleware } from "remix-utils/middleware/rolling-cookie";
+ * import { createRollingCookieMiddleware } from "remix-utils/middleware/rolling-cookie";
  *
  * // This must be a Cookie or TypedCookie instance
  * import { cookie } from "~/cookies";
  *
- * export const [rollingCookieMiddleware] = unstable_createRollingCookieMiddleware(
+ * export const [rollingCookieMiddleware] = createRollingCookieMiddleware(
  *   { cookie }
  * );
  * ```
  *
- * Then, add the `rollingCookieMiddleware` to the `unstable_middleware` array in your `app/root.tsx` file.
+ * Then, add the `rollingCookieMiddleware` to the `middleware` array in your `app/root.tsx` file.
  *
  * ```ts
  * import { rollingCookieMiddleware } from "~/middleware/rolling-cookie.server";
  *
- * export const unstable_middleware = [rollingCookieMiddleware];
+ * export const middleware: Route.MiddlewareFunction[] = [rollingCookieMiddleware];
  * ```
  *
  * Now, every request will have the cookie updated with a new expiration date.
@@ -33,7 +33,7 @@
  * @author Sergio Xalambrí
  * @module Middleware/Rolling Cookie
  */
-import type { Cookie, unstable_MiddlewareFunction } from "react-router";
+import type { Cookie, MiddlewareFunction } from "react-router";
 import { rollingCookie } from "../rolling-cookie.js";
 
 /**
@@ -41,18 +41,18 @@ import { rollingCookie } from "../rolling-cookie.js";
  * @param options.cookie The cookie to use for rolling
  * @returns A middleware function that keeps the cookie alive
  * @example
- * import { unstable_createRollingCookieMiddleware } from "remix-utils/middleware/rolling-cookie";
+ * import { createRollingCookieMiddleware } from "remix-utils/middleware/rolling-cookie";
  *
  * // This must be a Cookie or TypedCookie instance
  * import { cookie } from "~/cookies";
  *
- * export const [rollingCookieMiddleware] = unstable_createRollingCookieMiddleware(
+ * export const [rollingCookieMiddleware] = createRollingCookieMiddleware(
  *   { cookie }
  * );
  */
-export function unstable_createRollingCookieMiddleware(
-	options: unstable_createRollingCookieMiddleware.Options,
-): unstable_createRollingCookieMiddleware.ReturnType {
+export function createRollingCookieMiddleware(
+	options: createRollingCookieMiddleware.Options,
+): createRollingCookieMiddleware.ReturnType {
 	return [
 		async ({ request }, next) => {
 			let response = await next();
@@ -64,18 +64,18 @@ export function unstable_createRollingCookieMiddleware(
 
 /**
  * This namespace contains the types for the
- * `unstable_createRollingCookieMiddleware` function.
- * @see {@link unstable_createRollingCookieMiddleware}
+ * `createRollingCookieMiddleware` function.
+ * @see {@link createRollingCookieMiddleware}
  * @example
- * import { unstable_createRollingCookieMiddleware } from "remix-utils/middleware/rolling-cookie";
+ * import { createRollingCookieMiddleware } from "remix-utils/middleware/rolling-cookie";
  *
- * let options: unstable_createRollingCookieMiddleware.Options;
- * let returnType: unstable_createRollingCookieMiddleware.ReturnType;
+ * let options: createRollingCookieMiddleware.Options;
+ * let returnType: createRollingCookieMiddleware.ReturnType;
  */
-export namespace unstable_createRollingCookieMiddleware {
+export namespace createRollingCookieMiddleware {
 	/**
-	 * The options accepted by the `unstable_createRollingCookieMiddleware` function.
-	 * @see {@link unstable_createRollingCookieMiddleware}
+	 * The options accepted by the `createRollingCookieMiddleware` function.
+	 * @see {@link createRollingCookieMiddleware}
 	 */
 	export interface Options {
 		/**
@@ -88,8 +88,8 @@ export namespace unstable_createRollingCookieMiddleware {
 	}
 
 	/**
-	 * The return type of the `unstable_createRollingCookieMiddleware` function.
-	 * @see {@link unstable_createRollingCookieMiddleware}
+	 * The return type of the `createRollingCookieMiddleware` function.
+	 * @see {@link createRollingCookieMiddleware}
 	 */
-	export type ReturnType = [unstable_MiddlewareFunction<Response>];
+	export type ReturnType = [MiddlewareFunction<Response>];
 }

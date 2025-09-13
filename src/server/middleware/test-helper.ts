@@ -1,23 +1,23 @@
 import { mock } from "bun:test";
 import {
 	type Params,
-	type unstable_MiddlewareFunction,
-	unstable_RouterContextProvider,
+	type MiddlewareFunction,
+	RouterContextProvider,
 } from "react-router";
 
 const defaultNext = mock().mockImplementation(() => Response.json(null));
 
 export async function runMiddleware<T = Response>(
-	middleware: unstable_MiddlewareFunction<T>,
+	middleware: MiddlewareFunction<T>,
 	{
 		request = new Request("https://remix.utils"),
-		context = new unstable_RouterContextProvider(),
+		context = new RouterContextProvider(),
 		params = {},
 		next = defaultNext,
 	}: {
 		request?: Request;
 		params?: Params;
-		context?: Readonly<unstable_RouterContextProvider>;
+		context?: Readonly<RouterContextProvider>;
 		next?: () => Promise<T>;
 	} = {},
 ) {

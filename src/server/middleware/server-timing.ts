@@ -3,18 +3,18 @@
  * The server timing middleware let's you add a `Server-Timing` header to the response with the time it took to run the loaders and actions.
  *
  * ```ts
- * import { unstable_createServerTimingMiddleware } from "remix-utils/middleware/server-timing";
+ * import { createServerTimingMiddleware } from "remix-utils/middleware/server-timing";
  *
  * export const [serverTimingMiddleware, getTimingCollector] =
- *   unstable_createServerTimingMiddleware();
+ *   createServerTimingMiddleware();
  * ```
  *
- * To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
+ * To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
  *
  * ```ts
  * import { serverTimingMiddleware } from "~/middleware/server-timing.server";
  *
- * export const unstable_middleware = [serverTimingMiddleware];
+ * export const middleware: Route.MiddlewareFunction[] = [serverTimingMiddleware];
  * ```
  *
  * And you can use the `getTimingCollector` function in your loaders and actions to add timings to the response.
@@ -35,9 +35,9 @@
  * @module Middleware/Server Timing
  */
 import { TimingCollector } from "@edgefirst-dev/server-timing";
-import type { unstable_MiddlewareFunction } from "react-router";
-import { unstable_createContext } from "react-router";
-import type { unstable_MiddlewareGetter } from "./utils.js";
+import type { MiddlewareFunction } from "react-router";
+import { createContext } from "react-router";
+import type { MiddlewareGetter } from "./utils.js";
 
 /**
  * Create a middleware that gives you access to a `TimingCollector` instance,
@@ -49,11 +49,11 @@ import type { unstable_MiddlewareGetter } from "./utils.js";
  * @returns A tuple with the middleware function and a function to get the
  * `TimingCollector` instance from the context.
  * @example
- * import { unstable_createServerTimingMiddleware } from "remix-utils/middleware/server-timing";
+ * import { createServerTimingMiddleware } from "remix-utils/middleware/server-timing";
  *
- * const [serverTimingMiddleware, getTimingCollector] = unstable_createServerTimingMiddleware();
+ * const [serverTimingMiddleware, getTimingCollector] = createServerTimingMiddleware();
  *
- * export const unstable_middleware = [serverTimingMiddleware];
+ * export const middleware: Route.MiddlewareFunction[] = [serverTimingMiddleware];
  *
  * export async function loader({ context }: Route.LoaderArgs) {
  *  let collector = getTimingCollector(context);
@@ -62,8 +62,8 @@ import type { unstable_MiddlewareGetter } from "./utils.js";
  *  });
  * }
  */
-export function unstable_createServerTimingMiddleware(): unstable_createServerTimingMiddleware.ReturnType {
-	const timingContext = unstable_createContext<TimingCollector>();
+export function createServerTimingMiddleware(): createServerTimingMiddleware.ReturnType {
+	const timingContext = createContext<TimingCollector>();
 
 	return [
 		async function serverTimingMiddleware({ context }, next) {
@@ -80,15 +80,15 @@ export function unstable_createServerTimingMiddleware(): unstable_createServerTi
 	];
 }
 
-export namespace unstable_createServerTimingMiddleware {
+export namespace createServerTimingMiddleware {
 	/**
-	 * The return type of `unstable_createServerTimingMiddleware`.
+	 * The return type of `createServerTimingMiddleware`.
 	 */
 	export type ReturnType = [
-		unstable_MiddlewareFunction<Response>,
-		unstable_MiddlewareGetter<TimingCollector>,
+		MiddlewareFunction<Response>,
+		MiddlewareGetter<TimingCollector>,
 	];
 }
 
 export const [serverTimingMiddleware, getTimingCollector] =
-	unstable_createServerTimingMiddleware();
+	createServerTimingMiddleware();

@@ -6,10 +6,10 @@
  * To use the Honeypot middleware, first import and configure it:
  *
  * ```ts
- * import { unstable_createHoneypotMiddleware } from "remix-utils/middleware/honeypot";
+ * import { createHoneypotMiddleware } from "remix-utils/middleware/honeypot";
  *
  * export const [honeypotMiddleware, getHoneypotInputProps] =
- *   unstable_createHoneypotMiddleware({
+ *   createHoneypotMiddleware({
  *     // Randomize the honeypot field name
  *     randomizeNameFieldName: false,
  *     // Default honeypot field name
@@ -26,12 +26,12 @@
  *   });
  * ```
  *
- * Add the `honeypotMiddleware` to the `unstable_middleware` array in the route where you want to enable spam protection, use it in your `app/root.tsx` file to apply it globally:
+ * Add the `honeypotMiddleware` to the `middleware` array in the route where you want to enable spam protection, use it in your `app/root.tsx` file to apply it globally:
  *
  * ```ts
  * import { honeypotMiddleware } from "~/middleware/honeypot";
  *
- * export const unstable_middleware = [honeypotMiddleware];
+ * export const middleware: Route.MiddlewareFunction[] = [honeypotMiddleware];
  * ```
  *
  * Use the `getHoneypotInputProps` function in your root loader to retrieve the honeypot input properties:
@@ -94,14 +94,14 @@
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Honeypot
  */
-import type { unstable_MiddlewareFunction } from "react-router";
+import type { MiddlewareFunction } from "react-router";
 import type { HoneypotConfig, HoneypotInputProps } from "../honeypot.js";
 import { Honeypot, SpamError } from "../honeypot.js";
 
-export function unstable_createHoneypotMiddleware({
+export function createHoneypotMiddleware({
 	onSpam,
 	...options
-}: unstable_createHoneypotMiddleware.Options = {}): unstable_createHoneypotMiddleware.ReturnType {
+}: createHoneypotMiddleware.Options = {}): createHoneypotMiddleware.ReturnType {
 	let honeypot = new Honeypot(options);
 
 	return [
@@ -146,13 +146,13 @@ export function unstable_createHoneypotMiddleware({
 	}
 }
 
-export namespace unstable_createHoneypotMiddleware {
+export namespace createHoneypotMiddleware {
 	export interface Options extends HoneypotConfig {
 		onSpam?(error: SpamError): Response;
 	}
 
 	export type ReturnType = [
-		unstable_MiddlewareFunction<Response>,
+		MiddlewareFunction<Response>,
 		() => Promise<HoneypotInputProps>,
 	];
 }

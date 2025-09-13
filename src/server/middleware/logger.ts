@@ -3,26 +3,26 @@
  * the console, this can be useful to debug issues with the request and response.
  *
  * ```ts
- * import { unstable_createLoggerMiddleware } from "remix-utils/middleware/logger";
+ * import { createLoggerMiddleware } from "remix-utils/middleware/logger";
  *
- * export const [loggerMiddleware] = unstable_createLoggerMiddleware();
+ * export const [loggerMiddleware] = createLoggerMiddleware();
  * ```
  *
- * To use it, you need to add it to the `unstable_middleware` array in your
+ * To use it, you need to add it to the `middleware` array in your
  * `app/root.tsx` file.
  *
  * ```ts
  * import { loggerMiddleware } from "~/middleware/logger.server";
- * export const unstable_middleware = [loggerMiddleware];
+ * export const middleware: Route.MiddlewareFunction[] = [loggerMiddleware];
  * ```
  *
  * Now, every request and response will be logged to the console.
  *
  * The logger middleware can be customized by passing an options object to the
- * `unstable_createLoggerMiddleware` function.
+ * `createLoggerMiddleware` function.
  *
  * ```ts
- * let [loggerMiddleware] = unstable_createLoggerMiddleware({
+ * let [loggerMiddleware] = createLoggerMiddleware({
  *   logger: console,
  *   precision: 2,
  *   formatMessage(request, response, time) {
@@ -38,7 +38,7 @@
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Logger
  */
-import type { unstable_MiddlewareFunction } from "react-router";
+import type { MiddlewareFunction } from "react-router";
 
 function defaultFormatMessage(
 	request: Request,
@@ -59,11 +59,11 @@ function defaultFormatMessage(
 	return `${method} ${url.pathname}${url.search} ${status} ${responseTime} ms`;
 }
 
-export function unstable_createLoggerMiddleware({
+export function createLoggerMiddleware({
 	logger = console,
 	precision = 3,
 	formatMessage = defaultFormatMessage,
-}: unstable_createLoggerMiddleware.Options = {}): unstable_createLoggerMiddleware.ReturnType {
+}: createLoggerMiddleware.Options = {}): createLoggerMiddleware.ReturnType {
 	if (precision < 0) {
 		throw new RangeError("Precision must be a positive number.");
 	}
@@ -91,7 +91,7 @@ export function unstable_createLoggerMiddleware({
 	];
 }
 
-export namespace unstable_createLoggerMiddleware {
+export namespace createLoggerMiddleware {
 	export interface Options {
 		/**
 		 * The logger to use for logging the request and response information.
@@ -112,7 +112,7 @@ export namespace unstable_createLoggerMiddleware {
 		): string;
 	}
 
-	export type ReturnType = [unstable_MiddlewareFunction<Response>];
+	export type ReturnType = [MiddlewareFunction<Response>];
 
 	export interface Logger {
 		error(...message: string[]): void;

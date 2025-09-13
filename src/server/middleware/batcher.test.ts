@@ -1,14 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import { Batcher } from "@edgefirst-dev/batcher";
-import { unstable_RouterContextProvider } from "react-router";
-import { unstable_createBatcherMiddleware } from "./batcher.js";
+import { RouterContextProvider } from "react-router";
+import { createBatcherMiddleware } from "./batcher.js";
 import { runMiddleware } from "./test-helper.js";
 
-describe(unstable_createBatcherMiddleware, () => {
+describe(createBatcherMiddleware, () => {
 	test("creates a singleton middleware for a Batcher", async () => {
-		let [middleware, getBatcher] = unstable_createBatcherMiddleware();
+		let [middleware, getBatcher] = createBatcherMiddleware();
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		await runMiddleware(middleware, { context });
 

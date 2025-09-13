@@ -4,19 +4,19 @@
  * This is specially useful to share objects that needs to be created only once per request, like a cache, but not shared between requests.
  *
  * ```ts
- * import { unstable_createSingletonMiddleware } from "remix-utils/middleware/singleton";
+ * import { createSingletonMiddleware } from "remix-utils/middleware/singleton";
  *
  * export const [singletonMiddleware, getSingleton] =
- *   unstable_createSingletonMiddleware({
+ *   createSingletonMiddleware({
  *     instantiator: () => new MySingletonClass(),
  *   });
  * ```
  *
- * To use it, you need to add it to the `unstable_middleware` array in the route where you want to use it.
+ * To use it, you need to add it to the `middleware` array in the route where you want to use it.
  *
  * ```ts
  * import { singletonMiddleware } from "~/middleware/singleton.server";
- * export const unstable_middleware = [singletonMiddleware];
+ * export const middleware: Route.MiddlewareFunction[] = [singletonMiddleware];
  * ```
  *
  * And you can use the `getSingleton` function in your loaders to get the singleton object.
@@ -34,15 +34,15 @@
  * The singleton middleware can be created with different classes and arguments, so you can have multiple singletons in the same request.
  *
  * ```ts
- * import { unstable_createSingletonMiddleware } from "remix-utils/middleware/singleton";
+ * import { createSingletonMiddleware } from "remix-utils/middleware/singleton";
  *
  * export const [singletonMiddleware, getSingleton] =
- *   unstable_createSingletonMiddleware({
+ *   createSingletonMiddleware({
  *     instantiator: () => new MySingletonClass("arg1", "arg2"),
  *   });
  *
  * export const [anotherSingletonMiddleware, getAnotherSingleton] =
- *   unstable_createSingletonMiddleware({
+ *   createSingletonMiddleware({
  *     instantiator: () => new AnotherSingletonClass("arg1", "arg2"),
  *   });
  * ```
@@ -55,7 +55,7 @@
  *   anotherSingletonMiddleware,
  * } from "~/middleware/singleton.server";
  *
- * export const unstable_middleware = [
+ * export const middleware: Route.MiddlewareFunction[] = [
  *   singletonMiddleware,
  *   anotherSingletonMiddleware,
  * ];
@@ -64,11 +64,11 @@
  * You can also access the `request` and `context` objects in the `instantiator` function, so you can create the singleton based on the request or context.
  *
  * ```ts
- * import { unstable_createSingletonMiddleware } from "remix-utils/middleware/singleton";
+ * import { createSingletonMiddleware } from "remix-utils/middleware/singleton";
  * import { MySingletonClass } from "~/singleton";
  *
  * export const [singletonMiddleware, getSingleton] =
- *   unstable_createSingletonMiddleware({
+ *   createSingletonMiddleware({
  *     instantiator: (request, context) => {
  *       return new MySingletonClass(request, context);
  *     },
@@ -80,11 +80,11 @@
  * @module Middleware/Singleton
  */
 import type {
-	unstable_MiddlewareFunction,
-	unstable_RouterContextProvider,
+	MiddlewareFunction,
+	RouterContextProvider,
 } from "react-router";
-import { unstable_createContext } from "react-router";
-import type { unstable_MiddlewareGetter } from "./utils.js";
+import { createContext } from "react-router";
+import type { MiddlewareGetter } from "./utils.js";
 
 /**
  * Creates a singleton middleware that creates an instance of an object and
@@ -96,10 +96,10 @@ import type { unstable_MiddlewareGetter } from "./utils.js";
  * @returns A tuple containing the middleware function and a function to get the
  * singleton instance from the context.
  */
-export function unstable_createSingletonMiddleware<T>(
-	options: unstable_createSingletonMiddleware.Options<T>,
-): unstable_createSingletonMiddleware.ReturnType<T> {
-	let singletonContext = unstable_createContext<T | null>(null);
+export function createSingletonMiddleware<T>(
+	options: createSingletonMiddleware.Options<T>,
+): createSingletonMiddleware.ReturnType<T> {
+	let singletonContext = createContext<T | null>(null);
 
 	return [
 		async function singletonMiddleware({ request, context }, next) {
@@ -117,16 +117,16 @@ export function unstable_createSingletonMiddleware<T>(
 	];
 }
 
-export namespace unstable_createSingletonMiddleware {
+export namespace createSingletonMiddleware {
 	export interface Options<T> {
 		instantiator(
 			request: Request,
-			context: Readonly<unstable_RouterContextProvider>,
+			context: Readonly<RouterContextProvider>,
 		): T;
 	}
 
 	export type ReturnType<T> = [
-		unstable_MiddlewareFunction<Readonly<unstable_RouterContextProvider>>,
-		unstable_MiddlewareGetter<T>,
+		MiddlewareFunction<Readonly<RouterContextProvider>>,
+		MiddlewareGetter<T>,
 	];
 }

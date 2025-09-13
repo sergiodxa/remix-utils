@@ -5,20 +5,20 @@ import {
 	isSession,
 	redirect,
 	redirectDocument,
-	unstable_RouterContextProvider,
+	RouterContextProvider,
 } from "react-router";
-import { unstable_createSessionMiddleware } from "./session.js";
+import { createSessionMiddleware } from "./session.js";
 import { runMiddleware } from "./test-helper.js";
 
-describe(unstable_createSessionMiddleware, () => {
+describe(createSessionMiddleware, () => {
 	let cookie = createCookie("session", { secrets: ["test"] });
 	let sessionStorage = createMemorySessionStorage({ cookie });
 
 	test("the middleware sets the Session instance in the context and can be retrieved", async () => {
 		let [middleware, getSession] =
-			unstable_createSessionMiddleware(sessionStorage);
+			createSessionMiddleware(sessionStorage);
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		await runMiddleware(middleware, { context });
 
@@ -30,9 +30,9 @@ describe(unstable_createSessionMiddleware, () => {
 
 	test("the middleware commits the session if the data has changed", async () => {
 		let [middleware, getSession] =
-			unstable_createSessionMiddleware(sessionStorage);
+			createSessionMiddleware(sessionStorage);
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		let response = await runMiddleware(middleware, {
 			context,
@@ -47,12 +47,12 @@ describe(unstable_createSessionMiddleware, () => {
 	});
 
 	test("the middleware doesn't commits the session if the shouldCommit function returns false", async () => {
-		let [middleware, getSession] = unstable_createSessionMiddleware(
+		let [middleware, getSession] = createSessionMiddleware(
 			sessionStorage,
 			() => false,
 		);
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		let response = await runMiddleware(middleware, {
 			context,
@@ -67,12 +67,12 @@ describe(unstable_createSessionMiddleware, () => {
 	});
 
 	test("the middleware only commits the session if the shouldCommit function returns true", async () => {
-		let [middleware, getSession] = unstable_createSessionMiddleware(
+		let [middleware, getSession] = createSessionMiddleware(
 			sessionStorage,
 			(prev, next) => prev.key !== next.key,
 		);
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		let response = await runMiddleware(middleware, {
 			context,
@@ -92,9 +92,9 @@ describe(unstable_createSessionMiddleware, () => {
 
 	test("a returned redirect has the session set", async () => {
 		let [middleware, getSession] =
-			unstable_createSessionMiddleware(sessionStorage);
+			createSessionMiddleware(sessionStorage);
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		let response = await runMiddleware(middleware, {
 			context,
@@ -114,9 +114,9 @@ describe(unstable_createSessionMiddleware, () => {
 
 	test("a returned redirectDocument has the session set", async () => {
 		let [middleware, getSession] =
-			unstable_createSessionMiddleware(sessionStorage);
+			createSessionMiddleware(sessionStorage);
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		let response = await runMiddleware(middleware, {
 			context,
@@ -136,9 +136,9 @@ describe(unstable_createSessionMiddleware, () => {
 
 	test.failing("a thrown redirect has the session set", async () => {
 		let [middleware, getSession] =
-			unstable_createSessionMiddleware(sessionStorage);
+			createSessionMiddleware(sessionStorage);
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		let response = await runMiddleware(middleware, {
 			context,
@@ -158,9 +158,9 @@ describe(unstable_createSessionMiddleware, () => {
 
 	test.failing("a thrown redirectDocument has the session set", async () => {
 		let [middleware, getSession] =
-			unstable_createSessionMiddleware(sessionStorage);
+			createSessionMiddleware(sessionStorage);
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		let response = await runMiddleware(middleware, {
 			context,

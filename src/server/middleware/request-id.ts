@@ -2,18 +2,18 @@
  * The Request ID middleware generates a unique ID for each request and stores it in the Router context, this can be useful to log the request and response information and correlate them.
  *
  * ```ts
- * import { unstable_createRequestIDMiddleware } from "remix-utils/middleware/request-id";
+ * import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
  *
  * export const [requestIDMiddleware, getRequestID] =
- *   unstable_createRequestIDMiddleware();
+ *   createRequestIDMiddleware();
  * ```
  *
- * To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
+ * To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
  *
  * ```ts
  * import { requestIDMiddleware } from "~/middleware/request-id.server";
  *
- * export const unstable_middleware = [requestIDMiddleware];
+ * export const middleware: Route.MiddlewareFunction[] = [requestIDMiddleware];
  * ```
  *
  * And you can use the `getRequestID` function in your loaders, actions, and other middleware to get the request ID.
@@ -27,13 +27,13 @@
  * }
  * ```
  *
- * By default the request ID is a UUID, but you can customize it by passing a function to the `unstable_createRequestIDMiddleware` function.
+ * By default the request ID is a UUID, but you can customize it by passing a function to the `createRequestIDMiddleware` function.
  *
  * ```ts
- * import { unstable_createRequestIDMiddleware } from "remix-utils/middleware/request-id";
+ * import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
  *
  * export const [requestIDMiddleware, getRequestID] =
- *   unstable_createRequestIDMiddleware({
+ *   createRequestIDMiddleware({
  *     generator() {
  *       return Math.random().toString(36).slice(2);
  *     },
@@ -42,32 +42,32 @@
  *
  * The middleware also gets the request ID from the `X-Request-ID` header if it's present, this can be useful to correlate requests between services.
  *
- * If you want to use a different header you can pass the header name to the `unstable_createRequestIDMiddleware` function.
+ * If you want to use a different header you can pass the header name to the `createRequestIDMiddleware` function.
  *
  * ```ts
- * import { unstable_createRequestIDMiddleware } from "remix-utils/middleware/request-id";
+ * import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
  *
  * export const [requestIDMiddleware, getRequestID] =
- *   unstable_createRequestIDMiddleware({
+ *   createRequestIDMiddleware({
  *     header: "X-Correlation-ID",
  *   });
  * ```
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Request ID
  */
-import type { unstable_MiddlewareFunction } from "react-router";
+import type { MiddlewareFunction } from "react-router";
 import {
-	unstable_createContext,
-	unstable_RouterContextProvider,
+	createContext,
+	RouterContextProvider,
 } from "react-router";
-import type { unstable_MiddlewareGetter } from "./utils.js";
+import type { MiddlewareGetter } from "./utils.js";
 
-export function unstable_createRequestIDMiddleware({
+export function createRequestIDMiddleware({
 	generator = defaultGenerator,
 	header = "X-Request-ID",
 	limitLength = 255,
-}: unstable_createRequestIDMiddleware.Options = {}): unstable_createRequestIDMiddleware.ReturnType {
-	let requestIdContext = unstable_createContext<string>();
+}: createRequestIDMiddleware.Options = {}): createRequestIDMiddleware.ReturnType {
+	let requestIdContext = createContext<string>();
 
 	return [
 		function requestIDMiddleware({ request, context }, next) {
@@ -83,13 +83,13 @@ export function unstable_createRequestIDMiddleware({
 			return next();
 		},
 
-		function getRequestID(context: Readonly<unstable_RouterContextProvider>) {
+		function getRequestID(context: Readonly<RouterContextProvider>) {
 			return context.get(requestIdContext);
 		},
 	];
 }
 
-export namespace unstable_createRequestIDMiddleware {
+export namespace createRequestIDMiddleware {
 	export interface Options {
 		/**
 		 * The name of the header to read the request ID from.
@@ -114,8 +114,8 @@ export namespace unstable_createRequestIDMiddleware {
 	}
 
 	export type ReturnType = [
-		unstable_MiddlewareFunction<Response>,
-		unstable_MiddlewareGetter<string>,
+		MiddlewareFunction<Response>,
+		MiddlewareGetter<string>,
 	];
 }
 

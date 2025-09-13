@@ -8,7 +8,7 @@ const DEFAULT_OPTIONS: cors.Options = {
 };
 
 /**
- * @private You should not use this class directly, use the `cors` function instead, or the `unstable_createCorsMiddleware`
+ * @private You should not use this class directly, use the `cors` function instead, or the `createCorsMiddleware`
  */
 export class CORS {
 	private options: cors.Options;

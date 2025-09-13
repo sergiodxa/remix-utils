@@ -6,21 +6,21 @@
  * > **Warning**: JWK Auth is more secure than Basic Auth, but it should be used with HTTPS to ensure the token is encrypted.
  *
  * ```ts
- * import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+ * import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
  *
  * export const [jwkAuthMiddleware, getJWTPayload] =
- *   unstable_createJWKAuthMiddleware({
+ *   createJWKAuthMiddleware({
  *     jwksUri: "https://auth.example.com/.well-known/jwks.json",
  *   });
  * ```
  *
  * The `jwksUri` option let's you set the URL to the JWKS endpoint, this is the URL where the public keys are stored.
  *
- * To use the middleware, you need to add it to the `unstable_middleware` array in the route where you want to use it.
+ * To use the middleware, you need to add it to the `middleware` array in the route where you want to use it.
  *
  * ```ts
  * import { jwkAuthMiddleware } from "~/middleware/jwk-auth";
- * export const unstable_middleware = [jwkAuthMiddleware];
+ * export const middleware: Route.MiddlewareFunction[] = [jwkAuthMiddleware];
  * ```
  *
  * Now, when you access the route it will check the JWT token in the `Authorization` header.
@@ -37,9 +37,9 @@
  * The `realm` option let's you set the realm for the authentication, this is the name of the protected area.
  *
  * ```ts
- * import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+ * import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
  *
- * export const [jwkAuthMiddleware] = unstable_createJWKAuthMiddleware({
+ * export const [jwkAuthMiddleware] = createJWKAuthMiddleware({
  *   realm: "My Realm",
  *   jwksUri: "https://auth.example.com/.well-known/jwks.json",
  * });
@@ -48,9 +48,9 @@
  * If you want to customize the message sent when the token is invalid you can use the `invalidTokenMessage` option.
  *
  * ```ts
- * import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+ * import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
  *
- * export const [jwkAuthMiddleware] = unstable_createJWKAuthMiddleware({
+ * export const [jwkAuthMiddleware] = createJWKAuthMiddleware({
  *   invalidTokenMessage: "Invalid token",
  *   jwksUri: "https://auth.example.com/.well-known/jwks.json",
  * });
@@ -68,9 +68,9 @@
  * You can also customize the `invalidTokenMessage` by passing a function which will receive the Request and context objects.
  *
  * ```ts
- * import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+ * import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
  *
- * export const [jwkAuthMiddleware] = unstable_createJWKAuthMiddleware({
+ * export const [jwkAuthMiddleware] = createJWKAuthMiddleware({
  *   invalidTokenMessage({ request, context }) {
  *     // do something with request or context here
  *     return { message: `Invalid token` };
@@ -106,10 +106,10 @@
  * If your app receives the JWT in a custom header instead of the `Authorization` header you can tell the middleware to look for the token in that header.
  *
  * ```ts
- * import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+ * import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
  *
  * export const [jwkAuthMiddleware, getJWTPayload] =
- *   unstable_createJWKAuthMiddleware({ header: "X-API-Key" });
+ *   createJWKAuthMiddleware({ header: "X-API-Key" });
  * ```
  *
  * Now use the middleware as usual, but now instead of looking for the token in the `Authorization` header it will look for it in the `X-API-Key` header.
@@ -117,7 +117,7 @@
  * ```ts
  * import { jwkAuthMiddleware } from "~/middleware/jwk-auth";
  *
- * export const unstable_middleware = [jwkAuthMiddleware];
+ * export const middleware: Route.MiddlewareFunction[] = [jwkAuthMiddleware];
  * ```
  *
  * ## With a Cookie
@@ -125,7 +125,7 @@
  * If you save a JWT in a cookie using React Router's Cookie API, you can tell the middleware to look for the token in the cookie instead of the `Authorization` header.
  *
  * ```ts
- * import { unstable_createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
+ * import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
  * import { createCookie } from "react-router";
  *
  * export const cookie = createCookie("jwt", {
@@ -136,7 +136,7 @@
  * });
  *
  * export const [jwkAuthMiddleware, getJWTPayload] =
- *   unstable_createJWKAuthMiddleware({ cookie });
+ *   createJWKAuthMiddleware({ cookie });
  * ```
  *
  * Then use the middleware as usual, but now instead of looking for the token in the `Authorization` header it will look for it in the cookie.
@@ -144,7 +144,7 @@
  * ```ts
  * import { jwkAuthMiddleware } from "~/middleware/jwk-auth";
  *
- * export const unstable_middleware = [jwkAuthMiddleware];
+ * export const middleware: Route.MiddlewareFunction[] = [jwkAuthMiddleware];
  * ```
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/JWK Auth
@@ -152,20 +152,20 @@
 import { JWK, JWT } from "@edgefirst-dev/jwt";
 import {
 	type Cookie,
-	unstable_createContext,
-	type unstable_MiddlewareFunction,
-	unstable_RouterContextProvider,
+	createContext,
+	type MiddlewareFunction,
+	RouterContextProvider,
 } from "react-router";
-import type { unstable_MiddlewareGetter } from "./utils.js";
+import type { MiddlewareGetter } from "./utils.js";
 
-export function unstable_createJWKAuthMiddleware({
+export function createJWKAuthMiddleware({
 	jwksUri,
 	realm = "Secure Area",
 	alg = JWK.Algoritm.ES256,
 	invalidUserMessage = "Unauthorized",
 	...options
-}: unstable_createBearerAuthMiddleware.Options): unstable_createBearerAuthMiddleware.ReturnType {
-	const tokenContext = unstable_createContext<JWT>();
+}: createBearerAuthMiddleware.Options): createBearerAuthMiddleware.ReturnType {
+	const tokenContext = createContext<JWT>();
 	const remote = JWK.importRemote(new URL(jwksUri), { alg });
 
 	const cookieInOptions = "cookie" in options;
@@ -215,7 +215,7 @@ export function unstable_createJWKAuthMiddleware({
 
 	async function getInvalidUserMessage(args: {
 		request: Request;
-		context: Readonly<unstable_RouterContextProvider>;
+		context: Readonly<RouterContextProvider>;
 	}): Promise<string | object> {
 		if (invalidUserMessage === undefined) return "Unauthorized";
 		if (typeof invalidUserMessage === "string") return invalidUserMessage;
@@ -227,7 +227,7 @@ export function unstable_createJWKAuthMiddleware({
 
 	async function unauthorized(
 		request: Request,
-		context: Readonly<unstable_RouterContextProvider>,
+		context: Readonly<RouterContextProvider>,
 	) {
 		let message = await getInvalidUserMessage({ request, context });
 		return Response.json(message, {
@@ -238,10 +238,10 @@ export function unstable_createJWKAuthMiddleware({
 	}
 }
 
-export namespace unstable_createBearerAuthMiddleware {
+export namespace createBearerAuthMiddleware {
 	export type Args = {
 		request: Request;
-		context: Readonly<unstable_RouterContextProvider>;
+		context: Readonly<RouterContextProvider>;
 	};
 
 	export type MessageFunction = (
@@ -323,7 +323,7 @@ export namespace unstable_createBearerAuthMiddleware {
 	export type Options = HeaderOptions | CookieOptions;
 
 	export type ReturnType = [
-		unstable_MiddlewareFunction<Response>,
-		unstable_MiddlewareGetter<JWT>,
+		MiddlewareFunction<Response>,
+		MiddlewareGetter<JWT>,
 	];
 }

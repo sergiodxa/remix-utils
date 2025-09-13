@@ -9,19 +9,19 @@
  * > protect sensitive data, use a more secure method instead.
  *
  * ```ts
- * import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
  *
- * export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+ * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
  *   user: { username: "admin", password: "password" },
  * });
  * ```
  *
- * To use it, you need to add it to the `unstable_middleware` array in the
+ * To use it, you need to add it to the `middleware` array in the
  * route where you want to use it.
  *
  * ```ts
  * import { basicAuthMiddleware } from "~/middleware/basic-auth.server";
- * export const unstable_middleware = [basicAuthMiddleware];
+ * export const middleware: Route.MiddlewareFunction[] = [basicAuthMiddleware];
  * ```
  *
  * Now, when you access the route you will be prompted to enter the username and password.
@@ -29,9 +29,9 @@
  * The `realm` option let's you set the realm for the authentication, this is the name of the protected area.
  *
  * ```ts
- * import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
  *
- * export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+ * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
  *   realm: "My Realm",
  *   user: { username: "admin", password: "password" },
  * });
@@ -41,9 +41,9 @@
  * you can also pass an array of users.
  *
  * ```ts
- * import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
  *
- * export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+ * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
  *   user: [
  *     { username: "admin", password: "password" },
  *     { username: "user", password: "password" },
@@ -55,9 +55,9 @@
  * can be useful to check the user against a database.
  *
  * ```ts
- * import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
  *
- * export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+ * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
  *   verifyUser(username, password) {
  *     let user = await getUser(username);
  *     if (!user) return false;
@@ -83,9 +83,9 @@
  * the user is invalid.
  *
  * ```ts
- * import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
  *
- * export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+ * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
  *   invalidUserMessage: "Invalid username or password",
  *   user: { username: "admin", password: "password" },
  * });
@@ -104,9 +104,9 @@
  * will receive the Request and context objects.
  *
  * ```ts
- * import { unstable_createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
  *
- * export const [basicAuthMiddleware] = unstable_createBasicAuthMiddleware({
+ * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
  *   invalidUserMessage({ request, context }) {
  *     // do something with request or context here
  *     return { message: `Invalid username or password for ${username}` };
@@ -130,11 +130,11 @@
 import { sha256 } from "@oslojs/crypto/sha2";
 import { decodeBase64 } from "@oslojs/encoding";
 import {
-	unstable_createContext,
-	type unstable_MiddlewareFunction,
-	type unstable_RouterContextProvider,
+	createContext,
+	type MiddlewareFunction,
+	type RouterContextProvider,
 } from "react-router";
-import type { unstable_MiddlewareGetter } from "./utils.js";
+import type { MiddlewareGetter } from "./utils.js";
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
@@ -143,15 +143,15 @@ const CREDENTIALS_REGEXP =
 	/^ *(?:[Bb][Aa][Ss][Ii][Cc]) +([A-Za-z0-9._~+/-]+=*) *$/;
 const USER_PASS_REGEXP = /^([^:]*):(.*)$/;
 
-export function unstable_createBasicAuthMiddleware(
-	options: unstable_createBasicAuthMiddleware.Options,
-): unstable_createBasicAuthMiddleware.ReturnType {
+export function createBasicAuthMiddleware(
+	options: createBasicAuthMiddleware.Options,
+): createBasicAuthMiddleware.ReturnType {
 	const userInOptions = "user" in options;
 	const verifyUserInOptions = "verifyUser" in options;
 
 	if (!(userInOptions || verifyUserInOptions)) {
 		throw new Error(
-			'unstable_createBasicAuthMiddleware requires options for "username and password" or "verifyUser"',
+			'createBasicAuthMiddleware requires options for "username and password" or "verifyUser"',
 		);
 	}
 
@@ -159,7 +159,7 @@ export function unstable_createBasicAuthMiddleware(
 		.replace(/\\/g, "\\\\")
 		.replace(/"/g, '\\"');
 
-	const userContext = unstable_createContext<string>();
+	const userContext = createContext<string>();
 
 	return [
 		async function basicAuthMiddleware({ request, context }, next) {
@@ -207,7 +207,7 @@ export function unstable_createBasicAuthMiddleware(
 
 	async function getInvalidUserMessage(args: {
 		request: Request;
-		context: Readonly<unstable_RouterContextProvider>;
+		context: Readonly<RouterContextProvider>;
 	}): Promise<string | object> {
 		let invalidUserMessage = options.invalidUserMessage;
 		if (invalidUserMessage === undefined) return "Unauthorized";
@@ -219,7 +219,7 @@ export function unstable_createBasicAuthMiddleware(
 	}
 
 	async function validateCredentials(
-		user: unstable_createBasicAuthMiddleware.User,
+		user: createBasicAuthMiddleware.User,
 		username: string,
 		password: string,
 	) {
@@ -233,7 +233,7 @@ export function unstable_createBasicAuthMiddleware(
 
 	async function unauthorized(
 		request: Request,
-		context: Readonly<unstable_RouterContextProvider>,
+		context: Readonly<RouterContextProvider>,
 	) {
 		let message = await getInvalidUserMessage({ request, context });
 		return Response.json(message, {
@@ -244,10 +244,10 @@ export function unstable_createBasicAuthMiddleware(
 	}
 }
 
-export namespace unstable_createBasicAuthMiddleware {
+export namespace createBasicAuthMiddleware {
 	export type Args = {
 		request: Request;
-		context: Readonly<unstable_RouterContextProvider>;
+		context: Readonly<RouterContextProvider>;
 	};
 
 	export type MessageFunction = (
@@ -292,8 +292,8 @@ export namespace unstable_createBasicAuthMiddleware {
 	export type Options = HardCodedUserOptions | DynamicUserOptions;
 
 	export type ReturnType = [
-		unstable_MiddlewareFunction<Response>,
-		unstable_MiddlewareGetter<User["username"]>,
+		MiddlewareFunction<Response>,
+		MiddlewareGetter<User["username"]>,
 	];
 
 	export type HashFunction = (data: Uint8Array) => Uint8Array;
@@ -302,7 +302,7 @@ export namespace unstable_createBasicAuthMiddleware {
 async function timingSafeEqual(
 	a: string | object | boolean,
 	b: string | object | boolean,
-	hashFunction?: unstable_createBasicAuthMiddleware.HashFunction,
+	hashFunction?: createBasicAuthMiddleware.HashFunction,
 ): Promise<boolean> {
 	if (!hashFunction) hashFunction = sha256;
 

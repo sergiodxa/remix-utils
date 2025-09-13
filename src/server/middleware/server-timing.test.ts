@@ -1,16 +1,16 @@
 import { describe, expect, test } from "bun:test";
 import { TimingCollector } from "@edgefirst-dev/server-timing";
-import { unstable_RouterContextProvider } from "react-router";
-import { unstable_createServerTimingMiddleware } from "./server-timing.js";
+import { RouterContextProvider } from "react-router";
+import { createServerTimingMiddleware } from "./server-timing.js";
 import { runMiddleware } from "./test-helper.js";
 
-describe(unstable_createServerTimingMiddleware, () => {
+describe(createServerTimingMiddleware, () => {
 	test("the middleware function sets a TimingCollector instance in the context and adds the server timing headers to the response", async () => {
 		let [middleware, getTimingCollector] =
-			unstable_createServerTimingMiddleware();
+			createServerTimingMiddleware();
 
 		let request = new Request("https://remix.utils");
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		let response = await runMiddleware(middleware, {
 			request,
@@ -32,9 +32,9 @@ describe(unstable_createServerTimingMiddleware, () => {
 
 	test("the getTimingCollector function returns the TimingCollector instance from the context", async () => {
 		let [middleware, getTimingCollector] =
-			unstable_createServerTimingMiddleware();
+			createServerTimingMiddleware();
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		await runMiddleware(middleware, { context });
 

@@ -6,17 +6,17 @@
  * This is specially useful to avoid making multiple API calls to the same endpoint in a single request, or DB queries. The batcher will call the function only once and return the same result to all calls.
  *
  * ```ts
- * import { unstable_createBatcherMiddleware } from "remix-utils/middleware/batcher";
+ * import { createBatcherMiddleware } from "remix-utils/middleware/batcher";
  *
  * export const [batcherMiddleware, getBatcher] =
- *   unstable_createBatcherMiddleware();
+ *   createBatcherMiddleware();
  * ```
  *
- * To use it, you need to add it to the `unstable_middleware` array in the route where you want to use it.
+ * To use it, you need to add it to the `middleware` array in the route where you want to use it.
  *
  * ```ts
  * import { batcherMiddleware } from "~/middleware/batcher.server";
- * export const unstable_middleware = [batcherMiddleware];
+ * export const middleware: Route.MiddlewareFunction[] = [batcherMiddleware];
  * ```
  *
  * And you can use the `getBatcher` function in your loaders to get the batcher object.
@@ -62,15 +62,15 @@
  * @module Middleware/Batcher
  */
 import { Batcher } from "@edgefirst-dev/batcher";
-import { unstable_createSingletonMiddleware } from "./singleton.js";
+import { createSingletonMiddleware } from "./singleton.js";
 
 /**
  * Create a middleware that provides a singleton of a Batcher class.
  * @returns A tuple containing the middleware function and a function to get the
  * batcher instance from the context.
  */
-export function unstable_createBatcherMiddleware() {
-	return unstable_createSingletonMiddleware({
+export function createBatcherMiddleware() {
+	return createSingletonMiddleware({
 		instantiator: () => new Batcher(),
 	});
 }
