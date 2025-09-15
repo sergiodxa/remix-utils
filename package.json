@@ -307,7 +307,7 @@
 		"@testing-library/react": "^16.3.0",
 		"@testing-library/user-event": "^14.6.1",
 		"@total-typescript/tsconfig": "^1.0.4",
-		"@types/bun": "^1.2.21",
+		"@types/bun": "^1.2.22",
 		"@types/react": "^19.1.12",
 		"intl-parse-accept-language": "^1.0.0",
 		"is-ip": "5.0.1",
