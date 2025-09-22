@@ -78,7 +78,7 @@
  * let [sessionMiddleware, getSession] = createSessionMiddleware(
  *   sessionStorage,
  *   (previous, next) => {
- *     return current.user.id !== previous.user.id;
+ *     return previous.user.id !== next.user.id;
  *   }
  * );
  * ```
