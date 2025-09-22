@@ -219,9 +219,7 @@ describe(createBasicAuthMiddleware, () => {
 
 	test("allows customizing the HashFunction", async () => {
 		let hashFunction =
-			mock<createBasicAuthMiddleware.HashFunction>().mockImplementation(
-				sha256,
-			);
+			mock<createBasicAuthMiddleware.HashFunction>().mockImplementation(sha256);
 
 		let [middleware] = createBasicAuthMiddleware({
 			user: { username, password },

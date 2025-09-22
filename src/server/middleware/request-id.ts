@@ -56,10 +56,7 @@
  * @module Middleware/Request ID
  */
 import type { MiddlewareFunction } from "react-router";
-import {
-	createContext,
-	RouterContextProvider,
-} from "react-router";
+import { createContext, RouterContextProvider } from "react-router";
 import type { MiddlewareGetter } from "./utils.js";
 
 export function createRequestIDMiddleware({

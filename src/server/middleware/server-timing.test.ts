@@ -6,8 +6,7 @@ import { runMiddleware } from "./test-helper.js";
 
 describe(createServerTimingMiddleware, () => {
 	test("the middleware function sets a TimingCollector instance in the context and adds the server timing headers to the response", async () => {
-		let [middleware, getTimingCollector] =
-			createServerTimingMiddleware();
+		let [middleware, getTimingCollector] = createServerTimingMiddleware();
 
 		let request = new Request("https://remix.utils");
 		let context = new RouterContextProvider();
@@ -31,8 +30,7 @@ describe(createServerTimingMiddleware, () => {
 	});
 
 	test("the getTimingCollector function returns the TimingCollector instance from the context", async () => {
-		let [middleware, getTimingCollector] =
-			createServerTimingMiddleware();
+		let [middleware, getTimingCollector] = createServerTimingMiddleware();
 
 		let context = new RouterContextProvider();
 

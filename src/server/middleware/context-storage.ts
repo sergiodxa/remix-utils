@@ -64,10 +64,7 @@
  * @module Middleware/Context Storage
  */
 import { AsyncLocalStorage } from "node:async_hooks";
-import type {
-	MiddlewareFunction,
-	RouterContextProvider,
-} from "react-router";
+import type { MiddlewareFunction, RouterContextProvider } from "react-router";
 
 const storage = new AsyncLocalStorage<{
 	context: Readonly<RouterContextProvider>;

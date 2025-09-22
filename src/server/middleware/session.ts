@@ -112,11 +112,11 @@
  * @module Middleware/Session
  */
 import type {
+	MiddlewareFunction,
+	RouterContextProvider,
 	Session,
 	SessionData,
 	SessionStorage,
-	MiddlewareFunction,
-	RouterContextProvider,
 } from "react-router";
 
 import { createContext } from "react-router";
@@ -177,10 +177,7 @@ import type { MiddlewareGetter } from "./utils.js";
  *   })
  * });
  */
-export function createSessionMiddleware<
-	Data = SessionData,
-	FlashData = Data,
->(
+export function createSessionMiddleware<Data = SessionData, FlashData = Data>(
 	sessionStorage:
 		| SessionStorage<Data, FlashData>
 		| createSessionMiddleware.SessionStorageGetter<Data, FlashData>,

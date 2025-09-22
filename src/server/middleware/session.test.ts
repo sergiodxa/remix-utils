@@ -3,9 +3,9 @@ import {
 	createCookie,
 	createMemorySessionStorage,
 	isSession,
+	RouterContextProvider,
 	redirect,
 	redirectDocument,
-	RouterContextProvider,
 } from "react-router";
 import { createSessionMiddleware } from "./session.js";
 import { runMiddleware } from "./test-helper.js";
@@ -15,8 +15,7 @@ describe(createSessionMiddleware, () => {
 	let sessionStorage = createMemorySessionStorage({ cookie });
 
 	test("the middleware sets the Session instance in the context and can be retrieved", async () => {
-		let [middleware, getSession] =
-			createSessionMiddleware(sessionStorage);
+		let [middleware, getSession] = createSessionMiddleware(sessionStorage);
 
 		let context = new RouterContextProvider();
 
@@ -29,8 +28,7 @@ describe(createSessionMiddleware, () => {
 	});
 
 	test("the middleware commits the session if the data has changed", async () => {
-		let [middleware, getSession] =
-			createSessionMiddleware(sessionStorage);
+		let [middleware, getSession] = createSessionMiddleware(sessionStorage);
 
 		let context = new RouterContextProvider();
 
@@ -91,8 +89,7 @@ describe(createSessionMiddleware, () => {
 	});
 
 	test("a returned redirect has the session set", async () => {
-		let [middleware, getSession] =
-			createSessionMiddleware(sessionStorage);
+		let [middleware, getSession] = createSessionMiddleware(sessionStorage);
 
 		let context = new RouterContextProvider();
 
@@ -113,8 +110,7 @@ describe(createSessionMiddleware, () => {
 	});
 
 	test("a returned redirectDocument has the session set", async () => {
-		let [middleware, getSession] =
-			createSessionMiddleware(sessionStorage);
+		let [middleware, getSession] = createSessionMiddleware(sessionStorage);
 
 		let context = new RouterContextProvider();
 
@@ -135,8 +131,7 @@ describe(createSessionMiddleware, () => {
 	});
 
 	test.failing("a thrown redirect has the session set", async () => {
-		let [middleware, getSession] =
-			createSessionMiddleware(sessionStorage);
+		let [middleware, getSession] = createSessionMiddleware(sessionStorage);
 
 		let context = new RouterContextProvider();
 
@@ -157,8 +152,7 @@ describe(createSessionMiddleware, () => {
 	});
 
 	test.failing("a thrown redirectDocument has the session set", async () => {
-		let [middleware, getSession] =
-			createSessionMiddleware(sessionStorage);
+		let [middleware, getSession] = createSessionMiddleware(sessionStorage);
 
 		let context = new RouterContextProvider();
 

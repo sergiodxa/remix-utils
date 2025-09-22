@@ -79,10 +79,7 @@
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Singleton
  */
-import type {
-	MiddlewareFunction,
-	RouterContextProvider,
-} from "react-router";
+import type { MiddlewareFunction, RouterContextProvider } from "react-router";
 import { createContext } from "react-router";
 import type { MiddlewareGetter } from "./utils.js";
 
@@ -119,10 +116,7 @@ export function createSingletonMiddleware<T>(
 
 export namespace createSingletonMiddleware {
 	export interface Options<T> {
-		instantiator(
-			request: Request,
-			context: Readonly<RouterContextProvider>,
-		): T;
+		instantiator(request: Request, context: Readonly<RouterContextProvider>): T;
 	}
 
 	export type ReturnType<T> = [

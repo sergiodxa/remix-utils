@@ -1,7 +1,7 @@
 import { mock } from "bun:test";
 import {
-	type Params,
 	type MiddlewareFunction,
+	type Params,
 	RouterContextProvider,
 } from "react-router";
 

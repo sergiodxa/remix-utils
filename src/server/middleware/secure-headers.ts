@@ -303,23 +303,22 @@ const HEADERS_MAP: HeadersMap = {
 	xXssProtection: ["X-XSS-Protection", "0"],
 };
 
-const DEFAULT_OPTIONS: createSecureHeadersMiddleware.SecureHeadersOptions =
-	{
-		crossOriginEmbedderPolicy: false,
-		crossOriginResourcePolicy: true,
-		crossOriginOpenerPolicy: true,
-		originAgentCluster: true,
-		referrerPolicy: true,
-		strictTransportSecurity: true,
-		xContentTypeOptions: true,
-		xDnsPrefetchControl: true,
-		xDownloadOptions: true,
-		xFrameOptions: true,
-		xPermittedCrossDomainPolicies: true,
-		xXssProtection: true,
-		removePoweredBy: true,
-		permissionsPolicy: {},
-	};
+const DEFAULT_OPTIONS: createSecureHeadersMiddleware.SecureHeadersOptions = {
+	crossOriginEmbedderPolicy: false,
+	crossOriginResourcePolicy: true,
+	crossOriginOpenerPolicy: true,
+	originAgentCluster: true,
+	referrerPolicy: true,
+	strictTransportSecurity: true,
+	xContentTypeOptions: true,
+	xDnsPrefetchControl: true,
+	xDownloadOptions: true,
+	xFrameOptions: true,
+	xPermittedCrossDomainPolicies: true,
+	xXssProtection: true,
+	removePoweredBy: true,
+	permissionsPolicy: {},
+};
 
 function getFilteredHeaders(
 	options: createSecureHeadersMiddleware.SecureHeadersOptions,
