@@ -4,7 +4,7 @@
  * same Session instance.
  *
  * ```ts
- * import { unstable_createSessionMiddleware } from "remix-utils/middleware/session";
+ * import { createSessionMiddleware } from "remix-utils/middleware/session";
  * ```
  *
  * To use it, you need to create a session storage object and pass it to the
@@ -18,7 +18,7 @@
  * });
  *
  * let [sessionMiddleware, getSession] =
- *   unstable_createSessionMiddleware(sessionStorage);
+ *   createSessionMiddleware(sessionStorage);
  * ```
  *
  * Then you can use the `sessionMiddleware` in your `app/root.tsx` function.
@@ -26,7 +26,7 @@
  * ```ts
  * import { sessionMiddleware } from "~/middleware/session.server";
  *
- * export const unstable_middleware = [sessionMiddleware];
+ * export const middleware: Route.MiddlewareFunction[] = [sessionMiddleware];
  * ```
  *
  * And you can use the `getSession` function in your loaders to get the session
@@ -45,10 +45,10 @@
  *
  * By default the middleware will automaticaly commit the session at the end of
  * the request, but you can customize this behavior by passing a second
- * argument to the `unstable_createSessionMiddleware` function.
+ * argument to the `createSessionMiddleware` function.
  *
  * ```ts
- * let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
+ * let [sessionMiddleware, getSession] = createSessionMiddleware(
  *   sessionStorage,
  *   shouldCommit
  * );
@@ -65,7 +65,7 @@
  * ```ts
  * import { dequal } from "dequal";
  *
- * let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
+ * let [sessionMiddleware, getSession] = createSessionMiddleware(
  *   sessionStorage,
  *   (previous, next) => !dequal(previous, next) // Only commit if session changed
  * );
@@ -75,7 +75,7 @@
  * some specific fields changed.
  *
  * ```ts
- * let [sessionMiddleware, getSession] = unstable_createSessionMiddleware(
+ * let [sessionMiddleware, getSession] = createSessionMiddleware(
  *   sessionStorage,
  *   (previous, next) => {
  *     return current.user.id !== previous.user.id;
@@ -84,15 +84,15 @@
  * ```
  *
  * Optionally, you can also pass a getter function to
- * `unstable_createSessionMiddleware` to dynamically create the session storage
+ * `createSessionMiddleware` to dynamically create the session storage
  * based on the request and context.
  *
  * ```ts
- * import { unstable_createSessionMiddleware } from "remix-utils/middleware/session";
+ * import { createSessionMiddleware } from "remix-utils/middleware/session";
  * import { createCookieSessionStorage } from "react-router";
  *
  * export const [sessionMiddleware, getSession] =
- *  unstable_createSessionMiddleware((request, context) => {
+ *  createSessionMiddleware((request, context) => {
  *     let url = new URL(request.url);
  *     let domain = url.hostname === "localhost" ? undefined : url.hostname;
  *    return createCookieSessionStorage({
@@ -115,12 +115,12 @@ import type {
 	Session,
 	SessionData,
 	SessionStorage,
-	unstable_MiddlewareFunction,
-	unstable_RouterContextProvider,
+	MiddlewareFunction,
+	RouterContextProvider,
 } from "react-router";
 
-import { unstable_createContext } from "react-router";
-import type { unstable_MiddlewareGetter } from "./utils.js";
+import { createContext } from "react-router";
+import type { MiddlewareGetter } from "./utils.js";
 
 /**
  * Creates a session middleware that uses the provided session storage object
@@ -145,14 +145,14 @@ import type { unstable_MiddlewareGetter } from "./utils.js";
  * @example
  * // app/middleware/session.ts
  * import { sessionStorage } from "~/session";
- * import { unstable_createSessionMiddleware } from "remix-utils";
+ * import { createSessionMiddleware } from "remix-utils";
  *
  * export const [sessionMiddleware, getSession] =
- *   unstable_createSessionMiddleware(sessionStorage);
+ *   createSessionMiddleware(sessionStorage);
  *
  * // app/root.tsx
  * import { sessionMiddleware } from "~/middleware/session";
- * export const unstable_middleware = [sessionMiddleware];
+ * export const middleware: Route.MiddlewareFunction[] = [sessionMiddleware];
  *
  * // app/routes/_index.tsx
  * import { getSession } from "~/middleware/session";
@@ -166,10 +166,10 @@ import type { unstable_MiddlewareGetter } from "./utils.js";
  * @example
  * // app/middleware/session.ts
  * import { createCookieSessionStorage } from "react-router";
- * import { unstable_createSessionMiddleware } from "remix-utils/middleware/session";
+ * import { createSessionMiddleware } from "remix-utils/middleware/session";
  *
  * export const [sessionMiddleware, getSession] =
- *   unstable_createSessionMiddleware((request, context) => {
+ *   createSessionMiddleware((request, context) => {
  *   let url = new URL(request.url);
  *   let domain = url.hostname === "localhost" ? undefined : url.hostname;
  *   return createCookieSessionStorage({
@@ -177,16 +177,16 @@ import type { unstable_MiddlewareGetter } from "./utils.js";
  *   })
  * });
  */
-export function unstable_createSessionMiddleware<
+export function createSessionMiddleware<
 	Data = SessionData,
 	FlashData = Data,
 >(
 	sessionStorage:
 		| SessionStorage<Data, FlashData>
-		| unstable_createSessionMiddleware.SessionStorageGetter<Data, FlashData>,
-	shouldCommit: unstable_createSessionMiddleware.ShouldCommitFunction<Data> = defaultShouldCommit,
-): unstable_createSessionMiddleware.ReturnType<Data, FlashData> {
-	let sessionContext = unstable_createContext<Session<Data, FlashData>>();
+		| createSessionMiddleware.SessionStorageGetter<Data, FlashData>,
+	shouldCommit: createSessionMiddleware.ShouldCommitFunction<Data> = defaultShouldCommit,
+): createSessionMiddleware.ReturnType<Data, FlashData> {
+	let sessionContext = createContext<Session<Data, FlashData>>();
 
 	return [
 		async function middleware({ request, context }, next) {
@@ -219,7 +219,7 @@ export function unstable_createSessionMiddleware<
 	];
 }
 
-export namespace unstable_createSessionMiddleware {
+export namespace createSessionMiddleware {
 	/**
 	 * A function that returns a session storage object for the given request and
 	 * context.
@@ -229,7 +229,7 @@ export namespace unstable_createSessionMiddleware {
 	 */
 	export type SessionStorageGetter<Data, FlashData> = (
 		request: Request,
-		context: Readonly<unstable_RouterContextProvider>,
+		context: Readonly<RouterContextProvider>,
 	) => SessionStorage<Data, FlashData>;
 
 	/**
@@ -245,8 +245,8 @@ export namespace unstable_createSessionMiddleware {
 	) => boolean;
 
 	export type ReturnType<Data, FlashData> = [
-		unstable_MiddlewareFunction<Response>,
-		unstable_MiddlewareGetter<Session<Data, FlashData>>,
+		MiddlewareFunction<Response>,
+		MiddlewareGetter<Session<Data, FlashData>>,
 	];
 }
 

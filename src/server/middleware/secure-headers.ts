@@ -2,29 +2,29 @@
  * The secure headers middleware simplifies the setup of security headers. Inspired in part by the version from Hono `secureHeaders` middleware.
  *
  * ```ts
- * import { unstable_createSecureHeadersMiddleware } from "remix-utils/middleware/secure-headers";
+ * import { createSecureHeadersMiddleware } from "remix-utils/middleware/secure-headers";
  *
  * export const [secureHeadersMiddleware] =
- *   unstable_createSecureHeadersMiddleware();
+ *   createSecureHeadersMiddleware();
  * ```
  *
- * To use it, you need to add it to the `unstable_middleware` array in your `app/root.tsx` file.
+ * To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
  *
  * ```ts
  * import { secureHeadersMiddleware } from "~/middleware/secure-headers.server";
- * export const unstable_middleware = [secureHeadersMiddleware];
+ * export const middleware: Route.MiddlewareFunction[] = [secureHeadersMiddleware];
  * ```
  *
  * Now, every response will have the security header responses.
  *
- * The secure headers middleware middleware can be customized by passing an options object to the `unstable_createSecureHeadersMiddleware` function.
+ * The secure headers middleware middleware can be customized by passing an options object to the `createSecureHeadersMiddleware` function.
  *
  * The options let's you configure the headers key values. The middleware accepts the same options as the Hono Secure Headers Middleware.
  * @author [Floryan Simar](https://github.com/TheYoxy)
  * @module Middleware/Secure Headers
  * @see {@link https://hono.dev/docs/middleware/builtin/secure-headers | Hono Secure Headers Middleware}
  */
-import type { unstable_MiddlewareFunction } from "react-router";
+import type { MiddlewareFunction } from "react-router";
 
 /**
  * Secure Headers Middleware for React-router.
@@ -50,9 +50,9 @@ import type { unstable_MiddlewareFunction } from "react-router";
  * @param {PermissionsPolicyOptions} [customOptions.permissionsPolicy] - Settings for the Permissions-Policy header.
  * @returns {MiddlewareHandler} The middleware handler function.
  */
-export function unstable_createSecureHeadersMiddleware(
-	customOptions?: unstable_createSecureHeadersMiddleware.SecureHeadersOptions,
-): unstable_createSecureHeadersMiddleware.ReturnType {
+export function createSecureHeadersMiddleware(
+	customOptions?: createSecureHeadersMiddleware.SecureHeadersOptions,
+): createSecureHeadersMiddleware.ReturnType {
 	let options = { ...DEFAULT_OPTIONS, ...customOptions };
 	let headersToSet = getFilteredHeaders(options);
 
@@ -102,7 +102,7 @@ export function unstable_createSecureHeadersMiddleware(
 	];
 }
 
-export namespace unstable_createSecureHeadersMiddleware {
+export namespace createSecureHeadersMiddleware {
 	export interface SecureHeadersOptions {
 		contentSecurityPolicy?: ContentSecurityPolicyOptions;
 		contentSecurityPolicyReportOnly?: ContentSecurityPolicyOptions;
@@ -124,7 +124,7 @@ export namespace unstable_createSecureHeadersMiddleware {
 		permissionsPolicy?: PermissionsPolicyOptions;
 	}
 
-	export type ReturnType = [unstable_MiddlewareFunction<Response>];
+	export type ReturnType = [MiddlewareFunction<Response>];
 
 	export interface Logger {
 		error(...message: string[]): void;
@@ -279,7 +279,7 @@ type PermissionsPolicyOptions = Partial<
 type overridableHeader = boolean | string;
 
 type HeadersMap = {
-	[key in keyof unstable_createSecureHeadersMiddleware.SecureHeadersOptions]: [
+	[key in keyof createSecureHeadersMiddleware.SecureHeadersOptions]: [
 		string,
 		string,
 	];
@@ -303,7 +303,7 @@ const HEADERS_MAP: HeadersMap = {
 	xXssProtection: ["X-XSS-Protection", "0"],
 };
 
-const DEFAULT_OPTIONS: unstable_createSecureHeadersMiddleware.SecureHeadersOptions =
+const DEFAULT_OPTIONS: createSecureHeadersMiddleware.SecureHeadersOptions =
 	{
 		crossOriginEmbedderPolicy: false,
 		crossOriginResourcePolicy: true,
@@ -322,19 +322,19 @@ const DEFAULT_OPTIONS: unstable_createSecureHeadersMiddleware.SecureHeadersOptio
 	};
 
 function getFilteredHeaders(
-	options: unstable_createSecureHeadersMiddleware.SecureHeadersOptions,
+	options: createSecureHeadersMiddleware.SecureHeadersOptions,
 ): Array<[string, string]> {
 	return Object.entries(HEADERS_MAP)
 		.filter(
 			([key]) =>
 				options[
-					key as keyof unstable_createSecureHeadersMiddleware.SecureHeadersOptions
+					key as keyof createSecureHeadersMiddleware.SecureHeadersOptions
 				],
 		)
 		.map(([key, defaultValue]) => {
 			let overrideValue =
 				options[
-					key as keyof unstable_createSecureHeadersMiddleware.SecureHeadersOptions
+					key as keyof createSecureHeadersMiddleware.SecureHeadersOptions
 				];
 			return typeof overrideValue === "string"
 				? [defaultValue[0], overrideValue]
@@ -397,7 +397,7 @@ function camelToKebab(str: string): string {
 }
 
 function getReportingEndpoints(
-	reportingEndpoints: unstable_createSecureHeadersMiddleware.SecureHeadersOptions["reportingEndpoints"] = [],
+	reportingEndpoints: createSecureHeadersMiddleware.SecureHeadersOptions["reportingEndpoints"] = [],
 ): string {
 	return reportingEndpoints
 		.map((endpoint) => `${endpoint.name}="${endpoint.url}"`)
@@ -405,7 +405,7 @@ function getReportingEndpoints(
 }
 
 function getReportToOptions(
-	reportTo: unstable_createSecureHeadersMiddleware.SecureHeadersOptions["reportTo"] = [],
+	reportTo: createSecureHeadersMiddleware.SecureHeadersOptions["reportTo"] = [],
 ): string {
 	return reportTo.map((option) => JSON.stringify(option)).join(", ");
 }

@@ -1,18 +1,18 @@
 import { describe, expect, test } from "bun:test";
-import { unstable_RouterContextProvider } from "react-router";
-import { unstable_createRequestIDMiddleware } from "./request-id.js";
+import { RouterContextProvider } from "react-router";
+import { createRequestIDMiddleware } from "./request-id.js";
 import { runMiddleware } from "./test-helper.js";
 
-describe(unstable_createRequestIDMiddleware, () => {
+describe(createRequestIDMiddleware, () => {
 	test("gets the request id from the X-Request-ID header", async () => {
-		let [middleware, getRequestID] = unstable_createRequestIDMiddleware();
+		let [middleware, getRequestID] = createRequestIDMiddleware();
 
 		let request = new Request("https://remix.run", {
 			headers: {
 				"X-Request-ID": "test-request-id",
 			},
 		});
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		await runMiddleware(middleware, { request, context });
 
@@ -22,11 +22,11 @@ describe(unstable_createRequestIDMiddleware, () => {
 	});
 
 	test("uses generator a new request id if there's nothing in the header", async () => {
-		let [middleware, getRequestID] = unstable_createRequestIDMiddleware({
+		let [middleware, getRequestID] = createRequestIDMiddleware({
 			generator: () => "test-request-id",
 		});
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		await runMiddleware(middleware, { context });
 
@@ -36,7 +36,7 @@ describe(unstable_createRequestIDMiddleware, () => {
 	});
 
 	test("uses generator a new request id if the header is too long", async () => {
-		let [middleware, getRequestID] = unstable_createRequestIDMiddleware({
+		let [middleware, getRequestID] = createRequestIDMiddleware({
 			generator: () => "test-request-id",
 		});
 
@@ -46,7 +46,7 @@ describe(unstable_createRequestIDMiddleware, () => {
 			},
 		});
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		await runMiddleware(middleware, { request, context });
 
@@ -56,7 +56,7 @@ describe(unstable_createRequestIDMiddleware, () => {
 	});
 
 	test("uses generator a new request id if the header contains invalid characters", async () => {
-		let [middleware, getRequestID] = unstable_createRequestIDMiddleware({
+		let [middleware, getRequestID] = createRequestIDMiddleware({
 			generator: () => "test-request-id",
 		});
 
@@ -66,7 +66,7 @@ describe(unstable_createRequestIDMiddleware, () => {
 			},
 		});
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		await runMiddleware(middleware, { request, context });
 
@@ -76,9 +76,9 @@ describe(unstable_createRequestIDMiddleware, () => {
 	});
 
 	test("uses default generator if none is provided", async () => {
-		let [middleware, getRequestID] = unstable_createRequestIDMiddleware();
+		let [middleware, getRequestID] = createRequestIDMiddleware();
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		await runMiddleware(middleware, { context });
 
@@ -88,7 +88,7 @@ describe(unstable_createRequestIDMiddleware, () => {
 	});
 
 	test("uses user-provided header name to find header", async () => {
-		let [middleware, getRequestID] = unstable_createRequestIDMiddleware({
+		let [middleware, getRequestID] = createRequestIDMiddleware({
 			header: "X-My-Request-ID",
 		});
 
@@ -98,7 +98,7 @@ describe(unstable_createRequestIDMiddleware, () => {
 			},
 		});
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		await runMiddleware(middleware, { request, context });
 

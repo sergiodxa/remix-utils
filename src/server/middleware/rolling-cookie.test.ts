@@ -1,19 +1,19 @@
 import { describe, expect, test } from "bun:test";
 import { createCookie } from "react-router";
-import { unstable_createRollingCookieMiddleware } from "./rolling-cookie.js";
+import { createRollingCookieMiddleware } from "./rolling-cookie.js";
 import { runMiddleware } from "./test-helper.js";
 
 const cookie = createCookie("name", { maxAge: 60 * 60 * 24 });
 
-describe(unstable_createRollingCookieMiddleware, () => {
+describe(createRollingCookieMiddleware, () => {
 	test("if the request has no cookie the middleware does nothing", async () => {
-		let [middleware] = unstable_createRollingCookieMiddleware({ cookie });
+		let [middleware] = createRollingCookieMiddleware({ cookie });
 		let response = await runMiddleware(middleware);
 		expect(response.headers.getAll("set-cookie")).toEqual([]);
 	});
 
 	test("if the request has a cookie, the middleware rolls it", async () => {
-		let [middleware] = unstable_createRollingCookieMiddleware({ cookie });
+		let [middleware] = createRollingCookieMiddleware({ cookie });
 
 		let request = new Request("https://remix.utils", {
 			headers: { Cookie: await cookie.serialize("value from request") },
@@ -27,7 +27,7 @@ describe(unstable_createRollingCookieMiddleware, () => {
 	});
 
 	test("if the response already sets the cookie, the middleware does nothing", async () => {
-		let [middleware] = unstable_createRollingCookieMiddleware({ cookie });
+		let [middleware] = createRollingCookieMiddleware({ cookie });
 
 		let request = new Request("https://remix.utils", {
 			headers: { Cookie: await cookie.serialize("value from request") },

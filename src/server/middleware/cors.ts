@@ -4,29 +4,29 @@
  * To use it, first create a CORS middleware instance:
  *
  * ```ts
- * import { unstable_createCorsMiddleware } from "remix-utils/middleware/cors";
+ * import { createCorsMiddleware } from "remix-utils/middleware/cors";
  *
- * export const [corsMiddleware] = unstable_createCorsMiddleware();
+ * export const [corsMiddleware] = createCorsMiddleware();
  * ```
  *
- * Add the `corsMiddleware` to the `unstable_middleware` array in the route where you want to configure CORS, use it in your `app/root.tsx` file to apply it globally:
+ * Add the `corsMiddleware` to the `middleware` array in the route where you want to configure CORS, use it in your `app/root.tsx` file to apply it globally:
  *
  * ```ts
  * import { corsMiddleware } from "~/middleware/cors.server";
  *
- * export const unstable_middleware = [corsMiddleware];
+ * export const middleware: Route.MiddlewareFunction[] = [corsMiddleware];
  * ```
  *
  * Now, every request will have the CORS headers set.
  *
- * You can customize the CORS middleware by passing an options object to the `unstable_createCorsMiddleware` function.
+ * You can customize the CORS middleware by passing an options object to the `createCorsMiddleware` function.
  *
  * The options lets you configure the CORS headers, e.g. `origin`, `methods`, `allowedHeaders`, etc.
  *
  * ```ts
- * import { unstable_createCorsMiddleware } from "remix-utils/middleware/cors";
+ * import { createCorsMiddleware } from "remix-utils/middleware/cors";
  *
- * export const [corsMiddleware] = unstable_createCorsMiddleware({
+ * export const [corsMiddleware] = createCorsMiddleware({
  *   origin: "https://example.com",
  *   methods: ["GET", "POST"],
  *   allowedHeaders: ["Content-Type", "Authorization"],
@@ -40,7 +40,7 @@
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/CORS
  */
-import type { unstable_MiddlewareFunction } from "react-router";
+import type { MiddlewareFunction } from "react-router";
 import { CORS, type cors } from "../cors.js";
 
 /**
@@ -59,9 +59,9 @@ import { CORS, type cors } from "../cors.js";
  * @param options Optional configuration for CORS
  * @returns A middleware function that applies CORS headers
  */
-export function unstable_createCorsMiddleware(
-	options: unstable_createCorsMiddleware.Options,
-): unstable_createCorsMiddleware.ReturnType {
+export function createCorsMiddleware(
+	options: createCorsMiddleware.Options,
+): createCorsMiddleware.ReturnType {
 	let cors = new CORS(options);
 	return [
 		async function corsMiddleware({ request }, next) {
@@ -71,11 +71,11 @@ export function unstable_createCorsMiddleware(
 	];
 }
 
-export namespace unstable_createCorsMiddleware {
+export namespace createCorsMiddleware {
 	export interface Options extends cors.Options {}
 
 	/**
-	 * The return type of `unstable_createCorsMiddleware`.
+	 * The return type of `createCorsMiddleware`.
 	 */
-	export type ReturnType = [unstable_MiddlewareFunction<Response>];
+	export type ReturnType = [MiddlewareFunction<Response>];
 }

@@ -1,11 +1,11 @@
 import { describe, expect, mock, test } from "bun:test";
 import { sha256 } from "@oslojs/crypto/sha2";
 import { encodeBase64 } from "@oslojs/encoding";
-import { unstable_RouterContextProvider } from "react-router";
-import { unstable_createBasicAuthMiddleware } from "./basic-auth.js";
+import { RouterContextProvider } from "react-router";
+import { createBasicAuthMiddleware } from "./basic-auth.js";
 import { catchResponse, runMiddleware } from "./test-helper.js";
 
-describe(unstable_createBasicAuthMiddleware, () => {
+describe(createBasicAuthMiddleware, () => {
 	const username = "test";
 	const password = "password";
 
@@ -26,13 +26,13 @@ describe(unstable_createBasicAuthMiddleware, () => {
 
 	test("throws an error if no options are provided", async () => {
 		// @ts-expect-error
-		expect(() => unstable_createBasicAuthMiddleware({})).toThrowError(
-			'unstable_createBasicAuthMiddleware requires options for "username and password" or "verifyUser"',
+		expect(() => createBasicAuthMiddleware({})).toThrowError(
+			'createBasicAuthMiddleware requires options for "username and password" or "verifyUser"',
 		);
 	});
 
 	test("throws a response if no authorization is provided", async () => {
-		let [middleware] = unstable_createBasicAuthMiddleware({
+		let [middleware] = createBasicAuthMiddleware({
 			user: { username, password },
 		});
 
@@ -48,7 +48,7 @@ describe(unstable_createBasicAuthMiddleware, () => {
 	});
 
 	test("the Realm is customizable", async () => {
-		let [middleware] = unstable_createBasicAuthMiddleware({
+		let [middleware] = createBasicAuthMiddleware({
 			user: { username, password },
 			realm: "Custom Realm",
 		});
@@ -64,7 +64,7 @@ describe(unstable_createBasicAuthMiddleware, () => {
 	});
 
 	test("the response body is customizable", async () => {
-		let [middleware] = unstable_createBasicAuthMiddleware({
+		let [middleware] = createBasicAuthMiddleware({
 			user: { username, password },
 			invalidUserMessage: "Custom Message",
 		});
@@ -77,7 +77,7 @@ describe(unstable_createBasicAuthMiddleware, () => {
 	});
 
 	test("the response body can be an object", async () => {
-		let [middleware] = unstable_createBasicAuthMiddleware({
+		let [middleware] = createBasicAuthMiddleware({
 			user: { username, password },
 			invalidUserMessage: { message: "Custom Message" },
 		});
@@ -91,18 +91,18 @@ describe(unstable_createBasicAuthMiddleware, () => {
 
 	test("the response body can be customized with a function", async () => {
 		let invalidUserMessage =
-			mock<unstable_createBasicAuthMiddleware.MessageFunction>().mockImplementation(
+			mock<createBasicAuthMiddleware.MessageFunction>().mockImplementation(
 				({ request }) => {
 					return `Custom Message: ${request.url}`;
 				},
 			);
 
-		let [middleware] = unstable_createBasicAuthMiddleware({
+		let [middleware] = createBasicAuthMiddleware({
 			user: { username, password },
 			invalidUserMessage,
 		});
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		let response = await catchResponse(
 			runMiddleware(middleware, { request: unauthorizedRequest, context }),
@@ -119,11 +119,11 @@ describe(unstable_createBasicAuthMiddleware, () => {
 	});
 
 	test("creates a basic auth middleware with username and password", async () => {
-		let [middleware, getUser] = unstable_createBasicAuthMiddleware({
+		let [middleware, getUser] = createBasicAuthMiddleware({
 			user: { username, password },
 		});
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		await runMiddleware(middleware, { request: authorizedRequest, context });
 
@@ -133,11 +133,11 @@ describe(unstable_createBasicAuthMiddleware, () => {
 	test("creates a basic auth middleware with verifyUser", async () => {
 		let verifyUser = mock().mockResolvedValue(true);
 
-		let [middleware, getUser] = unstable_createBasicAuthMiddleware({
+		let [middleware, getUser] = createBasicAuthMiddleware({
 			verifyUser,
 		});
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		await runMiddleware(middleware, { context, request: authorizedRequest });
 
@@ -152,11 +152,11 @@ describe(unstable_createBasicAuthMiddleware, () => {
 	test("creates a basic auth middleware with invalid user", async () => {
 		let verifyUser = mock().mockResolvedValue(false);
 
-		let [middleware] = unstable_createBasicAuthMiddleware({
+		let [middleware] = createBasicAuthMiddleware({
 			verifyUser,
 		});
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		let response = await catchResponse(
 			runMiddleware(middleware, {
@@ -177,14 +177,14 @@ describe(unstable_createBasicAuthMiddleware, () => {
 	});
 
 	test("create a basic auth middleware with a list of users", async () => {
-		let [middleware, getUser] = unstable_createBasicAuthMiddleware({
+		let [middleware, getUser] = createBasicAuthMiddleware({
 			user: [
 				{ username: "test2", password: "password2" },
 				{ username, password },
 			],
 		});
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		await runMiddleware(middleware, {
 			request: authorizedRequest,
@@ -195,14 +195,14 @@ describe(unstable_createBasicAuthMiddleware, () => {
 	});
 
 	test("create a basic auth middleware with a list of users and invalid user", async () => {
-		let [middleware] = unstable_createBasicAuthMiddleware({
+		let [middleware] = createBasicAuthMiddleware({
 			user: [
 				{ username: "test2", password: "password2" },
 				{ username, password },
 			],
 		});
 
-		let context = new unstable_RouterContextProvider();
+		let context = new RouterContextProvider();
 
 		let response = await catchResponse(
 			runMiddleware(middleware, {
@@ -219,11 +219,11 @@ describe(unstable_createBasicAuthMiddleware, () => {
 
 	test("allows customizing the HashFunction", async () => {
 		let hashFunction =
-			mock<unstable_createBasicAuthMiddleware.HashFunction>().mockImplementation(
+			mock<createBasicAuthMiddleware.HashFunction>().mockImplementation(
 				sha256,
 			);
 
-		let [middleware] = unstable_createBasicAuthMiddleware({
+		let [middleware] = createBasicAuthMiddleware({
 			user: { username, password },
 			hashFunction,
 		});
