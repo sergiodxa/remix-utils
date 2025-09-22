@@ -322,7 +322,7 @@
 		"zod": "^4.1.5"
 	},
 	"dependencies": {
-		"type-fest": "^4.41.0"
+		"type-fest": "^5.0.1"
 	},
 	"files": [
 		"build",
