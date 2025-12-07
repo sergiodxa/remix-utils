@@ -1,5 +1,7 @@
-import { sha256 } from "@oslojs/crypto/sha2";
-import { encodeBase64url } from "@oslojs/encoding";
+import { hmac } from "@oslojs/crypto/hmac";
+import { SHA256 } from "@oslojs/crypto/sha2";
+import { constantTimeEqual } from "@oslojs/crypto/subtle";
+import { decodeBase64url, encodeBase64url } from "@oslojs/encoding";
 import type { Cookie } from "react-router";
 import { randomString } from "../common/crypto.js";
 import { getHeaders } from "./get-headers.js";
@@ -55,7 +57,7 @@ export class CSRF {
 	generate(bytes = 32) {
 		let token = randomString(bytes);
 		if (!this.secret) return token;
-		let signature = this.sign(token);
+		let signature = encodeBase64url(this.sign(token));
 		return [token, signature].join(".");
 	}
 
@@ -190,15 +192,23 @@ export class CSRF {
 	}
 
 	private sign(token: string) {
-		if (!this.secret) return token;
-		return encodeBase64url(sha256(new TextEncoder().encode(token)));
+		const secret = this.secret;
+		if (!secret) {
+			throw new Error("Secret is required to sign the token.");
+		}
+
+		const key = new TextEncoder().encode(secret);
+		const msg = new TextEncoder().encode(token);
+		return hmac(SHA256, key, msg);
 	}
 
 	private verifySignature(token: string) {
 		if (!this.secret) return true;
 		let [value, signature] = token.split(".");
-		if (!value) return false;
+		if (!value || !signature) return false;
+
 		let expectedSignature = this.sign(value);
-		return signature === expectedSignature;
+		let decodedSignature = decodeBase64url(signature);
+		return constantTimeEqual(decodedSignature, expectedSignature);
 	}
 }
