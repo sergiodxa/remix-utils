@@ -120,7 +120,7 @@ export namespace createSingletonMiddleware {
 	}
 
 	export type ReturnType<T> = [
-		MiddlewareFunction<Readonly<RouterContextProvider>>,
+		MiddlewareFunction<Response>,
 		MiddlewareGetter<T>,
 	];
 }
