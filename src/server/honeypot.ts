@@ -2,6 +2,10 @@ import { decrypt, encrypt, randomString } from "../common/crypto.js";
 
 export interface HoneypotInputProps {
 	/**
+	 * The nonce for the style tag that will be used to hide the honeypot input.
+	 */
+	nonce?: string;
+	/**
 	 * The name expected to be used by the honeypot input field.
 	 */
 	nameFieldName: string;
@@ -21,6 +25,10 @@ export interface HoneypotConfig {
 	 * name will be different for each request.
 	 */
 	randomizeNameFieldName?: boolean;
+	/**
+	 * The nonce for the style tag that will be used to hide the honeypot input.
+	 */
+	nonce?: string;
 	/**
 	 * The name of the field that will be used for the honeypot input.
 	 */
@@ -71,6 +79,7 @@ export class Honeypot {
 		validFromTimestamp = Date.now(),
 	} = {}): Promise<HoneypotInputProps> {
 		return {
+			nonce: this.config.nonce,
 			nameFieldName: this.nameFieldName,
 			validFromFieldName: this.validFromFieldName,
 			encryptedValidFrom: await this.encrypt(validFromTimestamp.toString()),
