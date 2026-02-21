@@ -36,6 +36,43 @@ Check the [v6 to v7 upgrade guide](./docs/v6-to-v7.md).
 
 ## API Reference
 
+- [promiseHash](#promisehash)
+- [timeout](#timeout)
+- [cacheAssets](#cacheassets)
+- [ClientOnly](#clientonly)
+- [ServerOnly](#serveronly)
+- [CORS](#cors)
+- [CSRF](#csrf)
+- [Existing Search Params](#existing-search-params)
+- [External Scripts](#external-scripts)
+- [useGlobalNavigationState](#useglobalnavigationstate)
+- [useGlobalPendingState](#useglobalpendingstate)
+- [useGlobalSubmittingState](#useglobalsubmittingstate)
+- [useGlobalLoadingState](#usegloballoadingstate)
+- [useHydrated](#usehydrated)
+- [useLocales](#uselocales)
+- [useShouldHydrate](#useshouldhydrate)
+- [getClientIPAddress](#getclientipaddress)
+- [getClientLocales](#getclientlocales)
+- [isPrefetch](#isprefetch)
+- [Responses](#responses)
+- [Typed Cookies](#typed-cookies)
+- [Server-Sent Events](#server-sent-events)
+- [Rolling Cookies](#rolling-cookies)
+- [Named actions](#named-actions)
+- [Preload Route Assets](#preload-route-assets)
+- [Safe Redirects](#safe-redirects)
+- [JSON Hash Response](#json-hash-response)
+- [Delegate Anchors to Remix](#delegate-anchors-to-remix)
+- [Prefetch Anchors](#prefetch-anchors)
+- [Debounced Fetcher and Submit](#debounced-fetcher-and-submit)
+- [Derive Fetcher Type](#derive-fetcher-type)
+- [respondTo for Content Negotiation](#respondto-for-content-negotiation)
+- [Form Honeypot](#form-honeypot)
+- [Sec-Fetch Parsers](#sec-fetch-parsers)
+- [Timers](#timers)
+- [Middleware](#middleware)
+
 ### promiseHash
 
 The `promiseHash` function is not directly related to Remix but it's a useful function when working with loaders and actions.
