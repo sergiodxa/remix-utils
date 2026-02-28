@@ -267,8 +267,16 @@ export namespace createCsrfMiddleware {
 
 		/**
 		 * Whether to allow requests when the origin cannot be determined (missing
-		 * `Origin` header, `Referer` header, and `request.referrer` property) or
-		 * cannot be parsed as a valid URL.
+		 * `Origin` header, `Referer` header, `Sec-Fetch-Site` header, and
+		 * `request.referrer` property) or cannot be parsed as a valid URL.
+		 *
+		 * > **Warning:** Enabling this option is high risk. Requests without a
+		 * > parseable origin will bypass origin validation entirely, which can
+		 * > allow attackers to perform cross-site requests in environments that
+		 * > don't send origin headers. Only use this when you're certain that
+		 * > clients without origin headers are within your trusted boundary, or
+		 * > pair it with an additional CSRF token mechanism.
+		 *
 		 * @default false
 		 */
 		allowMissingOrigin?: boolean;

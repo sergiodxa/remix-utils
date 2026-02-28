@@ -2921,6 +2921,9 @@ let csrfMiddleware = createCsrfMiddleware({
 });
 ```
 
+> [!WARNING]
+> Enabling `allowMissingOrigin` is high risk. When enabled, requests without a parseable origin (missing `Origin`/`Referer` headers, `Sec-Fetch-Site` header, or `Origin: null`) will bypass origin validation entirely. This can allow attackers to perform cross-site requests in environments that don't send origin headers. Only use this option when you're certain that clients without origin headers are within your trusted boundary, or pair it with an additional CSRF token mechanism.
+
 ##### Custom Untrusted Request Handler
 
 You can provide a custom handler for requests that fail CSRF validation:
