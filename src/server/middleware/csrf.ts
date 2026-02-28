@@ -119,165 +119,165 @@ import { fetchSite } from "../sec-fetch.js";
  * @returns A middleware function that validates requests against CSRF attacks.
  */
 export function createCsrfMiddleware(
-  options: createCsrfMiddleware.Options = {},
+	options: createCsrfMiddleware.Options = {},
 ): MiddlewareFunction<Response> {
-  let safeMethods = new Set(options.safeMethods ?? ["GET", "HEAD", "OPTIONS"]);
+	let safeMethods = new Set(options.safeMethods ?? ["GET", "HEAD", "OPTIONS"]);
 
-  return async ({ request, context }, next) => {
-    if (safeMethods.has(request.method.toUpperCase())) return await next();
+	return async ({ request, context }, next) => {
+		if (safeMethods.has(request.method.toUpperCase())) return await next();
 
-    let site = fetchSite(request) ?? "none";
+		let site = fetchSite(request) ?? "none";
 
-    if (site === "same-origin" || site === "same-site") return await next();
+		if (site === "same-origin" || site === "same-site") return await next();
 
-    if (site === "cross-site" && options.origin) {
-      let origin = getRequestOrigin(request);
+		if (site === "cross-site" && options.origin) {
+			let origin = getRequestOrigin(request);
 
-      if (!origin && options.allowMissingOrigin) return await next();
+			if (!origin && options.allowMissingOrigin) return await next();
 
-      if (!origin) {
-        if (options.onUntrustedRequest) {
-          return options.onUntrustedRequest(request, context);
-        }
-        throw new Response("Forbidden", { status: 403 });
-      }
+			if (!origin) {
+				if (options.onUntrustedRequest) {
+					return options.onUntrustedRequest(request, context);
+				}
+				throw new Response("Forbidden", { status: 403 });
+			}
 
-      if (typeof options.origin === "function") {
-        let result = options.origin(origin, request, context);
-        if (result instanceof Promise) result = await result;
-        if (result) return await next();
-      } else if (typeof options.origin === "string") {
-        if (origin === options.origin.toLowerCase()) return await next();
-      } else if (options.origin instanceof RegExp) {
-        if (options.origin.test(origin)) return await next();
-      } else {
-        for (let allowedOrigin of options.origin) {
-          if (typeof allowedOrigin === "string") {
-            if (origin === allowedOrigin.toLowerCase()) return await next();
-          }
+			if (typeof options.origin === "function") {
+				let result = options.origin(origin, request, context);
+				if (result instanceof Promise) result = await result;
+				if (result) return await next();
+			} else if (typeof options.origin === "string") {
+				if (origin === options.origin.toLowerCase()) return await next();
+			} else if (options.origin instanceof RegExp) {
+				if (options.origin.test(origin)) return await next();
+			} else {
+				for (let allowedOrigin of options.origin) {
+					if (typeof allowedOrigin === "string") {
+						if (origin === allowedOrigin.toLowerCase()) return await next();
+					}
 
-          if (allowedOrigin instanceof RegExp) {
-            if (allowedOrigin.test(origin)) return await next();
-          }
-        }
-      }
-    }
+					if (allowedOrigin instanceof RegExp) {
+						if (allowedOrigin.test(origin)) return await next();
+					}
+				}
+			}
+		}
 
-    if (options.onUntrustedRequest) {
-      return options.onUntrustedRequest(request, context);
-    }
+		if (options.onUntrustedRequest) {
+			return options.onUntrustedRequest(request, context);
+		}
 
-    throw new Response("Forbidden", { status: 403 });
-  };
+		throw new Response("Forbidden", { status: 403 });
+	};
 }
 
 export namespace createCsrfMiddleware {
-  /**
-   * HTTP request methods that can be configured as safe (exempt from CSRF
-   * validation). Must be uppercase.
-   */
-  export type RequestMethod =
-    | "GET"
-    | "HEAD"
-    | "OPTIONS"
-    | "POST"
-    | "PUT"
-    | "DELETE"
-    | "PATCH";
+	/**
+	 * HTTP request methods that can be configured as safe (exempt from CSRF
+	 * validation). Must be uppercase.
+	 */
+	export type RequestMethod =
+		| "GET"
+		| "HEAD"
+		| "OPTIONS"
+		| "POST"
+		| "PUT"
+		| "DELETE"
+		| "PATCH";
 
-  /**
-   * Static origin matching pattern. Can be a single string, a RegExp, or an
-   * array combining both for matching multiple origins.
-   */
-  export type OriginMatcher = string | RegExp | ReadonlyArray<string | RegExp>;
+	/**
+	 * Static origin matching pattern. Can be a single string, a RegExp, or an
+	 * array combining both for matching multiple origins.
+	 */
+	export type OriginMatcher = string | RegExp | ReadonlyArray<string | RegExp>;
 
-  /**
-   * Return type for the origin resolver function.
-   * - `true` allows the request
-   * - `false`, `null`, or `undefined` rejects the request
-   */
-  export type OriginResolverResult = boolean | null | undefined;
+	/**
+	 * Return type for the origin resolver function.
+	 * - `true` allows the request
+	 * - `false`, `null`, or `undefined` rejects the request
+	 */
+	export type OriginResolverResult = boolean | null | undefined;
 
-  /**
-   * Function type for dynamically validating request origins.
-   * @param origin The origin extracted from the request's Origin header,
-   *   Referer header, or referrer property.
-   * @param request The incoming request object.
-   * @param context The router context for accessing app-specific data.
-   * @returns Whether to allow the request. Return `true` to allow, or `false`,
-   *   `null`, or `undefined` to reject. Can be async.
-   */
-  export type OriginResolver = (
-    origin: string,
-    request: Request,
-    context: Readonly<RouterContextProvider>,
-  ) => OriginResolverResult | Promise<OriginResolverResult>;
+	/**
+	 * Function type for dynamically validating request origins.
+	 * @param origin The origin extracted from the request's Origin header,
+	 *   Referer header, or referrer property.
+	 * @param request The incoming request object.
+	 * @param context The router context for accessing app-specific data.
+	 * @returns Whether to allow the request. Return `true` to allow, or `false`,
+	 *   `null`, or `undefined` to reject. Can be async.
+	 */
+	export type OriginResolver = (
+		origin: string,
+		request: Request,
+		context: Readonly<RouterContextProvider>,
+	) => OriginResolverResult | Promise<OriginResolverResult>;
 
-  /**
-   * Origin validation configuration. Can be a static matcher pattern or a
-   * dynamic resolver function for complex validation logic.
-   */
-  export type Origin = OriginMatcher | OriginResolver;
+	/**
+	 * Origin validation configuration. Can be a static matcher pattern or a
+	 * dynamic resolver function for complex validation logic.
+	 */
+	export type Origin = OriginMatcher | OriginResolver;
 
-  /**
-   * Function type for handling requests that fail CSRF validation.
-   * @param request The rejected request object.
-   * @param context The router context for accessing app-specific data.
-   * @returns A Response to send to the client. Can be async.
-   */
-  export type UntrustedRequestHandler = (
-    request: Request,
-    context: Readonly<RouterContextProvider>,
-  ) => Response | Promise<Response>;
+	/**
+	 * Function type for handling requests that fail CSRF validation.
+	 * @param request The rejected request object.
+	 * @param context The router context for accessing app-specific data.
+	 * @returns A Response to send to the client. Can be async.
+	 */
+	export type UntrustedRequestHandler = (
+		request: Request,
+		context: Readonly<RouterContextProvider>,
+	) => Response | Promise<Response>;
 
-  /**
-   * Configuration options for the CSRF middleware.
-   */
-  export interface Options {
-    /**
-     * HTTP methods that bypass CSRF validation. These methods are considered
-     * safe because they should not cause side effects.
-     * Must be uppercase (e.g., "GET", not "get").
-     * @default ["GET", "HEAD", "OPTIONS"]
-     */
-    safeMethods?: RequestMethod[];
+	/**
+	 * Configuration options for the CSRF middleware.
+	 */
+	export interface Options {
+		/**
+		 * HTTP methods that bypass CSRF validation. These methods are considered
+		 * safe because they should not cause side effects.
+		 * Must be uppercase (e.g., "GET", not "get").
+		 * @default ["GET", "HEAD", "OPTIONS"]
+		 */
+		safeMethods?: RequestMethod[];
 
-    /**
-     * Trusted origins allowed for cross-site requests.
-     *
-     * When a request has `Sec-Fetch-Site: cross-site`, the middleware checks
-     * the request origin against this configuration:
-     * - String: exact match (case-insensitive)
-     * - RegExp: pattern match against the origin
-     * - Array: matches if any element matches
-     * - Function: custom validation logic with access to request and context
-     *
-     * The origin is extracted from (in order): `Origin` header, `Referer`
-     * header, or `request.referrer` property.
-     *
-     * If not specified, all cross-site requests are rejected.
-     */
-    origin?: Origin;
+		/**
+		 * Trusted origins allowed for cross-site requests.
+		 *
+		 * When a request has `Sec-Fetch-Site: cross-site`, the middleware checks
+		 * the request origin against this configuration:
+		 * - String: exact match (case-insensitive)
+		 * - RegExp: pattern match against the origin
+		 * - Array: matches if any element matches
+		 * - Function: custom validation logic with access to request and context
+		 *
+		 * The origin is extracted from (in order): `Origin` header, `Referer`
+		 * header, or `request.referrer` property.
+		 *
+		 * If not specified, all cross-site requests are rejected.
+		 */
+		origin?: Origin;
 
-    /**
-     * Whether to allow requests when the origin cannot be determined (missing
-     * `Origin` header, `Referer` header, and `request.referrer` property) or
-     * cannot be parsed as a valid URL.
-     * @default false
-     */
-    allowMissingOrigin?: boolean;
+		/**
+		 * Whether to allow requests when the origin cannot be determined (missing
+		 * `Origin` header, `Referer` header, and `request.referrer` property) or
+		 * cannot be parsed as a valid URL.
+		 * @default false
+		 */
+		allowMissingOrigin?: boolean;
 
-    /**
-     * Custom handler for requests that fail CSRF validation.
-     * Use this to log attempts, return custom error responses, or implement
-     * additional security measures.
-     * @param request The rejected request.
-     * @param context The router context.
-     * @returns A Response to send to the client.
-     * @default Throws a 403 Forbidden response.
-     */
-    onUntrustedRequest?: UntrustedRequestHandler;
-  }
+		/**
+		 * Custom handler for requests that fail CSRF validation.
+		 * Use this to log attempts, return custom error responses, or implement
+		 * additional security measures.
+		 * @param request The rejected request.
+		 * @param context The router context.
+		 * @returns A Response to send to the client.
+		 * @default Throws a 403 Forbidden response.
+		 */
+		onUntrustedRequest?: UntrustedRequestHandler;
+	}
 }
 
 /**
@@ -287,10 +287,10 @@ export namespace createCsrfMiddleware {
  * @private
  */
 function parseOrigin(value: string | null): string | null {
-  if (!value) return null;
-  let normalized = value.toLowerCase().trim();
-  if (!URL.canParse(normalized)) return null;
-  return new URL(normalized).origin;
+	if (!value) return null;
+	let normalized = value.toLowerCase().trim();
+	if (!URL.canParse(normalized)) return null;
+	return new URL(normalized).origin;
 }
 
 /**
@@ -304,9 +304,9 @@ function parseOrigin(value: string | null): string | null {
  * @private
  */
 function getRequestOrigin(request: Request): string | null {
-  return (
-    parseOrigin(request.headers.get("Origin")) ??
-    parseOrigin(request.headers.get("Referer")) ??
-    parseOrigin(request.referrer)
-  );
+	return (
+		parseOrigin(request.headers.get("Origin")) ??
+		parseOrigin(request.headers.get("Referer")) ??
+		parseOrigin(request.referrer)
+	);
 }
