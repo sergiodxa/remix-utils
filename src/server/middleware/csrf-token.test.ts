@@ -13,13 +13,16 @@ describe(createCsrfTokenMiddleware, () => {
 		expect(getToken).toBeFunction();
 	});
 
-	test.each(["GET", "HEAD", "OPTIONS"])("allows safe method %s by default", async (method) => {
-		let [middleware] = createCsrfTokenMiddleware({ cookie });
+	test.each(["GET", "HEAD", "OPTIONS"])(
+		"allows safe method %s by default",
+		async (method) => {
+			let [middleware] = createCsrfTokenMiddleware({ cookie });
 
-		let request = new Request("https://remix.utils", { method });
-		let response = await runMiddleware(middleware, { request });
-    expect(response.status).toBe(200);
-	});
+			let request = new Request("https://remix.utils", { method });
+			let response = await runMiddleware(middleware, { request });
+			expect(response.status).toBe(200);
+		},
+	);
 
 	test("sets CSRF token cookie on first request", async () => {
 		let [middleware] = createCsrfTokenMiddleware({ cookie });
@@ -33,7 +36,6 @@ describe(createCsrfTokenMiddleware, () => {
 	test("does not set cookie if token already exists", async () => {
 		let [middleware, _getToken] = createCsrfTokenMiddleware({ cookie });
 
-		// First request to get a token
 		let context1 = new RouterContextProvider();
 		let request1 = new Request("https://remix.utils", { method: "GET" });
 		let response1 = await runMiddleware(middleware, {
@@ -43,7 +45,6 @@ describe(createCsrfTokenMiddleware, () => {
 		let setCookie = response1.headers.get("Set-Cookie");
 		expect(setCookie).not.toBeNull();
 
-		// Second request with existing cookie
 		let context2 = new RouterContextProvider();
 		let request2 = new Request("https://remix.utils", {
 			method: "GET",
@@ -72,7 +73,6 @@ describe(createCsrfTokenMiddleware, () => {
 	test("validates CSRF token on POST request", async () => {
 		let [middleware, getToken] = createCsrfTokenMiddleware({ cookie });
 
-		// First, get a token
 		let context1 = new RouterContextProvider();
 		let request1 = new Request("https://remix.utils", { method: "GET" });
 		let response1 = await runMiddleware(middleware, {
@@ -82,7 +82,6 @@ describe(createCsrfTokenMiddleware, () => {
 		let token = getToken(context1);
 		let setCookie = response1.headers.get("Set-Cookie")!;
 
-		// Submit a valid form
 		let formData = new FormData();
 		formData.set("csrf", token);
 
@@ -99,12 +98,10 @@ describe(createCsrfTokenMiddleware, () => {
 	test("rejects POST request without CSRF token", async () => {
 		let [middleware] = createCsrfTokenMiddleware({ cookie });
 
-		// Get a cookie first
 		let request1 = new Request("https://remix.utils", { method: "GET" });
 		let response1 = await runMiddleware(middleware, { request: request1 });
 		let setCookie = response1.headers.get("Set-Cookie")!;
 
-		// Submit form without token
 		let formData = new FormData();
 		formData.set("name", "test");
 
@@ -123,12 +120,10 @@ describe(createCsrfTokenMiddleware, () => {
 	test("rejects POST request with wrong CSRF token", async () => {
 		let [middleware] = createCsrfTokenMiddleware({ cookie });
 
-		// Get a cookie first
 		let request1 = new Request("https://remix.utils", { method: "GET" });
 		let response1 = await runMiddleware(middleware, { request: request1 });
 		let setCookie = response1.headers.get("Set-Cookie")!;
 
-		// Submit form with wrong token
 		let formData = new FormData();
 		formData.set("csrf", "wrong-token");
 
@@ -178,7 +173,6 @@ describe(createCsrfTokenMiddleware, () => {
 			formDataKey: "authenticity_token",
 		});
 
-		// Get a token
 		let context1 = new RouterContextProvider();
 		let request1 = new Request("https://remix.utils", { method: "GET" });
 		let response1 = await runMiddleware(middleware, {
@@ -188,7 +182,6 @@ describe(createCsrfTokenMiddleware, () => {
 		let token = getToken(context1);
 		let setCookie = response1.headers.get("Set-Cookie")!;
 
-		// Submit with custom key
 		let formData = new FormData();
 		formData.set("authenticity_token", token);
 
@@ -231,12 +224,10 @@ describe(createCsrfTokenMiddleware, () => {
 			onInvalidToken,
 		});
 
-		// Get a cookie first
 		let request1 = new Request("https://remix.utils", { method: "GET" });
 		let response1 = await runMiddleware(middleware, { request: request1 });
 		let setCookie = response1.headers.get("Set-Cookie")!;
 
-		// Submit form without token
 		let formData = new FormData();
 		formData.set("name", "test");
 
@@ -283,7 +274,6 @@ describe(createCsrfTokenMiddleware, () => {
 			secret: "my-secret",
 		});
 
-		// Get a signed token
 		let context1 = new RouterContextProvider();
 		let request1 = new Request("https://remix.utils", { method: "GET" });
 		let response1 = await runMiddleware(middleware, {
@@ -293,10 +283,8 @@ describe(createCsrfTokenMiddleware, () => {
 		let token = getToken(context1);
 		let setCookie = response1.headers.get("Set-Cookie")!;
 
-		// Token should be signed (contains a dot)
 		expect(token).toContain(".");
 
-		// Submit with signed token
 		let formData = new FormData();
 		formData.set("csrf", token);
 
