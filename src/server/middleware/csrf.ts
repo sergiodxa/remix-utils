@@ -145,8 +145,7 @@ export function createCsrfMiddleware(
 			}
 
 			if (typeof options.origin === "function") {
-				let result = options.origin(origin, request, context);
-				if (result instanceof Promise) result = await result;
+				let result = await options.origin(origin, request, context);
 				if (result) return await next();
 			} else if (typeof options.origin === "string") {
 				if (origin === options.origin.toLowerCase()) return await next();
