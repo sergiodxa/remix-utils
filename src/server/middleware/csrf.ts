@@ -126,9 +126,11 @@ export function createCsrfMiddleware(
 	return async ({ request, context }, next) => {
 		if (safeMethods.has(request.method.toUpperCase())) return await next();
 
-		let site = fetchSite(request) ?? "none";
+		let site = fetchSite(request);
 
 		if (site === "same-origin" || site === "same-site") return await next();
+
+		if (site === null && options.allowMissingOrigin) return await next();
 
 		if (site === "cross-site" && options.origin) {
 			let origin = getRequestOrigin(request);
@@ -188,6 +190,11 @@ export namespace createCsrfMiddleware {
 	/**
 	 * Static origin matching pattern. Can be a single string, a RegExp, or an
 	 * array combining both for matching multiple origins.
+	 *
+	 * > **Warning:** Avoid using the global flag (`g`) on RegExp patterns.
+	 * > The `.test()` method on global regexes is stateful (it updates
+	 * > `lastIndex`), which can cause inconsistent matching results across
+	 * > requests.
 	 */
 	export type OriginMatcher = string | RegExp | ReadonlyArray<string | RegExp>;
 

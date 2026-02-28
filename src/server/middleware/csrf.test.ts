@@ -73,6 +73,17 @@ describe(createCsrfMiddleware, () => {
 		expect(response.status).toBe(403);
 	});
 
+	test("allows requests with no Sec-Fetch-Site header when allowMissingOrigin is true", async () => {
+		let middleware = createCsrfMiddleware({
+			allowMissingOrigin: true,
+		});
+
+		let request = new Request("https://remix.utils", { method: "POST" });
+
+		let response = await runMiddleware(middleware, { request });
+		expect(response.status).toBe(200);
+	});
+
 	test("allows cross-site requests with matching string origin", async () => {
 		let middleware = createCsrfMiddleware({
 			origin: "https://trusted.com",
