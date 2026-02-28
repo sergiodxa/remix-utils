@@ -31,6 +31,10 @@
 			"types": "./build/server/middleware/csrf.d.ts",
 			"default": "./build/server/middleware/csrf.js"
 		},
+		"./middleware/csrf-token": {
+			"types": "./build/server/middleware/csrf-token.d.ts",
+			"default": "./build/server/middleware/csrf-token.js"
+		},
 		"./middleware/honeypot": {
 			"types": "./build/server/middleware/honeypot.d.ts",
 			"default": "./build/server/middleware/honeypot.js"
