@@ -27,6 +27,10 @@
 			"types": "./build/server/middleware/cors.d.ts",
 			"default": "./build/server/middleware/cors.js"
 		},
+		"./middleware/csrf": {
+			"types": "./build/server/middleware/csrf.d.ts",
+			"default": "./build/server/middleware/csrf.js"
+		},
 		"./middleware/honeypot": {
 			"types": "./build/server/middleware/honeypot.d.ts",
 			"default": "./build/server/middleware/honeypot.js"
