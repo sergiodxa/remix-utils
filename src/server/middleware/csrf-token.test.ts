@@ -311,4 +311,168 @@ describe(createCsrfTokenMiddleware, () => {
 		let response2 = await runMiddleware(middleware, { request: request2 });
 		expect(response2.status).toBe(200);
 	});
+
+	test("allows request from trusted origin (string)", async () => {
+		let [middleware] = createCsrfTokenMiddleware({
+			cookie,
+			origin: "https://trusted.com",
+		});
+
+		let formData = new FormData();
+		formData.set("name", "test");
+
+		let request = new Request("https://remix.utils", {
+			method: "POST",
+			headers: { Origin: "https://trusted.com" },
+			body: formData,
+		});
+
+		let response = await runMiddleware(middleware, { request });
+		expect(response.status).toBe(200);
+	});
+
+	test("rejects request from untrusted origin (string)", async () => {
+		let [middleware] = createCsrfTokenMiddleware({
+			cookie,
+			origin: "https://trusted.com",
+		});
+
+		let formData = new FormData();
+		formData.set("name", "test");
+
+		let request = new Request("https://remix.utils", {
+			method: "POST",
+			headers: { Origin: "https://untrusted.com" },
+			body: formData,
+		});
+
+		let response = await catchResponse(runMiddleware(middleware, { request }));
+		expect(response.status).toBe(403);
+	});
+
+	test("allows request from trusted origin (RegExp)", async () => {
+		let [middleware] = createCsrfTokenMiddleware({
+			cookie,
+			origin: /\.trusted\.com$/,
+		});
+
+		let formData = new FormData();
+		formData.set("name", "test");
+
+		let request = new Request("https://remix.utils", {
+			method: "POST",
+			headers: { Origin: "https://sub.trusted.com" },
+			body: formData,
+		});
+
+		let response = await runMiddleware(middleware, { request });
+		expect(response.status).toBe(200);
+	});
+
+	test("allows request from trusted origin (array)", async () => {
+		let [middleware] = createCsrfTokenMiddleware({
+			cookie,
+			origin: ["https://trusted1.com", "https://trusted2.com"],
+		});
+
+		let formData = new FormData();
+		formData.set("name", "test");
+
+		let request = new Request("https://remix.utils", {
+			method: "POST",
+			headers: { Origin: "https://trusted2.com" },
+			body: formData,
+		});
+
+		let response = await runMiddleware(middleware, { request });
+		expect(response.status).toBe(200);
+	});
+
+	test("allows request from trusted origin (function)", async () => {
+		let [middleware] = createCsrfTokenMiddleware({
+			cookie,
+			origin: (origin) => origin === "https://trusted.com",
+		});
+
+		let formData = new FormData();
+		formData.set("name", "test");
+
+		let request = new Request("https://remix.utils", {
+			method: "POST",
+			headers: { Origin: "https://trusted.com" },
+			body: formData,
+		});
+
+		let response = await runMiddleware(middleware, { request });
+		expect(response.status).toBe(200);
+	});
+
+	test("allows request from trusted origin (async function)", async () => {
+		let [middleware] = createCsrfTokenMiddleware({
+			cookie,
+			origin: async (origin) => origin === "https://trusted.com",
+		});
+
+		let formData = new FormData();
+		formData.set("name", "test");
+
+		let request = new Request("https://remix.utils", {
+			method: "POST",
+			headers: { Origin: "https://trusted.com" },
+			body: formData,
+		});
+
+		let response = await runMiddleware(middleware, { request });
+		expect(response.status).toBe(200);
+	});
+
+	test("falls back to Referer header for origin check", async () => {
+		let [middleware] = createCsrfTokenMiddleware({
+			cookie,
+			origin: "https://trusted.com",
+		});
+
+		let formData = new FormData();
+		formData.set("name", "test");
+
+		let request = new Request("https://remix.utils", {
+			method: "POST",
+			headers: { Referer: "https://trusted.com/page" },
+			body: formData,
+		});
+
+		let response = await runMiddleware(middleware, { request });
+		expect(response.status).toBe(200);
+	});
+
+	test("validates token when origin is not trusted", async () => {
+		let [middleware, getToken] = createCsrfTokenMiddleware({
+			cookie,
+			origin: "https://trusted.com",
+		});
+
+		let context1 = new RouterContextProvider();
+		let request1 = new Request("https://remix.utils", { method: "GET" });
+		let response1 = await runMiddleware(middleware, {
+			request: request1,
+			context: context1,
+		});
+		let token = getToken(context1);
+		let setCookie = response1.headers.get("Set-Cookie");
+
+		let formData = new FormData();
+		formData.set("csrf", token);
+
+		let request2 = new Request("https://remix.utils", {
+			method: "POST",
+			headers: {
+				Origin: "https://other.com",
+				Cookie: setCookie ?? "",
+			},
+			body: formData,
+		});
+
+		let response2 = await runMiddleware(middleware, { request: request2 });
+		expect(response2.status).toBe(200);
+	});
 });

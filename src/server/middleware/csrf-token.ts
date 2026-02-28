@@ -48,10 +48,9 @@
  * ```tsx
  * import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
  *
- * export default function Root() {
- *   let { csrfToken } = useLoaderData<typeof loader>();
+ * export default function App({ loaderData }: Route.ComponentProps) {
  *   return (
- *     <AuthenticityTokenProvider token={csrfToken}>
+ *     <AuthenticityTokenProvider token={loaderData.csrfToken}>
  *       <Outlet />
  *     </AuthenticityTokenProvider>
  *   );
@@ -67,7 +66,6 @@
  *   return (
  *     <Form method="post">
  *       <AuthenticityTokenInput />
- *       {/* other form fields *\/}
  *     </Form>
  *   );
  * }
@@ -89,6 +87,45 @@
  *   // Custom handler for invalid tokens
  *   onInvalidToken(error, request, context) {
  *     return new Response("Invalid CSRF token", { status: 403 });
+ *   },
+ * });
+ * ```
+ *
+ * You can allow cross-site requests from specific trusted origins to bypass
+ * token validation:
+ *
+ * ```ts
+ * let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
+ *   cookie,
+ *   origin: "https://trusted.com",
+ * });
+ * ```
+ *
+ * Or using a RegExp for pattern matching:
+ *
+ * ```ts
+ * let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
+ *   cookie,
+ *   origin: /\.trusted\.com$/,
+ * });
+ * ```
+ *
+ * Or using an array of strings and RegExps:
+ *
+ * ```ts
+ * let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
+ *   cookie,
+ *   origin: ["https://trusted1.com", "https://trusted2.com", /\.trusted\.com$/],
+ * });
+ * ```
+ *
+ * Or using a function for dynamic validation:
+ *
+ * ```ts
+ * let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
+ *   cookie,
+ *   origin: async (origin, request, context) => {
+ *     return await checkOriginInDatabase(origin);
  *   },
  * });
  * ```
@@ -132,32 +169,31 @@ export function createCsrfTokenMiddleware(
 
 	return [
 		async function csrfTokenMiddleware({ request, context }, next) {
-			// Get or generate the token
 			let [token, cookieHeader] = await csrf.commitToken(request);
 
-			// Store token in context for loaders to access
 			context.set(tokenContext, token);
 
-			// Skip validation for safe methods
 			if (safeMethods.has(request.method.toUpperCase())) {
 				let response = await next();
-				// Set the cookie if it's new
-				if (cookieHeader) {
-					response.headers.append("Set-Cookie", cookieHeader);
-				}
+				if (cookieHeader) response.headers.append("Set-Cookie", cookieHeader);
 				return response;
 			}
 
-			// Only validate form submissions
 			if (!isFormData(request)) {
 				let response = await next();
-				if (cookieHeader) {
-					response.headers.append("Set-Cookie", cookieHeader);
-				}
+				if (cookieHeader) response.headers.append("Set-Cookie", cookieHeader);
 				return response;
 			}
 
-			// Validate the token
+			if (options.origin) {
+				let isTrusted = await isTrustedOrigin(request, context, options.origin);
+				if (isTrusted) {
+					let response = await next();
+					if (cookieHeader) response.headers.append("Set-Cookie", cookieHeader);
+					return response;
+				}
+			}
+
 			try {
 				await csrf.validate(request);
 			} catch (error) {
@@ -171,9 +207,7 @@ export function createCsrfTokenMiddleware(
 			}
 
 			let response = await next();
-			if (cookieHeader) {
-				response.headers.append("Set-Cookie", cookieHeader);
-			}
+			if (cookieHeader) response.headers.append("Set-Cookie", cookieHeader);
 			return response;
 		},
 
@@ -190,6 +224,55 @@ function isFormData(request: Request): boolean {
 	return false;
 }
 
+function parseOrigin(value: string | null): string | null {
+	if (!value) return null;
+	let normalized = value.toLowerCase().trim();
+	if (!URL.canParse(normalized)) return null;
+	return new URL(normalized).origin;
+}
+
+function getRequestOrigin(request: Request): string | null {
+	return (
+		parseOrigin(request.headers.get("Origin")) ??
+		parseOrigin(request.headers.get("Referer")) ??
+		parseOrigin(request.referrer)
+	);
+}
+
+async function isTrustedOrigin(
+	request: Request,
+	context: Readonly<RouterContextProvider>,
+	origin: createCsrfTokenMiddleware.Origin,
+): Promise<boolean> {
+	let requestOrigin = getRequestOrigin(request);
+	if (!requestOrigin) return false;
+
+	if (typeof origin === "function") {
+		let result = await origin(requestOrigin, request, context);
+		return result === true;
+	}
+
+	if (typeof origin === "string") {
+		return requestOrigin === origin.toLowerCase();
+	}
+
+	if (origin instanceof RegExp) {
+		return origin.test(requestOrigin);
+	}
+
+	for (let allowedOrigin of origin) {
+		if (typeof allowedOrigin === "string") {
+			if (requestOrigin === allowedOrigin.toLowerCase()) return true;
+		}
+
+		if (allowedOrigin instanceof RegExp) {
+			if (allowedOrigin.test(requestOrigin)) return true;
+		}
+	}
+
+	return false;
+}
+
 export namespace createCsrfTokenMiddleware {
 	/**
 	 * HTTP request methods that can be configured as safe (exempt from CSRF
@@ -203,6 +286,45 @@ export namespace createCsrfTokenMiddleware {
 		| "PUT"
 		| "DELETE"
 		| "PATCH";
+
+	/**
+	 * Static origin matching pattern. Can be a single string, a RegExp, or an
+	 * array combining both for matching multiple origins.
+	 *
+	 * > **Warning:** Avoid using the global flag (`g`) on RegExp patterns.
+	 * > The `.test()` method on global regexes is stateful (it updates
+	 * > `lastIndex`), which can cause inconsistent matching results across
+	 * > requests.
+	 */
+	export type OriginMatcher = string | RegExp | ReadonlyArray<string | RegExp>;
+
+	/**
+	 * Return type for the origin resolver function.
+	 * - `true` allows the request
+	 * - `false`, `null`, or `undefined` rejects the request
+	 */
+	export type OriginResolverResult = boolean | null | undefined;
+
+	/**
+	 * Function type for dynamically validating request origins.
+	 * @param origin The origin extracted from the request's Origin header,
+	 *   Referer header, or referrer property.
+	 * @param request The incoming request object.
+	 * @param context The router context for accessing app-specific data.
+	 * @returns Whether to allow the request. Return `true` to allow, or `false`,
+	 *   `null`, or `undefined` to reject. Can be async.
+	 */
+	export type OriginResolver = (
+		origin: string,
+		request: Request,
+		context: Readonly<RouterContextProvider>,
+	) => OriginResolverResult | Promise<OriginResolverResult>;
+
+	/**
+	 * Origin validation configuration. Can be a static matcher pattern or a
+	 * dynamic resolver function for complex validation logic.
+	 */
+	export type Origin = OriginMatcher | OriginResolver;
 
 	/**
 	 * Function type for handling requests with invalid CSRF tokens.
@@ -246,6 +368,23 @@ export namespace createCsrfTokenMiddleware {
 		 * @default ["GET", "HEAD", "OPTIONS"]
 		 */
 		safeMethods?: RequestMethod[];
+
+		/**
+		 * Trusted origins that bypass CSRF token validation.
+		 *
+		 * When a request comes from a trusted origin, the middleware skips token
+		 * validation and allows the request through. This is useful for allowing
+		 * cross-site form submissions from specific trusted domains.
+		 *
+		 * The origin is extracted from (in order): `Origin` header, `Referer`
+		 * header, or `request.referrer` property.
+		 *
+		 * - String: exact match (case-insensitive)
+		 * - RegExp: pattern match against the origin
+		 * - Array: matches if any element matches
+		 * - Function: custom validation logic with access to request and context
+		 */
+		origin?: Origin;
 
 		/**
 		 * Custom handler for requests with invalid CSRF tokens.

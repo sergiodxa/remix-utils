@@ -3003,7 +3003,6 @@ function MyForm() {
   return (
     <Form method="post">
       <AuthenticityTokenInput />
-      {/* other form fields */}
     </Form>
   );
 }
@@ -3025,6 +3024,46 @@ let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
   // Custom handler for invalid tokens
   onInvalidToken(error, request, context) {
     return new Response("Invalid CSRF token", { status: 403 });
+  },
+});
+```
+
+##### Trusted Origins
+
+You can allow cross-site requests from specific trusted origins to bypass token validation:
+
+```ts
+let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
+  cookie,
+  origin: "https://trusted.com",
+});
+```
+
+Or using a RegExp for pattern matching:
+
+```ts
+let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
+  cookie,
+  origin: /\.trusted\.com$/,
+});
+```
+
+Or using an array of strings and RegExps:
+
+```ts
+let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
+  cookie,
+  origin: ["https://trusted1.com", "https://trusted2.com", /\.trusted\.com$/],
+});
+```
+
+Or using a function for dynamic validation:
+
+```ts
+let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
+  cookie,
+  origin: async (origin, request, context) => {
+    return await checkOriginInDatabase(origin);
   },
 });
 ```
