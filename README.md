@@ -628,8 +628,9 @@ Or you can extend the `ExternalScriptsHandle` interface.
 ```ts
 import { ExternalScriptsHandle } from "remix-utils/external-scripts";
 
-interface AppHandle<LoaderData = unknown>
-  extends ExternalScriptsHandle<LoaderData> {
+interface AppHandle<
+  LoaderData = unknown,
+> extends ExternalScriptsHandle<LoaderData> {
   // more handle properties here
 }
 
@@ -2013,8 +2014,7 @@ let sessionStorage = createCookieSessionStorage({
   cookie: createCookie("session", { path: "/", sameSite: "lax" }),
 });
 
-let [sessionMiddleware, getSession] =
-  createSessionMiddleware(sessionStorage);
+let [sessionMiddleware, getSession] = createSessionMiddleware(sessionStorage);
 ```
 
 Then you can use the `sessionMiddleware` in your `app/root.tsx` function.
@@ -2150,10 +2150,9 @@ This is specially useful to share objects that needs to be created only once per
 ```ts
 import { createSingletonMiddleware } from "remix-utils/middleware/singleton";
 
-export const [singletonMiddleware, getSingleton] =
-  createSingletonMiddleware({
-    instantiator: () => new MySingletonClass(),
-  });
+export const [singletonMiddleware, getSingleton] = createSingletonMiddleware({
+  instantiator: () => new MySingletonClass(),
+});
 ```
 
 To use it, you need to add it to the `middleware` array in the route where you want to use it.
@@ -2180,10 +2179,9 @@ The singleton middleware can be created with different classes and arguments, so
 ```ts
 import { createSingletonMiddleware } from "remix-utils/middleware/singleton";
 
-export const [singletonMiddleware, getSingleton] =
-  createSingletonMiddleware({
-    instantiator: () => new MySingletonClass("arg1", "arg2"),
-  });
+export const [singletonMiddleware, getSingleton] = createSingletonMiddleware({
+  instantiator: () => new MySingletonClass("arg1", "arg2"),
+});
 
 export const [anotherSingletonMiddleware, getAnotherSingleton] =
   createSingletonMiddleware({
@@ -2211,12 +2209,11 @@ You can also access the `request` and `context` objects in the `instantiator` fu
 import { createSingletonMiddleware } from "remix-utils/middleware/singleton";
 import { MySingletonClass } from "~/singleton";
 
-export const [singletonMiddleware, getSingleton] =
-  createSingletonMiddleware({
-    instantiator: (request, context) => {
-      return new MySingletonClass(request, context);
-    },
-  });
+export const [singletonMiddleware, getSingleton] = createSingletonMiddleware({
+  instantiator: (request, context) => {
+    return new MySingletonClass(request, context);
+  },
+});
 ```
 
 This can allows you to create a class that depends on the request, maybe to read the URL or body, or depends on the context, maybe to read the session or some other data.
@@ -2233,8 +2230,7 @@ This is specially useful to avoid making multiple API calls to the same endpoint
 ```ts
 import { createBatcherMiddleware } from "remix-utils/middleware/batcher";
 
-export const [batcherMiddleware, getBatcher] =
-  createBatcherMiddleware();
+export const [batcherMiddleware, getBatcher] = createBatcherMiddleware();
 ```
 
 To use it, you need to add it to the `middleware` array in the route where you want to use it.
@@ -2300,7 +2296,9 @@ To use it, you need to add it to the `middleware` array in your `app/root.tsx` f
 ```ts
 import { contextStorageMiddleware } from "~/middleware/context-storage.server";
 
-export const middleware: Route.MiddlewareFunction[] = [contextStorageMiddleware];
+export const middleware: Route.MiddlewareFunction[] = [
+  contextStorageMiddleware,
+];
 ```
 
 And you can use the `getContext` and `getRequest` functions in your function to get the context and request objects.
@@ -2323,8 +2321,7 @@ You can pair this with any other middleware that uses the context to simplify us
 import { createBatcherMiddleware } from "remix-utils/middleware/batcher";
 import { getContext } from "~/middleware/context-storage.server";
 
-const [batcherMiddleware, getBatcherFromContext] =
-  createBatcherMiddleware();
+const [batcherMiddleware, getBatcherFromContext] = createBatcherMiddleware();
 
 export { bathcherMiddleware };
 
@@ -2355,8 +2352,7 @@ The Request ID middleware generates a unique ID for each request and stores it i
 ```ts
 import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
 
-export const [requestIDMiddleware, getRequestID] =
-  createRequestIDMiddleware();
+export const [requestIDMiddleware, getRequestID] = createRequestIDMiddleware();
 ```
 
 To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
@@ -2383,12 +2379,11 @@ By default the request ID is a UUID, but you can customize it by passing a funct
 ```ts
 import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
 
-export const [requestIDMiddleware, getRequestID] =
-  createRequestIDMiddleware({
-    generator() {
-      return Math.random().toString(36).slice(2);
-    },
-  });
+export const [requestIDMiddleware, getRequestID] = createRequestIDMiddleware({
+  generator() {
+    return Math.random().toString(36).slice(2);
+  },
+});
 ```
 
 The middleware also gets the request ID from the `X-Request-ID` header if it's present, this can be useful to correlate requests between services.
@@ -2398,10 +2393,9 @@ If you want to use a different header you can pass the header name to the `creat
 ```ts
 import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
 
-export const [requestIDMiddleware, getRequestID] =
-  createRequestIDMiddleware({
-    header: "X-Correlation-ID",
-  });
+export const [requestIDMiddleware, getRequestID] = createRequestIDMiddleware({
+  header: "X-Correlation-ID",
+});
 ```
 
 #### Basic Auth Middleware
@@ -2536,10 +2530,9 @@ The JWK Auth middleware let's you add a JSON Web Key authentication to your rout
 ```ts
 import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
 
-export const [jwkAuthMiddleware, getJWTPayload] =
-  createJWKAuthMiddleware({
-    jwksUri: "https://auth.example.com/.well-known/jwks.json",
-  });
+export const [jwkAuthMiddleware, getJWTPayload] = createJWKAuthMiddleware({
+  jwksUri: "https://auth.example.com/.well-known/jwks.json",
+});
 ```
 
 The `jwksUri` option let's you set the URL to the JWKS endpoint, this is the URL where the public keys are stored.
@@ -2636,8 +2629,9 @@ If your app receives the JWT in a custom header instead of the `Authorization` h
 ```ts
 import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
 
-export const [jwkAuthMiddleware, getJWTPayload] =
-  createJWKAuthMiddleware({ header: "X-API-Key" });
+export const [jwkAuthMiddleware, getJWTPayload] = createJWKAuthMiddleware({
+  header: "X-API-Key",
+});
 ```
 
 Now use the middleware as usual, but now instead of looking for the token in the `Authorization` header it will look for it in the `X-API-Key` header.
@@ -2663,8 +2657,9 @@ export const cookie = createCookie("jwt", {
   secure: process.env.NODE_ENV === "true",
 });
 
-export const [jwkAuthMiddleware, getJWTPayload] =
-  createJWKAuthMiddleware({ cookie });
+export const [jwkAuthMiddleware, getJWTPayload] = createJWKAuthMiddleware({
+  cookie,
+});
 ```
 
 Then use the middleware as usual, but now instead of looking for the token in the `Authorization` header it will look for it in the cookie.
@@ -2774,8 +2769,7 @@ The secure headers middleware simplifies the setup of security headers. Inspired
 ```ts
 import { createSecureHeadersMiddleware } from "remix-utils/middleware/secure-headers";
 
-export const [secureHeadersMiddleware] =
-  createSecureHeadersMiddleware();
+export const [secureHeadersMiddleware] = createSecureHeadersMiddleware();
 ```
 
 To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
@@ -2832,6 +2826,118 @@ export const [corsMiddleware] = createCorsMiddleware({
 
 The [accepted `options`](#options) are the same as those accepted by the `cors` util.
 
+#### CSRF Middleware
+
+The CSRF middleware protects your application from Cross-Site Request Forgery attacks by validating that requests originate from trusted sources.
+
+```ts
+import { createCsrfMiddleware } from "remix-utils/middleware/csrf";
+
+export const csrfMiddleware = createCsrfMiddleware();
+```
+
+To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
+
+```ts
+import { csrfMiddleware } from "~/middleware/csrf.server";
+export const middleware: Route.MiddlewareFunction[] = [csrfMiddleware];
+```
+
+Now, every non-safe request will be validated against CSRF attacks.
+
+> [!NOTE]
+> If you add this middleware to the root route, it will apply to every route in your application. If your app has API routes that should accept cross-site requests (e.g., for webhooks or third-party integrations), you should move the CSRF middleware to a layout route that wraps only your UI routes, leaving API routes unprotected by CSRF validation.
+
+The middleware uses the `Sec-Fetch-Site` header to determine request origin. Requests from `same-origin` or `same-site` are automatically allowed. For `cross-site` requests, you can specify trusted origins to allow.
+
+The request origin is determined by checking (in order):
+
+1. The `Origin` header
+2. The `Referer` header
+3. The `request.referrer` property
+
+##### Allowing Cross-Site Requests
+
+You can allow cross-site requests from specific origins using a string:
+
+```ts
+let csrfMiddleware = createCsrfMiddleware({
+  origin: "https://trusted.com",
+});
+```
+
+Or using a RegExp for pattern matching:
+
+```ts
+let csrfMiddleware = createCsrfMiddleware({
+  origin: /\.trusted\.com$/,
+});
+```
+
+Or using an array of strings and RegExps:
+
+```ts
+let csrfMiddleware = createCsrfMiddleware({
+  origin: ["https://trusted1.com", "https://trusted2.com", /\.trusted\.com$/],
+});
+```
+
+Or using a function for dynamic validation:
+
+```ts
+let csrfMiddleware = createCsrfMiddleware({
+  origin: (origin, request, context) => origin === "https://trusted.com",
+});
+```
+
+The function can also be async:
+
+```ts
+let csrfMiddleware = createCsrfMiddleware({
+  origin: async (origin, request, context) => {
+    return await checkOriginInDatabase(origin);
+  },
+});
+```
+
+##### Customizing Safe Methods
+
+By default, the middleware skips CSRF validation for `GET`, `HEAD`, and `OPTIONS` requests. You can customize this:
+
+```ts
+let csrfMiddleware = createCsrfMiddleware({
+  safeMethods: ["GET", "HEAD", "OPTIONS", "POST"],
+});
+```
+
+##### Allowing Missing Origin
+
+You can allow requests with missing or invalid origin headers:
+
+```ts
+let csrfMiddleware = createCsrfMiddleware({
+  origin: "https://trusted.com",
+  allowMissingOrigin: true,
+});
+```
+
+> [!WARNING]
+> Enabling `allowMissingOrigin` is high risk. When enabled, requests without a parseable origin (missing `Origin`/`Referer` headers, `Sec-Fetch-Site` header, or `Origin: null`) will bypass origin validation entirely. This can allow attackers to perform cross-site requests in environments that don't send origin headers. Only use this option when you're certain that clients without origin headers are within your trusted boundary, or pair it with an additional CSRF token mechanism.
+
+##### Custom Untrusted Request Handler
+
+You can provide a custom handler for requests that fail CSRF validation:
+
+```ts
+let csrfMiddleware = createCsrfMiddleware({
+  onUntrustedRequest(request, context) {
+    return new Response("Custom forbidden", { status: 418 });
+  },
+});
+```
+
+By default, untrusted requests will receive a 403 Forbidden response.
+
 #### Rolling Cookie Middleware
 
 > [!NOTE]
@@ -2847,9 +2953,9 @@ import { createRollingCookieMiddleware } from "remix-utils/middleware/rolling-co
 // This must be a Cookie or TypedCookie instance
 import { cookie } from "~/cookies";
 
-export const [rollingCookieMiddleware] = createRollingCookieMiddleware(
-  { cookie },
-);
+export const [rollingCookieMiddleware] = createRollingCookieMiddleware({
+  cookie,
+});
 ```
 
 Then, add the `rollingCookieMiddleware` to the `middleware` array in your `app/root.tsx` file.
