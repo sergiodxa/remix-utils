@@ -2938,6 +2938,139 @@ let csrfMiddleware = createCsrfMiddleware({
 
 By default, untrusted requests will receive a 403 Forbidden response.
 
+#### CSRF Token Middleware
+
+> [!NOTE]
+> This depends on `@oslojs/crypto`, `@oslojs/encoding`, and React Router.
+
+The CSRF Token middleware protects your application from Cross-Site Request Forgery attacks using a token-based approach where a random token is stored in a cookie and must be included in form submissions.
+
+```ts
+import { createCsrfTokenMiddleware } from "remix-utils/middleware/csrf-token";
+import { createCookie } from "react-router";
+
+let cookie = createCookie("csrf", {
+  path: "/",
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax",
+});
+
+export const [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
+  cookie,
+});
+```
+
+To use it, add it to the `middleware` array in your `app/root.tsx` file:
+
+```ts
+import { csrfTokenMiddleware } from "~/middleware/csrf-token.server";
+export const middleware: Route.MiddlewareFunction[] = [csrfTokenMiddleware];
+```
+
+Use the `getCsrfToken` function in your root loader to retrieve the token:
+
+```ts
+import { getCsrfToken } from "~/middleware/csrf-token.server";
+
+export async function loader({ context }: Route.LoaderArgs) {
+  let csrfToken = getCsrfToken(context);
+  return { csrfToken };
+}
+```
+
+You can use this with the `AuthenticityTokenProvider` and `AuthenticityTokenInput` components from `remix-utils/csrf/react`:
+
+```tsx
+import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
+
+export default function Root() {
+  let { csrfToken } = useLoaderData<typeof loader>();
+  return (
+    <AuthenticityTokenProvider token={csrfToken}>
+      <Outlet />
+    </AuthenticityTokenProvider>
+  );
+}
+```
+
+Then in your forms:
+
+```tsx
+import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+
+function MyForm() {
+  return (
+    <Form method="post">
+      <AuthenticityTokenInput />
+    </Form>
+  );
+}
+```
+
+The middleware automatically validates the token on non-safe requests (POST, PUT, DELETE, PATCH) and rejects requests with invalid or missing tokens with a 403 Forbidden response.
+
+##### Configuration Options
+
+You can customize the middleware:
+
+```ts
+let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
+  cookie,
+  // The name of the form field containing the token (default: "csrf")
+  formDataKey: "csrf",
+  // A secret to sign the token for extra security
+  secret: process.env.CSRF_SECRET,
+  // Custom handler for invalid tokens
+  onInvalidToken(error, request, context) {
+    return new Response("Invalid CSRF token", { status: 403 });
+  },
+});
+```
+
+##### Trusted Origins
+
+You can allow cross-site requests from specific trusted origins to bypass token validation:
+
+```ts
+let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
+  cookie,
+  origin: "https://trusted.com",
+});
+```
+
+Or using a RegExp for pattern matching:
+
+```ts
+let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
+  cookie,
+  origin: /\.trusted\.com$/,
+});
+```
+
+Or using an array of strings and RegExps:
+
+```ts
+let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
+  cookie,
+  origin: ["https://trusted1.com", "https://trusted2.com", /\.trusted\.com$/],
+});
+```
+
+Or using a function for dynamic validation:
+
+```ts
+let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
+  cookie,
+  origin: async (origin, request, context) => {
+    return await checkOriginInDatabase(origin);
+  },
+});
+```
+
+> [!NOTE]
+> If you add this middleware to the root route, it will apply to every route in your application. If your app has API routes that should accept cross-site requests (e.g., for webhooks), move the CSRF middleware to a layout route that wraps only your UI routes.
+
 #### Rolling Cookie Middleware
 
 > [!NOTE]
