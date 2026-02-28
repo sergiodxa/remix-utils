@@ -13,14 +13,12 @@ describe(createCsrfTokenMiddleware, () => {
 		expect(getToken).toBeFunction();
 	});
 
-	test("allows safe methods (GET, HEAD, OPTIONS) by default", async () => {
+	test.each(["GET", "HEAD", "OPTIONS"])("allows safe method %s by default", async (method) => {
 		let [middleware] = createCsrfTokenMiddleware({ cookie });
 
-		for (let method of ["GET", "HEAD", "OPTIONS"]) {
-			let request = new Request("https://remix.utils", { method });
-			let response = await runMiddleware(middleware, { request });
-			expect(response.status).toBe(200);
-		}
+		let request = new Request("https://remix.utils", { method });
+		let response = await runMiddleware(middleware, { request });
+    expect(response.status).toBe(200);
 	});
 
 	test("sets CSRF token cookie on first request", async () => {
