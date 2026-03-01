@@ -107,13 +107,13 @@ export interface ExternalScriptsHandle<Data = unknown> {
  * // Then render ExternalScripts in your root
  * return <ExternalScripts />
  */
-export function ExternalScripts() {
+export function ExternalScripts({ nonce }: { nonce?: string }) {
 	let scripts = useExternalScripts();
 
 	return (
 		<>
 			{scripts.map((props) => {
-				return <ExternalScript key={props.src} {...props} />;
+				return <ExternalScript key={props.src} {...props} nonce={nonce} />;
 			})}
 		</>
 	);
