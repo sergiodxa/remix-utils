@@ -17,6 +17,160 @@ export type CrossOrigin = "anonymous" | "use-credentials";
 
 export type ScriptType = "module" | "text/javascript";
 
+/**
+ * For GlobalAttributesDescriptor Type - Ideally we'd use React's
+ * HTMLAttributes<HTMLScriptElement> directly or even a Pick<> around that type
+ * but there are quite a few global attributes and the React type includes
+ * eventHandlers and other attributes we don't want to include. We've
+ * explicitly called out the possible expected Global attributes here for
+ * clarity.
+ */
+type GlobalAttributesDescriptor = {
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/accesskey
+	 */
+	accessKey?: React.HTMLAttributes<HTMLScriptElement>["accessKey"];
+	/**
+	 * Experimental
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/anchor
+	 */
+	anchor?: string; // doesn't exist in React types yet
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/autocapitalize
+	 */
+	autoCapitalize?: React.HTMLAttributes<HTMLScriptElement>["autoCapitalize"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/autocorrect
+	 */
+	autoCorrect?: React.HTMLAttributes<HTMLScriptElement>["autoCorrect"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/autofocus
+	 */
+	autoFocus?: React.HTMLAttributes<HTMLScriptElement>["autoFocus"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/class
+	 */
+	class?: string;
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/contenteditable
+	 */
+	contentEditable?: React.HTMLAttributes<HTMLScriptElement>["contentEditable"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/data-*
+	 */
+	[key: `data-${string}`]: string | undefined;
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/dir
+	 */
+	dir?: "rtl" | "ltr" | "auto"; // better than React.HTMLAttributes<HTMLScriptElement>['dir'] which is just string.
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/draggable
+	 */
+	draggable?: React.HTMLAttributes<HTMLScriptElement>["draggable"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/enterkeyhint
+	 */
+	enterKeyHint?: React.HTMLAttributes<HTMLScriptElement>["enterKeyHint"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/exportparts
+	 */
+	exportParts?: string;
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/hidden
+	 */
+	hidden?: React.HTMLAttributes<HTMLScriptElement>["hidden"];
+	/**
+	 * Optional element ID. Use only if the script element needs to be explicitly referenced later.
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/id
+	 */
+	id?: React.HTMLAttributes<HTMLScriptElement>["id"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/inert
+	 */
+	inert?: React.HTMLAttributes<HTMLScriptElement>["inert"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/inputmode
+	 */
+	inputMode?: React.HTMLAttributes<HTMLScriptElement>["inputMode"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/is
+	 */
+	is?: React.HTMLAttributes<HTMLScriptElement>["is"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/itemid
+	 */
+	itemID?: React.HTMLAttributes<HTMLScriptElement>["itemID"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/itemprop
+	 */
+	itemProp?: React.HTMLAttributes<HTMLScriptElement>["itemProp"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/itemref
+	 */
+	itemRef?: React.HTMLAttributes<HTMLScriptElement>["itemRef"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/itemscope
+	 */
+	itemScope?: React.HTMLAttributes<HTMLScriptElement>["itemScope"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/itemtype
+	 */
+	itemType?: React.HTMLAttributes<HTMLScriptElement>["itemType"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/lang
+	 */
+	lang?: React.HTMLAttributes<HTMLScriptElement>["lang"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/nonce
+	 */
+	nonce?: React.HTMLAttributes<HTMLScriptElement>["nonce"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/part
+	 */
+	part?: React.HTMLAttributes<HTMLScriptElement>["part"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/popover
+	 */
+	popover?: React.HTMLAttributes<HTMLScriptElement>["popover"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/role
+	 */
+	role?: React.HTMLAttributes<HTMLScriptElement>["role"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/slot
+	 */
+	slot?: React.HTMLAttributes<HTMLScriptElement>["slot"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/spellcheck
+	 */
+	spellCheck?: React.HTMLAttributes<HTMLScriptElement>["spellCheck"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/style
+	 */
+	style?: React.HTMLAttributes<HTMLScriptElement>["style"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/tabindex
+	 */
+	tabIndex?: React.HTMLAttributes<HTMLScriptElement>["tabIndex"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/title
+	 */
+	title?: React.HTMLAttributes<HTMLScriptElement>["title"];
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/translate
+	 */
+	translate?: React.HTMLAttributes<HTMLScriptElement>["translate"];
+	/**
+	 * Limited Availability
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/virtualkeyboardpolicy
+	 */
+	virtualkeyboardpolicy?: "auto" | "manual" | ""; // doesn't exist in React types yet.
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/writingmode
+	 */
+	writingsuggestions?: boolean | null; // doesn't exist in React types yet.
+};
+
 export type ScriptDescriptor = {
 	/** Enable preloading of this script on SSR */
 	preload?: boolean;
@@ -56,11 +210,7 @@ export type ScriptDescriptor = {
 	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-type
 	 */
 	type?: ScriptType;
-	/**
-	 * Optional element ID. Use only if the script element needs to be explicitly referenced later.
-	 */
-	id?: string;
-};
+} & GlobalAttributesDescriptor;
 
 export type ExternalScriptsFunction<Loader = unknown> = (
 	args: HandleConventionArguments<Loader>,
@@ -172,10 +322,18 @@ export function ExternalScript({
 	referrerPolicy,
 	noModule,
 	nonce,
-	id,
+	...global
 }: ScriptDescriptor) {
 	let isHydrated = useHydrated();
 	let startsHydrated = React.useRef(isHydrated);
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: for small objects using JSON.stringify shouldn't impact performance. We also can't explicitly declare each possible global attribute especially data-* attributes.
+	const memoizedGlobal = React.useMemo(
+		() => ({
+			...global,
+		}),
+		[JSON.stringify(global)],
+	);
 
 	React.useEffect(() => {
 		if (!startsHydrated.current && isHydrated) return;
@@ -192,7 +350,7 @@ export function ExternalScript({
 			referrerPolicy,
 			noModule,
 			nonce,
-			id,
+			...memoizedGlobal,
 		};
 
 		for (let [key, value] of Object.entries(attributes)) {
@@ -213,7 +371,7 @@ export function ExternalScript({
 		referrerPolicy,
 		src,
 		type,
-		id,
+		memoizedGlobal,
 	]);
 
 	if (startsHydrated.current && isHydrated) return null;
@@ -234,7 +392,6 @@ export function ExternalScript({
 				/>
 			)}
 			<script
-				id={id}
 				src={src}
 				defer={defer}
 				async={async}
@@ -244,6 +401,7 @@ export function ExternalScript({
 				crossOrigin={crossOrigin}
 				integrity={integrity}
 				referrerPolicy={referrerPolicy}
+				{...memoizedGlobal}
 			/>
 		</>
 	);
