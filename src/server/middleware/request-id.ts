@@ -52,6 +52,17 @@
  *     header: "X-Correlation-ID",
  *   });
  * ```
+ *
+ * To disable this functionality, you can set the header property to `null` instead.
+ *
+ * ```ts
+ * import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
+ *
+ * export const [requestIDMiddleware, getRequestID] =
+ *   createRequestIDMiddleware({
+ *     header: null,
+ *   });
+ * ```
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Request ID
  */
@@ -68,7 +79,10 @@ export function createRequestIDMiddleware({
 
 	return [
 		function requestIDMiddleware({ request, context }, next) {
-			let requestId = request.headers.get(header);
+			let requestId = null;
+			if (header) {
+				requestId = request.headers.get(header);
+			}
 			if (
 				!requestId ||
 				requestId.length > limitLength ||
@@ -91,9 +105,11 @@ export namespace createRequestIDMiddleware {
 		/**
 		 * The name of the header to read the request ID from.
 		 *
+		 * Pass `null` to disable reading the request ID from headers.
+		 *
 		 * @default "X-Request-ID"
 		 */
-		header?: string;
+		header?: string | null;
 
 		/**
 		 * The length of the request ID.

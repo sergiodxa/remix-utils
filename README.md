@@ -2398,6 +2398,16 @@ export const [requestIDMiddleware, getRequestID] = createRequestIDMiddleware({
 });
 ```
 
+You can disable this behaviour by passing `null` instead.
+
+```ts
+import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
+
+export const [requestIDMiddleware, getRequestID] = createRequestIDMiddleware({
+  header: null,
+});
+```
+
 #### Basic Auth Middleware
 
 > [!NOTE]
