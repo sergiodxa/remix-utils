@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "remix-utils",
@@ -15,7 +16,7 @@
         "@happy-dom/global-registrator": "^18.0.1",
         "@oslojs/crypto": "^1.0.1",
         "@oslojs/encoding": "^1.1.0",
-        "@remix-run/file-storage": "^0.9.0",
+        "@remix-run/file-storage": "^0.13.3",
         "@standard-schema/spec": "^1.0.0",
         "@testing-library/jest-dom": "^6.8.0",
         "@testing-library/react": "^16.3.0",
@@ -152,9 +153,13 @@
 
     "@oslojs/encoding": ["@oslojs/encoding@1.1.0", "", {}, "sha512-70wQhgYmndg4GCPxPPxPGevRKqTIJ2Nh4OkiMWmDAVYsTQ+Ta7Sq+rPevXyXGdzr30/qZBnyOalCszoMxlyldQ=="],
 
-    "@remix-run/file-storage": ["@remix-run/file-storage@0.9.0", "", { "dependencies": { "@remix-run/lazy-file": "^3.5.0" } }, "sha512-GbrmqGTdgevRMqkcTzGG9eyUn3eo32ST/jmqdh2g8h5MNKmONF6TJpVDZvtGhrvl93kX/k01WigUk/R8j58/eA=="],
+    "@remix-run/file-storage": ["@remix-run/file-storage@0.13.3", "", { "dependencies": { "@remix-run/fs": "^0.4.2", "@remix-run/lazy-file": "^5.0.2" } }, "sha512-HBDz9RRsFRvI6EoeasklxH/NleGy0QZBXBcA4gQBW8ueucop21TQI4wvGlhZmXcnJ3nP4RkhdF2Gff2/HD5eiA=="],
 
-    "@remix-run/lazy-file": ["@remix-run/lazy-file@3.5.0", "", { "dependencies": { "mrmime": "^2.0.0" } }, "sha512-/QuQA1XXaVSco02fI2RRL6K6av81gcfb8MVtINbciqGjA24p3qAZ5M7YytLBrK0cAb7S39eEte9p0nrlqKnUrw=="],
+    "@remix-run/fs": ["@remix-run/fs@0.4.2", "", { "dependencies": { "@remix-run/lazy-file": "^5.0.2", "@remix-run/mime": "^0.4.0" } }, "sha512-z3W2L+iUwgZ7i0S379SYQ8veOe2Weqs+JajmyTCqSVzbmMUniH3qQ6SAYr3FjbrKtLLWHN3SpK4XtFv57VzbLA=="],
+
+    "@remix-run/lazy-file": ["@remix-run/lazy-file@5.0.2", "", { "dependencies": { "@remix-run/mime": "^0.4.0" } }, "sha512-52Bo5dTV+EDwrUMS3mjeR+Sly85aHeN3fnNTeaflqzlCMWJwr2pX+y6/3mTDtRdxmTWF1MGQAoeayzfPb4zZJg=="],
+
+    "@remix-run/mime": ["@remix-run/mime@0.4.0", "", {}, "sha512-O6TcTL6CtuX82Q8BHqAere5O+0hYcrzSgY9whsDOBuqbW753Rczprs2jYw3qCDSo0kLxykW4ys3qgZcdgZ+chw=="],
 
     "@shikijs/engine-oniguruma": ["@shikijs/engine-oniguruma@3.12.2", "", { "dependencies": { "@shikijs/types": "3.12.2", "@shikijs/vscode-textmate": "^10.0.2" } }, "sha512-hozwnFHsLvujK4/CPVHNo3Bcg2EsnG8krI/ZQ2FlBlCRpPZW4XAEQmEwqegJsypsTAN9ehu2tEYe30lYKSZW/w=="],
 
