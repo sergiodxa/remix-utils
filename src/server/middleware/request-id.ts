@@ -52,9 +52,9 @@
  *     header: "X-Correlation-ID",
  *   });
  * ```
- * 
+ *
  * To disable this functionality, you can set the header property to `null` instead.
- * 
+ *
  * ```ts
  * import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
  *
@@ -104,7 +104,7 @@ export namespace createRequestIDMiddleware {
 	export interface Options {
 		/**
 		 * The name of the header to read the request ID from.
-		 * 
+		 *
 		 * Pass `null` to disable reading the request ID from headers.
 		 *
 		 * @default "X-Request-ID"
