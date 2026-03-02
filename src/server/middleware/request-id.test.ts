@@ -75,6 +75,27 @@ describe(createRequestIDMiddleware, () => {
 		expect(requestId).toBe("test-request-id");
 	});
 
+	test("uses generator a new request id if header is disabled", async () => {
+		let [middleware, getRequestID] = createRequestIDMiddleware({
+			header: null,
+		});
+
+		let request = new Request("https://remix.run", {
+			headers: {
+				"X-Request-ID": "test-request-id",
+			},
+		});
+
+		let context = new RouterContextProvider();
+
+		await runMiddleware(middleware, { request, context });
+
+		let requestId = getRequestID(context);
+
+		expect(requestId).toBeString();
+		expect(requestId).not.toBe("test-request-id");
+	});
+
 	test("uses default generator if none is provided", async () => {
 		let [middleware, getRequestID] = createRequestIDMiddleware();
 
