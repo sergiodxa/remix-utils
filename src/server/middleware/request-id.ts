@@ -79,7 +79,7 @@ export function createRequestIDMiddleware({
 
 	return [
 		function requestIDMiddleware({ request, context }, next) {
-			let requestId;
+			let requestId = null;
 			if (header) {
 				requestId = request.headers.get(header);
 			}
