@@ -21,7 +21,7 @@ describe(createRequestIDMiddleware, () => {
 		expect(requestId).toBe("test-request-id");
 	});
 
-	test("uses generator a new request id if there's nothing in the header", async () => {
+	test("uses generator if there's nothing in the header", async () => {
 		let [middleware, getRequestID] = createRequestIDMiddleware({
 			generator: () => "test-request-id",
 		});
@@ -35,7 +35,7 @@ describe(createRequestIDMiddleware, () => {
 		expect(requestId).toBe("test-request-id");
 	});
 
-	test("uses generator a new request id if the header is too long", async () => {
+	test("uses generator if the header is too long", async () => {
 		let [middleware, getRequestID] = createRequestIDMiddleware({
 			generator: () => "test-request-id",
 		});
@@ -55,7 +55,7 @@ describe(createRequestIDMiddleware, () => {
 		expect(requestId).toBe("test-request-id");
 	});
 
-	test("uses generator a new request id if the header contains invalid characters", async () => {
+	test("uses generator if the header contains invalid characters", async () => {
 		let [middleware, getRequestID] = createRequestIDMiddleware({
 			generator: () => "test-request-id",
 		});
@@ -75,7 +75,7 @@ describe(createRequestIDMiddleware, () => {
 		expect(requestId).toBe("test-request-id");
 	});
 
-	test("uses generator a new request id if header is disabled", async () => {
+	test("uses generator if header is disabled", async () => {
 		let [middleware, getRequestID] = createRequestIDMiddleware({
 			header: null,
 		});
