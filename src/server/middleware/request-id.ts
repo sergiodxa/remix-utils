@@ -63,6 +63,9 @@
  *     header: null,
  *   });
  * ```
+ *
+ * Now the middleware will always use the generator function to generate the request ID and ignore any header.
+ *
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Request ID
  */
@@ -79,7 +82,7 @@ export function createRequestIDMiddleware({
 
 	return [
 		function requestIDMiddleware({ request, context }, next) {
-			let requestId = header ? request.headers.get(header): null;
+			let requestId = header ? request.headers.get(header) : null;
 
 			if (
 				!requestId ||
