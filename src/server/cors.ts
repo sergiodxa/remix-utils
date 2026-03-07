@@ -1,4 +1,4 @@
-import type { Promisable } from "type-fest";
+type Promisable<T> = T | PromiseLike<T>;
 
 const DEFAULT_OPTIONS: cors.Options = {
 	origin: true,

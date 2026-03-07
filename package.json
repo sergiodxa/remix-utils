@@ -329,9 +329,6 @@
 		"typescript": "^5.9.2",
 		"zod": "^4.1.5"
 	},
-	"dependencies": {
-		"type-fest": "^4.41.0"
-	},
 	"files": [
 		"build",
 		"package.json",
