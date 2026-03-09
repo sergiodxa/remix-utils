@@ -312,7 +312,7 @@
 		"@remix-run/file-storage": "^0.9.0",
 		"@standard-schema/spec": "^1.0.0",
 		"@testing-library/jest-dom": "^6.8.0",
-		"@testing-library/react": "^16.3.0",
+		"@testing-library/react": "^16.3.2",
 		"@testing-library/user-event": "^14.6.1",
 		"@total-typescript/tsconfig": "^1.0.4",
 		"@types/bun": "^1.2.21",
