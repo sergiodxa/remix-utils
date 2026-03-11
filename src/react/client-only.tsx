@@ -1,3 +1,40 @@
+/**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/client-only`.
+ *
+ * > [!NOTE]
+ * > This depends on `react`.
+ *
+ * The ClientOnly component lets you render the children element only on the client-side, avoiding rendering it the server-side.
+ *
+ * You can provide a fallback component to be used on SSR, and while optional, it's highly recommended to provide one to avoid content layout shift issues.
+ *
+ * ```tsx
+ * import { ClientOnly } from "remix-utils/client-only";
+ *
+ * export default function Component() {
+ * 	return (
+ * 		<ClientOnly fallback={<SimplerStaticVersion />}>
+ * 			{() => <ComplexComponentNeedingBrowserEnvironment />}
+ * 		</ClientOnly>
+ * 	);
+ * }
+ * ```
+ *
+ * This component is handy when you have some complex component that needs a browser environment to work, like a chart or a map. This way, you can avoid rendering it server-side and instead use a simpler static version like an SVG or even a loading UI.
+ *
+ * The rendering flow will be:
+ *
+ * - SSR: Always render the fallback.
+ * - CSR First Render: Always render the fallback.
+ * - CSR Update: Update to render the actual component.
+ * - CSR Future Renders: Always render the actual component, don't bother to render the fallback.
+ *
+ * This component uses the `useHydrated` hook internally.
+ *
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Component/Client Only
+ */
 import * as React from "react";
 import { useHydrated } from "./use-hydrated.js";
 

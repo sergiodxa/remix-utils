@@ -1,24 +1,23 @@
 /**
- * The session middleware let's you save a session object in the Router context
- * so you can access it in any loader and ensure you're always working with the
- * same Session instance.
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/middleware-session`.
+ *
+ * The session middleware let's you save a session object in the Router context so you can access it in any loader and ensure you're always working with the same Session instance.
  *
  * ```ts
  * import { createSessionMiddleware } from "remix-utils/middleware/session";
  * ```
  *
- * To use it, you need to create a session storage object and pass it to the
- * middleware.
+ * To use it, you need to create a session storage object and pass it to the middleware.
  *
  * ```ts
  * import { createCookieSessionStorage } from "react-router";
  *
  * let sessionStorage = createCookieSessionStorage({
- *   cookie: createCookie("session", { path: "/", sameSite: "lax" }),
+ * 	cookie: createCookie("session", { path: "/", sameSite: "lax" }),
  * });
  *
- * let [sessionMiddleware, getSession] =
- *   createSessionMiddleware(sessionStorage);
+ * let [sessionMiddleware, getSession] = createSessionMiddleware(sessionStorage);
  * ```
  *
  * Then you can use the `sessionMiddleware` in your `app/root.tsx` function.
@@ -29,85 +28,46 @@
  * export const middleware: Route.MiddlewareFunction[] = [sessionMiddleware];
  * ```
  *
- * And you can use the `getSession` function in your loaders to get the session
- * object.
+ * And you can use the `getSession` function in your loaders to get the session object.
  *
  * ```ts
  * import { getSession } from "~/middleware/session.server";
  *
  * export async function loader({ context }: Route.LoaderArgs) {
- *   let session = await getSession(context);
- *   let user = await getUser();
- *   session.set("user", user);
- *   return json({ user });
+ * 	let session = await getSession(context);
+ * 	let user = await getUser();
+ * 	session.set("user", user);
+ * 	return json({ user });
  * }
  * ```
  *
- * By default the middleware will automaticaly commit the session at the end of
- * the request, but you can customize this behavior by passing a second
- * argument to the `createSessionMiddleware` function.
+ * By default the middleware will automaticaly commit the session at the end of the request, but you can customize this behavior by passing a second argument to the `createSessionMiddleware` function.
  *
  * ```ts
- * let [sessionMiddleware, getSession] = createSessionMiddleware(
- *   sessionStorage,
- *   shouldCommit
- * );
+ * let [sessionMiddleware, getSession] = createSessionMiddleware(sessionStorage, shouldCommit);
  * ```
  *
- * The `shouldCommit` function will be called at the end of the request with
- * the previous session data and the session data before the request, if it
- * returns `true` the session will be committed, if it returns `false` the
- * session will be discarded.
+ * The `shouldCommit` function will be called at the end of the request with the previous session data and the session data before the request, if it returns `true` the session will be committed, if it returns `false` the session will be discarded.
  *
- * If you want to commit the session only if the session data changed you can
- * use a library like `dequal` to compare the session data.
+ * If you want to commit the session only if the session data changed you can use a library like `dequal` to compare the session data.
  *
  * ```ts
  * import { dequal } from "dequal";
  *
  * let [sessionMiddleware, getSession] = createSessionMiddleware(
- *   sessionStorage,
- *   (previous, next) => !dequal(previous, next) // Only commit if session changed
+ * 	sessionStorage,
+ * 	(previous, next) => !dequal(previous, next), // Only commit if session changed
  * );
  * ```
  *
- * Or you can use a custom function to compare the session data, maybe only if
- * some specific fields changed.
+ * Or you can use a custom function to compare the session data, maybe only if some specific fields changed.
  *
  * ```ts
- * let [sessionMiddleware, getSession] = createSessionMiddleware(
- *   sessionStorage,
- *   (previous, next) => {
- *     return previous.user.id !== next.user.id;
- *   }
- * );
- * ```
- *
- * Optionally, you can also pass a getter function to
- * `createSessionMiddleware` to dynamically create the session storage
- * based on the request and context.
- *
- * ```ts
- * import { createSessionMiddleware } from "remix-utils/middleware/session";
- * import { createCookieSessionStorage } from "react-router";
- *
- * export const [sessionMiddleware, getSession] =
- *  createSessionMiddleware((request, context) => {
- *     let url = new URL(request.url);
- *     let domain = url.hostname === "localhost" ? undefined : url.hostname;
- *    return createCookieSessionStorage({
- *     cookie: createCookie("session", { domain })
- *    });
+ * let [sessionMiddleware, getSession] = createSessionMiddleware(sessionStorage, (previous, next) => {
+ * 	return current.user.id !== previous.user.id;
  * });
  * ```
  *
- * This allows you to create a session storage that is specific to the request
- * and context, for example, to set a different cookie domain based on the
- * request hostname.
- *
- * This is useful if you have a multi-tenant application where each tenant
- * has its own domain and you want to use a different session cookie for each
- * tenant.
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Session
  */

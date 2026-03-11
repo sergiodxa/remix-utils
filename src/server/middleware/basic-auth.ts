@@ -1,23 +1,24 @@
 /**
- *> This depends on `@oslojs/crypto`, and `@oslojs/encoding`.
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/middleware-basic-auth`.
  *
- * The Basic Auth middleware let's you add a basic authentication to your
- * routes, this can be useful to protect routes that need to be private.
+ * > [!NOTE]
+ * > This depends on `@oslojs/crypto`, and `@oslojs/encoding`.
  *
- * > **Warning**: Basic Auth is not secure by itself, it should be used with
- * > HTTPS to ensure the username and password are encrypted. Do not use it to
- * > protect sensitive data, use a more secure method instead.
+ * The Basic Auth middleware let's you add a basic authentication to your routes, this can be useful to protect routes that need to be private.
+ *
+ * > [!WARNING]
+ * > Basic Auth is not secure by itself, it should be used with HTTPS to ensure the username and password are encrypted. Do not use it to protect sensitive data, use a more secure method instead.
  *
  * ```ts
  * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
  *
  * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
- *   user: { username: "admin", password: "password" },
+ * 	user: { username: "admin", password: "password" },
  * });
  * ```
  *
- * To use it, you need to add it to the `middleware` array in the
- * route where you want to use it.
+ * To use it, you need to add it to the `middleware` array in the route where you want to use it.
  *
  * ```ts
  * import { basicAuthMiddleware } from "~/middleware/basic-auth.server";
@@ -32,45 +33,41 @@
  * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
  *
  * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
- *   realm: "My Realm",
- *   user: { username: "admin", password: "password" },
+ * 	realm: "My Realm",
+ * 	user: { username: "admin", password: "password" },
  * });
  * ```
  *
- * The `user` option let's you set the username and password to authenticate,
- * you can also pass an array of users.
+ * The `user` option let's you set the username and password to authenticate, you can also pass an array of users.
  *
  * ```ts
  * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
  *
  * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
- *   user: [
- *     { username: "admin", password: "password" },
- *     { username: "user", password: "password" },
- *   ],
+ * 	user: [
+ * 		{ username: "admin", password: "password" },
+ * 		{ username: "user", password: "password" },
+ * 	],
  * });
  * ```
  *
- * The `verifyUser` option let's you pass a function to verify the user, this
- * can be useful to check the user against a database.
+ * The `verifyUser` option let's you pass a function to verify the user, this can be useful to check the user against a database.
  *
  * ```ts
  * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
  *
  * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
- *   verifyUser(username, password) {
- *     let user = await getUser(username);
- *     if (!user) return false;
- *     return await verifyPassword(password, user.password);
- *   },
+ * 	verifyUser(username, password) {
+ * 		let user = await getUser(username);
+ * 		if (!user) return false;
+ * 		return await verifyPassword(password, user.password);
+ * 	},
  * });
  * ```
  *
- * The `verifyUser` function should return `true` if the user is authenticated,
- * and `false` otherwise.
+ * The `verifyUser` function should return `true` if the user is authenticated, and `false` otherwise.
  *
- * In case of an invalid username or password the middleware will return a
- * `401` status code with a `WWW-Authenticate` header.
+ * In case of an invalid username or password the middleware will return a `401` status code with a `WWW-Authenticate` header.
  *
  * ```http
  * HTTP/1.1 401 Unauthorized
@@ -79,15 +76,14 @@
  * Unauthorized
  * ```
  *
- * The `invalidUserMessage` option let's you customize the message sent when
- * the user is invalid.
+ * The `invalidUserMessage` option let's you customize the message sent when the user is invalid.
  *
  * ```ts
  * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
  *
  * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
- *   invalidUserMessage: "Invalid username or password",
- *   user: { username: "admin", password: "password" },
+ * 	invalidUserMessage: "Invalid username or password",
+ * 	user: { username: "admin", password: "password" },
  * });
  * ```
  *
@@ -100,23 +96,21 @@
  * Invalid username or password
  * ```
  *
- * You can also customize the `invalidUserMessage` by passing a function which
- * will receive the Request and context objects.
+ * You can also customize the `invalidUserMessage` by passing a function which will receive the Request and context objects.
  *
  * ```ts
  * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
  *
  * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
- *   invalidUserMessage({ request, context }) {
- *     // do something with request or context here
- *     return { message: `Invalid username or password for ${username}` };
- *   },
- *   user: { username: "admin", password: "password" },
+ * 	invalidUserMessage({ request, context }) {
+ * 		// do something with request or context here
+ * 		return { message: `Invalid username or password for ${username}` };
+ * 	},
+ * 	user: { username: "admin", password: "password" },
  * });
  * ```
  *
- * In both cases, with a hard-coded value or a function, the invalid message
- * can be a string or an object, if it's an object it will be converted to JSON.
+ * In both cases, with a hard-coded value or a function, the invalid message can be a string or an object, if it's an object it will be converted to JSON.
  *
  * ```http
  * HTTP/1.1 401 Unauthorized
@@ -124,6 +118,7 @@
  *
  * {"message":"Invalid username or password"}
  * ```
+ *
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Basic Auth
  */

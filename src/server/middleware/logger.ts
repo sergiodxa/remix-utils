@@ -1,6 +1,8 @@
 /**
- * The logger middleware let's you log the request and response information to
- * the console, this can be useful to debug issues with the request and response.
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/middleware-logger`.
+ *
+ * The logger middleware let's you log the request and response information to the console, this can be useful to debug issues with the request and response.
  *
  * ```ts
  * import { createLoggerMiddleware } from "remix-utils/middleware/logger";
@@ -8,8 +10,7 @@
  * export const [loggerMiddleware] = createLoggerMiddleware();
  * ```
  *
- * To use it, you need to add it to the `middleware` array in your
- * `app/root.tsx` file.
+ * To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
  *
  * ```ts
  * import { loggerMiddleware } from "~/middleware/logger.server";
@@ -18,23 +19,20 @@
  *
  * Now, every request and response will be logged to the console.
  *
- * The logger middleware can be customized by passing an options object to the
- * `createLoggerMiddleware` function.
+ * The logger middleware can be customized by passing an options object to the `createLoggerMiddleware` function.
  *
  * ```ts
  * let [loggerMiddleware] = createLoggerMiddleware({
- *   logger: console,
- *   precision: 2,
- *   formatMessage(request, response, time) {
- *     return `${request.method} ${request.url} - ${response.status} - ${time}ms`;
- *   },
+ * 	logger: console,
+ * 	precision: 2,
+ * 	formatMessage(request, response, time) {
+ * 		return `${request.method} ${request.url} - ${response.status} - ${time}ms`;
+ * 	},
  * });
  * ```
  *
- * The `logger` option let's you pass a custom logger, the `precision` option
- * let's you set the number of decimal places to use in the response time, and
- * the `formatMessage` option let's you customize the message that will be
- * logged.
+ * The `logger` option let's you pass a custom logger, the `precision` option let's you set the number of decimal places to use in the response time, and the `formatMessage` option let's you customize the message that will be logged.
+ *
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Logger
  */

@@ -1,3 +1,132 @@
+/**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/cors`.
+ *
+ * The CORS function let you implement CORS headers on your loaders and actions so you can use them as an API for other client-side applications.
+ *
+ * There are two main ways to use the `cors` function.
+ *
+ * 1. Use it on each loader/action where you want to enable it.
+ * 2. Use it globally on entry.server handleRequest and handleDataRequest export.
+ *
+ * If you want to use it on every loader/action, you can do it like this:
+ *
+ * ```ts
+ * import { cors } from "remix-utils/cors";
+ *
+ * export async function loader({ request }: Route.LoaderArgs) {
+ * 	let data = await getData(request);
+ * 	let response = json<LoaderData>(data);
+ * 	return await cors(request, response);
+ * }
+ * ```
+ *
+ * You could also do the `json` and `cors` call in one line.
+ *
+ * ```ts
+ * import { cors } from "remix-utils/cors";
+ *
+ * export async function loader({ request }: Route.LoaderArgs) {
+ * 	let data = await getData(request);
+ * 	return await cors(request, json<LoaderData>(data));
+ * }
+ * ```
+ *
+ * And because `cors` mutates the response, you can also call it and later return.
+ *
+ * ```ts
+ * import { cors } from "remix-utils/cors";
+ *
+ * export async function loader({ request }: Route.LoaderArgs) {
+ * 	let data = await getData(request);
+ * 	let response = json<LoaderData>(data);
+ * 	await cors(request, response); // this mutates the Response object
+ * 	return response; // so you can return it here
+ * }
+ * ```
+ *
+ * If you want to setup it globally once, you can do it like this in `entry.server`
+ *
+ * ```tsx
+ * import { cors } from "remix-utils/cors";
+ *
+ * const ABORT_DELAY = 5000;
+ *
+ * export default function handleRequest(
+ * 	request: Request,
+ * 	responseStatusCode: number,
+ * 	responseHeaders: Headers,
+ * 	remixContext: EntryContext,
+ * ) {
+ * 	let callbackName = isbot(request.headers.get("user-agent")) ? "onAllReady" : "onShellReady";
+ *
+ * 	return new Promise((resolve, reject) => {
+ * 		let didError = false;
+ *
+ * 		let { pipe, abort } = renderToPipeableStream(
+ * 			<RemixServer context={remixContext} url={request.url} />,
+ * 			{
+ * 				[callbackName]: () => {
+ * 					let body = new PassThrough();
+ *
+ * 					responseHeaders.set("Content-Type", "text/html");
+ *
+ * 					cors(
+ * 						request,
+ * 						new Response(body, {
+ * 							headers: responseHeaders,
+ * 							status: didError ? 500 : responseStatusCode,
+ * 						}),
+ * 					).then((response) => {
+ * 						resolve(response);
+ * 					});
+ *
+ * 					pipe(body);
+ * 				},
+ * 				onShellError: (err: unknown) => {
+ * 					reject(err);
+ * 				},
+ * 				onError: (error: unknown) => {
+ * 					didError = true;
+ *
+ * 					console.error(error);
+ * 				},
+ * 			},
+ * 		);
+ *
+ * 		setTimeout(abort, ABORT_DELAY);
+ * 	});
+ * }
+ *
+ * export let handleDataRequest: HandleDataRequestFunction = async (response, { request }) => {
+ * 	return await cors(request, response);
+ * };
+ * ```
+ *
+ *
+ * Additionally, the `cors` function accepts a `options` object as a third optional argument. These are the options.
+ *
+ * - `origin`: Configures the **Access-Control-Allow-Origin** CORS header.
+ *   Possible values are:
+ *   - `true`: Enable CORS for any origin (same as "\*")
+ *   - `false`: Don't setup CORS
+ *   - `string`: Set to a specific origin, if set to "\*" it will allow any origin
+ *   - `RegExp`: Set to a RegExp to match against the origin
+ *   - `Array<string | RegExp>`: Set to an array of origins to match against the
+ *     string or RegExp
+ *   - `Function`: Set to a function that will be called with the request origin
+ *     and should return a boolean indicating if the origin is allowed or not.
+ *     The default value is `true`.
+ * - `methods`: Configures the **Access-Control-Allow-Methods** CORS header.
+ *   The default value is `["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"]`.
+ * - `allowedHeaders`: Configures the **Access-Control-Allow-Headers** CORS header.
+ * - `exposedHeaders`: Configures the **Access-Control-Expose-Headers** CORS header.
+ * - `credentials`: Configures the **Access-Control-Allow-Credentials** CORS header.
+ * - `maxAge`: Configures the **Access-Control-Max-Age** CORS header.
+ *
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Server/CORS
+ */
 import type { Promisable } from "type-fest";
 
 const DEFAULT_OPTIONS: cors.Options = {

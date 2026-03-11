@@ -1,3 +1,46 @@
+/**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/locales-server`.
+ *
+ * > [!NOTE]
+ * > This depends on `intl-parse-accept-language`.
+ *
+ * This function let you get the locales of the client (the user) who originated the request.
+ *
+ * ```ts
+ * import { getClientLocales } from "remix-utils/locales/server";
+ *
+ * export async function loader({ request }: Route.LoaderArgs) {
+ * 	// using the request
+ * 	let locales = getClientLocales(request);
+ * 	// or using the headers
+ * 	let locales = getClientLocales(request.headers);
+ * }
+ * ```
+ *
+ * The return value is a Locales type, which is `string | string[] | undefined`.
+ *
+ * The returned locales can be directly used on the Intl API when formatting dates, numbers, etc.
+ *
+ * ```ts
+ * import { getClientLocales } from "remix-utils/locales/server";
+ * export async function loader({ request }: Route.LoaderArgs) {
+ * 	let locales = getClientLocales(request);
+ * 	let nowDate = new Date();
+ * 	let formatter = new Intl.DateTimeFormat(locales, {
+ * 		year: "numeric",
+ * 		month: "long",
+ * 		day: "numeric",
+ * 	});
+ * 	return json({ now: formatter.format(nowDate) });
+ * }
+ * ```
+ *
+ * The value could also be returned by the loader and used on the UI to ensure the user's locales is used on both server and client formatted dates.
+ *
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Server/Get Client Locales
+ */
 import { parseAcceptLanguage } from "intl-parse-accept-language";
 import { getHeaders } from "./get-headers.js";
 

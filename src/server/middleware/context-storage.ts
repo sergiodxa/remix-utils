@@ -1,11 +1,13 @@
 /**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/middleware-context-storage`.
+ *
  * The Context Storage middleware stores the Router context provider and request in AsyncLocalStorage and gives you functions to access it in your code.
  *
  * ```ts
  * import { createContextStorageMiddleware } from "remix-utils/middleware/context-storage";
  *
- * export const [contextStorageMiddleware, getContext, getRequest] =
- *   createContextStorageMiddleware();
+ * export const [contextStorageMiddleware, getContext, getRequest] = createContextStorageMiddleware();
  * ```
  *
  * To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
@@ -22,9 +24,9 @@
  * import { getContext, getRequest } from "~/middleware/context-storage.server";
  *
  * export async function doSomething() {
- *   let context = getContext();
- *   let request = getRequest();
- *   // ...
+ * 	let context = getContext();
+ * 	let request = getRequest();
+ * 	// ...
  * }
  * ```
  *
@@ -36,14 +38,13 @@
  * import { createBatcherMiddleware } from "remix-utils/middleware/batcher";
  * import { getContext } from "~/middleware/context-storage.server";
  *
- * const [batcherMiddleware, getBatcherFromContext] =
- *   createBatcherMiddleware();
+ * const [batcherMiddleware, getBatcherFromContext] = createBatcherMiddleware();
  *
  * export { bathcherMiddleware };
  *
  * export function getBatcher() {
- *   let context = getContext();
- *   return getBatcherFromContext(context);
+ * 	let context = getContext();
+ * 	return getBatcherFromContext(context);
  * }
  * ```
  *
@@ -53,13 +54,14 @@
  * import { getBatcher } from "~/middleware/batcher.server";
  *
  * export async function loader(_: Route.LoaderArgs) {
- *   let batcher = getBatcher();
- *   let result = await batcher.batch("key", async () => {
- *     return await getData();
- *   });
- *   // ...
+ * 	let batcher = getBatcher();
+ * 	let result = await batcher.batch("key", async () => {
+ * 		return await getData();
+ * 	});
+ * 	// ...
  * }
  * ```
+ *
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Context Storage
  */

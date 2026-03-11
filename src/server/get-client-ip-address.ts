@@ -1,3 +1,50 @@
+/**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/get-client-ip-address`.
+ *
+ * > [!NOTE]
+ * > This depends on `is-ip`.
+ *
+ * This function receives a Request or Headers objects and will try to get the IP address of the client (the user) who originated the request.
+ *
+ * ```ts
+ * import { getClientIPAddress } from "remix-utils/get-client-ip-address";
+ *
+ * export async function loader({ request }: Route.LoaderArgs) {
+ * 	// using the request
+ * 	let ipAddress = getClientIPAddress(request);
+ * 	// or using the headers
+ * 	let ipAddress = getClientIPAddress(request.headers);
+ * }
+ * ```
+ *
+ * If it can't find he IP address the return value will be `null`. Remember to check if it was able to find it before using it.
+ *
+ * The function uses the following list of headers, in order of preference:
+ *
+ * - X-Client-IP
+ * - X-Forwarded-For
+ * - HTTP-X-Forwarded-For
+ * - Fly-Client-IP
+ * - CF-Connecting-IP
+ * - Fastly-Client-Ip
+ * - True-Client-Ip
+ * - X-Real-IP
+ * - X-Cluster-Client-IP
+ * - X-Forwarded
+ * - Forwarded-For
+ * - Forwarded
+ * - DO-Connecting-IP
+ * - oxygen-buyer-ip
+ *
+ * When a header is found that contains a valid IP address, it will return without checking the other headers.
+ *
+ * > [!WARNING]
+ * > On local development the function is most likely to return `null`. This is because the browser doesn't send any of the above headers, if you want to simulate those headers you will need to either add it to the request Remix receives in your HTTP server or run a reverse proxy like NGINX that can add them for you.
+ *
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Server/Get Client IP Address
+ */
 import { isIP } from "is-ip";
 import { getHeaders } from "./get-headers.js";
 

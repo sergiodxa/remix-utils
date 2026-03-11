@@ -1,111 +1,117 @@
 /**
- * The CSRF middleware protects your application from Cross-Site Request
- * Forgery attacks by validating that requests originate from trusted sources.
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/middleware-csrf`.
+ *
+ * The CSRF middleware protects your application from Cross-Site Request Forgery attacks by validating that requests originate from trusted sources.
  *
  * ```ts
  * import { createCsrfMiddleware } from "remix-utils/middleware/csrf";
  *
- * export const csrf = createCsrfMiddleware();
+ * export const csrfMiddleware = createCsrfMiddleware();
  * ```
  *
- * To use it, you need to add it to the `middleware` array in your
- * `app/root.tsx` file.
+ * To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
  *
  * ```ts
- * import { csrf } from "~/middleware/csrf.server";
- * export const middleware: Route.MiddlewareFunction[] = [csrf];
+ * import { csrfMiddleware } from "~/middleware/csrf.server";
+ * export const middleware: Route.MiddlewareFunction[] = [csrfMiddleware];
  * ```
  *
  * Now, every non-safe request will be validated against CSRF attacks.
  *
- * > **Note:** If you add this middleware to the root route, it will apply to
- * > every route in your application. If your app has API routes that should
- * > accept cross-site requests (e.g., for webhooks or third-party integrations),
- * > you should move the CSRF middleware to a layout route that wraps only your
- * > UI routes, leaving API routes unprotected by CSRF validation.
+ * > [!NOTE]
+ * > If you add this middleware to the root route, it will apply to every route in your application. If your app has API routes that should accept cross-site requests (e.g., for webhooks or third-party integrations), you should move the CSRF middleware to a layout route that wraps only your UI routes, leaving API routes unprotected by CSRF validation.
  *
- * The middleware uses the `Sec-Fetch-Site` header to determine request origin.
- * Requests from `same-origin` or `same-site` are automatically allowed. For
- * `cross-site` requests, you can specify trusted origins to allow.
+ * The middleware uses the `Sec-Fetch-Site` header to determine request origin. Requests from `same-origin` or `same-site` are automatically allowed. For `cross-site` requests, you can specify trusted origins to allow.
  *
  * The request origin is determined by checking (in order):
+ *
  * 1. The `Origin` header
  * 2. The `Referer` header
  * 3. The `request.referrer` property
  *
- * The CSRF middleware can be customized by passing an options object to the
- * `createCsrfMiddleware` function.
+ * ##### Allowing Cross-Site Requests
  *
  * You can allow cross-site requests from specific origins using a string:
  *
  * ```ts
- * let csrf = createCsrfMiddleware({
- *   origin: "https://trusted.com",
+ * let csrfMiddleware = createCsrfMiddleware({
+ * 	origin: "https://trusted.com",
  * });
  * ```
  *
  * Or using a RegExp for pattern matching:
  *
  * ```ts
- * let csrf = createCsrfMiddleware({
- *   origin: /\.trusted\.com$/,
+ * let csrfMiddleware = createCsrfMiddleware({
+ * 	origin: /\.trusted\.com$/,
  * });
  * ```
  *
  * Or using an array of strings and RegExps:
  *
  * ```ts
- * let csrf = createCsrfMiddleware({
- *   origin: ["https://trusted1.com", "https://trusted2.com", /\.trusted\.com$/],
+ * let csrfMiddleware = createCsrfMiddleware({
+ * 	origin: ["https://trusted1.com", "https://trusted2.com", /\.trusted\.com$/],
  * });
  * ```
  *
  * Or using a function for dynamic validation:
  *
  * ```ts
- * let csrf = createCsrfMiddleware({
- *   origin: (origin, request, context) => origin === "https://trusted.com",
+ * let csrfMiddleware = createCsrfMiddleware({
+ * 	origin: (origin, request, context) => origin === "https://trusted.com",
  * });
  * ```
  *
  * The function can also be async:
  *
  * ```ts
- * let csrf = createCsrfMiddleware({
- *   origin: async (origin, request, context) => {
- *     return await checkOriginInDatabase(origin);
- *   },
+ * let csrfMiddleware = createCsrfMiddleware({
+ * 	origin: async (origin, request, context) => {
+ * 		return await checkOriginInDatabase(origin);
+ * 	},
  * });
  * ```
  *
- * You can customize which HTTP methods skip CSRF validation:
+ * ##### Customizing Safe Methods
+ *
+ * By default, the middleware skips CSRF validation for `GET`, `HEAD`, and `OPTIONS` requests. You can customize this:
  *
  * ```ts
- * let csrf = createCsrfMiddleware({
- *   safeMethods: ["GET", "HEAD", "OPTIONS", "POST"],
+ * let csrfMiddleware = createCsrfMiddleware({
+ * 	safeMethods: ["GET", "HEAD", "OPTIONS", "POST"],
  * });
  * ```
+ *
+ * ##### Allowing Missing Origin
  *
  * You can allow requests with missing or invalid origin headers:
  *
  * ```ts
- * let csrf = createCsrfMiddleware({
- *   origin: "https://trusted.com",
- *   allowMissingOrigin: true,
+ * let csrfMiddleware = createCsrfMiddleware({
+ * 	origin: "https://trusted.com",
+ * 	allowMissingOrigin: true,
  * });
  * ```
  *
- * You can provide a custom handler for untrusted requests:
+ * > [!WARNING]
+ * > Enabling `allowMissingOrigin` is high risk. When enabled, requests without a parseable origin (missing `Origin`/`Referer` headers, `Sec-Fetch-Site` header, or `Origin: null`) will bypass origin validation entirely. This can allow attackers to perform cross-site requests in environments that don't send origin headers. Only use this option when you're certain that clients without origin headers are within your trusted boundary, or pair it with an additional CSRF token mechanism.
+ *
+ * ##### Custom Untrusted Request Handler
+ *
+ * You can provide a custom handler for requests that fail CSRF validation:
  *
  * ```ts
- * let csrf = createCsrfMiddleware({
- *   onUntrustedRequest(request, context) {
- *     return new Response("Custom forbidden", { status: 418 });
- *   },
+ * let csrfMiddleware = createCsrfMiddleware({
+ * 	onUntrustedRequest(request, context) {
+ * 		return new Response("Custom forbidden", { status: 418 });
+ * 	},
  * });
  * ```
  *
  * By default, untrusted requests will receive a 403 Forbidden response.
+ *
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/CSRF
  */

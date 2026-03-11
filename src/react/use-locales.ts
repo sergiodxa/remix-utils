@@ -1,3 +1,39 @@
+/**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/locales-react`.
+ *
+ * > [!NOTE]
+ * > This depends on `react`.
+ *
+ * This hook lets you get the locales returned by the root loader. It follows a simple convention, your root loader return value should be an object with the key `locales`.
+ *
+ * You can combine it with `getClientLocal` to get the locales on the root loader and return that. The return value of `useLocales` is a `Locales` type which is `string | string[] | undefined`.
+ *
+ * ```ts
+ * import { useLocales } from "remix-utils/locales/react";
+ * import { getClientLocales } from "remix-utils/locales/server";
+ *
+ * // in the root loader
+ * export async function loader({ request }: Route.LoaderArgs) {
+ *   let locales = getClientLocales(request);
+ *   return json({ locales });
+ * }
+ *
+ * // in any route (including root!)
+ * export default function Component() {
+ *   let locales = useLocales();
+ *   let date = new Date();
+ *   let dateTime = date.toISOString;
+ *   let formattedDate = date.toLocaleDateString(locales, options);
+ *   return <time dateTime={dateTime}>{formattedDate}</time>;
+ * }
+ * ```
+ *
+ * The return type of `useLocales` is ready to be used with the Intl API.
+ *
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Hook/Use Locales
+ */
 import { useMatches } from "react-router";
 import type { Locales } from "../server/get-client-locales.js";
 

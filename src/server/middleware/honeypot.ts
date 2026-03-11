@@ -1,4 +1,8 @@
 /**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/middleware-honeypot`.
+ *
+ * > [!NOTE]
  * > This depends on `react`, `@oslojs/crypto`, and `@oslojs/encoding`.
  *
  * The Honeypot middleware allows you to add a honeypot mechanism to your routes, providing a simple yet effective way to protect public forms from spam bots.
@@ -8,22 +12,17 @@
  * ```ts
  * import { createHoneypotMiddleware } from "remix-utils/middleware/honeypot";
  *
- * export const [honeypotMiddleware, getHoneypotInputProps] =
- *   createHoneypotMiddleware({
- *     // Randomize the honeypot field name
- *     randomizeNameFieldName: false,
- *     // Default honeypot field name
- *     nameFieldName: "name__confirm",
- *     // Optional timestamp field for validation
- *     validFromFieldName: "from__confirm",
- *     // Unique seed for encryption (recommended for extra security)
- *     encryptionSeed: undefined,
+ * export const [honeypotMiddleware, getHoneypotInputProps] = createHoneypotMiddleware({
+ * 	randomizeNameFieldName: false, // Randomize the honeypot field name
+ * 	nameFieldName: "name__confirm", // Default honeypot field name
+ * 	validFromFieldName: "from__confirm", // Optional timestamp field for validation
+ * 	encryptionSeed: undefined, // Unique seed for encryption (recommended for extra security)
  *
- *     onSpam(error) {
- *       // Handle SpamError here and return a Response
- *       return new Response("Spam detected", { status: 400 });
- *     },
- *   });
+ * 	onSpam(error) {
+ * 		// Handle SpamError here and return a Response
+ * 		return new Response("Spam detected", { status: 400 });
+ * 	},
+ * });
  * ```
  *
  * Add the `honeypotMiddleware` to the `middleware` array in the route where you want to enable spam protection, use it in your `app/root.tsx` file to apply it globally:
@@ -40,8 +39,8 @@
  * import { getHoneypotInputProps } from "~/middleware/honeypot";
  *
  * export async function loader({ request }: Route.LoaderArgs) {
- *   let honeypotInputProps = await getHoneypotInputProps();
- *   return json({ honeypotInputProps });
+ * 	let honeypotInputProps = await getHoneypotInputProps();
+ * 	return json({ honeypotInputProps });
  * }
  * ```
  *
@@ -51,11 +50,11 @@
  * import { HoneypotProvider } from "remix-utils/honeypot/react";
  *
  * export default function RootComponent() {
- *   return (
- *     <HoneypotProvider {...honeypotInputProps}>
- *       <Outlet />
- *     </HoneypotProvider>
- *   );
+ * 	return (
+ * 		<HoneypotProvider {...honeypotInputProps}>
+ * 			<Outlet />
+ * 		</HoneypotProvider>
+ * 	);
  * }
  * ```
  *
@@ -65,14 +64,14 @@
  * import { HoneypotInputs } from "remix-utils/honeypot/react";
  *
  * function PublicForm() {
- *   return (
- *     <Form method="post">
- *       <HoneypotInputs label="Please leave this field blank" />
- *       <input type="text" name="name" placeholder="Your Name" />
- *       <input type="email" name="email" placeholder="Your Email" />
- *       <button type="submit">Submit</button>
- *     </Form>
- *   );
+ * 	return (
+ * 		<Form method="post">
+ * 			<HoneypotInputs label="Please leave this field blank" />
+ * 			<input type="text" name="name" placeholder="Your Name" />
+ * 			<input type="email" name="email" placeholder="Your Email" />
+ * 			<button type="submit">Submit</button>
+ * 		</Form>
+ * 	);
  * }
  * ```
  *
@@ -82,15 +81,16 @@
  *
  * ```ts
  * export async function action({ request }: Route.ActionArgs) {
- *   // If this code runs, the honeypot check passed
- *   let formData = await request.formData();
- *   let name = formData.get("name");
- *   let email = formData.get("email");
- *   // Process the form data
+ * 	// If this code runs, the honeypot check passed
+ * 	let formData = await request.formData();
+ * 	let name = formData.get("name");
+ * 	let email = formData.get("email");
+ * 	// Process the form data
  * }
  * ```
  *
  * The honeypot middleware is designed to be lightweight and effective against basic spam bots. For advanced spam protection, consider combining this with other techniques like CAPTCHA or rate limiting.
+ *
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Honeypot
  */

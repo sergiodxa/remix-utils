@@ -1,11 +1,13 @@
 /**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/middleware-request-id`.
+ *
  * The Request ID middleware generates a unique ID for each request and stores it in the Router context, this can be useful to log the request and response information and correlate them.
  *
  * ```ts
  * import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
  *
- * export const [requestIDMiddleware, getRequestID] =
- *   createRequestIDMiddleware();
+ * export const [requestIDMiddleware, getRequestID] = createRequestIDMiddleware();
  * ```
  *
  * To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
@@ -22,8 +24,8 @@
  * import { getRequestID } from "~/middleware/request-id.server";
  *
  * export async function loader({ request }: Route.LoaderArgs) {
- *   let requestID = getRequestID();
- *   // ...
+ * 	let requestID = getRequestID();
+ * 	// ...
  * }
  * ```
  *
@@ -32,12 +34,11 @@
  * ```ts
  * import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
  *
- * export const [requestIDMiddleware, getRequestID] =
- *   createRequestIDMiddleware({
- *     generator() {
- *       return Math.random().toString(36).slice(2);
- *     },
- *   });
+ * export const [requestIDMiddleware, getRequestID] = createRequestIDMiddleware({
+ * 	generator() {
+ * 		return Math.random().toString(36).slice(2);
+ * 	},
+ * });
  * ```
  *
  * The middleware also gets the request ID from the `X-Request-ID` header if it's present, this can be useful to correlate requests between services.
@@ -47,24 +48,20 @@
  * ```ts
  * import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
  *
- * export const [requestIDMiddleware, getRequestID] =
- *   createRequestIDMiddleware({
- *     header: "X-Correlation-ID",
- *   });
+ * export const [requestIDMiddleware, getRequestID] = createRequestIDMiddleware({
+ * 	header: "X-Correlation-ID",
+ * });
  * ```
  *
- * To disable this functionality, you can set the header property to `null` instead.
+ * You can disable this behaviour by passing `null` instead.
  *
  * ```ts
  * import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
  *
- * export const [requestIDMiddleware, getRequestID] =
- *   createRequestIDMiddleware({
- *     header: null,
- *   });
+ * export const [requestIDMiddleware, getRequestID] = createRequestIDMiddleware({
+ * 	header: null,
+ * });
  * ```
- *
- * Now the middleware will always use the generator function to generate the request ID and ignore any header.
  *
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Request ID

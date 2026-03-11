@@ -1,4 +1,91 @@
 /**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/promise`.
+ *
+ * The `promiseHash` function is not directly related to Remix but it's a useful function when working with loaders and actions.
+ *
+ * This function is an object version of `Promise.all` which lets you pass an object with promises and get an object with the same keys with the resolved values.
+ *
+ * ```ts
+ * import { promiseHash } from "remix-utils/promise";
+ *
+ * export async function loader({ request }: Route.LoaderArgs) {
+ * 	return json(
+ * 		await promiseHash({
+ * 			user: getUser(request),
+ * 			posts: getPosts(request),
+ * 		}),
+ * 	);
+ * }
+ * ```
+ *
+ * You can use nested `promiseHash` to get a nested object with resolved values.
+ *
+ * ```ts
+ * import { promiseHash } from "remix-utils/promise";
+ *
+ * export async function loader({ request }: Route.LoaderArgs) {
+ * 	return json(
+ * 		await promiseHash({
+ * 			user: getUser(request),
+ * 			posts: promiseHash({
+ * 				list: getPosts(request),
+ * 				comments: promiseHash({
+ * 					list: getComments(request),
+ * 					likes: getLikes(request),
+ * 				}),
+ * 			}),
+ * 		}),
+ * 	);
+ * }
+ * ```
+ *
+ * ---
+ *
+ *
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/promise`.
+ *
+ * The `timeout` function lets you attach a timeout to any promise, if the promise doesn't resolve or reject before the timeout, it will reject with a `TimeoutError`.
+ *
+ * ```ts
+ * import { timeout } from "remix-utils/promise";
+ *
+ * try {
+ * 	let result = await timeout(fetch("https://example.com"), { ms: 100 });
+ * } catch (error) {
+ * 	if (error instanceof TimeoutError) {
+ * 		// Handle timeout
+ * 	}
+ * }
+ * ```
+ *
+ * Here the fetch needs to happen in less than 100ms, otherwise it will throw a `TimeoutError`.
+ *
+ * If the promise is cancellable with an AbortSignal you can pass the AbortController to the `timeout` function.
+ *
+ * ```ts
+ * import { timeout } from "remix-utils/promise";
+ *
+ * try {
+ * 	let controller = new AbortController();
+ * 	let result = await timeout(fetch("https://example.com", { signal: controller.signal }), {
+ * 		ms: 100,
+ * 		controller,
+ * 	});
+ * } catch (error) {
+ * 	if (error instanceof TimeoutError) {
+ * 		// Handle timeout
+ * 	}
+ * }
+ * ```
+ *
+ * Here after 100ms, `timeout` will call `controller.abort()` which will mark the `controller.signal` as aborted.
+ *
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Common/Promise
+ */
+/**
  * @see https://twitter.com/buildsghost/status/1507109734519750680
  */
 export type PromiseHash = Record<string, Promise<unknown>>;

@@ -1,4 +1,7 @@
 /**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/middleware-singleton`.
+ *
  * The singleton middleware let's you create a singleton object that will be shared between loaders of a single requests.
  *
  * This is specially useful to share objects that needs to be created only once per request, like a cache, but not shared between requests.
@@ -6,10 +9,9 @@
  * ```ts
  * import { createSingletonMiddleware } from "remix-utils/middleware/singleton";
  *
- * export const [singletonMiddleware, getSingleton] =
- *   createSingletonMiddleware({
- *     instantiator: () => new MySingletonClass(),
- *   });
+ * export const [singletonMiddleware, getSingleton] = createSingletonMiddleware({
+ * 	instantiator: () => new MySingletonClass(),
+ * });
  * ```
  *
  * To use it, you need to add it to the `middleware` array in the route where you want to use it.
@@ -25,9 +27,9 @@
  * import { getSingleton } from "~/middleware/singleton.server";
  *
  * export async function loader({ context }: Route.LoaderArgs) {
- *   let singleton = getSingleton(context);
- *   let result = await singleton.method();
- *   // ...
+ * 	let singleton = getSingleton(context);
+ * 	let result = await singleton.method();
+ * 	// ...
  * }
  * ```
  *
@@ -36,28 +38,23 @@
  * ```ts
  * import { createSingletonMiddleware } from "remix-utils/middleware/singleton";
  *
- * export const [singletonMiddleware, getSingleton] =
- *   createSingletonMiddleware({
- *     instantiator: () => new MySingletonClass("arg1", "arg2"),
- *   });
+ * export const [singletonMiddleware, getSingleton] = createSingletonMiddleware({
+ * 	instantiator: () => new MySingletonClass("arg1", "arg2"),
+ * });
  *
- * export const [anotherSingletonMiddleware, getAnotherSingleton] =
- *   createSingletonMiddleware({
- *     instantiator: () => new AnotherSingletonClass("arg1", "arg2"),
- *   });
+ * export const [anotherSingletonMiddleware, getAnotherSingleton] = createSingletonMiddleware({
+ * 	instantiator: () => new AnotherSingletonClass("arg1", "arg2"),
+ * });
  * ```
  *
  * And use it in a route like this.
  *
  * ```ts
- * import {
- *   singletonMiddleware,
- *   anotherSingletonMiddleware,
- * } from "~/middleware/singleton.server";
+ * import { singletonMiddleware, anotherSingletonMiddleware } from "~/middleware/singleton.server";
  *
  * export const middleware: Route.MiddlewareFunction[] = [
- *   singletonMiddleware,
- *   anotherSingletonMiddleware,
+ * 	singletonMiddleware,
+ * 	anotherSingletonMiddleware,
  * ];
  * ```
  *
@@ -67,15 +64,15 @@
  * import { createSingletonMiddleware } from "remix-utils/middleware/singleton";
  * import { MySingletonClass } from "~/singleton";
  *
- * export const [singletonMiddleware, getSingleton] =
- *   createSingletonMiddleware({
- *     instantiator: (request, context) => {
- *       return new MySingletonClass(request, context);
- *     },
- *   });
+ * export const [singletonMiddleware, getSingleton] = createSingletonMiddleware({
+ * 	instantiator: (request, context) => {
+ * 		return new MySingletonClass(request, context);
+ * 	},
+ * });
  * ```
  *
  * This can allows you to create a class that depends on the request, maybe to read the URL or body, or depends on the context, maybe to read the session or some other data.
+ *
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Singleton
  */

@@ -1,3 +1,75 @@
+/**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/sec-fetch`.
+ *
+ * > [!NOTE]
+ * > This depends on `zod`.
+ *
+ * The `Sec-Fetch` headers include information about the request, e.g. where is the data going to be used, or if it was initiated by the user.
+ *
+ * You can use the `remix-utils/sec-fetch` utils to parse those headers and get the information you need.
+ *
+ * ```ts
+ * import { fetchDest, fetchMode, fetchSite, isUserInitiated } from "remix-utils/sec-fetch";
+ * ```
+ *
+ *
+ * The `Sec-Fetch-Dest` header indicates the destination of the request, e.g. `document`, `image`, `script`, etc.
+ *
+ * If the value is `empty` it means it will be used by a `fetch` call, this means you can differentiate between a request made with and without JS by checking if it's `document` (no JS) or `empty` (JS enabled).
+ *
+ * ```ts
+ * import { fetchDest } from "remix-utils/sec-fetch";
+ *
+ * export async function action({ request }: Route.ActionArgs) {
+ * 	let data = await getDataSomehow();
+ *
+ * 	// if the request was made with JS, we can just return json
+ * 	if (fetchDest(request) === "empty") return json(data);
+ * 	// otherwise we redirect to avoid a reload to trigger a new submission
+ * 	return redirect(destination);
+ * }
+ * ```
+ *
+ *
+ * The `Sec-Fetch-Mode` header indicates how the request was initiated, e.g. if the value is `navigate` it was triggered by the user loading the page, if the value is `no-cors` it could be an image being loaded.
+ *
+ * ```ts
+ * import { fetchMode } from "remix-utils/sec-fetch";
+ *
+ * export async function loader({ request }: Route.LoaderArgs) {
+ * 	let mode = fetchMode(request);
+ * 	// do something based on the mode value
+ * }
+ * ```
+ *
+ *
+ * The `Sec-Fetch-Site` header indicates where the request is being made, e.g. `same-origin` means the request is being made to the same domain, `cross-site` means the request is being made to a different domain.
+ *
+ * ```ts
+ * import { fetchSite } from "remix-utils/sec-fetch";
+ *
+ * export async function loader({ request }: Route.LoaderArgs) {
+ * 	let site = fetchSite(request);
+ * 	// do something based on the site value
+ * }
+ * ```
+ *
+ *
+ * The `Sec-Fetch-User` header indicates if the request was initiated by the user, this can be used to differentiate between a request made by the user and a request made by the browser, e.g. a request made by the browser to load an image.
+ *
+ * ```ts
+ * import { isUserInitiated } from "remix-utils/sec-fetch";
+ *
+ * export async function loader({ request }: Route.LoaderArgs) {
+ * 	let userInitiated = isUserInitiated(request);
+ * 	// do something based on the userInitiated value
+ * }
+ * ```
+ *
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Server/Sec Fetch
+ */
 import { getHeaders } from "./get-headers.js";
 
 export const FetchDestValues = [

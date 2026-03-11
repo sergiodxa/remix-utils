@@ -1,11 +1,13 @@
 /**
- * The secure headers middleware simplifies the setup of security headers. Inspired in part by the version from Hono `secureHeaders` middleware.
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/middleware-secure-headers`.
+ *
+ * The secure headers middleware simplifies the setup of security headers. Inspired in part by the version from [Hono `secureHeaders` middleware](https://hono.dev/docs/middleware/builtin/secure-headers).
  *
  * ```ts
  * import { createSecureHeadersMiddleware } from "remix-utils/middleware/secure-headers";
  *
- * export const [secureHeadersMiddleware] =
- *   createSecureHeadersMiddleware();
+ * export const [secureHeadersMiddleware] = createSecureHeadersMiddleware();
  * ```
  *
  * To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
@@ -19,10 +21,10 @@
  *
  * The secure headers middleware middleware can be customized by passing an options object to the `createSecureHeadersMiddleware` function.
  *
- * The options let's you configure the headers key values. The middleware accepts the same options as the Hono Secure Headers Middleware.
+ * The options let's you configure the headers key values. [More info here](https://hono.dev/docs/middleware/builtin/secure-headers#supported-options).
+ *
  * @author [Floryan Simar](https://github.com/TheYoxy)
  * @module Middleware/Secure Headers
- * @see {@link https://hono.dev/docs/middleware/builtin/secure-headers | Hono Secure Headers Middleware}
  */
 import type { MiddlewareFunction } from "react-router";
 
