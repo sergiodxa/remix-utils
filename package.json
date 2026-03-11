@@ -1,14 +1,49 @@
 {
 	"name": "remix-utils",
 	"version": "9.2.0",
+	"keywords": [
+		"client IP address",
+		"client locale",
+		"client-only",
+		"cors",
+		"csrf",
+		"hydrated",
+		"json hash",
+		"named action",
+		"prefetch",
+		"react",
+		"redirect-back",
+		"remix",
+		"remix.run",
+		"request",
+		"response",
+		"rolling cookie",
+		"safe redirect",
+		"server-only",
+		"typed cookie",
+		"typed session",
+		"utils"
+	],
 	"license": "MIT",
-	"engines": {
-		"node": ">=20.0.0"
+	"author": {
+		"name": "Sergio Xalambrí",
+		"email": "hello@sergiodxa.com",
+		"url": "https://sergiodxa.com"
 	},
-	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sergiodxa/remix-utils"
+	},
 	"funding": [
 		"https://github.com/sponsors/sergiodxa"
 	],
+	"files": [
+		"build",
+		"package.json",
+		"README.md"
+	],
+	"type": "module",
+	"sideEffects": false,
 	"exports": {
 		"./package.json": "./package.json",
 		"./middleware/basic-auth": {
@@ -216,48 +251,53 @@
 			"default": "./build/common/timers.js"
 		}
 	},
-	"sideEffects": false,
 	"scripts": {
 		"build": "tsc",
 		"build:registry": "shadcn build",
 		"build:docs": "typedoc && shadcn build --output pages/r",
 		"typecheck": "tsc --noEmit",
-		"quality": "biome check .",
-		"quality:fix": "biome check . --write --unsafe",
+		"lint": "oxlint --ignore-path .gitignore --deny-warnings .",
+		"lint:fix": "oxlint --ignore-path .gitignore --deny-warnings --fix .",
+		"format": "oxfmt --check .",
+		"format:fix": "oxfmt .",
+		"quality": "bun run lint && bun run format",
+		"quality:fix": "bun run lint:fix && bun run format:fix",
 		"exports": "bun run ./scripts/exports.ts"
 	},
-	"author": {
-		"name": "Sergio Xalambrí",
-		"url": "https://sergiodxa.com",
-		"email": "hello@sergiodxa.com"
+	"dependencies": {
+		"type-fest": "^5.4.4"
 	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/sergiodxa/remix-utils"
+	"devDependencies": {
+		"@arethetypeswrong/cli": "^0.18.2",
+		"@edgefirst-dev/batcher": "^1.0.1",
+		"@edgefirst-dev/jwt": "^1.3.0",
+		"@edgefirst-dev/server-timing": "^0.0.1",
+		"@happy-dom/global-registrator": "^20.8.3",
+		"@oslojs/crypto": "^1.0.1",
+		"@oslojs/encoding": "^1.1.0",
+		"@remix-run/file-storage": "^0.13.3",
+		"@standard-schema/spec": "^1.1.0",
+		"@testing-library/jest-dom": "^6.9.1",
+		"@testing-library/react": "^16.3.2",
+		"@testing-library/user-event": "^14.6.1",
+		"@total-typescript/tsconfig": "^1.0.4",
+		"@types/bun": "^1.3.10",
+		"@types/react": "^19.2.14",
+		"intl-parse-accept-language": "^1.0.0",
+		"is-ip": "5.0.1",
+		"msw": "^2.12.10",
+		"oxfmt": "^0.37.0",
+		"oxlint": "^1.52.0",
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4",
+		"react-router": "^7.13.1",
+		"shadcn": "^4.0.3",
+		"ts-node": "^10.9.2",
+		"typedoc": "^0.28.17",
+		"typedoc-plugin-mdn-links": "^5.1.1",
+		"typescript": "^5.9.3",
+		"zod": "^4.3.6"
 	},
-	"keywords": [
-		"remix",
-		"remix.run",
-		"react",
-		"utils",
-		"request",
-		"response",
-		"csrf",
-		"redirect-back",
-		"client-only",
-		"hydrated",
-		"server-only",
-		"cors",
-		"rolling cookie",
-		"safe redirect",
-		"typed cookie",
-		"typed session",
-		"client IP address",
-		"client locale",
-		"json hash",
-		"prefetch",
-		"named action"
-	],
 	"peerDependencies": {
 		"@edgefirst-dev/batcher": "^1.0.0",
 		"@edgefirst-dev/jwt": "^1.2.0",
@@ -302,42 +342,7 @@
 			"optional": true
 		}
 	},
-	"devDependencies": {
-		"@arethetypeswrong/cli": "^0.18.2",
-		"@biomejs/biome": "^2.4.6",
-		"@edgefirst-dev/batcher": "^1.0.1",
-		"@edgefirst-dev/jwt": "^1.3.0",
-		"@edgefirst-dev/server-timing": "^0.0.1",
-		"@happy-dom/global-registrator": "^20.8.3",
-		"@oslojs/crypto": "^1.0.1",
-		"@oslojs/encoding": "^1.1.0",
-		"@remix-run/file-storage": "^0.13.3",
-		"@standard-schema/spec": "^1.1.0",
-		"@testing-library/jest-dom": "^6.9.1",
-		"@testing-library/react": "^16.3.2",
-		"@testing-library/user-event": "^14.6.1",
-		"@total-typescript/tsconfig": "^1.0.4",
-		"@types/bun": "^1.3.10",
-		"@types/react": "^19.2.14",
-		"intl-parse-accept-language": "^1.0.0",
-		"is-ip": "5.0.1",
-		"msw": "^2.12.10",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4",
-		"react-router": "^7.13.1",
-		"shadcn": "^4.0.3",
-		"ts-node": "^10.9.2",
-		"typedoc": "^0.28.17",
-		"typedoc-plugin-mdn-links": "^5.1.1",
-		"typescript": "^5.9.3",
-		"zod": "^4.3.6"
-	},
-	"dependencies": {
-		"type-fest": "^5.4.4"
-	},
-	"files": [
-		"build",
-		"package.json",
-		"README.md"
-	]
+	"engines": {
+		"node": ">=20.0.0"
+	}
 }

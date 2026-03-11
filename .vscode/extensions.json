@@ -1,7 +1,7 @@
 {
 	"recommendations": [
 		"bierner.jsdoc-markdown-highlighting",
-		"biomejs.biome",
+		"oxc.oxc-vscode",
 		"bradlc.vscode-tailwindcss",
 		"csstools.postcss",
 		"formulahendry.auto-close-tag",

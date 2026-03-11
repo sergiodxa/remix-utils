@@ -1,1 +1,1 @@
-// GlobalRegistrator.register();
+export {};
