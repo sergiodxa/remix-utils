@@ -8,6 +8,20 @@ This package contains simple utility functions to use with [React Router](https:
 npm install remix-utils
 ```
 
+### Shadcn Registry
+
+Add this to your `components.json`:
+
+```json
+{
+	"registries": {
+		"@remix-utils": "https://sergiodxa.github.io/remix-utils/r/{name}.json"
+	}
+}
+```
+
+Then install any utility with `bunx shadcn@latest add @remix-utils/<item>`.
+
 Additional optional dependencies may be needed, all optional dependencies are:
 
 - `react-router`
@@ -19,6 +33,9 @@ Additional optional dependencies may be needed, all optional dependencies are:
 - `is-ip`
 - `intl-parse-accept-language`
 - `react`
+
+> [!NOTE]
+> Install optional dependencies only when needed. Use `npm add <dependency>`, for example `npm add react-router`.
 
 The utils that require an extra optional dependency mention it in their documentation.
 
@@ -37,6 +54,9 @@ Check the [v6 to v7 upgrade guide](./docs/v6-to-v7.md).
 ## API Reference
 
 ### promiseHash
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/promise`.
 
 The `promiseHash` function is not directly related to Remix but it's a useful function when working with loaders and actions.
 
@@ -78,6 +98,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 ### timeout
 
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/promise`.
+
 The `timeout` function lets you attach a timeout to any promise, if the promise doesn't resolve or reject before the timeout, it will reject with a `TimeoutError`.
 
 ```ts
@@ -117,6 +140,9 @@ Here after 100ms, `timeout` will call `controller.abort()` which will mark the `
 ### cacheAssets
 
 > [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/cache-assets`.
+
+> [!NOTE]
 > This can only be run inside `entry.client`.
 
 This function lets you easily cache inside the [browser's Cache Storage](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage) every JS file built by Remix.
@@ -151,6 +177,9 @@ cacheAssests({ cacheName: "assets", buildPath: "/build/" }).catch((error) => {
 ### ClientOnly
 
 > [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/client-only`.
+
+> [!NOTE]
 > This depends on `react`.
 
 The ClientOnly component lets you render the children element only on the client-side, avoiding rendering it the server-side.
@@ -181,6 +210,9 @@ The rendering flow will be:
 This component uses the `useHydrated` hook internally.
 
 ### ServerOnly
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/server-only`.
 
 > [!NOTE]
 > This depends on `react`.
@@ -215,6 +247,9 @@ The rendering flow will be:
 This component uses the `useHydrated` hook internally.
 
 ### CORS
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/cors`.
 
 The CORS function let you implement CORS headers on your loaders and actions so you can use them as an API for other client-side applications.
 
@@ -340,6 +375,9 @@ Additionally, the `cors` function accepts a `options` object as a third optional
 - `maxAge`: Configures the **Access-Control-Max-Age** CORS header.
 
 ### CSRF
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/csrf-server` and `bunx shadcn@latest add @remix-utils/csrf-react`.
 
 > [!NOTE]
 > This depends on `react`, `@oslojs/crypto`, `@oslojs/encoding`, and React Router.
@@ -511,6 +549,9 @@ You can use `error.code` to check one of the error codes above, and `error.messa
 
 ### Existing Search Params
 
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/existing-search-params`.
+
 ```ts
 import { ExistingSearchParams } from "remix-utils/existing-search-params";
 ```
@@ -553,6 +594,9 @@ By excluding the `page` param, from the search form, the user will return to the
 ```
 
 ### External Scripts
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/external-scripts`.
 
 > [!NOTE]
 > This depends on `react`, and `react-router`.
@@ -689,6 +733,9 @@ return (
 ### useGlobalNavigationState
 
 > [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/use-global-navigation-state`.
+
+> [!NOTE]
 > This depends on `react`, and `react-router`.
 
 This hook allows you to read the value of `transition.state`, every `fetcher.state` in the app, and `revalidator.state`.
@@ -719,6 +766,9 @@ The return value of `useGlobalNavigationState` can be `"idle"`, `"loading"` or `
 ### useGlobalPendingState
 
 > [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/use-global-navigation-state`.
+
+> [!NOTE]
 > This depends on `react`, and `react-router`.
 
 This hook lets you know if the global navigation, if one of any active fetchers is either loading or submitting, or if the revalidator is running.
@@ -745,6 +795,9 @@ The return value of `useGlobalPendingState` is either `"idle"` or `"pending"`.
 ### useGlobalSubmittingState
 
 > [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/use-global-navigation-state`.
+
+> [!NOTE]
 > This depends on `react`, and `react-router`.
 
 This hook lets you know if the global transition or if one of any active fetchers is submitting.
@@ -765,6 +818,9 @@ The return value of `useGlobalSubmittingState` is either `"idle"` or `"submittin
 ### useGlobalLoadingState
 
 > [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/use-global-navigation-state`.
+
+> [!NOTE]
 > This depends on `react`, and `react-router`.
 
 This hook lets you know if the global transition, if one of any active fetchers is loading, or if the revalidator is running
@@ -783,6 +839,9 @@ export function GlobalPendingUI() {
 The return value of `useGlobalLoadingState` is either `"idle"` or `"loading"`.
 
 ### useHydrated
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/use-hydrated`.
 
 > [!NOTE]
 > This depends on `react`.
@@ -810,6 +869,9 @@ When doing SSR, the value of `isHydrated` will always be `false`. The first clie
 After the first client-side render, future components rendered calling this hook will receive `true` as the value of `isHydrated`. This way, your server fallback UI will never be rendered on a route transition.
 
 ### useLocales
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/locales-react`.
 
 > [!NOTE]
 > This depends on `react`.
@@ -841,6 +903,9 @@ export default function Component() {
 The return type of `useLocales` is ready to be used with the Intl API.
 
 ### useShouldHydrate
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/use-should-hydrate`.
 
 > [!NOTE]
 > This depends on `react-router` and `react`.
@@ -903,6 +968,9 @@ The `useShouldHydrate` hook will detect `hydrate` as a function and call it usin
 ### getClientIPAddress
 
 > [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/get-client-ip-address`.
+
+> [!NOTE]
 > This depends on `is-ip`.
 
 This function receives a Request or Headers objects and will try to get the IP address of the client (the user) who originated the request.
@@ -945,6 +1013,9 @@ When a header is found that contains a valid IP address, it will return without 
 ### getClientLocales
 
 > [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/locales-server`.
+
+> [!NOTE]
 > This depends on `intl-parse-accept-language`.
 
 This function let you get the locales of the client (the user) who originated the request.
@@ -982,6 +1053,9 @@ The value could also be returned by the loader and used on the UI to ensure the 
 
 ### isPrefetch
 
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/is-prefetch`.
+
 This function let you identify if a request was created because of a prefetch triggered by using `<Link prefetch="intent">` or `<Link prefetch="render">`.
 
 This will let you implement a short cache only for prefetch requests so you [avoid the double data request](https://sergiodxa.com/articles/fix-double-data-request-when-prefetching-in-remix).
@@ -1003,7 +1077,13 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 ### Responses
 
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/responses`.
+
 #### Redirect Back
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/redirect-back`.
 
 This function is a wrapper of the `redirect` helper from Remix. Unlike Remix's version, this one receives the whole request object as the first value and an object with the response init and a fallback URL.
 
@@ -1021,6 +1101,9 @@ This helper is most useful when used in a generic action to send the user to the
 
 #### Not Modified
 
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/responses`.
+
 Helper function to create a Not Modified (304) response without a body and any header.
 
 ```ts
@@ -1032,6 +1115,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 ```
 
 #### JavaScript
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/responses`.
 
 Helper function to create a JavaScript file response with any header.
 
@@ -1047,6 +1133,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 #### Stylesheet
 
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/responses`.
+
 Helper function to create a CSS file response with any header.
 
 This is useful to create CSS files based on data inside a Resource Route.
@@ -1060,6 +1149,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 ```
 
 #### PDF
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/responses`.
 
 Helper function to create a PDF file response with any header.
 
@@ -1075,6 +1167,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 #### HTML
 
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/responses`.
+
 Helper function to create a HTML file response with any header.
 
 This is useful to create HTML files based on data inside a Resource Route.
@@ -1089,6 +1184,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 #### XML
 
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/responses`.
+
 Helper function to create a XML file response with any header.
 
 This is useful to create XML files based on data inside a Resource Route.
@@ -1102,6 +1200,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 ```
 
 #### Plain Text
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/responses`.
 
 Helper function to create a TXT file response with any header.
 
@@ -1119,6 +1220,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 ```
 
 ### Typed Cookies
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/typed-cookie`.
 
 > [!NOTE]
 > This depends on `@standard-schema/spec`, and React Router.
@@ -1216,6 +1320,9 @@ await typedCookie.serialize("some fake url to pass schema validation", {
 ### Server-Sent Events
 
 > [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/sse-server` and `bunx shadcn@latest add @remix-utils/sse-react`.
+
+> [!NOTE]
 > This depends on `react`.
 
 Server-Sent Events are a way to send data from the server to the client without the need for the client to request it. This is useful for things like chat applications, live updates, and more.
@@ -1290,6 +1397,9 @@ This way, you can overwrite the map with a new one for a specific part of your a
 ### Rolling Cookies
 
 > [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/rolling-cookie`.
+
+> [!NOTE]
 > This depends on `zod`, and React Router.
 
 Rolling cookies allows you to prolong the expiration of a cookie by updating the expiration date of every cookie.
@@ -1339,6 +1449,9 @@ export let handleDataRequest: HandleDataRequestFunction = async (
 > [!NOTE] > [Read more about rolling cookies in Remix](https://sergiodxa.com/articles/add-rolling-sessions-to-remix).
 
 ### Named actions
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/named-action`.
 
 > [!NOTE]
 > This depends on React Router.
@@ -1396,6 +1509,9 @@ If the library couldn't found the name at all, it will throw a ReferenceError wi
 
 ### Preload Route Assets
 
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/preload-route-assets`.
+
 > [!CAUTION]
 > This can potentialy create big `Link` header and can cause extremely hard to debug issues. Some provider's load balancers have set certain buffer for parsing outgoing response's headers and thanks to `preloadRouteAssets` you can easily reach that in a medium sized application.
 > Your load balancer can randomly stop responding or start throwing 502 error.
@@ -1447,6 +1563,9 @@ The `preloadModuleAssets` function will preload all the JS files Remix adds to t
 
 ### Safe Redirects
 
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/safe-redirect`.
+
 When performing a redirect, if the URL is user provided we can't trust it, if you do you're opening a vulnerability to phishing scam by allowing bad actors to redirect the user to malicious websites.
 
 ```
@@ -1471,6 +1590,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 The second argumento of `safeRedirect` is the default redirect which by when not configured is `/`, this lets you tell `safeRedirect` where to redirect the user if the value is not safe.
 
 ### JSON Hash Response
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/json-hash`.
 
 When returning a `json` from a `loader` function, you may need to get data from different DB queries or API requests, typically you would something like this
 
@@ -1548,6 +1670,9 @@ export default function Component() {
 
 ### Delegate Anchors to Remix
 
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/use-delegated-anchors`.
+
 When using Remix, you can use the `<Link>` component to navigate between pages. However, if you have a `<a href>` that links to a page in your app, it will cause a full page refresh. This can be what you want, but sometimes you want to use client-side navigation here instead.
 
 The `useDelegatedAnchors` hook lets you add client-side navigation to anchor tags in a portion of your app. This can be specially useful when working with dynamic content like HTML or Markdown from a CMS.
@@ -1571,6 +1696,9 @@ export default function Component() {
 ```
 
 ### Prefetch Anchors
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/use-delegated-anchors`.
 
 If additionally you want to be able to prefetch your anchors you can use the `PrefetchPageAnchors` components.
 
@@ -1598,6 +1726,9 @@ export default function Component() {
 Now you can see in your DevTools that when the user hovers an anchor it will prefetch it, and when the user clicks it will do a client-side navigation.
 
 ### Debounced Fetcher and Submit
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/use-debounce-fetcher` and `bunx shadcn@latest add @remix-utils/use-debounce-submit`.
 
 > [!NOTE]
 > This depends on `react`, and `react-router`.
@@ -1661,6 +1792,9 @@ export function Component({ name }) {
 ### Derive Fetcher Type
 
 > [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/fetcher-type`.
+
+> [!NOTE]
 > This depends on `@remix-route/react`.
 
 Derive the value of the deprecated `fetcher.type` from the fetcher and navigation data.
@@ -1709,6 +1843,9 @@ function useCallbackOnDone(type: FetcherType, cb) {
 ```
 
 ### respondTo for Content Negotiation
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/respond-to` and `bunx shadcn@latest add @remix-utils/parse-accept-header`.
 
 If you're building a resource route and wants to send a different response based on what content type the client requested (e.g. send the same data as PDF or XML or JSON), you will need to implement content negotiation, this can be done with the `respondTo` header.
 
@@ -1772,6 +1909,9 @@ The result is an array with the type, subtype and extra params (e.g. the `q` val
 This means that the `respondTo` helper will prioritize any handler that match `text/html`, in our example above, that will be the `html` handler, but if we remove it then the `text` handler will be called instead.67
 
 ### Form Honeypot
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/honeypot-server` and `bunx shadcn@latest add @remix-utils/honeypot-react`.
 
 > [!NOTE]
 > This depends on `react` and `@oslojs/crypto`, and `@oslojs/encoding`.
@@ -1866,6 +2006,9 @@ export async function action({ request }) {
 ### Sec-Fetch Parsers
 
 > [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/sec-fetch`.
+
+> [!NOTE]
 > This depends on `zod`.
 
 The `Sec-Fetch` headers include information about the request, e.g. where is the data going to be used, or if it was initiated by the user.
@@ -1936,6 +2079,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 ### Timers
 
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/timers`.
+
 The timers utils gives you a way to wait a certain amount of time before doing something or to run some code every certain amount of time.
 
 Using the `interval` combined with `eventStream` we could send a value to the client every certain amount of time. And ensure the interval is cancelled if the connection is closed.
@@ -1965,6 +2111,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 Since React Router v7.9.0 you can use middleware to run code before and after the routes loaders and actions. In Remix Utils some middleware are provided to help you with common tasks.
 
 #### Session Middleware
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/middleware-session`.
 
 The session middleware let's you save a session object in the Router context so you can access it in any loader and ensure you're always working with the same Session instance.
 
@@ -2034,6 +2183,9 @@ let [sessionMiddleware, getSession] = createSessionMiddleware(sessionStorage, (p
 
 #### Logger Middleware
 
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/middleware-logger`.
+
 The logger middleware let's you log the request and response information to the console, this can be useful to debug issues with the request and response.
 
 ```ts
@@ -2066,6 +2218,9 @@ let [loggerMiddleware] = createLoggerMiddleware({
 The `logger` option let's you pass a custom logger, the `precision` option let's you set the number of decimal places to use in the response time, and the `formatMessage` option let's you customize the message that will be logged.
 
 #### Server Timing Middleware
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/middleware-server-timing`.
 
 > [!NOTE]
 > This depends on `@edgefirst-dev/server-timing`.
@@ -2102,6 +2257,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 The `measure` function will measure the time it took to run the function passed as the last argument and add it to the `Server-Timing` header.
 
 #### Singleton Middleware
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/middleware-singleton`.
 
 The singleton middleware let's you create a singleton object that will be shared between loaders of a single requests.
 
@@ -2177,6 +2335,9 @@ This can allows you to create a class that depends on the request, maybe to read
 #### Batcher Middleware
 
 > [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/middleware-batcher`.
+
+> [!NOTE]
 > This depends on `@edgefirst-dev/batcher`.
 
 The batcher middleware let's you get a per request instance of a batcher object that will dedupe and batch multiple calls to the same function.
@@ -2237,6 +2398,9 @@ export async function loader({ context }: Route.LoaderArgs) {
 ```
 
 #### Context Storage Middleware
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/middleware-context-storage`.
 
 The Context Storage middleware stores the Router context provider and request in AsyncLocalStorage and gives you functions to access it in your code.
 
@@ -2300,6 +2464,9 @@ export async function loader(_: Route.LoaderArgs) {
 
 #### Request ID Middleware
 
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/middleware-request-id`.
+
 The Request ID middleware generates a unique ID for each request and stores it in the Router context, this can be useful to log the request and response information and correlate them.
 
 ```ts
@@ -2362,6 +2529,9 @@ export const [requestIDMiddleware, getRequestID] = createRequestIDMiddleware({
 ```
 
 #### Basic Auth Middleware
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/middleware-basic-auth`.
 
 > [!NOTE]
 > This depends on `@oslojs/crypto`, and `@oslojs/encoding`.
@@ -2481,6 +2651,9 @@ WWW-Authenticate: Basic realm="My Realm"
 ```
 
 #### JWK Auth Middleware
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/middleware-jwk-auth`.
 
 > [!NOTE]
 > This depends on `@edgefirst-dev/jwt`.
@@ -2636,6 +2809,9 @@ export const middleware: Route.MiddlewareFunction[] = [jwkAuthMiddleware];
 #### Honeypot Middleware
 
 > [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/middleware-honeypot`.
+
+> [!NOTE]
 > This depends on `react`, `@oslojs/crypto`, and `@oslojs/encoding`.
 
 The Honeypot middleware allows you to add a honeypot mechanism to your routes, providing a simple yet effective way to protect public forms from spam bots.
@@ -2726,6 +2902,9 @@ The honeypot middleware is designed to be lightweight and effective against basi
 
 #### Secure Headers Middleware
 
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/middleware-secure-headers`.
+
 The secure headers middleware simplifies the setup of security headers. Inspired in part by the version from [Hono `secureHeaders` middleware](https://hono.dev/docs/middleware/builtin/secure-headers).
 
 ```ts
@@ -2748,6 +2927,9 @@ The secure headers middleware middleware can be customized by passing an options
 The options let's you configure the headers key values. [More info here](https://hono.dev/docs/middleware/builtin/secure-headers#supported-options).
 
 #### CORS Middleware
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/middleware-cors`.
 
 The CORS middleware simplifies the setup of CORS headers. Internally it uses the same [CORS](#cors) utils exported from `remix-utils/cors`.
 
@@ -2789,6 +2971,9 @@ export const [corsMiddleware] = createCorsMiddleware({
 The [accepted `options`](#options) are the same as those accepted by the `cors` util.
 
 #### CSRF Middleware
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/middleware-csrf`.
 
 The CSRF middleware protects your application from Cross-Site Request Forgery attacks by validating that requests originate from trusted sources.
 
@@ -2901,6 +3086,9 @@ let csrfMiddleware = createCsrfMiddleware({
 By default, untrusted requests will receive a 403 Forbidden response.
 
 #### CSRF Token Middleware
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/middleware-csrf-token`.
 
 > [!NOTE]
 > This depends on `@oslojs/crypto`, `@oslojs/encoding`, and React Router.
@@ -3034,6 +3222,9 @@ let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
 > If you add this middleware to the root route, it will apply to every route in your application. If your app has API routes that should accept cross-site requests (e.g., for webhooks), move the CSRF middleware to a layout route that wraps only your UI routes.
 
 #### Rolling Cookie Middleware
+
+> [!NOTE]
+> Install using `bunx shadcn@latest add @remix-utils/middleware-rolling-cookie`.
 
 > [!NOTE]
 > This depends on `zod`, and React Router.
