@@ -13,15 +13,20 @@ export async function runMiddleware<T = Response>(
 		request = new Request("https://remix.utils"),
 		context = new RouterContextProvider(),
 		params = {},
+		unstable_pattern = "",
 		next = defaultNext,
 	}: {
 		request?: Request;
 		params?: Params;
 		context?: Readonly<RouterContextProvider>;
+		unstable_pattern?: string;
 		next?: () => Promise<T>;
 	} = {},
 ) {
-	return (await middleware({ request, params, context }, next)) as T;
+	return (await middleware(
+		{ request, params, context, unstable_pattern },
+		next,
+	)) as T;
 }
 
 export async function catchResponse<T>(promise: Promise<T>) {
