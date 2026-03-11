@@ -53,10 +53,7 @@ function getFilePaths() {
 	}
 }
 
-async function getCachedUrls(
-	cache: Cache,
-	buildPath: CacheAssetsOptions["buildPath"] = "/build/",
-) {
+async function getCachedUrls(cache: Cache, buildPath: CacheAssetsOptions["buildPath"] = "/build/") {
 	try {
 		let keys = await cache.keys();
 		return keys

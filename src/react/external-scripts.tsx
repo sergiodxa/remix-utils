@@ -131,9 +131,7 @@ export function useExternalScripts() {
 			if (typeof match.handle !== "object") return []; // and non error handles
 			if (!("scripts" in match.handle)) return []; // and without scripts
 
-			let scripts = match.handle.scripts as
-				| ExternalScriptsFunction
-				| ScriptDescriptor[];
+			let scripts = match.handle.scripts as ExternalScriptsFunction | ScriptDescriptor[];
 
 			// if scripts is an array, suppose it's an array of script descriptors
 			// and return it

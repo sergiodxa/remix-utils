@@ -1,9 +1,6 @@
 import type { UNSAFE_DataWithResponseInit } from "react-router";
 
-type ActionsRecord = Record<
-	string,
-	() => Promise<UNSAFE_DataWithResponseInit<unknown>>
->;
+type ActionsRecord = Record<string, () => Promise<UNSAFE_DataWithResponseInit<unknown>>>;
 
 type ResponsesRecord<Actions extends ActionsRecord> = {
 	[Action in keyof Actions]: Actions[Action] extends () => Promise<
@@ -13,8 +10,7 @@ type ResponsesRecord<Actions extends ActionsRecord> = {
 		: never;
 };
 
-type ResponsesUnion<Actions extends ActionsRecord> =
-	ResponsesRecord<Actions>[keyof Actions];
+type ResponsesUnion<Actions extends ActionsRecord> = ResponsesRecord<Actions>[keyof Actions];
 
 /**
  * Runs an action based on the FormData's action name
@@ -33,16 +29,12 @@ export async function namedAction<Actions extends ActionsRecord>(
 	if (name && name in actions) {
 		let fn = actions[name];
 		if (fn) {
-			return fn() as unknown as UNSAFE_DataWithResponseInit<
-				ResponsesUnion<Actions>
-			>;
+			return fn() as unknown as UNSAFE_DataWithResponseInit<ResponsesUnion<Actions>>;
 		}
 	}
 
 	if (name === null && "default" in actions) {
-		return actions.default() as unknown as UNSAFE_DataWithResponseInit<
-			ResponsesUnion<Actions>
-		>;
+		return actions.default() as unknown as UNSAFE_DataWithResponseInit<ResponsesUnion<Actions>>;
 	}
 
 	if (name === null) throw new ReferenceError("Action name not found");

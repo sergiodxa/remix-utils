@@ -139,11 +139,7 @@
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/CSRF-Token
  */
-import type {
-	Cookie,
-	MiddlewareFunction,
-	RouterContextProvider,
-} from "react-router";
+import type { Cookie, MiddlewareFunction, RouterContextProvider } from "react-router";
 import { createContext } from "react-router";
 import { CSRF, CSRFError } from "../csrf.js";
 import type { MiddlewareGetter } from "./utils.js";
@@ -278,14 +274,7 @@ export namespace createCsrfTokenMiddleware {
 	 * HTTP request methods that can be configured as safe (exempt from CSRF
 	 * validation). Must be uppercase.
 	 */
-	export type RequestMethod =
-		| "GET"
-		| "HEAD"
-		| "OPTIONS"
-		| "POST"
-		| "PUT"
-		| "DELETE"
-		| "PATCH";
+	export type RequestMethod = "GET" | "HEAD" | "OPTIONS" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 	/**
 	 * Static origin matching pattern. Can be a single string, a RegExp, or an
@@ -395,8 +384,5 @@ export namespace createCsrfTokenMiddleware {
 		onInvalidToken?: InvalidTokenHandler;
 	}
 
-	export type ReturnType = [
-		MiddlewareFunction<Response>,
-		MiddlewareGetter<string>,
-	];
+	export type ReturnType = [MiddlewareFunction<Response>, MiddlewareGetter<string>];
 }

@@ -37,11 +37,7 @@ export async function decrypt(value: string, seed: string) {
 	let key = await deriveKeyForDecoding(seed);
 
 	// Decrypt the ciphertext
-	let decrypted = await crypto.subtle.decrypt(
-		{ name: "AES-GCM", iv },
-		key,
-		ciphertext,
-	);
+	let decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
 
 	// Convert the ArrayBuffer back to a string
 	return new TextDecoder().decode(decrypted);
@@ -57,8 +53,7 @@ export function randomString(bytes = 10) {
 	/**
 	 * List of characters in upper, lower, digits and special characters.
 	 */
-	let alphabet =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+	let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
 
 	return generateRandomString(random, alphabet, bytes);
 }

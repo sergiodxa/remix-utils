@@ -1,9 +1,5 @@
 import { mock } from "bun:test";
-import {
-	type MiddlewareFunction,
-	type Params,
-	RouterContextProvider,
-} from "react-router";
+import { type MiddlewareFunction, type Params, RouterContextProvider } from "react-router";
 
 const defaultNext = mock().mockImplementation(() => Response.json(null));
 
@@ -23,10 +19,7 @@ export async function runMiddleware<T = Response>(
 		next?: () => Promise<T>;
 	} = {},
 ) {
-	return (await middleware(
-		{ request, params, context, unstable_pattern },
-		next,
-	)) as T;
+	return (await middleware({ request, params, context, unstable_pattern }, next)) as T;
 }
 
 export async function catchResponse<T>(promise: Promise<T>) {

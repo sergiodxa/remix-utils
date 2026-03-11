@@ -40,11 +40,7 @@
  */
 import type { MiddlewareFunction } from "react-router";
 
-function defaultFormatMessage(
-	request: Request,
-	response: Response,
-	responseTime: string,
-): string {
+function defaultFormatMessage(request: Request, response: Response, responseTime: string): string {
 	let { method } = request;
 
 	let url = new URL(request.url);
@@ -105,11 +101,7 @@ export namespace createLoggerMiddleware {
 		 */
 		precision?: number;
 
-		formatMessage?(
-			request: Request,
-			response: Response,
-			responseTime: string,
-		): string;
+		formatMessage?(request: Request, response: Response, responseTime: string): string;
 	}
 
 	export type ReturnType = [MiddlewareFunction<Response>];

@@ -66,10 +66,7 @@ export function createSecureHeadersMiddleware(
 		headersToSet.push(["Content-Security-Policy-Report-Only", value]);
 	}
 
-	if (
-		options.permissionsPolicy &&
-		Object.keys(options.permissionsPolicy).length > 0
-	) {
+	if (options.permissionsPolicy && Object.keys(options.permissionsPolicy).length > 0) {
 		headersToSet.push([
 			"Permissions-Policy",
 			getPermissionsPolicyDirectives(options.permissionsPolicy),
@@ -77,10 +74,7 @@ export function createSecureHeadersMiddleware(
 	}
 
 	if (options.reportingEndpoints) {
-		headersToSet.push([
-			"Reporting-Endpoints",
-			getReportingEndpoints(options.reportingEndpoints),
-		]);
+		headersToSet.push(["Reporting-Endpoints", getReportingEndpoints(options.reportingEndpoints)]);
 	}
 
 	if (options.reportTo) {
@@ -136,10 +130,7 @@ export namespace createSecureHeadersMiddleware {
 
 // https://github.com/w3c/webappsec-permissions-policy/blob/main/features.md
 
-type PermissionsPolicyDirective =
-	| StandardizedFeatures
-	| ProposedFeatures
-	| ExperimentalFeatures;
+type PermissionsPolicyDirective = StandardizedFeatures | ProposedFeatures | ExperimentalFeatures;
 
 /**
  * These features have been declared in a published version of the respective
@@ -279,10 +270,7 @@ type PermissionsPolicyOptions = Partial<
 type overridableHeader = boolean | string;
 
 type HeadersMap = {
-	[key in keyof createSecureHeadersMiddleware.SecureHeadersOptions]: [
-		string,
-		string,
-	];
+	[key in keyof createSecureHeadersMiddleware.SecureHeadersOptions]: [string, string];
 };
 
 const HEADERS_MAP: HeadersMap = {
@@ -291,10 +279,7 @@ const HEADERS_MAP: HeadersMap = {
 	crossOriginOpenerPolicy: ["Cross-Origin-Opener-Policy", "same-origin"],
 	originAgentCluster: ["Origin-Agent-Cluster", "?1"],
 	referrerPolicy: ["Referrer-Policy", "no-referrer"],
-	strictTransportSecurity: [
-		"Strict-Transport-Security",
-		"max-age=15552000; includeSubDomains",
-	],
+	strictTransportSecurity: ["Strict-Transport-Security", "max-age=15552000; includeSubDomains"],
 	xContentTypeOptions: ["X-Content-Type-Options", "nosniff"],
 	xDnsPrefetchControl: ["X-DNS-Prefetch-Control", "off"],
 	xDownloadOptions: ["X-Download-Options", "noopen"],
@@ -324,26 +309,14 @@ function getFilteredHeaders(
 	options: createSecureHeadersMiddleware.SecureHeadersOptions,
 ): Array<[string, string]> {
 	return Object.entries(HEADERS_MAP)
-		.filter(
-			([key]) =>
-				options[
-					key as keyof createSecureHeadersMiddleware.SecureHeadersOptions
-				],
-		)
+		.filter(([key]) => options[key as keyof createSecureHeadersMiddleware.SecureHeadersOptions])
 		.map(([key, defaultValue]) => {
-			let overrideValue =
-				options[
-					key as keyof createSecureHeadersMiddleware.SecureHeadersOptions
-				];
-			return typeof overrideValue === "string"
-				? [defaultValue[0], overrideValue]
-				: defaultValue;
+			let overrideValue = options[key as keyof createSecureHeadersMiddleware.SecureHeadersOptions];
+			return typeof overrideValue === "string" ? [defaultValue[0], overrideValue] : defaultValue;
 		});
 }
 
-function getCSPDirectives(
-	contentSecurityPolicy: ContentSecurityPolicyOptions,
-): string {
+function getCSPDirectives(contentSecurityPolicy: ContentSecurityPolicyOptions): string {
 	let resultValues: Array<string> = [];
 
 	for (let [directive, value] of Object.entries(contentSecurityPolicy)) {
@@ -361,9 +334,7 @@ function getCSPDirectives(
 	return resultValues.join("");
 }
 
-function getPermissionsPolicyDirectives(
-	policy: PermissionsPolicyOptions,
-): string {
+function getPermissionsPolicyDirectives(policy: PermissionsPolicyOptions): string {
 	return Object.entries(policy)
 		.map(([directive, value]) => {
 			let kebabDirective = camelToKebab(directive);
@@ -379,9 +350,7 @@ function getPermissionsPolicyDirectives(
 				if (value.length === 1 && (value[0] === "*" || value[0] === "none")) {
 					return `${kebabDirective}=${value[0]}`;
 				}
-				let allowlist = value.map((item) =>
-					["self", "src"].includes(item) ? item : `"${item}"`,
-				);
+				let allowlist = value.map((item) => (["self", "src"].includes(item) ? item : `"${item}"`));
 				return `${kebabDirective}=(${allowlist.join(" ")})`;
 			}
 
@@ -398,9 +367,7 @@ function camelToKebab(str: string): string {
 function getReportingEndpoints(
 	reportingEndpoints: createSecureHeadersMiddleware.SecureHeadersOptions["reportingEndpoints"] = [],
 ): string {
-	return reportingEndpoints
-		.map((endpoint) => `${endpoint.name}="${endpoint.url}"`)
-		.join(", ");
+	return reportingEndpoints.map((endpoint) => `${endpoint.name}="${endpoint.url}"`).join(", ");
 }
 
 function getReportToOptions(

@@ -1,8 +1,4 @@
-import {
-	type FetcherWithComponents,
-	type Navigation,
-	useNavigation,
-} from "react-router";
+import { type FetcherWithComponents, type Navigation, useNavigation } from "react-router";
 
 /**
  * The list of types a fetcher can have
@@ -45,10 +41,7 @@ export function useFetcherType(fetcher: FetcherWithComponents<unknown>) {
  * }, [fetcherType])
  */
 export function getFetcherType(
-	fetcher: Pick<
-		FetcherWithComponents<unknown>,
-		"state" | "data" | "formMethod"
-	>,
+	fetcher: Pick<FetcherWithComponents<unknown>, "state" | "data" | "formMethod">,
 	navigation: Pick<Navigation, "formMethod" | "state">,
 ): FetcherType {
 	if (fetcher.state === "idle" && fetcher.data != null) return "done";

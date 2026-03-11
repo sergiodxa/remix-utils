@@ -50,10 +50,7 @@ describe(getClientIPAddress, () => {
 					} else headers.set(header, VALID_IP);
 				}
 
-				for (let header of headerNames.slice(
-					0,
-					headerNames.indexOf(headerName),
-				)) {
+				for (let header of headerNames.slice(0, headerNames.indexOf(headerName))) {
 					headers.delete(header);
 				}
 				expect(getClientIPAddress(headers)).toBe(VALID_IP);

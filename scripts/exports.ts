@@ -1,15 +1,7 @@
 import { file, spawn } from "bun";
 
 async function main() {
-	let proc = spawn([
-		"bunx",
-		"attw",
-		"-f",
-		"table-flipped",
-		"--no-emoji",
-		"--no-color",
-		"--pack",
-	]);
+	let proc = spawn(["bunx", "attw", "-f", "table-flipped", "--no-emoji", "--no-color", "--pack"]);
 
 	let text = await new Response(proc.stdout).text();
 

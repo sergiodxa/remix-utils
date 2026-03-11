@@ -13,16 +13,13 @@ describe(createCsrfTokenMiddleware, () => {
 		expect(getToken).toBeFunction();
 	});
 
-	test.each(["GET", "HEAD", "OPTIONS"])(
-		"allows safe method %s by default",
-		async (method) => {
-			let [middleware] = createCsrfTokenMiddleware({ cookie });
+	test.each(["GET", "HEAD", "OPTIONS"])("allows safe method %s by default", async (method) => {
+		let [middleware] = createCsrfTokenMiddleware({ cookie });
 
-			let request = new Request("https://remix.utils", { method });
-			let response = await runMiddleware(middleware, { request });
-			expect(response.status).toBe(200);
-		},
-	);
+		let request = new Request("https://remix.utils", { method });
+		let response = await runMiddleware(middleware, { request });
+		expect(response.status).toBe(200);
+	});
 
 	test("sets CSRF token cookie on first request", async () => {
 		let [middleware] = createCsrfTokenMiddleware({ cookie });
@@ -111,9 +108,7 @@ describe(createCsrfTokenMiddleware, () => {
 			body: formData,
 		});
 
-		let response2 = await catchResponse(
-			runMiddleware(middleware, { request: request2 }),
-		);
+		let response2 = await catchResponse(runMiddleware(middleware, { request: request2 }));
 		expect(response2.status).toBe(403);
 	});
 
@@ -133,9 +128,7 @@ describe(createCsrfTokenMiddleware, () => {
 			body: formData,
 		});
 
-		let response2 = await catchResponse(
-			runMiddleware(middleware, { request: request2 }),
-		);
+		let response2 = await catchResponse(runMiddleware(middleware, { request: request2 }));
 		expect(response2.status).toBe(403);
 	});
 
@@ -213,11 +206,9 @@ describe(createCsrfTokenMiddleware, () => {
 
 	test("calls custom onInvalidToken handler", async () => {
 		let onInvalidToken =
-			mock<createCsrfTokenMiddleware.InvalidTokenHandler>().mockImplementationOnce(
-				(error) => {
-					return new Response(`Custom error: ${error.code}`, { status: 418 });
-				},
-			);
+			mock<createCsrfTokenMiddleware.InvalidTokenHandler>().mockImplementationOnce((error) => {
+				return new Response(`Custom error: ${error.code}`, { status: 418 });
+			});
 
 		let [middleware] = createCsrfTokenMiddleware({
 			cookie,

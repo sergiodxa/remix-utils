@@ -35,18 +35,14 @@ describe("Responses", () => {
 			let response = javascript(content);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"application/javascript; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("application/javascript; charset=utf-8");
 		});
 
 		test("Should allow defining the status as second options", async () => {
 			let response = javascript(content, 201);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(201);
-			expect(response.headers.get("Content-Type")).toBe(
-				"application/javascript; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("application/javascript; charset=utf-8");
 		});
 
 		test("Should allow changing the Response headers", async () => {
@@ -55,9 +51,7 @@ describe("Responses", () => {
 			});
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"application/javascript; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("application/javascript; charset=utf-8");
 			expect(response.headers.get("X-Test")).toBe("it worked");
 		});
 	});
@@ -68,18 +62,14 @@ describe("Responses", () => {
 			let response = stylesheet(content);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/css; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/css; charset=utf-8");
 		});
 
 		test("Should allow defining the status as second options", async () => {
 			let response = stylesheet(content, 201);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(201);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/css; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/css; charset=utf-8");
 		});
 
 		test("Should allow changing the Response headers", async () => {
@@ -88,9 +78,7 @@ describe("Responses", () => {
 			});
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/css; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/css; charset=utf-8");
 			expect(response.headers.get("X-Test")).toBe("it worked");
 		});
 	});
@@ -127,18 +115,14 @@ describe("Responses", () => {
 			let response = html(content);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/html; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
 		});
 
 		test("Should allow defining the status as second options", async () => {
 			let response = html(content, 201);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(201);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/html; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
 		});
 
 		test("Should allow changing the Response headers", async () => {
@@ -147,9 +131,7 @@ describe("Responses", () => {
 			});
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/html; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
 			expect(response.headers.get("X-Test")).toBe("it worked");
 		});
 	});
@@ -160,18 +142,14 @@ describe("Responses", () => {
 			let response = xml(content);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"application/xml; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("application/xml; charset=utf-8");
 		});
 
 		test("Should allow defining the status as second options", async () => {
 			let response = xml(content, 201);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(201);
-			expect(response.headers.get("Content-Type")).toBe(
-				"application/xml; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("application/xml; charset=utf-8");
 		});
 
 		test("Should allow changing the Response headers", async () => {
@@ -180,9 +158,7 @@ describe("Responses", () => {
 			});
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"application/xml; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("application/xml; charset=utf-8");
 			expect(response.headers.get("X-Test")).toBe("it worked");
 		});
 	});
@@ -196,18 +172,14 @@ describe("Responses", () => {
 			let response = txt(content);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/plain; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/plain; charset=utf-8");
 		});
 
 		test("Should allow defining the status as second options", async () => {
 			let response = txt(content, 201);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(201);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/plain; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/plain; charset=utf-8");
 		});
 
 		test("Should allow changing the Response headers", async () => {
@@ -216,9 +188,7 @@ describe("Responses", () => {
 			});
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/plain; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/plain; charset=utf-8");
 			expect(response.headers.get("X-Test")).toBe("it worked");
 		});
 	});

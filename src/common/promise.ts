@@ -41,9 +41,7 @@ export async function promiseHash<Hash extends object>(
 	hash: Hash,
 ): Promise<AwaitedPromiseHash<Hash>> {
 	return Object.fromEntries(
-		await Promise.all(
-			Object.entries(hash).map(async ([key, promise]) => [key, await promise]),
-		),
+		await Promise.all(Object.entries(hash).map(async ([key, promise]) => [key, await promise])),
 	);
 }
 

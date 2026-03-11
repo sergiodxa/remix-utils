@@ -151,8 +151,5 @@ export namespace createHoneypotMiddleware {
 		onSpam?(error: SpamError): Response;
 	}
 
-	export type ReturnType = [
-		MiddlewareFunction<Response>,
-		() => Promise<HoneypotInputProps>,
-	];
+	export type ReturnType = [MiddlewareFunction<Response>, () => Promise<HoneypotInputProps>];
 }

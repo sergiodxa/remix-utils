@@ -11,9 +11,7 @@ describe(jsonHash, () => {
 
 	test("should return a response with custom headers", async () => {
 		let response = await jsonHash({}, { headers: { "Set-Cookie": "COOKIE" } });
-		expect(new Headers(response.init?.headers).get("Set-Cookie")).toBe(
-			"COOKIE",
-		);
+		expect(new Headers(response.init?.headers).get("Set-Cookie")).toBe("COOKIE");
 	});
 
 	test("should resolve loader data", async () => {

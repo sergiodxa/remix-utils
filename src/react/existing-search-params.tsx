@@ -8,10 +8,7 @@ type Props = {
 	 *  - any params from other forms you want to clear on submit
 	 */
 	exclude?: Array<string | undefined>;
-} & Omit<
-	React.InputHTMLAttributes<HTMLInputElement>,
-	"name" | "value" | "type" | "id"
->;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "name" | "value" | "type" | "id">;
 
 /**
  * Include existing query params as hidden inputs in a form.
@@ -45,15 +42,7 @@ export function ExistingSearchParams({ exclude, ...props }: Props) {
 	return (
 		<>
 			{existingSearchParams.map(([key, value]) => {
-				return (
-					<input
-						key={`${key}=${value}`}
-						{...props}
-						type="hidden"
-						name={key}
-						value={value}
-					/>
-				);
+				return <input key={`${key}=${value}`} {...props} type="hidden" name={key} value={value} />;
 			})}
 		</>
 	);

@@ -64,13 +64,6 @@ export type HoneypotProviderProps = HoneypotContextType & {
 	children: React.ReactNode;
 };
 
-export function HoneypotProvider({
-	children,
-	...context
-}: HoneypotProviderProps) {
-	return (
-		<HoneypotContext.Provider value={context}>
-			{children}
-		</HoneypotContext.Provider>
-	);
+export function HoneypotProvider({ children, ...context }: HoneypotProviderProps) {
+	return <HoneypotContext.Provider value={context}>{children}</HoneypotContext.Provider>;
 }

@@ -33,10 +33,7 @@ export function useShouldHydrate() {
 		if (!("hydrate" in handle)) return false;
 
 		// get hydrate from handle (it may not exists)
-		let hydrate = handle.hydrate as
-			| undefined
-			| boolean
-			| ((data: unknown) => boolean);
+		let hydrate = handle.hydrate as undefined | boolean | ((data: unknown) => boolean);
 
 		if (!hydrate) return false;
 

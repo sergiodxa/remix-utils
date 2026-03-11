@@ -68,14 +68,10 @@ export class CSRF {
 	 * @returns The existing token if it exists in the cookie, otherwise a new
 	 * token.
 	 */
-	async getToken(
-		requestOrHeaders: Request | Headers = new Headers(),
-		bytes = 32,
-	) {
+	async getToken(requestOrHeaders: Request | Headers = new Headers(), bytes = 32) {
 		let headers = getHeaders(requestOrHeaders);
 		let existingToken = await this.cookie.parse(headers.get("cookie"));
-		let token =
-			typeof existingToken === "string" ? existingToken : this.generate(bytes);
+		let token = typeof existingToken === "string" ? existingToken : this.generate(bytes);
 		return token;
 	}
 
@@ -93,14 +89,10 @@ export class CSRF {
 	 *   headers: { "set-cookie": cookie }
 	 * })
 	 */
-	async commitToken(
-		requestOrHeaders: Request | Headers = new Headers(),
-		bytes = 32,
-	) {
+	async commitToken(requestOrHeaders: Request | Headers = new Headers(), bytes = 32) {
 		let headers = getHeaders(requestOrHeaders);
 		let existingToken = await this.cookie.parse(headers.get("cookie"));
-		let token =
-			typeof existingToken === "string" ? existingToken : this.generate(bytes);
+		let token = typeof existingToken === "string" ? existingToken : this.generate(bytes);
 		let cookie = existingToken ? null : await this.cookie.serialize(token);
 		return [token, cookie] as const;
 	}
@@ -140,41 +132,26 @@ export class CSRF {
 
 		// if the session doesn't have a csrf token, throw an error
 		if (cookie === null) {
-			throw new CSRFError(
-				"missing_token_in_cookie",
-				"Can't find CSRF token in cookie.",
-			);
+			throw new CSRFError("missing_token_in_cookie", "Can't find CSRF token in cookie.");
 		}
 
 		if (typeof cookie !== "string") {
-			throw new CSRFError(
-				"invalid_token_in_cookie",
-				"Invalid CSRF token in cookie.",
-			);
+			throw new CSRFError("invalid_token_in_cookie", "Invalid CSRF token in cookie.");
 		}
 
 		if (this.verifySignature(cookie) === false) {
-			throw new CSRFError(
-				"tampered_token_in_cookie",
-				"Tampered CSRF token in cookie.",
-			);
+			throw new CSRFError("tampered_token_in_cookie", "Tampered CSRF token in cookie.");
 		}
 
 		// if the body doesn't have a csrf token, throw an error
 		if (!formData.get(this.formDataKey)) {
-			throw new CSRFError(
-				"missing_token_in_body",
-				"Can't find CSRF token in body.",
-			);
+			throw new CSRFError("missing_token_in_body", "Can't find CSRF token in body.");
 		}
 
 		// if the body csrf token doesn't match the session csrf token, throw an
 		// error
 		if (formData.get(this.formDataKey) !== cookie) {
-			throw new CSRFError(
-				"mismatched_token",
-				"Can't verify CSRF token authenticity.",
-			);
+			throw new CSRFError("mismatched_token", "Can't verify CSRF token authenticity.");
 		}
 	}
 

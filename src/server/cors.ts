@@ -69,9 +69,7 @@ export class CORS {
 
 		if (!allowedHeaders) {
 			// headers wasn't specified, so reflect the request headers
-			let requestHeaders = request.headers.get(
-				"Access-Control-Request-Headers",
-			);
+			let requestHeaders = request.headers.get("Access-Control-Request-Headers");
 
 			if (this.isString(requestHeaders)) allowedHeaders = requestHeaders;
 

@@ -179,9 +179,7 @@ export function createJWKAuthMiddleware({
 			}
 
 			if (!cookieInOptions) {
-				let authorization = request.headers.get(
-					options.headerName ?? "Authorization",
-				);
+				let authorization = request.headers.get(options.headerName ?? "Authorization");
 
 				if (!authorization) throw await unauthorized(request, context);
 
@@ -197,10 +195,7 @@ export function createJWKAuthMiddleware({
 			if (!token) throw await unauthorized(request, context);
 
 			try {
-				context.set(
-					tokenContext,
-					await JWT.verify(token, await remote, options.verifyOptions),
-				);
+				context.set(tokenContext, await JWT.verify(token, await remote, options.verifyOptions));
 			} catch {
 				throw await unauthorized(request, context);
 			}
@@ -225,10 +220,7 @@ export function createJWKAuthMiddleware({
 		return invalidUserMessage;
 	}
 
-	async function unauthorized(
-		request: Request,
-		context: Readonly<RouterContextProvider>,
-	) {
+	async function unauthorized(request: Request, context: Readonly<RouterContextProvider>) {
 		let message = await getInvalidUserMessage({ request, context });
 		return Response.json(message, {
 			status: 401,
@@ -244,9 +236,7 @@ export namespace createBearerAuthMiddleware {
 		context: Readonly<RouterContextProvider>;
 	};
 
-	export type MessageFunction = (
-		args: Args,
-	) => string | object | Promise<string | object>;
+	export type MessageFunction = (args: Args) => string | object | Promise<string | object>;
 
 	export interface BaseOptions {
 		/**
@@ -322,8 +312,5 @@ export namespace createBearerAuthMiddleware {
 
 	export type Options = HeaderOptions | CookieOptions;
 
-	export type ReturnType = [
-		MiddlewareFunction<Response>,
-		MiddlewareGetter<JWT>,
-	];
+	export type ReturnType = [MiddlewareFunction<Response>, MiddlewareGetter<JWT>];
 }

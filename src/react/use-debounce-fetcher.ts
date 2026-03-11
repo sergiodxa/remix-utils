@@ -1,9 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import type {
-	FetcherWithComponents,
-	SubmitFunction,
-	SubmitOptions,
-} from "react-router";
+import type { FetcherWithComponents, SubmitFunction, SubmitOptions } from "react-router";
 import { useFetcher } from "react-router";
 
 type SubmitTarget = Parameters<SubmitFunction>["0"];
@@ -29,18 +25,15 @@ type DebounceSubmitFunction = (
 	options?: SubmitOptions & { debounceTimeout?: number },
 ) => void;
 
-type DebouncedFetcher<Data = unknown> = Omit<
-	FetcherWithComponents<Data>,
-	"submit"
-> & { submit: DebounceSubmitFunction };
+type DebouncedFetcher<Data = unknown> = Omit<FetcherWithComponents<Data>, "submit"> & {
+	submit: DebounceSubmitFunction;
+};
 
 /**
  * @deprecated Debounce at the route level instead of the component level.
  * @see https://sergiodxa.com/tutorials/debounce-loaders-and-actions-in-react-router
  */
-export function useDebounceFetcher<Data>(
-	opts?: Parameters<typeof useFetcher>[0],
-) {
+export function useDebounceFetcher<Data>(opts?: Parameters<typeof useFetcher>[0]) {
 	let timeoutRef = useRef<Timer>(null);
 
 	useEffect(() => {

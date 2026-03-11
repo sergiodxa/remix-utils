@@ -84,11 +84,7 @@ export namespace createServerTimingMiddleware {
 	/**
 	 * The return type of `createServerTimingMiddleware`.
 	 */
-	export type ReturnType = [
-		MiddlewareFunction<Response>,
-		MiddlewareGetter<TimingCollector>,
-	];
+	export type ReturnType = [MiddlewareFunction<Response>, MiddlewareGetter<TimingCollector>];
 }
 
-export const [serverTimingMiddleware, getTimingCollector] =
-	createServerTimingMiddleware();
+export const [serverTimingMiddleware, getTimingCollector] = createServerTimingMiddleware();

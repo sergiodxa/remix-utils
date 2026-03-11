@@ -84,11 +84,7 @@ export function createRequestIDMiddleware({
 		function requestIDMiddleware({ request, context }, next) {
 			let requestId = header ? request.headers.get(header) : null;
 
-			if (
-				!requestId ||
-				requestId.length > limitLength ||
-				/[^\w-]/.test(requestId)
-			) {
+			if (!requestId || requestId.length > limitLength || /[^\w-]/.test(requestId)) {
 				requestId = generator();
 			}
 			context.set(requestIdContext, requestId);
@@ -127,10 +123,7 @@ export namespace createRequestIDMiddleware {
 		generator?(): string;
 	}
 
-	export type ReturnType = [
-		MiddlewareFunction<Response>,
-		MiddlewareGetter<string>,
-	];
+	export type ReturnType = [MiddlewareFunction<Response>, MiddlewareGetter<string>];
 }
 
 function defaultGenerator() {

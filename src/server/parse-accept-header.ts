@@ -16,9 +16,7 @@ export function parseAcceptHeader(header: string) {
 
 			let [type, subtype] = mediaType.split("/").map((part) => part.trim());
 
-			let parsedParams = Object.fromEntries(
-				params.map((param) => param.split("=")),
-			);
+			let parsedParams = Object.fromEntries(params.map((param) => param.split("=")));
 
 			return { type, subtype, params: parsedParams };
 		})

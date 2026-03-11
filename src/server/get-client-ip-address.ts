@@ -52,9 +52,7 @@ const headerNames = Object.freeze([
  */
 export function getClientIPAddress(headers: Headers): string | null;
 export function getClientIPAddress(request: Request): string | null;
-export function getClientIPAddress(
-	requestOrHeaders: Request | Headers,
-): string | null {
+export function getClientIPAddress(requestOrHeaders: Request | Headers): string | null {
 	let headers = getHeaders(requestOrHeaders);
 
 	let ipAddress = headerNames

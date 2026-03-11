@@ -129,18 +129,13 @@
  */
 import { sha256 } from "@oslojs/crypto/sha2";
 import { decodeBase64 } from "@oslojs/encoding";
-import {
-	createContext,
-	type MiddlewareFunction,
-	type RouterContextProvider,
-} from "react-router";
+import { createContext, type MiddlewareFunction, type RouterContextProvider } from "react-router";
 import type { MiddlewareGetter } from "./utils.js";
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
-const CREDENTIALS_REGEXP =
-	/^ *(?:[Bb][Aa][Ss][Ii][Cc]) +([A-Za-z0-9._~+/-]+=*) *$/;
+const CREDENTIALS_REGEXP = /^ *(?:[Bb][Aa][Ss][Ii][Cc]) +([A-Za-z0-9._~+/-]+=*) *$/;
 const USER_PASS_REGEXP = /^([^:]*):(.*)$/;
 
 export function createBasicAuthMiddleware(
@@ -155,9 +150,7 @@ export function createBasicAuthMiddleware(
 		);
 	}
 
-	const realm = (options.realm ?? "Secure Area")
-		.replace(/\\/g, "\\\\")
-		.replace(/"/g, '\\"');
+	const realm = (options.realm ?? "Secure Area").replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 
 	const userContext = createContext<string>();
 
@@ -231,10 +224,7 @@ export function createBasicAuthMiddleware(
 		return usernameEqual && passwordEqual;
 	}
 
-	async function unauthorized(
-		request: Request,
-		context: Readonly<RouterContextProvider>,
-	) {
+	async function unauthorized(request: Request, context: Readonly<RouterContextProvider>) {
 		let message = await getInvalidUserMessage({ request, context });
 		return Response.json(message, {
 			status: 401,
@@ -250,9 +240,7 @@ export namespace createBasicAuthMiddleware {
 		context: Readonly<RouterContextProvider>;
 	};
 
-	export type MessageFunction = (
-		args: Args,
-	) => string | object | Promise<string | object>;
+	export type MessageFunction = (args: Args) => string | object | Promise<string | object>;
 
 	interface BaseOptions {
 		/**
@@ -282,19 +270,12 @@ export namespace createBasicAuthMiddleware {
 	}
 
 	export interface DynamicUserOptions extends BaseOptions {
-		verifyUser(
-			username: string,
-			password: string,
-			args: Args,
-		): boolean | Promise<boolean>;
+		verifyUser(username: string, password: string, args: Args): boolean | Promise<boolean>;
 	}
 
 	export type Options = HardCodedUserOptions | DynamicUserOptions;
 
-	export type ReturnType = [
-		MiddlewareFunction<Response>,
-		MiddlewareGetter<User["username"]>,
-	];
+	export type ReturnType = [MiddlewareFunction<Response>, MiddlewareGetter<User["username"]>];
 
 	export type HashFunction = (data: Uint8Array) => Uint8Array;
 }
@@ -318,12 +299,8 @@ async function timingSafeEqual(
 	return decoder.decode(sa) === decoder.decode(sb) && a === b;
 }
 
-function getAuthorization(
-	request: Request,
-): { username: string; password: string } | undefined {
-	let match = CREDENTIALS_REGEXP.exec(
-		request.headers.get("Authorization") || "",
-	);
+function getAuthorization(request: Request): { username: string; password: string } | undefined {
+	let match = CREDENTIALS_REGEXP.exec(request.headers.get("Authorization") || "");
 
 	if (!match) return undefined;
 
@@ -331,9 +308,7 @@ function getAuthorization(
 
 	// If an invalid string is passed to atob(), it throws a `DOMException`.
 	try {
-		userPass = USER_PASS_REGEXP.exec(
-			decoder.decode(decodeBase64(match[1] ?? "")),
-		);
+		userPass = USER_PASS_REGEXP.exec(decoder.decode(decodeBase64(match[1] ?? "")));
 	} catch {} // Do nothing
 
 	if (!userPass) return undefined;

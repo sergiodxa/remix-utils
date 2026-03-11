@@ -100,8 +100,7 @@ export function createSingletonMiddleware<T>(
 
 	return [
 		async function singletonMiddleware({ request, context }, next) {
-			let instance =
-				context.get(singletonContext) ?? options.instantiator(request, context);
+			let instance = context.get(singletonContext) ?? options.instantiator(request, context);
 			context.set(singletonContext, instance);
 			return await next();
 		},
@@ -119,8 +118,5 @@ export namespace createSingletonMiddleware {
 		instantiator(request: Request, context: Readonly<RouterContextProvider>): T;
 	}
 
-	export type ReturnType<T> = [
-		MiddlewareFunction<Response>,
-		MiddlewareGetter<T>,
-	];
+	export type ReturnType<T> = [MiddlewareFunction<Response>, MiddlewareGetter<T>];
 }

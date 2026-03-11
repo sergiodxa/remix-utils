@@ -1,15 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import {
-	createCookie,
-	createCookieSessionStorage,
-	isCookie,
-} from "react-router";
+import { createCookie, createCookieSessionStorage, isCookie } from "react-router";
 import { z } from "zod";
-import {
-	createTypedCookie,
-	isTypedCookie,
-	ValidationError,
-} from "./typed-cookie.js";
+import { createTypedCookie, isTypedCookie, ValidationError } from "./typed-cookie.js";
 
 // TODO Fix this
 // install globals removal makes these crash
@@ -29,9 +21,7 @@ describe("Typed Cookie", () => {
 
 	test("throw if parsed type is not valid", async () => {
 		let cookieHeader = await cookie.serialize("a");
-		expect(typedCookie.parse(cookieHeader)).rejects.toThrowError(
-			ValidationError,
-		);
+		expect(typedCookie.parse(cookieHeader)).rejects.toThrowError(ValidationError);
 	});
 
 	test("sessionStorage must accepts typed-cookie", async () => {
@@ -50,9 +40,7 @@ describe("Typed Cookie", () => {
 
 		session.unset("token");
 
-		expect(sessionStorage.commitSession(session)).rejects.toThrowError(
-			ValidationError,
-		);
+		expect(sessionStorage.commitSession(session)).rejects.toThrowError(ValidationError);
 	});
 
 	test("supports async schemas", async () => {
@@ -65,9 +53,7 @@ describe("Typed Cookie", () => {
 
 		let typedCookie = createTypedCookie({ cookie, schema });
 
-		expect(typedCookie.serialize({ token: "a-b-c" })).rejects.toThrowError(
-			ValidationError,
-		);
+		expect(typedCookie.serialize({ token: "a-b-c" })).rejects.toThrowError(ValidationError);
 	});
 
 	test("pass isTypedCookie", async () => {
@@ -81,9 +67,11 @@ describe("Typed Cookie", () => {
 			schema: z.array(z.string()),
 		});
 
-		expect(
-			typedCookie.parse(await typedCookie.serialize(["a", "b", "c"])),
-		).resolves.toEqual(["a", "b", "c"]);
+		expect(typedCookie.parse(await typedCookie.serialize(["a", "b", "c"]))).resolves.toEqual([
+			"a",
+			"b",
+			"c",
+		]);
 	});
 
 	test("can't store functions", async () => {
@@ -95,12 +83,8 @@ describe("Typed Cookie", () => {
 			}),
 		});
 
-		expect(
-			typedCookie.parse(await typedCookie.serialize((a: string) => a)),
-		).rejects.toThrowError(
-			new ValidationError([
-				{ path: [], message: "Expected function, received object" },
-			]),
+		expect(typedCookie.parse(await typedCookie.serialize((a: string) => a))).rejects.toThrowError(
+			new ValidationError([{ path: [], message: "Expected function, received object" }]),
 		);
 	});
 
@@ -110,13 +94,9 @@ describe("Typed Cookie", () => {
 			schema: z.boolean(),
 		});
 
-		expect(
-			typedCookie.parse(await typedCookie.serialize(true)),
-		).resolves.toEqual(true);
+		expect(typedCookie.parse(await typedCookie.serialize(true))).resolves.toEqual(true);
 
-		expect(
-			typedCookie.parse(await typedCookie.serialize(false)),
-		).resolves.toEqual(false);
+		expect(typedCookie.parse(await typedCookie.serialize(false))).resolves.toEqual(false);
 	});
 
 	test("can store numbers", async () => {
@@ -125,9 +105,7 @@ describe("Typed Cookie", () => {
 			schema: z.number(),
 		});
 
-		expect(
-			typedCookie.parse(await typedCookie.serialize(123)),
-		).resolves.toEqual(123);
+		expect(typedCookie.parse(await typedCookie.serialize(123))).resolves.toEqual(123);
 	});
 
 	test("can store dates", async () => {
@@ -140,9 +118,9 @@ describe("Typed Cookie", () => {
 			}, z.date()),
 		});
 
-		expect(
-			typedCookie.parse(await typedCookie.serialize(new Date())),
-		).resolves.toBeInstanceOf(Date);
+		expect(typedCookie.parse(await typedCookie.serialize(new Date()))).resolves.toBeInstanceOf(
+			Date,
+		);
 	});
 
 	test("can store objects", async () => {
@@ -153,9 +131,9 @@ describe("Typed Cookie", () => {
 			}),
 		});
 
-		expect(
-			typedCookie.parse(await typedCookie.serialize({ token: "a-b-c" })),
-		).resolves.toEqual({ token: "a-b-c" });
+		expect(typedCookie.parse(await typedCookie.serialize({ token: "a-b-c" }))).resolves.toEqual({
+			token: "a-b-c",
+		});
 	});
 
 	test("can store null", async () => {
@@ -164,9 +142,7 @@ describe("Typed Cookie", () => {
 			schema: z.null(),
 		});
 
-		expect(
-			typedCookie.parse(await typedCookie.serialize(null)),
-		).resolves.toEqual(null);
+		expect(typedCookie.parse(await typedCookie.serialize(null))).resolves.toEqual(null);
 	});
 
 	test("can store undefined", async () => {
@@ -175,12 +151,8 @@ describe("Typed Cookie", () => {
 			schema: z.undefined(),
 		});
 
-		expect(
-			typedCookie.parse(await typedCookie.serialize(void 0)),
-		).rejects.toThrowError(
-			new ValidationError([
-				{ path: [], message: "Expected undefined, received object" },
-			]),
+		expect(typedCookie.parse(await typedCookie.serialize(void 0))).rejects.toThrowError(
+			new ValidationError([{ path: [], message: "Expected undefined, received object" }]),
 		);
 	});
 });

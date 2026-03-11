@@ -6,10 +6,7 @@ export interface EventSourceOptions {
 	enabled?: boolean;
 }
 
-export type EventSourceMap = Map<
-	string,
-	{ count: number; source: EventSource }
->;
+export type EventSourceMap = Map<string, { count: number; source: EventSource }>;
 
 const context = createContext<EventSourceMap>(
 	new Map<string, { count: number; source: EventSource }>(),

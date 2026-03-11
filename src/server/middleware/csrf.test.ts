@@ -9,16 +9,13 @@ describe(createCsrfMiddleware, () => {
 		expect(middleware).toBeFunction();
 	});
 
-	test.each(["GET", "HEAD", "OPTIONS"])(
-		"allows safe method %s by default",
-		async (method) => {
-			let middleware = createCsrfMiddleware();
+	test.each(["GET", "HEAD", "OPTIONS"])("allows safe method %s by default", async (method) => {
+		let middleware = createCsrfMiddleware();
 
-			let request = new Request("https://remix.utils", { method });
-			let response = await runMiddleware(middleware, { request });
-			expect(response.status).toBe(200);
-		},
-	);
+		let request = new Request("https://remix.utils", { method });
+		let response = await runMiddleware(middleware, { request });
+		expect(response.status).toBe(200);
+	});
 
 	test("allows custom safe methods", async () => {
 		let middleware = createCsrfMiddleware({ safeMethods: ["GET", "POST"] });
@@ -290,10 +287,7 @@ describe(createCsrfMiddleware, () => {
 	});
 
 	test("passes request and context to origin function", async () => {
-		let origin =
-			mock<createCsrfMiddleware.OriginResolver>().mockImplementationOnce(
-				() => true,
-			);
+		let origin = mock<createCsrfMiddleware.OriginResolver>().mockImplementationOnce(() => true);
 
 		let middleware = createCsrfMiddleware({ origin });
 
@@ -309,11 +303,7 @@ describe(createCsrfMiddleware, () => {
 
 		await runMiddleware(middleware, { request, context });
 
-		expect(origin).toHaveBeenCalledWith(
-			"https://trusted.com",
-			request,
-			context,
-		);
+		expect(origin).toHaveBeenCalledWith("https://trusted.com", request, context);
 	});
 
 	test("uses Origin header over Referer header", async () => {

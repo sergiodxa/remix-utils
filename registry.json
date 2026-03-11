@@ -1,757 +1,635 @@
 {
-  "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "remix-utils",
-  "homepage": "https://sergiodxa.github.io/remix-utils/",
-  "items": [
-    {
-      "name": "middleware-basic-auth",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/middleware/basic-auth.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/server/middleware/utils.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "@oslojs/crypto",
-        "@oslojs/encoding",
-        "react-router"
-      ]
-    },
-    {
-      "name": "middleware-batcher",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/middleware/batcher.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "@edgefirst-dev/batcher"
-      ],
-      "registryDependencies": [
-        "middleware-singleton"
-      ]
-    },
-    {
-      "name": "middleware-context-storage",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/middleware/context-storage.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ]
-    },
-    {
-      "name": "middleware-cors",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/middleware/cors.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ],
-      "registryDependencies": [
-        "cors"
-      ]
-    },
-    {
-      "name": "middleware-csrf",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/middleware/csrf.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ],
-      "registryDependencies": [
-        "sec-fetch"
-      ]
-    },
-    {
-      "name": "middleware-csrf-token",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/middleware/csrf-token.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/server/middleware/utils.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ],
-      "registryDependencies": [
-        "csrf-server"
-      ]
-    },
-    {
-      "name": "middleware-honeypot",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/middleware/honeypot.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ],
-      "registryDependencies": [
-        "honeypot-server"
-      ]
-    },
-    {
-      "name": "middleware-jwk-auth",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/middleware/jwk-auth.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/server/middleware/utils.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "@edgefirst-dev/jwt",
-        "react-router"
-      ]
-    },
-    {
-      "name": "middleware-logger",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/middleware/logger.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ]
-    },
-    {
-      "name": "middleware-request-id",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/middleware/request-id.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/server/middleware/utils.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ]
-    },
-    {
-      "name": "middleware-rolling-cookie",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/middleware/rolling-cookie.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ],
-      "registryDependencies": [
-        "rolling-cookie"
-      ]
-    },
-    {
-      "name": "middleware-secure-headers",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/middleware/secure-headers.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ]
-    },
-    {
-      "name": "middleware-server-timing",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/middleware/server-timing.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/server/middleware/utils.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "@edgefirst-dev/server-timing",
-        "react-router"
-      ]
-    },
-    {
-      "name": "middleware-session",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/middleware/session.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/server/middleware/utils.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ]
-    },
-    {
-      "name": "middleware-singleton",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/middleware/singleton.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/server/middleware/utils.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ]
-    },
-    {
-      "name": "promise",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/common/promise.ts",
-          "type": "registry:lib"
-        }
-      ]
-    },
-    {
-      "name": "cache-assets",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/client/cache-assets.ts",
-          "type": "registry:lib"
-        }
-      ]
-    },
-    {
-      "name": "cors",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/cors.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "type-fest"
-      ]
-    },
-    {
-      "name": "get-client-ip-address",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/get-client-ip-address.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/server/get-headers.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "is-ip"
-      ]
-    },
-    {
-      "name": "is-prefetch",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/get-headers.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/server/is-prefetch.ts",
-          "type": "registry:lib"
-        }
-      ]
-    },
-    {
-      "name": "json-hash",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/json-hash.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ]
-    },
-    {
-      "name": "named-action",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/named-action.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ]
-    },
-    {
-      "name": "parse-accept-header",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/parse-accept-header.ts",
-          "type": "registry:lib"
-        }
-      ]
-    },
-    {
-      "name": "preload-route-assets",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/preload-route-assets.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ]
-    },
-    {
-      "name": "redirect-back",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/redirect-back.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ]
-    },
-    {
-      "name": "respond-to",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/get-headers.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/server/respond-to.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "registryDependencies": [
-        "parse-accept-header"
-      ]
-    },
-    {
-      "name": "responses",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/responses.ts",
-          "type": "registry:lib"
-        }
-      ]
-    },
-    {
-      "name": "rolling-cookie",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/rolling-cookie.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "@standard-schema/spec",
-        "react-router"
-      ],
-      "registryDependencies": [
-        "typed-cookie"
-      ]
-    },
-    {
-      "name": "safe-redirect",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/safe-redirect.ts",
-          "type": "registry:lib"
-        }
-      ]
-    },
-    {
-      "name": "typed-cookie",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/typed-cookie.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "@standard-schema/spec",
-        "react-router"
-      ]
-    },
-    {
-      "name": "client-only",
-      "type": "registry:component",
-      "files": [
-        {
-          "path": "src/react/client-only.tsx",
-          "type": "registry:component"
-        }
-      ],
-      "dependencies": [
-        "react"
-      ],
-      "registryDependencies": [
-        "use-hydrated"
-      ]
-    },
-    {
-      "name": "existing-search-params",
-      "type": "registry:component",
-      "files": [
-        {
-          "path": "src/react/existing-search-params.tsx",
-          "type": "registry:component"
-        }
-      ],
-      "dependencies": [
-        "react",
-        "react-router"
-      ]
-    },
-    {
-      "name": "external-scripts",
-      "type": "registry:component",
-      "files": [
-        {
-          "path": "src/react/external-scripts.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/react/handle-conventions.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react",
-        "react-router"
-      ],
-      "registryDependencies": [
-        "use-hydrated"
-      ]
-    },
-    {
-      "name": "fetcher-type",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/react/fetcher-type.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ]
-    },
-    {
-      "name": "server-only",
-      "type": "registry:component",
-      "files": [
-        {
-          "path": "src/react/server-only.tsx",
-          "type": "registry:component"
-        }
-      ],
-      "dependencies": [
-        "react"
-      ],
-      "registryDependencies": [
-        "use-hydrated"
-      ]
-    },
-    {
-      "name": "use-debounce-fetcher",
-      "type": "registry:hook",
-      "files": [
-        {
-          "path": "src/react/use-debounce-fetcher.ts",
-          "type": "registry:hook"
-        }
-      ],
-      "dependencies": [
-        "react",
-        "react-router"
-      ]
-    },
-    {
-      "name": "use-debounce-submit",
-      "type": "registry:hook",
-      "files": [
-        {
-          "path": "src/react/use-debounce-submit.ts",
-          "type": "registry:hook"
-        }
-      ],
-      "dependencies": [
-        "react",
-        "react-router"
-      ]
-    },
-    {
-      "name": "use-delegated-anchors",
-      "type": "registry:hook",
-      "files": [
-        {
-          "path": "src/react/use-delegated-anchors.tsx",
-          "type": "registry:hook"
-        }
-      ],
-      "dependencies": [
-        "react",
-        "react-router"
-      ]
-    },
-    {
-      "name": "use-global-navigation-state",
-      "type": "registry:hook",
-      "files": [
-        {
-          "path": "src/react/use-global-navigation-state.ts",
-          "type": "registry:hook"
-        }
-      ],
-      "dependencies": [
-        "react",
-        "react-router"
-      ]
-    },
-    {
-      "name": "use-hydrated",
-      "type": "registry:hook",
-      "files": [
-        {
-          "path": "src/react/use-hydrated.ts",
-          "type": "registry:hook"
-        }
-      ],
-      "dependencies": [
-        "react"
-      ]
-    },
-    {
-      "name": "use-should-hydrate",
-      "type": "registry:hook",
-      "files": [
-        {
-          "path": "src/react/use-should-hydrate.ts",
-          "type": "registry:hook"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ]
-    },
-    {
-      "name": "sse-server",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/event-stream.ts",
-          "type": "registry:lib"
-        }
-      ]
-    },
-    {
-      "name": "sse-react",
-      "type": "registry:hook",
-      "files": [
-        {
-          "path": "src/react/use-event-source.ts",
-          "type": "registry:hook"
-        }
-      ],
-      "dependencies": [
-        "react"
-      ]
-    },
-    {
-      "name": "locales-server",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/get-client-locales.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/server/get-headers.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "intl-parse-accept-language"
-      ]
-    },
-    {
-      "name": "locales-react",
-      "type": "registry:hook",
-      "files": [
-        {
-          "path": "src/react/use-locales.ts",
-          "type": "registry:hook"
-        }
-      ],
-      "dependencies": [
-        "react-router"
-      ],
-      "registryDependencies": [
-        "locales-server"
-      ]
-    },
-    {
-      "name": "honeypot-server",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/common/crypto.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/server/honeypot.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "@oslojs/crypto"
-      ]
-    },
-    {
-      "name": "honeypot-react",
-      "type": "registry:component",
-      "files": [
-        {
-          "path": "src/react/honeypot.tsx",
-          "type": "registry:component"
-        }
-      ],
-      "dependencies": [
-        "react"
-      ],
-      "registryDependencies": [
-        "honeypot-server"
-      ]
-    },
-    {
-      "name": "csrf-server",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/common/crypto.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/server/csrf.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/server/get-headers.ts",
-          "type": "registry:lib"
-        }
-      ],
-      "dependencies": [
-        "@oslojs/crypto",
-        "@oslojs/encoding",
-        "react-router"
-      ]
-    },
-    {
-      "name": "csrf-react",
-      "type": "registry:component",
-      "files": [
-        {
-          "path": "src/react/authenticity-token.tsx",
-          "type": "registry:component"
-        }
-      ],
-      "dependencies": [
-        "react"
-      ]
-    },
-    {
-      "name": "sec-fetch",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/server/get-headers.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/server/sec-fetch.ts",
-          "type": "registry:lib"
-        }
-      ]
-    },
-    {
-      "name": "timers",
-      "type": "registry:lib",
-      "files": [
-        {
-          "path": "src/common/timers.ts",
-          "type": "registry:lib"
-        }
-      ]
-    }
-  ]
+	"$schema": "https://ui.shadcn.com/schema/registry.json",
+	"name": "remix-utils",
+	"homepage": "https://sergiodxa.github.io/remix-utils/",
+	"items": [
+		{
+			"name": "middleware-basic-auth",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/middleware/basic-auth.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "src/server/middleware/utils.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["@oslojs/crypto", "@oslojs/encoding", "react-router"]
+		},
+		{
+			"name": "middleware-batcher",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/middleware/batcher.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["@edgefirst-dev/batcher"],
+			"registryDependencies": ["middleware-singleton"]
+		},
+		{
+			"name": "middleware-context-storage",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/middleware/context-storage.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react-router"]
+		},
+		{
+			"name": "middleware-cors",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/middleware/cors.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react-router"],
+			"registryDependencies": ["cors"]
+		},
+		{
+			"name": "middleware-csrf",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/middleware/csrf.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react-router"],
+			"registryDependencies": ["sec-fetch"]
+		},
+		{
+			"name": "middleware-csrf-token",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/middleware/csrf-token.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "src/server/middleware/utils.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react-router"],
+			"registryDependencies": ["csrf-server"]
+		},
+		{
+			"name": "middleware-honeypot",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/middleware/honeypot.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react-router"],
+			"registryDependencies": ["honeypot-server"]
+		},
+		{
+			"name": "middleware-jwk-auth",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/middleware/jwk-auth.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "src/server/middleware/utils.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["@edgefirst-dev/jwt", "react-router"]
+		},
+		{
+			"name": "middleware-logger",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/middleware/logger.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react-router"]
+		},
+		{
+			"name": "middleware-request-id",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/middleware/request-id.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "src/server/middleware/utils.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react-router"]
+		},
+		{
+			"name": "middleware-rolling-cookie",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/middleware/rolling-cookie.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react-router"],
+			"registryDependencies": ["rolling-cookie"]
+		},
+		{
+			"name": "middleware-secure-headers",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/middleware/secure-headers.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react-router"]
+		},
+		{
+			"name": "middleware-server-timing",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/middleware/server-timing.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "src/server/middleware/utils.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["@edgefirst-dev/server-timing", "react-router"]
+		},
+		{
+			"name": "middleware-session",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/middleware/session.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "src/server/middleware/utils.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react-router"]
+		},
+		{
+			"name": "middleware-singleton",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/middleware/singleton.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "src/server/middleware/utils.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react-router"]
+		},
+		{
+			"name": "promise",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/common/promise.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "cache-assets",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/client/cache-assets.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "cors",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/cors.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["type-fest"]
+		},
+		{
+			"name": "get-client-ip-address",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/get-client-ip-address.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "src/server/get-headers.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["is-ip"]
+		},
+		{
+			"name": "is-prefetch",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/get-headers.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "src/server/is-prefetch.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "json-hash",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/json-hash.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react-router"]
+		},
+		{
+			"name": "named-action",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/named-action.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react-router"]
+		},
+		{
+			"name": "parse-accept-header",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/parse-accept-header.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "preload-route-assets",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/preload-route-assets.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react-router"]
+		},
+		{
+			"name": "redirect-back",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/redirect-back.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react-router"]
+		},
+		{
+			"name": "respond-to",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/get-headers.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "src/server/respond-to.ts",
+					"type": "registry:lib"
+				}
+			],
+			"registryDependencies": ["parse-accept-header"]
+		},
+		{
+			"name": "responses",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/responses.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "rolling-cookie",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/rolling-cookie.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["@standard-schema/spec", "react-router"],
+			"registryDependencies": ["typed-cookie"]
+		},
+		{
+			"name": "safe-redirect",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/safe-redirect.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "typed-cookie",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/typed-cookie.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["@standard-schema/spec", "react-router"]
+		},
+		{
+			"name": "client-only",
+			"type": "registry:component",
+			"files": [
+				{
+					"path": "src/react/client-only.tsx",
+					"type": "registry:component"
+				}
+			],
+			"dependencies": ["react"],
+			"registryDependencies": ["use-hydrated"]
+		},
+		{
+			"name": "existing-search-params",
+			"type": "registry:component",
+			"files": [
+				{
+					"path": "src/react/existing-search-params.tsx",
+					"type": "registry:component"
+				}
+			],
+			"dependencies": ["react", "react-router"]
+		},
+		{
+			"name": "external-scripts",
+			"type": "registry:component",
+			"files": [
+				{
+					"path": "src/react/external-scripts.tsx",
+					"type": "registry:component"
+				},
+				{
+					"path": "src/react/handle-conventions.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react", "react-router"],
+			"registryDependencies": ["use-hydrated"]
+		},
+		{
+			"name": "fetcher-type",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/react/fetcher-type.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["react-router"]
+		},
+		{
+			"name": "server-only",
+			"type": "registry:component",
+			"files": [
+				{
+					"path": "src/react/server-only.tsx",
+					"type": "registry:component"
+				}
+			],
+			"dependencies": ["react"],
+			"registryDependencies": ["use-hydrated"]
+		},
+		{
+			"name": "use-debounce-fetcher",
+			"type": "registry:hook",
+			"files": [
+				{
+					"path": "src/react/use-debounce-fetcher.ts",
+					"type": "registry:hook"
+				}
+			],
+			"dependencies": ["react", "react-router"]
+		},
+		{
+			"name": "use-debounce-submit",
+			"type": "registry:hook",
+			"files": [
+				{
+					"path": "src/react/use-debounce-submit.ts",
+					"type": "registry:hook"
+				}
+			],
+			"dependencies": ["react", "react-router"]
+		},
+		{
+			"name": "use-delegated-anchors",
+			"type": "registry:hook",
+			"files": [
+				{
+					"path": "src/react/use-delegated-anchors.tsx",
+					"type": "registry:hook"
+				}
+			],
+			"dependencies": ["react", "react-router"]
+		},
+		{
+			"name": "use-global-navigation-state",
+			"type": "registry:hook",
+			"files": [
+				{
+					"path": "src/react/use-global-navigation-state.ts",
+					"type": "registry:hook"
+				}
+			],
+			"dependencies": ["react", "react-router"]
+		},
+		{
+			"name": "use-hydrated",
+			"type": "registry:hook",
+			"files": [
+				{
+					"path": "src/react/use-hydrated.ts",
+					"type": "registry:hook"
+				}
+			],
+			"dependencies": ["react"]
+		},
+		{
+			"name": "use-should-hydrate",
+			"type": "registry:hook",
+			"files": [
+				{
+					"path": "src/react/use-should-hydrate.ts",
+					"type": "registry:hook"
+				}
+			],
+			"dependencies": ["react-router"]
+		},
+		{
+			"name": "sse-server",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/event-stream.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "sse-react",
+			"type": "registry:hook",
+			"files": [
+				{
+					"path": "src/react/use-event-source.ts",
+					"type": "registry:hook"
+				}
+			],
+			"dependencies": ["react"]
+		},
+		{
+			"name": "locales-server",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/get-client-locales.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "src/server/get-headers.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["intl-parse-accept-language"]
+		},
+		{
+			"name": "locales-react",
+			"type": "registry:hook",
+			"files": [
+				{
+					"path": "src/react/use-locales.ts",
+					"type": "registry:hook"
+				}
+			],
+			"dependencies": ["react-router"],
+			"registryDependencies": ["locales-server"]
+		},
+		{
+			"name": "honeypot-server",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/common/crypto.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "src/server/honeypot.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["@oslojs/crypto"]
+		},
+		{
+			"name": "honeypot-react",
+			"type": "registry:component",
+			"files": [
+				{
+					"path": "src/react/honeypot.tsx",
+					"type": "registry:component"
+				}
+			],
+			"dependencies": ["react"],
+			"registryDependencies": ["honeypot-server"]
+		},
+		{
+			"name": "csrf-server",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/common/crypto.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "src/server/csrf.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "src/server/get-headers.ts",
+					"type": "registry:lib"
+				}
+			],
+			"dependencies": ["@oslojs/crypto", "@oslojs/encoding", "react-router"]
+		},
+		{
+			"name": "csrf-react",
+			"type": "registry:component",
+			"files": [
+				{
+					"path": "src/react/authenticity-token.tsx",
+					"type": "registry:component"
+				}
+			],
+			"dependencies": ["react"]
+		},
+		{
+			"name": "sec-fetch",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/server/get-headers.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "src/server/sec-fetch.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "timers",
+			"type": "registry:lib",
+			"files": [
+				{
+					"path": "src/common/timers.ts",
+					"type": "registry:lib"
+				}
+			]
+		}
+	]
 }

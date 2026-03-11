@@ -13,10 +13,7 @@ type CleanupFunction = () => void;
 
 type AbortFunction = () => void;
 
-type InitFunction = (
-	send: SendFunction,
-	abort: AbortFunction,
-) => CleanupFunction;
+type InitFunction = (send: SendFunction, abort: AbortFunction) => CleanupFunction;
 
 /**
  * A response helper to use Server Sent Events server-side

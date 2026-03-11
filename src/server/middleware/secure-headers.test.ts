@@ -24,21 +24,13 @@ describe(createSecureHeadersMiddleware, () => {
 		expect(response.headers.get("X-DNS-Prefetch-Control")).toEqual("off");
 		expect(response.headers.get("X-Content-Type-Options")).toEqual("nosniff");
 		expect(response.headers.get("Referrer-Policy")).toEqual("no-referrer");
-		expect(response.headers.get("X-Permitted-Cross-Domain-Policies")).toEqual(
-			"none",
-		);
-		expect(response.headers.get("Cross-Origin-Resource-Policy")).toEqual(
-			"same-origin",
-		);
-		expect(response.headers.get("Cross-Origin-Opener-Policy")).toEqual(
-			"same-origin",
-		);
+		expect(response.headers.get("X-Permitted-Cross-Domain-Policies")).toEqual("none");
+		expect(response.headers.get("Cross-Origin-Resource-Policy")).toEqual("same-origin");
+		expect(response.headers.get("Cross-Origin-Opener-Policy")).toEqual("same-origin");
 		expect(response.headers.get("Origin-Agent-Cluster")).toEqual("?1");
 		expect(response.headers.get("Permissions-Policy")).toBeNull();
 		expect(response.headers.get("Content-Security-Policy")).toBeFalsy();
-		expect(
-			response.headers.get("Content-Security-Policy-ReportOnly"),
-		).toBeFalsy();
+		expect(response.headers.get("Content-Security-Policy-ReportOnly")).toBeFalsy();
 	});
 
 	test("all headers enabled", async () => {
@@ -69,23 +61,13 @@ describe(createSecureHeadersMiddleware, () => {
 		expect(response.headers.get("X-DNS-Prefetch-Control")).toEqual("off");
 		expect(response.headers.get("X-Content-Type-Options")).toEqual("nosniff");
 		expect(response.headers.get("Referrer-Policy")).toEqual("no-referrer");
-		expect(response.headers.get("X-Permitted-Cross-Domain-Policies")).toEqual(
-			"none",
-		);
-		expect(response.headers.get("Cross-Origin-Resource-Policy")).toEqual(
-			"same-origin",
-		);
-		expect(response.headers.get("Cross-Origin-Opener-Policy")).toEqual(
-			"same-origin",
-		);
+		expect(response.headers.get("X-Permitted-Cross-Domain-Policies")).toEqual("none");
+		expect(response.headers.get("Cross-Origin-Resource-Policy")).toEqual("same-origin");
+		expect(response.headers.get("Cross-Origin-Opener-Policy")).toEqual("same-origin");
 		expect(response.headers.get("Origin-Agent-Cluster")).toEqual("?1");
-		expect(response.headers.get("Cross-Origin-Embedder-Policy")).toEqual(
-			"require-corp",
-		);
+		expect(response.headers.get("Cross-Origin-Embedder-Policy")).toEqual("require-corp");
 		expect(response.headers.get("Permissions-Policy")).toEqual("camera=()");
-		expect(response.headers.get("Content-Security-Policy")).toEqual(
-			"default-src 'self'",
-		);
+		expect(response.headers.get("Content-Security-Policy")).toEqual("default-src 'self'");
 		expect(response.headers.get("Content-Security-Policy-Report-Only")).toEqual(
 			"default-src 'self'",
 		);
@@ -109,15 +91,9 @@ describe(createSecureHeadersMiddleware, () => {
 		expect(res.headers.get("X-DNS-Prefetch-Control")).toEqual("off");
 		expect(res.headers.get("X-Content-Type-Options")).toEqual("nosniff");
 		expect(res.headers.get("Referrer-Policy")).toEqual("no-referrer");
-		expect(res.headers.get("X-Permitted-Cross-Domain-Policies")).toEqual(
-			"none",
-		);
-		expect(res.headers.get("Cross-Origin-Resource-Policy")).toEqual(
-			"same-origin",
-		);
-		expect(res.headers.get("Cross-Origin-Opener-Policy")).toEqual(
-			"same-origin",
-		);
+		expect(res.headers.get("X-Permitted-Cross-Domain-Policies")).toEqual("none");
+		expect(res.headers.get("Cross-Origin-Resource-Policy")).toEqual("same-origin");
+		expect(res.headers.get("Cross-Origin-Opener-Policy")).toEqual("same-origin");
 		expect(res.headers.get("Permissions-Policy")).toBeNull();
 		expect(res.headers.get("Origin-Agent-Cluster")).toEqual("?1");
 	});
@@ -238,9 +214,7 @@ describe(createSecureHeadersMiddleware, () => {
 			expect(res.headers.get("Reporting-Endpoints")).toEqual(
 				'endpoint-1="https://example.com/reports"',
 			);
-			expect(res.headers.get(cspHeaderName)).toEqual(
-				"default-src 'self'; report-to endpoint-1",
-			);
+			expect(res.headers.get(cspHeaderName)).toEqual("default-src 'self'; report-to endpoint-1");
 		});
 		test("CSP with reportTo 1", async () => {
 			let [middleware] = createSecureHeadersMiddleware({
@@ -261,9 +235,7 @@ describe(createSecureHeadersMiddleware, () => {
 			expect(res.headers.get("Report-To")).toEqual(
 				'{"group":"endpoint-1","max_age":10886400,"endpoints":[{"url":"https://example.com/reports"}]}',
 			);
-			expect(res.headers.get(cspHeaderName)).toEqual(
-				"default-src 'self'; report-to endpoint-1",
-			);
+			expect(res.headers.get(cspHeaderName)).toEqual("default-src 'self'; report-to endpoint-1");
 		});
 
 		test("CSP with reportTo 2", async () => {
@@ -297,9 +269,7 @@ describe(createSecureHeadersMiddleware, () => {
 			expect(res.headers.get("Report-To")).toEqual(
 				'{"group":"g1","max_age":10886400,"endpoints":[{"url":"https://a.example.com/reports"},{"url":"https://b.example.com/reports"}]}, {"group":"g2","max_age":10886400,"endpoints":[{"url":"https://c.example.com/reports"},{"url":"https://d.example.com/reports"}]}',
 			);
-			expect(res.headers.get(cspHeaderName)).toEqual(
-				"default-src 'self'; report-to g2",
-			);
+			expect(res.headers.get(cspHeaderName)).toEqual("default-src 'self'; report-to g2");
 		});
 
 		test("CSP with reportTo 3", async () => {
@@ -325,9 +295,7 @@ describe(createSecureHeadersMiddleware, () => {
 			expect(res.headers.get("Reporting-Endpoints")).toEqual(
 				'e1="https://a.example.com/reports", e2="https://b.example.com/reports"',
 			);
-			expect(res.headers.get(cspHeaderName)).toEqual(
-				"default-src 'self'; report-to e1",
-			);
+			expect(res.headers.get(cspHeaderName)).toEqual("default-src 'self'; report-to e1");
 		});
 	});
 });

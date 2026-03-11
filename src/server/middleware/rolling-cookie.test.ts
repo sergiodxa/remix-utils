@@ -21,9 +21,7 @@ describe(createRollingCookieMiddleware, () => {
 
 		let response = await runMiddleware(middleware, { request });
 
-		expect(response.headers.get("set-cookie")).toBe(
-			await cookie.serialize("value from request"),
-		);
+		expect(response.headers.get("set-cookie")).toBe(await cookie.serialize("value from request"));
 	});
 
 	test("if the response already sets the cookie, the middleware does nothing", async () => {
@@ -44,8 +42,6 @@ describe(createRollingCookieMiddleware, () => {
 			},
 		});
 
-		expect(response.headers.get("set-cookie")).toBe(
-			await cookie.serialize("value from response"),
-		);
+		expect(response.headers.get("set-cookie")).toBe(await cookie.serialize("value from response"));
 	});
 });

@@ -177,14 +177,7 @@ export namespace createCsrfMiddleware {
 	 * HTTP request methods that can be configured as safe (exempt from CSRF
 	 * validation). Must be uppercase.
 	 */
-	export type RequestMethod =
-		| "GET"
-		| "HEAD"
-		| "OPTIONS"
-		| "POST"
-		| "PUT"
-		| "DELETE"
-		| "PATCH";
+	export type RequestMethod = "GET" | "HEAD" | "OPTIONS" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 	/**
 	 * Static origin matching pattern. Can be a single string, a RegExp, or an

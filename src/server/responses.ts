@@ -21,10 +21,7 @@ export function notModified(init?: Omit<ResponseInit, "status">) {
  *   return javascript("console.log('Hello World')");
  * }
  */
-export function javascript(
-	content: string,
-	init: number | ResponseInit = {},
-): Response {
+export function javascript(content: string, init: number | ResponseInit = {}): Response {
 	let responseInit = typeof init === "number" ? { status: init } : init;
 
 	let headers = new Headers(responseInit.headers);
@@ -49,10 +46,7 @@ export function javascript(
  *   return css("body { color: red; }");
  * }
  */
-export function stylesheet(
-	content: string,
-	init: number | ResponseInit = {},
-): Response {
+export function stylesheet(content: string, init: number | ResponseInit = {}): Response {
 	let responseInit = typeof init === "number" ? { status: init } : init;
 
 	let headers = new Headers(responseInit.headers);
@@ -105,10 +99,7 @@ export function pdf(
  *   return html("<h1>Hello World</h1>");
  * }
  */
-export function html(
-	content: string,
-	init: number | ResponseInit = {},
-): Response {
+export function html(content: string, init: number | ResponseInit = {}): Response {
 	let responseInit = typeof init === "number" ? { status: init } : init;
 
 	let headers = new Headers(responseInit.headers);
@@ -133,10 +124,7 @@ export function html(
  *   return xml("<?xml version='1.0'?><catalog></catalog>");
  * }
  */
-export function xml(
-	content: string,
-	init: number | ResponseInit = {},
-): Response {
+export function xml(content: string, init: number | ResponseInit = {}): Response {
 	let responseInit = typeof init === "number" ? { status: init } : init;
 
 	let headers = new Headers(responseInit.headers);
@@ -164,10 +152,7 @@ export function xml(
  *   `);
  * }
  */
-export function txt(
-	content: string,
-	init: number | ResponseInit = {},
-): Response {
+export function txt(content: string, init: number | ResponseInit = {}): Response {
 	let responseInit = typeof init === "number" ? { status: init } : init;
 
 	let headers = new Headers(responseInit.headers);

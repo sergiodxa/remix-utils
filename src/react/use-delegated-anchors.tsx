@@ -10,9 +10,7 @@ export function isLinkEvent(event: MouseEvent) {
 	return;
 }
 
-export function useDelegatedAnchors(
-	nodeRef: React.RefObject<HTMLElement | null>,
-) {
+export function useDelegatedAnchors(nodeRef: React.RefObject<HTMLElement | null>) {
 	let navigate = useNavigate();
 	let hasParentPrefetch = React.useContext(context);
 
@@ -48,11 +46,7 @@ export function useDelegatedAnchors(
 	}, [hasParentPrefetch, navigate, nodeRef]);
 }
 
-export function PrefetchPageAnchors({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
+export function PrefetchPageAnchors({ children }: { children: React.ReactNode }) {
 	let nodeRef = React.useRef<HTMLDivElement>(null);
 	let [page, setPage] = React.useState<null | string>(null);
 	let hasParentPrefetch = React.useContext(context);

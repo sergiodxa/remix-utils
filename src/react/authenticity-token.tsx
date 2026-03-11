@@ -22,10 +22,7 @@ let context = React.createContext<string | null>(null);
  *   </AuthenticityTokenProvider>
  * )
  */
-export function AuthenticityTokenProvider({
-	children,
-	token,
-}: AuthenticityTokenProviderProps) {
+export function AuthenticityTokenProvider({ children, token }: AuthenticityTokenProviderProps) {
 	return <context.Provider value={token}>{children}</context.Provider>;
 }
 
@@ -63,9 +60,7 @@ export function useAuthenticityToken() {
  * // Customizing the name
  * <AuthenticityTokenInput name="authenticity_token" />
  */
-export function AuthenticityTokenInput({
-	name = "csrf",
-}: AuthenticityTokenInputProps) {
+export function AuthenticityTokenInput({ name = "csrf" }: AuthenticityTokenInputProps) {
 	let token = useAuthenticityToken();
 	return <input type="hidden" value={token} name={name} />;
 }

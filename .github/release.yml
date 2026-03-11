@@ -1,20 +1,20 @@
 changelog:
   categories:
-  - title: New Features
-    labels:
-    - enhancement
-  - title: Documentation Changes
-    labels:
-    - documentation
-  - title: Example
-    labels:
-    - example
-  - title: Bug Fixes
-    labels:
-    - bug
-  - title: Deprecations
-    labels:
-    - deprecated
-  - title: Other Changes
-    labels:
-       - "*"
+    - title: New Features
+      labels:
+        - enhancement
+    - title: Documentation Changes
+      labels:
+        - documentation
+    - title: Example
+      labels:
+        - example
+    - title: Bug Fixes
+      labels:
+        - bug
+    - title: Deprecations
+      labels:
+        - deprecated
+    - title: Other Changes
+      labels:
+        - "*"

@@ -188,9 +188,7 @@ export function createSessionMiddleware<Data = SessionData, FlashData = Data>(
 	return [
 		async function middleware({ request, context }, next) {
 			let storage =
-				typeof sessionStorage === "function"
-					? sessionStorage(request, context)
-					: sessionStorage;
+				typeof sessionStorage === "function" ? sessionStorage(request, context) : sessionStorage;
 
 			let session = await storage.getSession(request.headers.get("Cookie"));
 
@@ -201,10 +199,7 @@ export function createSessionMiddleware<Data = SessionData, FlashData = Data>(
 			let response = await next();
 
 			if (shouldCommit(initialData, structuredClone(session.data))) {
-				response.headers.append(
-					"Set-Cookie",
-					await storage.commitSession(session),
-				);
+				response.headers.append("Set-Cookie", await storage.commitSession(session));
 			}
 
 			return response;
@@ -236,10 +231,7 @@ export namespace createSessionMiddleware {
 	 * @param next The next session data
 	 * @returns A boolean indicating if the session should be committed
 	 */
-	export type ShouldCommitFunction<Data> = (
-		prev: Partial<Data>,
-		next: Partial<Data>,
-	) => boolean;
+	export type ShouldCommitFunction<Data> = (prev: Partial<Data>, next: Partial<Data>) => boolean;
 
 	export type ReturnType<Data, FlashData> = [
 		MiddlewareFunction<Response>,

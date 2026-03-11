@@ -62,10 +62,7 @@ export function createTypedCookie<Schema extends StandardSchemaV1>({
 export function isTypedCookie<Schema extends StandardSchemaV1>(
 	value: unknown,
 ): value is TypedCookie<Schema> {
-	return (
-		isCookie(value) &&
-		(value as unknown as { isTyped: boolean }).isTyped === true
-	);
+	return isCookie(value) && (value as unknown as { isTyped: boolean }).isTyped === true;
 }
 
 function _flash<Key extends string>(name: Key): `__flash_${Key}__` {

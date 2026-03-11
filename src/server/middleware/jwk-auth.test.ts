@@ -10,9 +10,8 @@ import { catchResponse, runMiddleware } from "./test-helper.js";
 const storage = new MemoryFileStorage();
 const signingKeys = await JWK.signingKeys(storage);
 const server = setupServer(
-	http.get(
-		new URL("https://remix.utils/.well-known/jwks.json").toString(),
-		() => HttpResponse.json(JWK.toJSON(signingKeys)),
+	http.get(new URL("https://remix.utils/.well-known/jwks.json").toString(), () =>
+		HttpResponse.json(JWK.toJSON(signingKeys)),
 	),
 );
 
@@ -99,9 +98,7 @@ describe(createJWKAuthMiddleware, () => {
 
 		expect(response.status).toBe(401);
 		expect(response.statusText).toBe("Unauthorized");
-		expect(response.headers.get("WWW-Authenticate")).toBe(
-			'Bearer realm="Secure Area"',
-		);
+		expect(response.headers.get("WWW-Authenticate")).toBe('Bearer realm="Secure Area"');
 		expect(response.text()).resolves.toBe(JSON.stringify("Unauthorized"));
 	});
 
@@ -120,9 +117,7 @@ describe(createJWKAuthMiddleware, () => {
 
 		expect(response.status).toBe(401);
 		expect(response.statusText).toBe("Unauthorized");
-		expect(response.headers.get("WWW-Authenticate")).toBe(
-			'Bearer realm="Secure Area"',
-		);
+		expect(response.headers.get("WWW-Authenticate")).toBe('Bearer realm="Secure Area"');
 		expect(response.text()).resolves.toBe(JSON.stringify("Unauthorized"));
 	});
 
@@ -137,9 +132,7 @@ describe(createJWKAuthMiddleware, () => {
 
 		let request = new Request("https://remix.utils", {
 			headers: {
-				Authorization: `Basic ${Buffer.from("username:password").toString(
-					"base64",
-				)}`,
+				Authorization: `Basic ${Buffer.from("username:password").toString("base64")}`,
 			},
 		});
 
@@ -147,9 +140,7 @@ describe(createJWKAuthMiddleware, () => {
 
 		expect(response.status).toBe(401);
 		expect(response.statusText).toBe("Unauthorized");
-		expect(response.headers.get("WWW-Authenticate")).toBe(
-			'Bearer realm="Secure Area"',
-		);
+		expect(response.headers.get("WWW-Authenticate")).toBe('Bearer realm="Secure Area"');
 		expect(response.text()).resolves.toBe(JSON.stringify("Unauthorized"));
 	});
 
@@ -170,9 +161,7 @@ describe(createJWKAuthMiddleware, () => {
 
 		expect(response.status).toBe(401);
 		expect(response.statusText).toBe("Unauthorized");
-		expect(response.headers.get("WWW-Authenticate")).toBe(
-			'Bearer realm="Secure Area"',
-		);
+		expect(response.headers.get("WWW-Authenticate")).toBe('Bearer realm="Secure Area"');
 		expect(response.text()).resolves.toBe(JSON.stringify("Unauthorized"));
 	});
 
@@ -193,9 +182,7 @@ describe(createJWKAuthMiddleware, () => {
 
 		expect(response.status).toBe(401);
 		expect(response.statusText).toBe("Unauthorized");
-		expect(response.headers.get("WWW-Authenticate")).toBe(
-			'Bearer realm="Secure Area"',
-		);
+		expect(response.headers.get("WWW-Authenticate")).toBe('Bearer realm="Secure Area"');
 		expect(response.text()).resolves.toBe(JSON.stringify("Unauthorized"));
 	});
 });

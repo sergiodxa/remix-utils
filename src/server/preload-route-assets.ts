@@ -127,9 +127,6 @@ export function preloadModuleAssets(context: EntryContext, headers: Headers) {
 	}
 
 	for (let url of urls) {
-		headers.append(
-			"Link",
-			`<${url}>; rel=preload; as=script; crossorigin=anonymous`,
-		);
+		headers.append("Link", `<${url}>; rel=preload; as=script; crossorigin=anonymous`);
 	}
 }

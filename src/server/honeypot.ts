@@ -137,10 +137,7 @@ export class Honeypot {
 		}
 	}
 
-	protected shouldCheckHoneypot(
-		formData: FormData,
-		nameFieldName: string,
-	): boolean {
+	protected shouldCheckHoneypot(formData: FormData, nameFieldName: string): boolean {
 		return (
 			formData.has(nameFieldName) ||
 			Boolean(this.validFromFieldName && formData.has(this.validFromFieldName))

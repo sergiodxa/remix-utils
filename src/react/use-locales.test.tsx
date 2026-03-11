@@ -47,38 +47,26 @@ describe.skip(useLocales.name, () => {
 
 	test("should return undefined if locales is an array without only strings", () => {
 		const Stub = createStub();
-		render(
-			<Stub
-				hydrationData={{ loaderData: { root: { locales: ["en", 123] } } }}
-			/>,
-		);
+		render(<Stub hydrationData={{ loaderData: { root: { locales: ["en", 123] } } }} />);
 		expect(screen.getByRole("paragraph").innerText).toBe("");
 	});
 
 	describe("should return the locales value", () => {
 		test("Undefined", () => {
 			const Stub = createStub();
-			render(
-				<Stub
-					hydrationData={{ loaderData: { root: { locales: undefined } } }}
-				/>,
-			);
+			render(<Stub hydrationData={{ loaderData: { root: { locales: undefined } } }} />);
 			expect(screen.getByRole("paragraph").innerText).toBe("");
 		});
 
 		test("String", () => {
 			const Stub = createStub();
-			render(
-				<Stub hydrationData={{ loaderData: { root: { locales: "en" } } }} />,
-			);
+			render(<Stub hydrationData={{ loaderData: { root: { locales: "en" } } }} />);
 			expect(screen.getByRole("paragraph").innerHTML).toBe("en");
 		});
 
 		test("Array", () => {
 			const Stub = createStub();
-			render(
-				<Stub hydrationData={{ loaderData: { root: { locales: ["en"] } } }} />,
-			);
+			render(<Stub hydrationData={{ loaderData: { root: { locales: ["en"] } } }} />);
 			expect(screen.getByRole("paragraph").innerHTML).toBe("en");
 		});
 	});
