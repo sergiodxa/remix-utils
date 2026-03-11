@@ -1,13 +1,13 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { JWK, JWT } from "@edgefirst-dev/jwt";
-import { MemoryFileStorage } from "@remix-run/file-storage/memory";
+import { createMemoryFileStorage } from "@remix-run/file-storage/memory";
 import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/native";
 import { createCookie, RouterContextProvider } from "react-router";
 import { createJWKAuthMiddleware } from "./jwk-auth.js";
 import { catchResponse, runMiddleware } from "./test-helper.js";
 
-const storage = new MemoryFileStorage();
+const storage = createMemoryFileStorage();
 const signingKeys = await JWK.signingKeys(storage);
 const server = setupServer(
 	http.get(new URL("https://remix.utils/.well-known/jwks.json").toString(), () =>
