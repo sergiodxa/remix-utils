@@ -219,6 +219,8 @@
 	"sideEffects": false,
 	"scripts": {
 		"build": "tsc",
+		"build:registry": "shadcn build",
+		"build:docs": "typedoc && shadcn build --output pages/r",
 		"typecheck": "tsc --noEmit",
 		"quality": "biome check .",
 		"quality:fix": "biome check . --write --unsafe",
@@ -323,6 +325,7 @@
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
 		"react-router": "^7.9.0",
+		"shadcn": "^4.0.3",
 		"ts-node": "^10.9.1",
 		"typedoc": "^0.28.12",
 		"typedoc-plugin-mdn-links": "^5.0.9",
