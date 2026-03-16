@@ -285,7 +285,7 @@
 		"@types/react": "^19.2.14",
 		"intl-parse-accept-language": "^1.0.0",
 		"is-ip": "5.0.1",
-		"msw": "^2.12.10",
+		"msw": "^2.12.11",
 		"oxfmt": "^0.37.0",
 		"oxlint": "^1.52.0",
 		"react": "^19.2.4",
