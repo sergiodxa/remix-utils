@@ -143,7 +143,9 @@ describe("CSRF", () => {
 
 		expect(
 			new CSRF({ cookie, secret: "different-secret" }).validate(formData, headers),
-		).rejects.toThrow(new CSRFError("tampered_token_in_cookie", "Tampered CSRF token in cookie."));
+		).rejects.toThrow(
+			new CSRFError("tampered_token_in_cookie", "Tampered CSRF token in cookie."),
+		);
 	});
 
 	test("commits the token to a cookie", async () => {
