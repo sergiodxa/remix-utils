@@ -131,7 +131,7 @@ describe("CSRF", () => {
 		);
 	});
 
-	test('throws "Tampered CSRF token in cookie" if the CSRF token is validated with a different secret', async () => {
+	test("rejects CSRF tokens signed with a different secret", async () => {
 		let token = new CSRF({ cookie, secret: "my-secret" }).generate();
 
 		let formData = new FormData();
