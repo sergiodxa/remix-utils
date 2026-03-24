@@ -131,6 +131,21 @@ describe("CSRF", () => {
 		);
 	});
 
+	test('throws "Tampered CSRF token in cookie" if the CSRF token is validated with a different secret', async () => {
+		let token = new CSRF({ cookie, secret: "my-secret" }).generate();
+
+		let formData = new FormData();
+		formData.set("csrf", token);
+
+		let headers = new Headers({
+			cookie: await cookie.serialize(token),
+		});
+
+		expect(
+			new CSRF({ cookie, secret: "different-secret" }).validate(formData, headers),
+		).rejects.toThrow(new CSRFError("tampered_token_in_cookie", "Tampered CSRF token in cookie."));
+	});
+
 	test("commits the token to a cookie", async () => {
 		let [token, cookieHeader] = await csrf.commitToken();
 		let parsedCookie = await cookie.parse(cookieHeader);

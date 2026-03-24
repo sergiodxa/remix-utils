@@ -173,7 +173,8 @@
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Server/CSRF
  */
-import { sha256 } from "@oslojs/crypto/sha2";
+import { hmac } from "@oslojs/crypto/hmac";
+import { SHA256 } from "@oslojs/crypto/sha2";
 import { encodeBase64url } from "@oslojs/encoding";
 import type { Cookie } from "react-router";
 import { randomString } from "../common/crypto.js";
@@ -343,7 +344,8 @@ export class CSRF {
 
 	private sign(token: string) {
 		if (!this.secret) return token;
-		return encodeBase64url(sha256(new TextEncoder().encode(token)));
+		let encoder = new TextEncoder();
+		return encodeBase64url(hmac(SHA256, encoder.encode(this.secret), encoder.encode(token)));
 	}
 
 	private verifySignature(token: string) {
