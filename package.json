@@ -286,7 +286,7 @@
 		"intl-parse-accept-language": "^1.0.0",
 		"is-ip": "5.0.1",
 		"msw": "^2.12.10",
-		"oxfmt": "^0.37.0",
+		"oxfmt": "^0.45.0",
 		"oxlint": "^1.52.0",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
