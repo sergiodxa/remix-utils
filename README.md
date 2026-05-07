@@ -2246,8 +2246,8 @@ And you can use the `getTimingCollector` function in your loaders and actions to
 ```ts
 import { getTimingCollector } from "~/middleware/server-timing.server";
 
-export async function loader({ request }: Route.LoaderArgs) {
-	let collector = getTimingCollector();
+export async function loader({ context }: Route.LoaderArgs) {
+	let collector = getTimingCollector(context);
 	return await collector.measure("name", "optional description", async () => {
 		return await getData();
 	});
