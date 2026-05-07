@@ -14,9 +14,9 @@ Add this to your `components.json`:
 
 ```json
 {
-  "registries": {
-    "@remix-utils": "https://sergiodxa.github.io/remix-utils/r/{name}.json"
-  }
+	"registries": {
+		"@remix-utils": "https://sergiodxa.github.io/remix-utils/r/{name}.json"
+	}
 }
 ```
 
@@ -66,12 +66,12 @@ This function is an object version of `Promise.all` which lets you pass an objec
 import { promiseHash } from "remix-utils/promise";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  return json(
-    await promiseHash({
-      user: getUser(request),
-      posts: getPosts(request),
-    }),
-  );
+	return json(
+		await promiseHash({
+			user: getUser(request),
+			posts: getPosts(request),
+		}),
+	);
 }
 ```
 
@@ -81,18 +81,18 @@ You can use nested `promiseHash` to get a nested object with resolved values.
 import { promiseHash } from "remix-utils/promise";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  return json(
-    await promiseHash({
-      user: getUser(request),
-      posts: promiseHash({
-        list: getPosts(request),
-        comments: promiseHash({
-          list: getComments(request),
-          likes: getLikes(request),
-        }),
-      }),
-    }),
-  );
+	return json(
+		await promiseHash({
+			user: getUser(request),
+			posts: promiseHash({
+				list: getPosts(request),
+				comments: promiseHash({
+					list: getComments(request),
+					likes: getLikes(request),
+				}),
+			}),
+		}),
+	);
 }
 ```
 
@@ -107,11 +107,11 @@ The `timeout` function lets you attach a timeout to any promise, if the promise 
 import { timeout } from "remix-utils/promise";
 
 try {
-  let result = await timeout(fetch("https://example.com"), { ms: 100 });
+	let result = await timeout(fetch("https://example.com"), { ms: 100 });
 } catch (error) {
-  if (error instanceof TimeoutError) {
-    // Handle timeout
-  }
+	if (error instanceof TimeoutError) {
+		// Handle timeout
+	}
 }
 ```
 
@@ -123,18 +123,15 @@ If the promise is cancellable with an AbortSignal you can pass the AbortControll
 import { timeout } from "remix-utils/promise";
 
 try {
-  let controller = new AbortController();
-  let result = await timeout(
-    fetch("https://example.com", { signal: controller.signal }),
-    {
-      ms: 100,
-      controller,
-    },
-  );
+	let controller = new AbortController();
+	let result = await timeout(fetch("https://example.com", { signal: controller.signal }), {
+		ms: 100,
+		controller,
+	});
 } catch (error) {
-  if (error instanceof TimeoutError) {
-    // Handle timeout
-  }
+	if (error instanceof TimeoutError) {
+		// Handle timeout
+	}
 }
 ```
 
@@ -156,7 +153,7 @@ To use it, open your `entry.client` file and add this:
 import { cacheAssets } from "remix-utils/cache-assets";
 
 cacheAssets().catch((error) => {
-  // do something with the error, or not
+	// do something with the error, or not
 });
 ```
 
@@ -173,7 +170,7 @@ The `cacheName` can be left as is unless you're adding a Service Worker to your 
 import { cacheAssets } from "remix-utils/cache-assets";
 
 cacheAssests({ cacheName: "assets", buildPath: "/build/" }).catch((error) => {
-  // do something with the error, or not
+	// do something with the error, or not
 });
 ```
 
@@ -193,11 +190,11 @@ You can provide a fallback component to be used on SSR, and while optional, it's
 import { ClientOnly } from "remix-utils/client-only";
 
 export default function Component() {
-  return (
-    <ClientOnly fallback={<SimplerStaticVersion />}>
-      {() => <ComplexComponentNeedingBrowserEnvironment />}
-    </ClientOnly>
-  );
+	return (
+		<ClientOnly fallback={<SimplerStaticVersion />}>
+			{() => <ComplexComponentNeedingBrowserEnvironment />}
+		</ClientOnly>
+	);
 }
 ```
 
@@ -228,11 +225,11 @@ You can provide a fallback component to be used on CSR, and while optional, it's
 import { ServerOnly } from "remix-utils/server-only";
 
 export default function Component() {
-  return (
-    <ServerOnly fallback={<ComplexComponentNeedingBrowserEnvironment />}>
-      {() => <SimplerStaticVersion />}
-    </ServerOnly>
-  );
+	return (
+		<ServerOnly fallback={<ComplexComponentNeedingBrowserEnvironment />}>
+			{() => <SimplerStaticVersion />}
+		</ServerOnly>
+	);
 }
 ```
 
@@ -267,9 +264,9 @@ If you want to use it on every loader/action, you can do it like this:
 import { cors } from "remix-utils/cors";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  let data = await getData(request);
-  let response = json<LoaderData>(data);
-  return await cors(request, response);
+	let data = await getData(request);
+	let response = json<LoaderData>(data);
+	return await cors(request, response);
 }
 ```
 
@@ -279,8 +276,8 @@ You could also do the `json` and `cors` call in one line.
 import { cors } from "remix-utils/cors";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  let data = await getData(request);
-  return await cors(request, json<LoaderData>(data));
+	let data = await getData(request);
+	return await cors(request, json<LoaderData>(data));
 }
 ```
 
@@ -290,10 +287,10 @@ And because `cors` mutates the response, you can also call it and later return.
 import { cors } from "remix-utils/cors";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  let data = await getData(request);
-  let response = json<LoaderData>(data);
-  await cors(request, response); // this mutates the Response object
-  return response; // so you can return it here
+	let data = await getData(request);
+	let response = json<LoaderData>(data);
+	await cors(request, response); // this mutates the Response object
+	return response; // so you can return it here
 }
 ```
 
@@ -305,58 +302,53 @@ import { cors } from "remix-utils/cors";
 const ABORT_DELAY = 5000;
 
 export default function handleRequest(
-  request: Request,
-  responseStatusCode: number,
-  responseHeaders: Headers,
-  remixContext: EntryContext,
+	request: Request,
+	responseStatusCode: number,
+	responseHeaders: Headers,
+	remixContext: EntryContext,
 ) {
-  let callbackName = isbot(request.headers.get("user-agent"))
-    ? "onAllReady"
-    : "onShellReady";
+	let callbackName = isbot(request.headers.get("user-agent")) ? "onAllReady" : "onShellReady";
 
-  return new Promise((resolve, reject) => {
-    let didError = false;
+	return new Promise((resolve, reject) => {
+		let didError = false;
 
-    let { pipe, abort } = renderToPipeableStream(
-      <RemixServer context={remixContext} url={request.url} />,
-      {
-        [callbackName]: () => {
-          let body = new PassThrough();
+		let { pipe, abort } = renderToPipeableStream(
+			<RemixServer context={remixContext} url={request.url} />,
+			{
+				[callbackName]: () => {
+					let body = new PassThrough();
 
-          responseHeaders.set("Content-Type", "text/html");
+					responseHeaders.set("Content-Type", "text/html");
 
-          cors(
-            request,
-            new Response(body, {
-              headers: responseHeaders,
-              status: didError ? 500 : responseStatusCode,
-            }),
-          ).then((response) => {
-            resolve(response);
-          });
+					cors(
+						request,
+						new Response(body, {
+							headers: responseHeaders,
+							status: didError ? 500 : responseStatusCode,
+						}),
+					).then((response) => {
+						resolve(response);
+					});
 
-          pipe(body);
-        },
-        onShellError: (err: unknown) => {
-          reject(err);
-        },
-        onError: (error: unknown) => {
-          didError = true;
+					pipe(body);
+				},
+				onShellError: (err: unknown) => {
+					reject(err);
+				},
+				onError: (error: unknown) => {
+					didError = true;
 
-          console.error(error);
-        },
-      },
-    );
+					console.error(error);
+				},
+			},
+		);
 
-    setTimeout(abort, ABORT_DELAY);
-  });
+		setTimeout(abort, ABORT_DELAY);
+	});
 }
 
-export let handleDataRequest: HandleDataRequestFunction = async (
-  response,
-  { request },
-) => {
-  return await cors(request, response);
+export let handleDataRequest: HandleDataRequestFunction = async (response, { request }) => {
+	return await cors(request, response);
 };
 ```
 
@@ -402,19 +394,19 @@ import { CSRF } from "remix-utils/csrf/server";
 import { createCookie } from "react-router"; // or cloudflare/deno
 
 export const cookie = createCookie("csrf", {
-  path: "/",
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "lax",
-  secrets: ["s3cr3t"],
+	path: "/",
+	httpOnly: true,
+	secure: process.env.NODE_ENV === "production",
+	sameSite: "lax",
+	secrets: ["s3cr3t"],
 });
 
 export const csrf = new CSRF({
-  cookie,
-  // what key in FormData objects will be used for the token, defaults to `csrf`
-  formDataKey: "csrf",
-  // an optional secret used to sign the token, recommended for extra safety
-  secret: "s3cr3t",
+	cookie,
+	// what key in FormData objects will be used for the token, defaults to `csrf`
+	formDataKey: "csrf",
+	// an optional secret used to sign the token, recommended for extra safety
+	secret: "s3cr3t",
 });
 ```
 
@@ -424,7 +416,7 @@ Then you can use `csrf` to generate a new token.
 import { csrf } from "~/utils/csrf.server";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  let token = csrf.generate();
+	let token = csrf.generate();
 }
 ```
 
@@ -440,8 +432,8 @@ You will need to save this token in a cookie and also return it from the loader.
 import { csrf } from "~/utils/csrf.server";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  let [token, cookieHeader] = await csrf.commitToken(request);
-  return json({ token }, { headers: { "set-cookie": cookieHeader } });
+	let [token, cookieHeader] = await csrf.commitToken(request);
+	return json({ token }, { headers: { "set-cookie": cookieHeader } });
 }
 ```
 
@@ -455,9 +447,9 @@ import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
 
 let { csrf } = useLoaderData<LoaderData>();
 return (
-  <AuthenticityTokenProvider token={csrf}>
-    <Outlet />
-  </AuthenticityTokenProvider>
+	<AuthenticityTokenProvider token={csrf}>
+		<Outlet />
+	</AuthenticityTokenProvider>
 );
 ```
 
@@ -470,12 +462,12 @@ import { Form } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 export default function Component() {
-  return (
-    <Form method="post">
-      <AuthenticityTokenInput />
-      <input type="text" name="something" />
-    </Form>
-  );
+	return (
+		<Form method="post">
+			<AuthenticityTokenInput />
+			<input type="text" name="something" />
+		</Form>
+	);
 }
 ```
 
@@ -496,14 +488,11 @@ import { useFetcher } from "react-router";
 import { useAuthenticityToken } from "remix-utils/csrf/react";
 
 export function useMarkAsRead() {
-  let fetcher = useFetcher();
-  let csrf = useAuthenticityToken();
-  return function submit(data) {
-    fetcher.submit(
-      { csrf, ...data },
-      { action: "/api/mark-as-read", method: "post" },
-    );
-  };
+	let fetcher = useFetcher();
+	let csrf = useAuthenticityToken();
+	return function submit(data) {
+		fetcher.submit({ csrf, ...data }, { action: "/api/mark-as-read", method: "post" });
+	};
 }
 ```
 
@@ -515,17 +504,17 @@ import { redirectBack } from "remix-utils/redirect-back";
 import { csrf } from "~/utils/csrf.server";
 
 export async function action({ request }: Route.ActionArgs) {
-  try {
-    await csrf.validate(request);
-  } catch (error) {
-    if (error instanceof CSRFError) {
-      // handle CSRF errors
-    }
-    // handle other possible errors
-  }
+	try {
+		await csrf.validate(request);
+	} catch (error) {
+		if (error instanceof CSRFError) {
+			// handle CSRF errors
+		}
+		// handle other possible errors
+	}
 
-  // here you know the request is valid
-  return redirectBack(request, { fallback: "/fallback" });
+	// here you know the request is valid
+	return redirectBack(request, { fallback: "/fallback" });
 }
 ```
 
@@ -534,9 +523,9 @@ If you need to parse the body as FormData yourself (e.g. to support file uploads
 ```ts
 let formData = await parseMultiPartFormData(request);
 try {
-  await csrf.validate(formData, request.headers);
+	await csrf.validate(formData, request.headers);
 } catch (error) {
-  // handle errors
+	// handle errors
 }
 ```
 
@@ -581,16 +570,16 @@ For example, imagine a table of data with separate form components for paginatio
 
 ```tsx
 <Form>
-  <ExistingSearchParams exclude={["page"]} />
-  <button type="submit" name="page" value="1">
-    1
-  </button>
-  <button type="submit" name="page" value="2">
-    2
-  </button>
-  <button type="submit" name="page" value="3">
-    3
-  </button>
+	<ExistingSearchParams exclude={["page"]} />
+	<button type="submit" name="page" value="1">
+		1
+	</button>
+	<button type="submit" name="page" value="2">
+		2
+	</button>
+	<button type="submit" name="page" value="3">
+		3
+	</button>
 </Form>
 ```
 
@@ -598,9 +587,9 @@ By excluding the `page` param, from the search form, the user will return to the
 
 ```tsx
 <Form>
-  <ExistingSearchParams exclude={["q", "page"]} />
-  <input type="search" name="q" />
-  <button type="submit">Search</button>
+	<ExistingSearchParams exclude={["q", "page"]} />
+	<input type="search" name="q" />
+	<button type="submit">Search</button>
 </Form>
 ```
 
@@ -656,17 +645,14 @@ export let handle: ExternalScriptsHandle = {
 You can also import `ExternalScriptsFunction` and `ScriptDescriptor` interfaces yourself to build a custom handle type.
 
 ```ts
-import {
-  ExternalScriptsFunction,
-  ScriptDescriptor,
-} from "remix-utils/external-scripts";
+import { ExternalScriptsFunction, ScriptDescriptor } from "remix-utils/external-scripts";
 
 interface AppHandle<LoaderData = unknown> {
-  scripts?: ExternalScriptsFunction<LoaderData> | ScriptDescriptor[];
+	scripts?: ExternalScriptsFunction<LoaderData> | ScriptDescriptor[];
 }
 
 export let handle: AppHandle<LoaderData> = {
-  scripts, // define scripts as a function or array here
+	scripts, // define scripts as a function or array here
 };
 ```
 
@@ -675,14 +661,12 @@ Or you can extend the `ExternalScriptsHandle` interface.
 ```ts
 import { ExternalScriptsHandle } from "remix-utils/external-scripts";
 
-interface AppHandle<
-  LoaderData = unknown,
-> extends ExternalScriptsHandle<LoaderData> {
-  // more handle properties here
+interface AppHandle<LoaderData = unknown> extends ExternalScriptsHandle<LoaderData> {
+	// more handle properties here
 }
 
 export let handle: AppHandle<LoaderData> = {
-  scripts, // define scripts as a function or array here
+	scripts, // define scripts as a function or array here
 };
 ```
 
@@ -699,24 +683,24 @@ import { ExternalScripts } from "remix-utils/external-scripts";
 type Props = { children: React.ReactNode; title?: string };
 
 export function Document({ children, title }: Props) {
-  return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        {title ? <title>{title}</title> : null}
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        {children}
-        <ScrollRestoration />
-        <ExternalScripts />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
-  );
+	return (
+		<html lang="en">
+			<head>
+				<meta charSet="utf-8" />
+				<meta name="viewport" content="width=device-width,initial-scale=1" />
+				{title ? <title>{title}</title> : null}
+				<Meta />
+				<Links />
+			</head>
+			<body>
+				{children}
+				<ScrollRestoration />
+				<ExternalScripts />
+				<Scripts />
+				<LiveReload />
+			</body>
+		</html>
+	);
 }
 ```
 
@@ -728,21 +712,21 @@ You could use this util together with `useShouldHydrate` to disable Remix script
 let shouldHydrate = useShouldHydrate();
 
 return (
-  <html lang="en">
-    <head>
-      <meta charSet="utf-8" />
-      <meta name="viewport" content="width=device-width,initial-scale=1" />
-      {title ? <title>{title}</title> : null}
-      <Meta />
-      <Links />
-    </head>
-    <body>
-      {children}
-      <ScrollRestoration />
-      {shouldHydrate ? <Scripts /> : <ExternalScripts />}
-      <LiveReload />
-    </body>
-  </html>
+	<html lang="en">
+		<head>
+			<meta charSet="utf-8" />
+			<meta name="viewport" content="width=device-width,initial-scale=1" />
+			{title ? <title>{title}</title> : null}
+			<Meta />
+			<Links />
+		</head>
+		<body>
+			{children}
+			<ScrollRestoration />
+			{shouldHydrate ? <Scripts /> : <ExternalScripts />}
+			<LiveReload />
+		</body>
+	</html>
 );
 ```
 
@@ -760,17 +744,17 @@ This hook allows you to read the value of `transition.state`, every `fetcher.sta
 import { useGlobalNavigationState } from "remix-utils/use-global-navigation-state";
 
 export function GlobalPendingUI() {
-  let states = useGlobalNavigationState();
+	let states = useGlobalNavigationState();
 
-  if (state.includes("loading")) {
-    // The app is loading.
-  }
+	if (state.includes("loading")) {
+		// The app is loading.
+	}
 
-  if (state.includes("submitting")) {
-    // The app is submitting.
-  }
+	if (state.includes("submitting")) {
+		// The app is submitting.
+	}
 
-  // The app is idle
+	// The app is idle
 }
 ```
 
@@ -936,28 +920,28 @@ import { Links, LiveReload, Meta, Scripts } from "react-router";
 import { useShouldHydrate } from "remix-utils/use-should-hydrate";
 
 interface DocumentProps {
-  children: ReactNode;
-  title?: string;
+	children: ReactNode;
+	title?: string;
 }
 
 export function Document({ children, title }: DocumentProps) {
-  let shouldHydrate = useShouldHydrate();
-  return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <link rel="icon" href="/favicon.png" type="image/png" />
-        {title ? <title>{title}</title> : null}
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        {children}
-        {shouldHydrate && <Scripts />}
-        <LiveReload />
-      </body>
-    </html>
-  );
+	let shouldHydrate = useShouldHydrate();
+	return (
+		<html lang="en">
+			<head>
+				<meta charSet="utf-8" />
+				<link rel="icon" href="/favicon.png" type="image/png" />
+				{title ? <title>{title}</title> : null}
+				<Meta />
+				<Links />
+			</head>
+			<body>
+				{children}
+				{shouldHydrate && <Scripts />}
+				<LiveReload />
+			</body>
+		</html>
+	);
 }
 ```
 
@@ -973,9 +957,9 @@ In some cases, a route may need JS based on the data the loader returned. For ex
 
 ```ts
 export let handle = {
-  hydrate(data: LoaderData) {
-    return data.user.isAuthenticated;
-  },
+	hydrate(data: LoaderData) {
+		return data.user.isAuthenticated;
+	},
 };
 ```
 
@@ -995,10 +979,10 @@ This function receives a Request or Headers objects and will try to get the IP a
 import { getClientIPAddress } from "remix-utils/get-client-ip-address";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  // using the request
-  let ipAddress = getClientIPAddress(request);
-  // or using the headers
-  let ipAddress = getClientIPAddress(request.headers);
+	// using the request
+	let ipAddress = getClientIPAddress(request);
+	// or using the headers
+	let ipAddress = getClientIPAddress(request.headers);
 }
 ```
 
@@ -1040,10 +1024,10 @@ This function let you get the locales of the client (the user) who originated th
 import { getClientLocales } from "remix-utils/locales/server";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  // using the request
-  let locales = getClientLocales(request);
-  // or using the headers
-  let locales = getClientLocales(request.headers);
+	// using the request
+	let locales = getClientLocales(request);
+	// or using the headers
+	let locales = getClientLocales(request.headers);
 }
 ```
 
@@ -1054,14 +1038,14 @@ The returned locales can be directly used on the Intl API when formatting dates,
 ```ts
 import { getClientLocales } from "remix-utils/locales/server";
 export async function loader({ request }: Route.LoaderArgs) {
-  let locales = getClientLocales(request);
-  let nowDate = new Date();
-  let formatter = new Intl.DateTimeFormat(locales, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-  return json({ now: formatter.format(nowDate) });
+	let locales = getClientLocales(request);
+	let nowDate = new Date();
+	let formatter = new Intl.DateTimeFormat(locales, {
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+	});
+	return json({ now: formatter.format(nowDate) });
 }
 ```
 
@@ -1080,14 +1064,14 @@ This will let you implement a short cache only for prefetch requests so you [avo
 import { isPrefetch } from "remix-utils/is-prefetch";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  let data = await getData(request);
-  let headers = new Headers();
+	let data = await getData(request);
+	let headers = new Headers();
 
-  if (isPrefetch(request)) {
-    headers.set("Cache-Control", "private, max-age=5, smax-age=0");
-  }
+	if (isPrefetch(request)) {
+		headers.set("Cache-Control", "private, max-age=5, smax-age=0");
+	}
 
-  return json(data, { headers });
+	return json(data, { headers });
 }
 ```
 
@@ -1109,7 +1093,7 @@ The response created with this function will have the `Location` header pointing
 import { redirectBack } from "remix-utils/redirect-back";
 
 export async function action({ request }: Route.ActionArgs) {
-  throw redirectBack(request, { fallback: "/" });
+	throw redirectBack(request, { fallback: "/" });
 }
 ```
 
@@ -1126,7 +1110,7 @@ Helper function to create a Not Modified (304) response without a body and any h
 import { notModified } from "remix-utils/responses";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  return notModified();
+	return notModified();
 }
 ```
 
@@ -1143,7 +1127,7 @@ This is useful to create JS files based on data inside a Resource Route.
 import { javascript } from "remix-utils/responses";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  return javascript("console.log('Hello World')");
+	return javascript("console.log('Hello World')");
 }
 ```
 
@@ -1160,7 +1144,7 @@ This is useful to create CSS files based on data inside a Resource Route.
 import { stylesheet } from "remix-utils/responses";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  return stylesheet("body { color: red; }");
+	return stylesheet("body { color: red; }");
 }
 ```
 
@@ -1177,7 +1161,7 @@ This is useful to create PDF files based on data inside a Resource Route.
 import { pdf } from "remix-utils/responses";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  return pdf(await generatePDF(request.formData()));
+	return pdf(await generatePDF(request.formData()));
 }
 ```
 
@@ -1194,7 +1178,7 @@ This is useful to create HTML files based on data inside a Resource Route.
 import { html } from "remix-utils/responses";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  return html("<h1>Hello World</h1>");
+	return html("<h1>Hello World</h1>");
 }
 ```
 
@@ -1211,7 +1195,7 @@ This is useful to create XML files based on data inside a Resource Route.
 import { xml } from "remix-utils/responses";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  return xml("<?xml version='1.0'?><catalog></catalog>");
+	return xml("<?xml version='1.0'?><catalog></catalog>");
 }
 ```
 
@@ -1228,7 +1212,7 @@ This is useful to create TXT files based on data inside a Resource Route.
 import { txt } from "remix-utils/responses";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  return txt(`
+	return txt(`
     User-agent: *
     Allow: /
   `);
@@ -1276,7 +1260,7 @@ let cookie = createCookie("session", cookieOptions);
 let schema = z.object({ token: z.string().nullish() }).nullable();
 
 let sessionStorage = createCookieSessionStorage({
-  cookie: createTypedCookie({ cookie, schema }),
+	cookie: createTypedCookie({ cookie, schema }),
 });
 
 // if this works then the correct data is stored in the session
@@ -1299,13 +1283,13 @@ You can also use async refinements in your schemas because typed cookies uses pa
 let cookie = createCookie("session", cookieOptions);
 
 let schema = z
-  .object({
-    token: z.string().refine(async (token) => {
-      let user = await getUserByToken(token);
-      return user !== null;
-    }, "INVALID_TOKEN"),
-  })
-  .nullable();
+	.object({
+		token: z.string().refine(async (token) => {
+			let user = await getUserByToken(token);
+			return user !== null;
+		}, "INVALID_TOKEN"),
+	})
+	.nullable();
 
 let sessionTypedCookie = createTypedCookie({ cookie, schema });
 
@@ -1329,7 +1313,7 @@ let schema = z.string().url().nullable();
 let typedCookie = createTypedCookie({ cookie, schema });
 
 await typedCookie.serialize("some fake url to pass schema validation", {
-  expires: new Date(Date.now() - 1),
+	expires: new Date(Date.now() - 1),
 });
 ```
 
@@ -1355,13 +1339,13 @@ The `eventStream` function is used to create a new event stream response needed 
 import { eventStream } from "remix-utils/sse/server";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  return eventStream(request.signal, function setup(send) {
-    let intervalId = setInterval(() => {
-      send({ event: "time", data: new Date().toISOString() });
-    }, 1000);
+	return eventStream(request.signal, function setup(send) {
+		let intervalId = setInterval(() => {
+			send({ event: "time", data: new Date().toISOString() });
+		}, 1000);
 
-    return () => void clearInterval(intervalId); // Cleanup function
-  });
+		return () => void clearInterval(intervalId); // Cleanup function
+	});
 }
 ```
 
@@ -1372,20 +1356,20 @@ Then, inside any component, you can use the `useEventSource` hook to connect to 
 import { useEventSource } from "remix-utils/sse/react";
 
 function Counter() {
-  // Here `/sse/time` is the resource route returning an eventStream response
-  let time = useEventSource("/sse/time", { event: "time" });
+	// Here `/sse/time` is the resource route returning an eventStream response
+	let time = useEventSource("/sse/time", { event: "time" });
 
-  if (!time) return null;
+	if (!time) return null;
 
-  return (
-    <time dateTime={time}>
-      {new Date(time).toLocaleTimeString("en", {
-        minute: "2-digit",
-        second: "2-digit",
-        hour: "2-digit",
-      })}
-    </time>
-  );
+	return (
+		<time dateTime={time}>
+			{new Date(time).toLocaleTimeString("en", {
+				minute: "2-digit",
+				second: "2-digit",
+				hour: "2-digit",
+			})}
+		</time>
+	);
 }
 ```
 
@@ -1402,9 +1386,9 @@ You can use the `<EventSourceProvider />` component to control the map.
 ```tsx
 let map: EventSourceMap = new Map();
 return (
-  <EventSourceProvider value={map}>
-    <YourAppOrPartOfIt />
-  </EventSourceProvider>
+	<EventSourceProvider value={map}>
+		<YourAppOrPartOfIt />
+	</EventSourceProvider>
 );
 ```
 
@@ -1430,26 +1414,16 @@ import { rollingCookie } from "remix-utils/rolling-cookie";
 import { sessionCookie } from "~/session.server";
 
 export default function handleRequest(
-  request: Request,
-  responseStatusCode: number,
-  responseHeaders: Headers,
-  remixContext: EntryContext,
+	request: Request,
+	responseStatusCode: number,
+	responseHeaders: Headers,
+	remixContext: EntryContext,
 ) {
-  await rollingCookie(sessionCookie, request, responseHeaders);
+	await rollingCookie(sessionCookie, request, responseHeaders);
 
-  return isbot(request.headers.get("user-agent"))
-    ? handleBotRequest(
-        request,
-        responseStatusCode,
-        responseHeaders,
-        remixContext,
-      )
-    : handleBrowserRequest(
-        request,
-        responseStatusCode,
-        responseHeaders,
-        remixContext,
-      );
+	return isbot(request.headers.get("user-agent"))
+		? handleBotRequest(request, responseStatusCode, responseHeaders, remixContext)
+		: handleBrowserRequest(request, responseStatusCode, responseHeaders, remixContext);
 }
 ```
 
@@ -1459,21 +1433,16 @@ And for data request you can do it on the `handleDataRequest` function:
 import { rollingCookie } from "remix-utils/rolling-cookie";
 
 export let handleDataRequest: HandleDataRequestFunction = async (
-  response: Response,
-  { request },
+	response: Response,
+	{ request },
 ) => {
-  let cookieValue = await sessionCookie.parse(
-    responseHeaders.get("set-cookie"),
-  );
-  if (!cookieValue) {
-    cookieValue = await sessionCookie.parse(request.headers.get("cookie"));
-    responseHeaders.append(
-      "Set-Cookie",
-      await sessionCookie.serialize(cookieValue),
-    );
-  }
+	let cookieValue = await sessionCookie.parse(responseHeaders.get("set-cookie"));
+	if (!cookieValue) {
+		cookieValue = await sessionCookie.parse(request.headers.get("cookie"));
+		responseHeaders.append("Set-Cookie", await sessionCookie.serialize(cookieValue));
+	}
 
-  return response;
+	return response;
 };
 ```
 
@@ -1493,38 +1462,38 @@ It's common to need to handle more than one action in the same route, there are 
 import { namedAction } from "remix-utils/named-action";
 
 export async function action({ request }: Route.ActionArgs) {
-  return namedAction(await request.formData(), {
-    async create() {
-      // do create
-    },
-    async update() {
-      // do update
-    },
-    async delete() {
-      // do delete
-    },
-  });
+	return namedAction(await request.formData(), {
+		async create() {
+			// do create
+		},
+		async update() {
+			// do update
+		},
+		async delete() {
+			// do delete
+		},
+	});
 }
 
 export default function Component() {
-  return (
-    <>
-      <Form method="post">
-        <input type="hidden" name="intent" value="create" />
-        ...
-      </Form>
+	return (
+		<>
+			<Form method="post">
+				<input type="hidden" name="intent" value="create" />
+				...
+			</Form>
 
-      <Form method="post">
-        <input type="hidden" name="intent" value="update" />
-        ...
-      </Form>
+			<Form method="post">
+				<input type="hidden" name="intent" value="update" />
+				...
+			</Form>
 
-      <Form method="post">
-        <input type="hidden" name="intent" value="delete" />
-        ...
-      </Form>
-    </>
-  );
+			<Form method="post">
+				<input type="hidden" name="intent" value="delete" />
+				...
+			</Form>
+		</>
+	);
 }
 ```
 
@@ -1612,9 +1581,9 @@ To help you prevent this Remix Utils gives you a `safeRedirect` function which c
 import { safeRedirect } from "remix-utils/safe-redirect";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  let { searchParams } = new URL(request.url);
-  let redirectTo = searchParams.get("redirectTo");
-  return redirect(safeRedirect(redirectTo, "/home"));
+	let { searchParams } = new URL(request.url);
+	let redirectTo = searchParams.get("redirectTo");
+	return redirect(safeRedirect(redirectTo, "/home"));
 }
 ```
 
@@ -1629,16 +1598,16 @@ When returning a `json` from a `loader` function, you may need to get data from 
 
 ```ts
 export async function loader({ params }: LoaderData) {
-  let postId = z.string().parse(params.postId);
-  let [post, comments] = await Promise.all([getPost(), getComments()]);
-  return json({ post, comments });
+	let postId = z.string().parse(params.postId);
+	let [post, comments] = await Promise.all([getPost(), getComments()]);
+	return json({ post, comments });
 
-  async function getPost() {
-    /* … */
-  }
-  async function getComments() {
-    /* … */
-  }
+	async function getPost() {
+		/* … */
+	}
+	async function getComments() {
+		/* … */
+	}
 }
 ```
 
@@ -1648,15 +1617,15 @@ The `jsonHash` function lets you define those functions directly in the `json`, 
 import { jsonHash } from "remix-utils/json-hash";
 
 export async function loader({ params }: LoaderData) {
-  let postId = z.string().parse(params.postId);
-  return jsonHash({
-    async post() {
-      // Implement me
-    },
-    async comments() {
-      // Implement me
-    },
-  });
+	let postId = z.string().parse(params.postId);
+	return jsonHash({
+		async post() {
+			// Implement me
+		},
+		async comments() {
+			// Implement me
+		},
+	});
 }
 ```
 
@@ -1668,23 +1637,23 @@ Additionally, you can pass non-async functions, values and promises.
 import { jsonHash } from "remix-utils/json-hash";
 
 export async function loader({ params }: LoaderData) {
-  let postId = z.string().parse(params.postId);
-  return jsonHash({
-    postId, // value
-    comments: getComments(), // Promise
-    slug() {
-      // Non-async function
-      return postId.split("-").at(1); // get slug from postId param
-    },
-    async post() {
-      // Async function
-      return await getPost(postId);
-    },
-  });
+	let postId = z.string().parse(params.postId);
+	return jsonHash({
+		postId, // value
+		comments: getComments(), // Promise
+		slug() {
+			// Non-async function
+			return postId.split("-").at(1); // get slug from postId param
+		},
+		async post() {
+			// Async function
+			return await getPost(postId);
+		},
+	});
 
-  async function getComments() {
-    /* … */
-  }
+	async function getComments() {
+		/* … */
+	}
 }
 ```
 
@@ -1692,10 +1661,10 @@ The result of `jsonHash` is a `TypedResponse` and it's correctly typed so using 
 
 ```ts
 export default function Component() {
-  // all correctly typed
-  let { postId, comments, slug, post } = useLoaderData<typeof loader>();
+	// all correctly typed
+	let { postId, comments, slug, post } = useLoaderData<typeof loader>();
 
-  // more code…
+	// more code…
 }
 ```
 
@@ -1712,17 +1681,17 @@ The `useDelegatedAnchors` hook lets you add client-side navigation to anchor tag
 import { useDelegatedAnchors } from "remix-utils/use-delegated-anchors";
 
 export async function loader() {
-  let content = await fetchContentFromCMS();
-  return json({ content });
+	let content = await fetchContentFromCMS();
+	return json({ content });
 }
 
 export default function Component() {
-  let { content } = useLoaderData<typeof loader>();
+	let { content } = useLoaderData<typeof loader>();
 
-  let ref = useRef<HTMLDivElement>(null);
-  useDelegatedAnchors(ref);
+	let ref = useRef<HTMLDivElement>(null);
+	useDelegatedAnchors(ref);
 
-  return <article ref={ref} dangerouslySetInnerHTML={{ __html: content }} />;
+	return <article ref={ref} dangerouslySetInnerHTML={{ __html: content }} />;
 }
 ```
 
@@ -1739,18 +1708,18 @@ This components wraps your content with anchors inside, it detects any hovered a
 import { PrefetchPageAnchors } from "remix-utils/use-delegated-anchors";
 
 export async function loader() {
-  let content = await fetchContentFromCMS();
-  return json({ content });
+	let content = await fetchContentFromCMS();
+	return json({ content });
 }
 
 export default function Component() {
-  let { content } = useLoaderData<typeof loader>();
+	let { content } = useLoaderData<typeof loader>();
 
-  return (
-    <PrefetchPageAnchors>
-      <article ref={ref} dangerouslySetInnerHTML={{ __html: content }} />
-    </PrefetchPageAnchors>
-  );
+	return (
+		<PrefetchPageAnchors>
+			<article ref={ref} dangerouslySetInnerHTML={{ __html: content }} />
+		</PrefetchPageAnchors>
+	);
 }
 ```
 
@@ -1775,17 +1744,17 @@ These hooks are based on [@JacobParis](https://github.com/JacobParis)' [article]
 import { useDebounceFetcher } from "remix-utils/use-debounce-fetcher";
 
 export function Component({ data }) {
-  let fetcher = useDebounceFetcher<Type>();
+	let fetcher = useDebounceFetcher<Type>();
 
-  function handleClick() {
-    fetcher.submit(data, { debounceTimeout: 1000 });
-  }
+	function handleClick() {
+		fetcher.submit(data, { debounceTimeout: 1000 });
+	}
 
-  return (
-    <button type="button" onClick={handleClick}>
-      Do Something
-    </button>
-  );
+	return (
+		<button type="button" onClick={handleClick}>
+			Do Something
+		</button>
+	);
 }
 ```
 
@@ -1795,28 +1764,28 @@ Usage with `useDebounceSubmit` is similar.
 import { useDebounceSubmit } from "remix-utils/use-debounce-submit";
 
 export function Component({ name }) {
-  let submit = useDebounceSubmit();
+	let submit = useDebounceSubmit();
 
-  return (
-    <input
-      name={name}
-      type="text"
-      onChange={(event) => {
-        submit(event.target.form, {
-          navigate: false, // use a fetcher instead of a page navigation
-          fetcherKey: name, // cancel any previous fetcher with the same key
-          debounceTimeout: 1000,
-        });
-      }}
-      onBlur={() => {
-        submit(event.target.form, {
-          navigate: false,
-          fetcherKey: name,
-          debounceTimeout: 0, // submit immediately, canceling any pending fetcher
-        });
-      }}
-    />
-  );
+	return (
+		<input
+			name={name}
+			type="text"
+			onChange={(event) => {
+				submit(event.target.form, {
+					navigate: false, // use a fetcher instead of a page navigation
+					fetcherKey: name, // cancel any previous fetcher with the same key
+					debounceTimeout: 1000,
+				});
+			}}
+			onBlur={() => {
+				submit(event.target.form, {
+					navigate: false,
+					fetcherKey: name,
+					debounceTimeout: 0, // submit immediately, canceling any pending fetcher
+				});
+			}}
+		/>
+	);
 }
 ```
 
@@ -1834,14 +1803,14 @@ Derive the value of the deprecated `fetcher.type` from the fetcher and navigatio
 import { getFetcherType } from "remix-utils/fetcher-type";
 
 function Component() {
-  let fetcher = useFetcher();
-  let navigation = useNavigation();
-  let fetcherType = getFetcherType(fetcher, navigation);
-  useEffect(() => {
-    if (fetcherType === "done") {
-      // do something once the fetcher is done submitting the data
-    }
-  }, [fetcherType]);
+	let fetcher = useFetcher();
+	let navigation = useNavigation();
+	let fetcherType = getFetcherType(fetcher, navigation);
+	useEffect(() => {
+		if (fetcherType === "done") {
+			// do something once the fetcher is done submitting the data
+		}
+	}, [fetcherType]);
 }
 ```
 
@@ -1851,13 +1820,13 @@ You can also use the React Hook API which let's you avoid calling `useNavigation
 import { useFetcherType } from "remix-utils/fetcher-type";
 
 function Component() {
-  let fetcher = useFetcher();
-  let fetcherType = useFetcherType(fetcher);
-  useEffect(() => {
-    if (fetcherType === "done") {
-      // do something once the fetcher is done submitting the data
-    }
-  }, [fetcherType]);
+	let fetcher = useFetcher();
+	let fetcherType = useFetcherType(fetcher);
+	useEffect(() => {
+		if (fetcherType === "done") {
+			// do something once the fetcher is done submitting the data
+		}
+	}, [fetcherType]);
 }
 ```
 
@@ -1867,9 +1836,9 @@ If you need to pass the fetcher type around, you can also import `FetcherType` t
 import { type FetcherType } from "remix-utils/fetcher-type";
 
 function useCallbackOnDone(type: FetcherType, cb) {
-  useEffect(() => {
-    if (type === "done") cb();
-  }, [type, cb]);
+	useEffect(() => {
+		if (type === "done") cb();
+	}, [type, cb]);
 }
 ```
 
@@ -1931,7 +1900,7 @@ Now, the `respondTo` function will check the `Accept` header and call the correc
 import { parseAcceptHeader } from "remix-utils/parse-accept-header";
 
 let parsed = parseAcceptHeader(
-  "text/html, application/xhtml+xml, application/xml;q=0.9, image/webp, image/*, */*;q=0.8",
+	"text/html, application/xhtml+xml, application/xml;q=0.9, image/webp, image/*, */*;q=0.8",
 );
 ```
 
@@ -1959,10 +1928,10 @@ import { Honeypot } from "remix-utils/honeypot/server";
 // Create a new Honeypot instance, the values here are the defaults, you can
 // customize them
 export const honeypot = new Honeypot({
-  randomizeNameFieldName: false,
-  nameFieldName: "name__confirm",
-  validFromFieldName: "from__confirm", // null to disable it
-  encryptionSeed: undefined, // Ideally it should be unique even between processes
+	randomizeNameFieldName: false,
+	nameFieldName: "name__confirm",
+	validFromFieldName: "from__confirm", // null to disable it
+	encryptionSeed: undefined, // Ideally it should be unique even between processes
 });
 ```
 
@@ -1973,8 +1942,8 @@ Then, in your `app/root` loader, call `honeypot.getInputProps()` and return it.
 import { honeypot } from "~/honeypot.server";
 
 export async function loader() {
-  // more code here
-  return json({ honeypotInputProps: honeypot.getInputProps() });
+	// more code here
+	return json({ honeypotInputProps: honeypot.getInputProps() });
 }
 ```
 
@@ -1984,14 +1953,14 @@ And in the `app/root` component render the `HoneypotProvider` component wrapping
 import { HoneypotProvider } from "remix-utils/honeypot/react";
 
 export default function Component() {
-  // more code here
-  return (
-    // some JSX
-    <HoneypotProvider {...honeypotInputProps}>
-      <Outlet />
-    </HoneypotProvider>
-    // end that JSX
-  );
+	// more code here
+	return (
+		// some JSX
+		<HoneypotProvider {...honeypotInputProps}>
+			<Outlet />
+		</HoneypotProvider>
+		// end that JSX
+	);
 }
 ```
 
@@ -2001,12 +1970,12 @@ Now, in every public form you want protect against spam (like a login form), ren
 import { HoneypotInputs } from "remix-utils/honeypot/react";
 
 function SomePublicForm() {
-  return (
-    <Form method="post">
-      <HoneypotInputs label="Please leave this field blank" />
-      {/* more inputs and some buttons */}
-    </Form>
-  );
+	return (
+		<Form method="post">
+			<HoneypotInputs label="Please leave this field blank" />
+			{/* more inputs and some buttons */}
+		</Form>
+	);
 }
 ```
 
@@ -2020,17 +1989,17 @@ import { SpamError } from "remix-utils/honeypot/server";
 import { honeypot } from "~/honeypot.server";
 
 export async function action({ request }) {
-  let formData = await request.formData();
-  try {
-    honeypot.check(formData);
-  } catch (error) {
-    if (error instanceof SpamError) {
-      // handle spam requests here
-    }
-    // handle any other possible error here, e.g. re-throw since nothing else
-    // should be thrown
-  }
-  // the rest of your action
+	let formData = await request.formData();
+	try {
+		honeypot.check(formData);
+	} catch (error) {
+		if (error instanceof SpamError) {
+			// handle spam requests here
+		}
+		// handle any other possible error here, e.g. re-throw since nothing else
+		// should be thrown
+	}
+	// the rest of your action
 }
 ```
 
@@ -2047,12 +2016,7 @@ The `Sec-Fetch` headers include information about the request, e.g. where is the
 You can use the `remix-utils/sec-fetch` utils to parse those headers and get the information you need.
 
 ```ts
-import {
-  fetchDest,
-  fetchMode,
-  fetchSite,
-  isUserInitiated,
-} from "remix-utils/sec-fetch";
+import { fetchDest, fetchMode, fetchSite, isUserInitiated } from "remix-utils/sec-fetch";
 ```
 
 #### Sec-Fetch-Dest
@@ -2065,12 +2029,12 @@ If the value is `empty` it means it will be used by a `fetch` call, this means y
 import { fetchDest } from "remix-utils/sec-fetch";
 
 export async function action({ request }: Route.ActionArgs) {
-  let data = await getDataSomehow();
+	let data = await getDataSomehow();
 
-  // if the request was made with JS, we can just return json
-  if (fetchDest(request) === "empty") return json(data);
-  // otherwise we redirect to avoid a reload to trigger a new submission
-  return redirect(destination);
+	// if the request was made with JS, we can just return json
+	if (fetchDest(request) === "empty") return json(data);
+	// otherwise we redirect to avoid a reload to trigger a new submission
+	return redirect(destination);
 }
 ```
 
@@ -2082,8 +2046,8 @@ The `Sec-Fetch-Mode` header indicates how the request was initiated, e.g. if the
 import { fetchMode } from "remix-utils/sec-fetch";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  let mode = fetchMode(request);
-  // do something based on the mode value
+	let mode = fetchMode(request);
+	// do something based on the mode value
 }
 ```
 
@@ -2095,8 +2059,8 @@ The `Sec-Fetch-Site` header indicates where the request is being made, e.g. `sam
 import { fetchSite } from "remix-utils/sec-fetch";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  let site = fetchSite(request);
-  // do something based on the site value
+	let site = fetchSite(request);
+	// do something based on the site value
 }
 ```
 
@@ -2108,8 +2072,8 @@ The `Sec-Fetch-User` header indicates if the request was initiated by the user, 
 import { isUserInitiated } from "remix-utils/sec-fetch";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  let userInitiated = isUserInitiated(request);
-  // do something based on the userInitiated value
+	let userInitiated = isUserInitiated(request);
+	// do something based on the userInitiated value
 }
 ```
 
@@ -2127,15 +2091,15 @@ import { eventStream } from "remix-utils/sse/server";
 import { interval } from "remix-utils/timers";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  return eventStream(request.signal, function setup(send) {
-    async function run() {
-      for await (let _ of interval(1000, { signal: request.signal })) {
-        send({ event: "time", data: new Date().toISOString() });
-      }
-    }
+	return eventStream(request.signal, function setup(send) {
+		async function run() {
+			for await (let _ of interval(1000, { signal: request.signal })) {
+				send({ event: "time", data: new Date().toISOString() });
+			}
+		}
 
-    run();
-  });
+		run();
+	});
 }
 ```
 
@@ -2163,7 +2127,7 @@ To use it, you need to create a session storage object and pass it to the middle
 import { createCookieSessionStorage } from "react-router";
 
 let sessionStorage = createCookieSessionStorage({
-  cookie: createCookie("session", { path: "/", sameSite: "lax" }),
+	cookie: createCookie("session", { path: "/", sameSite: "lax" }),
 });
 
 let [sessionMiddleware, getSession] = createSessionMiddleware(sessionStorage);
@@ -2183,20 +2147,17 @@ And you can use the `getSession` function in your loaders to get the session obj
 import { getSession } from "~/middleware/session.server";
 
 export async function loader({ context }: Route.LoaderArgs) {
-  let session = await getSession(context);
-  let user = await getUser();
-  session.set("user", user);
-  return json({ user });
+	let session = await getSession(context);
+	let user = await getUser();
+	session.set("user", user);
+	return json({ user });
 }
 ```
 
 By default the middleware will automaticaly commit the session at the end of the request, but you can customize this behavior by passing a second argument to the `createSessionMiddleware` function.
 
 ```ts
-let [sessionMiddleware, getSession] = createSessionMiddleware(
-  sessionStorage,
-  shouldCommit,
-);
+let [sessionMiddleware, getSession] = createSessionMiddleware(sessionStorage, shouldCommit);
 ```
 
 The `shouldCommit` function will be called at the end of the request with the previous session data and the session data before the request, if it returns `true` the session will be committed, if it returns `false` the session will be discarded.
@@ -2207,20 +2168,17 @@ If you want to commit the session only if the session data changed you can use a
 import { dequal } from "dequal";
 
 let [sessionMiddleware, getSession] = createSessionMiddleware(
-  sessionStorage,
-  (previous, next) => !dequal(previous, next), // Only commit if session changed
+	sessionStorage,
+	(previous, next) => !dequal(previous, next), // Only commit if session changed
 );
 ```
 
 Or you can use a custom function to compare the session data, maybe only if some specific fields changed.
 
 ```ts
-let [sessionMiddleware, getSession] = createSessionMiddleware(
-  sessionStorage,
-  (previous, next) => {
-    return current.user.id !== previous.user.id;
-  },
-);
+let [sessionMiddleware, getSession] = createSessionMiddleware(sessionStorage, (previous, next) => {
+	return current.user.id !== previous.user.id;
+});
 ```
 
 #### Logger Middleware
@@ -2249,11 +2207,11 @@ The logger middleware can be customized by passing an options object to the `cre
 
 ```ts
 let [loggerMiddleware] = createLoggerMiddleware({
-  logger: console,
-  precision: 2,
-  formatMessage(request, response, time) {
-    return `${request.method} ${request.url} - ${response.status} - ${time}ms`;
-  },
+	logger: console,
+	precision: 2,
+	formatMessage(request, response, time) {
+		return `${request.method} ${request.url} - ${response.status} - ${time}ms`;
+	},
 });
 ```
 
@@ -2272,8 +2230,7 @@ The server timing middleware let's you add a `Server-Timing` header to the respo
 ```ts
 import { createServerTimingMiddleware } from "remix-utils/middleware/server-timing";
 
-export const [serverTimingMiddleware, getTimingCollector] =
-  createServerTimingMiddleware();
+export const [serverTimingMiddleware, getTimingCollector] = createServerTimingMiddleware();
 ```
 
 To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
@@ -2289,11 +2246,11 @@ And you can use the `getTimingCollector` function in your loaders and actions to
 ```ts
 import { getTimingCollector } from "~/middleware/server-timing.server";
 
-export async function loader({ context }: Route.LoaderArgs) {
-  let collector = getTimingCollector(context);
-  return await collector.measure("name", "optional description", async () => {
-    return await getData();
-  });
+export async function loader({ request }: Route.LoaderArgs) {
+	let collector = getTimingCollector();
+	return await collector.measure("name", "optional description", async () => {
+		return await getData();
+	});
 }
 ```
 
@@ -2312,7 +2269,7 @@ This is specially useful to share objects that needs to be created only once per
 import { createSingletonMiddleware } from "remix-utils/middleware/singleton";
 
 export const [singletonMiddleware, getSingleton] = createSingletonMiddleware({
-  instantiator: () => new MySingletonClass(),
+	instantiator: () => new MySingletonClass(),
 });
 ```
 
@@ -2329,9 +2286,9 @@ And you can use the `getSingleton` function in your loaders to get the singleton
 import { getSingleton } from "~/middleware/singleton.server";
 
 export async function loader({ context }: Route.LoaderArgs) {
-  let singleton = getSingleton(context);
-  let result = await singleton.method();
-  // ...
+	let singleton = getSingleton(context);
+	let result = await singleton.method();
+	// ...
 }
 ```
 
@@ -2341,26 +2298,22 @@ The singleton middleware can be created with different classes and arguments, so
 import { createSingletonMiddleware } from "remix-utils/middleware/singleton";
 
 export const [singletonMiddleware, getSingleton] = createSingletonMiddleware({
-  instantiator: () => new MySingletonClass("arg1", "arg2"),
+	instantiator: () => new MySingletonClass("arg1", "arg2"),
 });
 
-export const [anotherSingletonMiddleware, getAnotherSingleton] =
-  createSingletonMiddleware({
-    instantiator: () => new AnotherSingletonClass("arg1", "arg2"),
-  });
+export const [anotherSingletonMiddleware, getAnotherSingleton] = createSingletonMiddleware({
+	instantiator: () => new AnotherSingletonClass("arg1", "arg2"),
+});
 ```
 
 And use it in a route like this.
 
 ```ts
-import {
-  singletonMiddleware,
-  anotherSingletonMiddleware,
-} from "~/middleware/singleton.server";
+import { singletonMiddleware, anotherSingletonMiddleware } from "~/middleware/singleton.server";
 
 export const middleware: Route.MiddlewareFunction[] = [
-  singletonMiddleware,
-  anotherSingletonMiddleware,
+	singletonMiddleware,
+	anotherSingletonMiddleware,
 ];
 ```
 
@@ -2371,9 +2324,9 @@ import { createSingletonMiddleware } from "remix-utils/middleware/singleton";
 import { MySingletonClass } from "~/singleton";
 
 export const [singletonMiddleware, getSingleton] = createSingletonMiddleware({
-  instantiator: (request, context) => {
-    return new MySingletonClass(request, context);
-  },
+	instantiator: (request, context) => {
+		return new MySingletonClass(request, context);
+	},
 });
 ```
 
@@ -2410,11 +2363,11 @@ And you can use the `getBatcher` function in your loaders to get the batcher obj
 import { getBatcher } from "~/middleware/batcher.server";
 
 export async function loader({ context }: Route.LoaderArgs) {
-  let batcher = getBatcher(context);
-  let result = await batcher.batch("key", async () => {
-    return await getData();
-  });
-  // ...
+	let batcher = getBatcher(context);
+	let result = await batcher.batch("key", async () => {
+		return await getData();
+	});
+	// ...
 }
 ```
 
@@ -2425,9 +2378,9 @@ import type { Batcher } from "remix-utils/middleware/batcher";
 import { getData } from "~/data";
 
 export function getDataBatched(batcher: Batcher) {
-  return batcher.batch("key", async () => {
-    return await getData();
-  });
+	return batcher.batch("key", async () => {
+		return await getData();
+	});
 }
 ```
 
@@ -2438,9 +2391,9 @@ import { getBatcher } from "~/middleware/batcher.server";
 import { getDataBatched } from "~/data";
 
 export async function loader({ context }: Route.LoaderArgs) {
-  let batcher = getBatcher(context);
-  let result = await getDataBatched(batcher);
-  // ...
+	let batcher = getBatcher(context);
+	let result = await getDataBatched(batcher);
+	// ...
 }
 ```
 
@@ -2454,8 +2407,7 @@ The Context Storage middleware stores the Router context provider and request in
 ```ts
 import { createContextStorageMiddleware } from "remix-utils/middleware/context-storage";
 
-export const [contextStorageMiddleware, getContext, getRequest] =
-  createContextStorageMiddleware();
+export const [contextStorageMiddleware, getContext, getRequest] = createContextStorageMiddleware();
 ```
 
 To use it, you need to add it to the `middleware` array in your `app/root.tsx` file.
@@ -2463,9 +2415,7 @@ To use it, you need to add it to the `middleware` array in your `app/root.tsx` f
 ```ts
 import { contextStorageMiddleware } from "~/middleware/context-storage.server";
 
-export const middleware: Route.MiddlewareFunction[] = [
-  contextStorageMiddleware,
-];
+export const middleware: Route.MiddlewareFunction[] = [contextStorageMiddleware];
 ```
 
 And you can use the `getContext` and `getRequest` functions in your function to get the context and request objects.
@@ -2474,9 +2424,9 @@ And you can use the `getContext` and `getRequest` functions in your function to 
 import { getContext, getRequest } from "~/middleware/context-storage.server";
 
 export async function doSomething() {
-  let context = getContext();
-  let request = getRequest();
-  // ...
+	let context = getContext();
+	let request = getRequest();
+	// ...
 }
 ```
 
@@ -2493,8 +2443,8 @@ const [batcherMiddleware, getBatcherFromContext] = createBatcherMiddleware();
 export { bathcherMiddleware };
 
 export function getBatcher() {
-  let context = getContext();
-  return getBatcherFromContext(context);
+	let context = getContext();
+	return getBatcherFromContext(context);
 }
 ```
 
@@ -2504,11 +2454,11 @@ Now instead of calling `getBatcher(context)` you can just call `getBatcher()` an
 import { getBatcher } from "~/middleware/batcher.server";
 
 export async function loader(_: Route.LoaderArgs) {
-  let batcher = getBatcher();
-  let result = await batcher.batch("key", async () => {
-    return await getData();
-  });
-  // ...
+	let batcher = getBatcher();
+	let result = await batcher.batch("key", async () => {
+		return await getData();
+	});
+	// ...
 }
 ```
 
@@ -2539,8 +2489,8 @@ And you can use the `getRequestID` function in your loaders, actions, and other 
 import { getRequestID } from "~/middleware/request-id.server";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  let requestID = getRequestID();
-  // ...
+	let requestID = getRequestID();
+	// ...
 }
 ```
 
@@ -2550,9 +2500,9 @@ By default the request ID is a UUID, but you can customize it by passing a funct
 import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
 
 export const [requestIDMiddleware, getRequestID] = createRequestIDMiddleware({
-  generator() {
-    return Math.random().toString(36).slice(2);
-  },
+	generator() {
+		return Math.random().toString(36).slice(2);
+	},
 });
 ```
 
@@ -2564,7 +2514,7 @@ If you want to use a different header you can pass the header name to the `creat
 import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
 
 export const [requestIDMiddleware, getRequestID] = createRequestIDMiddleware({
-  header: "X-Correlation-ID",
+	header: "X-Correlation-ID",
 });
 ```
 
@@ -2574,7 +2524,7 @@ You can disable this behaviour by passing `null` instead.
 import { createRequestIDMiddleware } from "remix-utils/middleware/request-id";
 
 export const [requestIDMiddleware, getRequestID] = createRequestIDMiddleware({
-  header: null,
+	header: null,
 });
 ```
 
@@ -2595,7 +2545,7 @@ The Basic Auth middleware let's you add a basic authentication to your routes, t
 import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
 
 export const [basicAuthMiddleware] = createBasicAuthMiddleware({
-  user: { username: "admin", password: "password" },
+	user: { username: "admin", password: "password" },
 });
 ```
 
@@ -2614,8 +2564,8 @@ The `realm` option let's you set the realm for the authentication, this is the n
 import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
 
 export const [basicAuthMiddleware] = createBasicAuthMiddleware({
-  realm: "My Realm",
-  user: { username: "admin", password: "password" },
+	realm: "My Realm",
+	user: { username: "admin", password: "password" },
 });
 ```
 
@@ -2625,10 +2575,10 @@ The `user` option let's you set the username and password to authenticate, you c
 import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
 
 export const [basicAuthMiddleware] = createBasicAuthMiddleware({
-  user: [
-    { username: "admin", password: "password" },
-    { username: "user", password: "password" },
-  ],
+	user: [
+		{ username: "admin", password: "password" },
+		{ username: "user", password: "password" },
+	],
 });
 ```
 
@@ -2638,11 +2588,11 @@ The `verifyUser` option let's you pass a function to verify the user, this can b
 import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
 
 export const [basicAuthMiddleware] = createBasicAuthMiddleware({
-  verifyUser(username, password) {
-    let user = await getUser(username);
-    if (!user) return false;
-    return await verifyPassword(password, user.password);
-  },
+	verifyUser(username, password) {
+		let user = await getUser(username);
+		if (!user) return false;
+		return await verifyPassword(password, user.password);
+	},
 });
 ```
 
@@ -2663,8 +2613,8 @@ The `invalidUserMessage` option let's you customize the message sent when the us
 import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
 
 export const [basicAuthMiddleware] = createBasicAuthMiddleware({
-  invalidUserMessage: "Invalid username or password",
-  user: { username: "admin", password: "password" },
+	invalidUserMessage: "Invalid username or password",
+	user: { username: "admin", password: "password" },
 });
 ```
 
@@ -2683,11 +2633,11 @@ You can also customize the `invalidUserMessage` by passing a function which will
 import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
 
 export const [basicAuthMiddleware] = createBasicAuthMiddleware({
-  invalidUserMessage({ request, context }) {
-    // do something with request or context here
-    return { message: `Invalid username or password for ${username}` };
-  },
-  user: { username: "admin", password: "password" },
+	invalidUserMessage({ request, context }) {
+		// do something with request or context here
+		return { message: `Invalid username or password for ${username}` };
+	},
+	user: { username: "admin", password: "password" },
 });
 ```
 
@@ -2717,7 +2667,7 @@ The JWK Auth middleware let's you add a JSON Web Key authentication to your rout
 import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
 
 export const [jwkAuthMiddleware, getJWTPayload] = createJWKAuthMiddleware({
-  jwksUri: "https://auth.example.com/.well-known/jwks.json",
+	jwksUri: "https://auth.example.com/.well-known/jwks.json",
 });
 ```
 
@@ -2747,8 +2697,8 @@ The `realm` option let's you set the realm for the authentication, this is the n
 import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
 
 export const [jwkAuthMiddleware] = createJWKAuthMiddleware({
-  realm: "My Realm",
-  jwksUri: "https://auth.example.com/.well-known/jwks.json",
+	realm: "My Realm",
+	jwksUri: "https://auth.example.com/.well-known/jwks.json",
 });
 ```
 
@@ -2758,8 +2708,8 @@ If you want to customize the message sent when the token is invalid you can use 
 import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
 
 export const [jwkAuthMiddleware] = createJWKAuthMiddleware({
-  invalidTokenMessage: "Invalid token",
-  jwksUri: "https://auth.example.com/.well-known/jwks.json",
+	invalidTokenMessage: "Invalid token",
+	jwksUri: "https://auth.example.com/.well-known/jwks.json",
 });
 ```
 
@@ -2778,11 +2728,11 @@ You can also customize the `invalidTokenMessage` by passing a function which wil
 import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
 
 export const [jwkAuthMiddleware] = createJWKAuthMiddleware({
-  invalidTokenMessage({ request, context }) {
-    // do something with request or context here
-    return { message: `Invalid token` };
-  },
-  jwksUri: "https://auth.example.com/.well-known/jwks.json",
+	invalidTokenMessage({ request, context }) {
+		// do something with request or context here
+		return { message: `Invalid token` };
+	},
+	jwksUri: "https://auth.example.com/.well-known/jwks.json",
 });
 ```
 
@@ -2801,8 +2751,8 @@ If you want to get the JWT payload in your loaders, actions, or other middleware
 import { getJWTPayload } from "~/middleware/jwk-auth.server";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  let payload = getJWTPayload();
-  // ...
+	let payload = getJWTPayload();
+	// ...
 }
 ```
 
@@ -2816,7 +2766,7 @@ If your app receives the JWT in a custom header instead of the `Authorization` h
 import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
 
 export const [jwkAuthMiddleware, getJWTPayload] = createJWKAuthMiddleware({
-  header: "X-API-Key",
+	header: "X-API-Key",
 });
 ```
 
@@ -2837,14 +2787,14 @@ import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
 import { createCookie } from "react-router";
 
 export const cookie = createCookie("jwt", {
-  path: "/",
-  sameSite: "lax",
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "true",
+	path: "/",
+	sameSite: "lax",
+	httpOnly: true,
+	secure: process.env.NODE_ENV === "true",
 });
 
 export const [jwkAuthMiddleware, getJWTPayload] = createJWKAuthMiddleware({
-  cookie,
+	cookie,
 });
 ```
 
@@ -2871,18 +2821,17 @@ To use the Honeypot middleware, first import and configure it:
 ```ts
 import { createHoneypotMiddleware } from "remix-utils/middleware/honeypot";
 
-export const [honeypotMiddleware, getHoneypotInputProps] =
-  createHoneypotMiddleware({
-    randomizeNameFieldName: false, // Randomize the honeypot field name
-    nameFieldName: "name__confirm", // Default honeypot field name
-    validFromFieldName: "from__confirm", // Optional timestamp field for validation
-    encryptionSeed: undefined, // Unique seed for encryption (recommended for extra security)
+export const [honeypotMiddleware, getHoneypotInputProps] = createHoneypotMiddleware({
+	randomizeNameFieldName: false, // Randomize the honeypot field name
+	nameFieldName: "name__confirm", // Default honeypot field name
+	validFromFieldName: "from__confirm", // Optional timestamp field for validation
+	encryptionSeed: undefined, // Unique seed for encryption (recommended for extra security)
 
-    onSpam(error) {
-      // Handle SpamError here and return a Response
-      return new Response("Spam detected", { status: 400 });
-    },
-  });
+	onSpam(error) {
+		// Handle SpamError here and return a Response
+		return new Response("Spam detected", { status: 400 });
+	},
+});
 ```
 
 Add the `honeypotMiddleware` to the `middleware` array in the route where you want to enable spam protection, use it in your `app/root.tsx` file to apply it globally:
@@ -2899,8 +2848,8 @@ Use the `getHoneypotInputProps` function in your root loader to retrieve the hon
 import { getHoneypotInputProps } from "~/middleware/honeypot";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  let honeypotInputProps = await getHoneypotInputProps();
-  return json({ honeypotInputProps });
+	let honeypotInputProps = await getHoneypotInputProps();
+	return json({ honeypotInputProps });
 }
 ```
 
@@ -2910,11 +2859,11 @@ Wrap your application in the `HoneypotProvider` component to make the honeypot i
 import { HoneypotProvider } from "remix-utils/honeypot/react";
 
 export default function RootComponent() {
-  return (
-    <HoneypotProvider {...honeypotInputProps}>
-      <Outlet />
-    </HoneypotProvider>
-  );
+	return (
+		<HoneypotProvider {...honeypotInputProps}>
+			<Outlet />
+		</HoneypotProvider>
+	);
 }
 ```
 
@@ -2924,14 +2873,14 @@ In any public form, include the `HoneypotInputs` component to add the honeypot f
 import { HoneypotInputs } from "remix-utils/honeypot/react";
 
 function PublicForm() {
-  return (
-    <Form method="post">
-      <HoneypotInputs label="Please leave this field blank" />
-      <input type="text" name="name" placeholder="Your Name" />
-      <input type="email" name="email" placeholder="Your Email" />
-      <button type="submit">Submit</button>
-    </Form>
-  );
+	return (
+		<Form method="post">
+			<HoneypotInputs label="Please leave this field blank" />
+			<input type="text" name="name" placeholder="Your Name" />
+			<input type="email" name="email" placeholder="Your Email" />
+			<button type="submit">Submit</button>
+		</Form>
+	);
 }
 ```
 
@@ -2941,11 +2890,11 @@ In your action handlers, you can process the form data as usual, without worryin
 
 ```ts
 export async function action({ request }: Route.ActionArgs) {
-  // If this code runs, the honeypot check passed
-  let formData = await request.formData();
-  let name = formData.get("name");
-  let email = formData.get("email");
-  // Process the form data
+	// If this code runs, the honeypot check passed
+	let formData = await request.formData();
+	let name = formData.get("name");
+	let email = formData.get("email");
+	// Process the form data
 }
 ```
 
@@ -3010,12 +2959,12 @@ The options lets you configure the CORS headers, e.g. `origin`, `methods`, `allo
 import { createCorsMiddleware } from "remix-utils/middleware/cors";
 
 export const [corsMiddleware] = createCorsMiddleware({
-  origin: "https://example.com",
-  methods: ["GET", "POST"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  exposedHeaders: ["X-My-Custom-Header"],
-  maxAge: 3600,
-  credentials: true,
+	origin: "https://example.com",
+	methods: ["GET", "POST"],
+	allowedHeaders: ["Content-Type", "Authorization"],
+	exposedHeaders: ["X-My-Custom-Header"],
+	maxAge: 3600,
+	credentials: true,
 });
 ```
 
@@ -3060,7 +3009,7 @@ You can allow cross-site requests from specific origins using a string:
 
 ```ts
 let csrfMiddleware = createCsrfMiddleware({
-  origin: "https://trusted.com",
+	origin: "https://trusted.com",
 });
 ```
 
@@ -3068,7 +3017,7 @@ Or using a RegExp for pattern matching:
 
 ```ts
 let csrfMiddleware = createCsrfMiddleware({
-  origin: /\.trusted\.com$/,
+	origin: /\.trusted\.com$/,
 });
 ```
 
@@ -3076,7 +3025,7 @@ Or using an array of strings and RegExps:
 
 ```ts
 let csrfMiddleware = createCsrfMiddleware({
-  origin: ["https://trusted1.com", "https://trusted2.com", /\.trusted\.com$/],
+	origin: ["https://trusted1.com", "https://trusted2.com", /\.trusted\.com$/],
 });
 ```
 
@@ -3084,7 +3033,7 @@ Or using a function for dynamic validation:
 
 ```ts
 let csrfMiddleware = createCsrfMiddleware({
-  origin: (origin, request, context) => origin === "https://trusted.com",
+	origin: (origin, request, context) => origin === "https://trusted.com",
 });
 ```
 
@@ -3092,9 +3041,9 @@ The function can also be async:
 
 ```ts
 let csrfMiddleware = createCsrfMiddleware({
-  origin: async (origin, request, context) => {
-    return await checkOriginInDatabase(origin);
-  },
+	origin: async (origin, request, context) => {
+		return await checkOriginInDatabase(origin);
+	},
 });
 ```
 
@@ -3104,7 +3053,7 @@ By default, the middleware skips CSRF validation for `GET`, `HEAD`, and `OPTIONS
 
 ```ts
 let csrfMiddleware = createCsrfMiddleware({
-  safeMethods: ["GET", "HEAD", "OPTIONS", "POST"],
+	safeMethods: ["GET", "HEAD", "OPTIONS", "POST"],
 });
 ```
 
@@ -3114,8 +3063,8 @@ You can allow requests with missing or invalid origin headers:
 
 ```ts
 let csrfMiddleware = createCsrfMiddleware({
-  origin: "https://trusted.com",
-  allowMissingOrigin: true,
+	origin: "https://trusted.com",
+	allowMissingOrigin: true,
 });
 ```
 
@@ -3128,9 +3077,9 @@ You can provide a custom handler for requests that fail CSRF validation:
 
 ```ts
 let csrfMiddleware = createCsrfMiddleware({
-  onUntrustedRequest(request, context) {
-    return new Response("Custom forbidden", { status: 418 });
-  },
+	onUntrustedRequest(request, context) {
+		return new Response("Custom forbidden", { status: 418 });
+	},
 });
 ```
 
@@ -3151,14 +3100,14 @@ import { createCsrfTokenMiddleware } from "remix-utils/middleware/csrf-token";
 import { createCookie } from "react-router";
 
 let cookie = createCookie("csrf", {
-  path: "/",
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "lax",
+	path: "/",
+	httpOnly: true,
+	secure: process.env.NODE_ENV === "production",
+	sameSite: "lax",
 });
 
 export const [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
-  cookie,
+	cookie,
 });
 ```
 
@@ -3175,8 +3124,8 @@ Use the `getCsrfToken` function in your root loader to retrieve the token:
 import { getCsrfToken } from "~/middleware/csrf-token.server";
 
 export async function loader({ context }: Route.LoaderArgs) {
-  let csrfToken = getCsrfToken(context);
-  return { csrfToken };
+	let csrfToken = getCsrfToken(context);
+	return { csrfToken };
 }
 ```
 
@@ -3186,12 +3135,12 @@ You can use this with the `AuthenticityTokenProvider` and `AuthenticityTokenInpu
 import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
 
 export default function Root() {
-  let { csrfToken } = useLoaderData<typeof loader>();
-  return (
-    <AuthenticityTokenProvider token={csrfToken}>
-      <Outlet />
-    </AuthenticityTokenProvider>
-  );
+	let { csrfToken } = useLoaderData<typeof loader>();
+	return (
+		<AuthenticityTokenProvider token={csrfToken}>
+			<Outlet />
+		</AuthenticityTokenProvider>
+	);
 }
 ```
 
@@ -3201,11 +3150,11 @@ Then in your forms:
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 function MyForm() {
-  return (
-    <Form method="post">
-      <AuthenticityTokenInput />
-    </Form>
-  );
+	return (
+		<Form method="post">
+			<AuthenticityTokenInput />
+		</Form>
+	);
 }
 ```
 
@@ -3217,15 +3166,15 @@ You can customize the middleware:
 
 ```ts
 let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
-  cookie,
-  // The name of the form field containing the token (default: "csrf")
-  formDataKey: "csrf",
-  // A secret to sign the token for extra security
-  secret: process.env.CSRF_SECRET,
-  // Custom handler for invalid tokens
-  onInvalidToken(error, request, context) {
-    return new Response("Invalid CSRF token", { status: 403 });
-  },
+	cookie,
+	// The name of the form field containing the token (default: "csrf")
+	formDataKey: "csrf",
+	// A secret to sign the token for extra security
+	secret: process.env.CSRF_SECRET,
+	// Custom handler for invalid tokens
+	onInvalidToken(error, request, context) {
+		return new Response("Invalid CSRF token", { status: 403 });
+	},
 });
 ```
 
@@ -3235,8 +3184,8 @@ You can allow cross-site requests from specific trusted origins to bypass token 
 
 ```ts
 let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
-  cookie,
-  origin: "https://trusted.com",
+	cookie,
+	origin: "https://trusted.com",
 });
 ```
 
@@ -3244,8 +3193,8 @@ Or using a RegExp for pattern matching:
 
 ```ts
 let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
-  cookie,
-  origin: /\.trusted\.com$/,
+	cookie,
+	origin: /\.trusted\.com$/,
 });
 ```
 
@@ -3253,8 +3202,8 @@ Or using an array of strings and RegExps:
 
 ```ts
 let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
-  cookie,
-  origin: ["https://trusted1.com", "https://trusted2.com", /\.trusted\.com$/],
+	cookie,
+	origin: ["https://trusted1.com", "https://trusted2.com", /\.trusted\.com$/],
 });
 ```
 
@@ -3262,10 +3211,10 @@ Or using a function for dynamic validation:
 
 ```ts
 let [csrfTokenMiddleware, getCsrfToken] = createCsrfTokenMiddleware({
-  cookie,
-  origin: async (origin, request, context) => {
-    return await checkOriginInDatabase(origin);
-  },
+	cookie,
+	origin: async (origin, request, context) => {
+		return await checkOriginInDatabase(origin);
+	},
 });
 ```
 
@@ -3291,7 +3240,7 @@ import { createRollingCookieMiddleware } from "remix-utils/middleware/rolling-co
 import { cookie } from "~/cookies";
 
 export const [rollingCookieMiddleware] = createRollingCookieMiddleware({
-  cookie,
+	cookie,
 });
 ```
 
