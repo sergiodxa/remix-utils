@@ -106,6 +106,7 @@ export function HoneypotInputs({
 	label = "Please leave this field blank",
 	nonce,
 	className = "__honeypot_inputs",
+  externalClassName
 }: HoneypotInputs.Props) {
 	let context = React.useContext(HoneypotContext);
 
@@ -116,8 +117,12 @@ export function HoneypotInputs({
 	} = context;
 
 	return (
-		<div id={`${nameFieldName}_wrap`} className={className} aria-hidden="true">
-			<style nonce={nonce}>{".__honeypot_inputs { display: none; }"}</style>
+		<div id={`${nameFieldName}_wrap`} 
+			className={externalClassName ?? className}
+			aria-hidden="true">
+			{!externalClassName ? (
+				<style nonce={nonce}>{`.${className} { display: none; }`}</style>
+				) : null}
 			<label htmlFor={nameFieldName}>{label}</label>
 			<input
 				id={nameFieldName}
@@ -154,6 +159,7 @@ export namespace HoneypotInputs {
 		 * @default "__honeypot_inputs"
 		 */
 		className?: string;
+    externalClassName?: string;
 	};
 }
 
