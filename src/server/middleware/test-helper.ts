@@ -32,17 +32,21 @@ export async function runMiddleware<T = Response>(
 		request = new Request("https://remix.utils"),
 		context = new RouterContextProvider(),
 		params = {},
-		unstable_pattern = "",
 		next = defaultNext,
 	}: {
 		request?: Request;
 		params?: Params;
 		context?: Readonly<RouterContextProvider>;
-		unstable_pattern?: string;
 		next?: () => Promise<T>;
 	} = {},
 ) {
-	return (await middleware({ request, params, context, unstable_pattern }, next)) as T;
+	// React Router's middleware args type carries fields the middlewares under
+	// test never read (`pattern`, `url`, …). Assert the minimal shape we need
+	// rather than constructing a full DataFunctionArgs.
+	return (await middleware(
+		{ request, params, context } as Parameters<typeof middleware>[0],
+		next,
+	)) as T;
 }
 
 export async function catchResponse<T>(promise: Promise<T>) {
