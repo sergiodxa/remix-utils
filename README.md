@@ -47,6 +47,17 @@ npm add @edgefirst-dev/batcher @edgefirst-dev/jwt @edgefirst-dev/server-timing @
 
 React and React Router packages should be already installed in your project.
 
+## Compatibility
+
+Remix Utils works with both **React Router v7 (7.13 and later) and v8**.
+
+| If you use…        | You need                                                                    |
+| ------------------ | --------------------------------------------------------------------------- |
+| React Router 7.13+ | React 18 or 19, Node 20+                                                    |
+| React Router v8    | React ≥19.2.7, Node ≥22.22.0 (these are React Router v8's own requirements) |
+
+The middleware utilities (`remix-utils/middleware/*`) rely on React Router's middleware API. On React Router v7 you must turn it on with the middleware future flag in your `react-router.config.ts`; on React Router v8 middleware is enabled by default and the `context` argument is always a `RouterContextProvider`. The middleware utilities themselves are unchanged across both versions.
+
 ## Upgrade from Remix Utils v6
 
 Check the [v6 to v7 upgrade guide](./docs/v6-to-v7.md).

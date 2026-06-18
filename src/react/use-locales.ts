@@ -69,9 +69,9 @@ export function useLocales(): Locales {
 
 	// check if rootMatch exists and has data
 	if (!rootMatch) return undefined;
-	if (!rootMatch.data) return undefined;
+	if (!rootMatch.loaderData) return undefined;
 
-	let { data } = rootMatch;
+	let { loaderData: data } = rootMatch;
 
 	// check if data is an object and has locales
 	if (typeof data !== "object") return undefined;

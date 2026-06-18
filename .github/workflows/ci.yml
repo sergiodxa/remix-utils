@@ -16,12 +16,19 @@ jobs:
       - run: bun run build
 
   typecheck:
-    name: Typechecker
+    name: Typechecker (RR v${{ matrix.react-router }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 7.13.1 is the declared floor; "7" is the latest 7.x; "8" is v8.
+        react-router: ["7.13.1", "7", "8"]
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
+      # Install against the matrixed React Router major (mutates the lockfile,
+      # so this can't use --frozen-lockfile) to prove dual v7/v8 support.
+      - run: bun add --dev react-router@${{ matrix.react-router }}
       - run: bun run typecheck
 
   quality:
@@ -34,12 +41,19 @@ jobs:
       - run: bun run quality
 
   test:
-    name: Tests
+    name: Tests (RR v${{ matrix.react-router }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 7.13.1 is the declared floor; "7" is the latest 7.x; "8" is v8.
+        react-router: ["7.13.1", "7", "8"]
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
+      # Install against the matrixed React Router major (mutates the lockfile,
+      # so this can't use --frozen-lockfile) to prove dual v7/v8 support.
+      - run: bun add --dev react-router@${{ matrix.react-router }}
       - run: bun test
 
   exports:

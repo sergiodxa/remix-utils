@@ -32,17 +32,22 @@ export async function runMiddleware<T = Response>(
 		request = new Request("https://remix.utils"),
 		context = new RouterContextProvider(),
 		params = {},
-		unstable_pattern = "",
 		next = defaultNext,
 	}: {
 		request?: Request;
 		params?: Params;
 		context?: Readonly<RouterContextProvider>;
-		unstable_pattern?: string;
 		next?: () => Promise<T>;
 	} = {},
 ) {
-	return (await middleware({ request, params, context, unstable_pattern }, next)) as T;
+	// The middleware args type carries a route-pattern field that was renamed
+	// between React Router v7 (`unstable_pattern`) and v8 (`pattern`). No
+	// middleware under test reads it, so we assert the minimal args shape to
+	// stay compatible with both majors.
+	return (await middleware(
+		{ request, params, context } as Parameters<typeof middleware>[0],
+		next,
+	)) as T;
 }
 
 export async function catchResponse<T>(promise: Promise<T>) {
