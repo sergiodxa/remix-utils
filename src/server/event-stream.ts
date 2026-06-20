@@ -117,14 +117,10 @@ export function eventStream(
 					if (id) controller.enqueue(encoder.encode(`id: ${id}\n`));
 					controller.enqueue(encoder.encode(`event: ${event}\n`));
 
-					if (closed) return; // If already closed, not enqueue anything
+					const lines = data.replace(/\r\n?/g, "\n").split("\n");
+					const dataLines = lines.map((line) => `data: ${line}`).join("\n");
 
-					data.split("\n").forEach((line, index, array) => {
-						if (closed) return; // If already closed, not enqueue anything
-						let value = `data: ${line}\n`;
-						if (index === array.length - 1) value += "\n";
-						controller.enqueue(encoder.encode(value));
-					});
+					controller.enqueue(encoder.encode(`${dataLines}\n\n`));
 				}
 
 				let cleanup = init(send, close);

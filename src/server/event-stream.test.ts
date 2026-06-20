@@ -28,8 +28,9 @@ describe(eventStream, () => {
 	test("can send data to the client with the send function", async () => {
 		let controller = new AbortController();
 		let response = eventStream(controller.signal, (send, _) => {
-			send({ data: "hello\nworld" });
-			// biome-ignore lint/suspicious/noEmptyBlockStatements: Test
+			send({ data: "hello" });
+			send({ event: "multi-line", data: "hello\nworld" });
+			send({ event: "crlf", data: "hello\r\nworld" });
 			return () => {};
 		});
 
@@ -38,17 +39,25 @@ describe(eventStream, () => {
 		if (!response.body) throw new Error("Response body is undefined");
 
 		let reader = response.body.getReader();
-
-		let encoder = new TextEncoder();
+		let decoder = new TextDecoder();
 
 		let { value: event } = await reader.read();
-		expect(event).toEqual(encoder.encode("event: message\n"));
+		expect(decoder.decode(event)).toEqual("event: message\n");
 
-		let { value: line1 } = await reader.read();
-		expect(line1).toEqual(encoder.encode("data: hello\n"));
+		let { value: data } = await reader.read();
+		expect(decoder.decode(data)).toEqual("data: hello\n\n");
 
-		let { value: line2 } = await reader.read();
-		expect(line2).toEqual(encoder.encode("data: world\n\n"));
+		let { value: multiLineEvent } = await reader.read();
+		expect(decoder.decode(multiLineEvent)).toEqual("event: multi-line\n");
+
+		let { value: multiLineData } = await reader.read();
+		expect(decoder.decode(multiLineData)).toEqual("data: hello\ndata: world\n\n");
+
+		let { value: crlfEvent } = await reader.read();
+		expect(decoder.decode(crlfEvent)).toEqual("event: crlf\n");
+
+		let { value: crlfData } = await reader.read();
+		expect(decoder.decode(crlfData)).toEqual("data: hello\ndata: world\n\n");
 
 		let { done } = await reader.read();
 		expect(done).toBe(true);
