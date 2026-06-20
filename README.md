@@ -47,6 +47,9 @@ npm add @edgefirst-dev/batcher @edgefirst-dev/jwt @edgefirst-dev/server-timing @
 
 React and React Router packages should be already installed in your project.
 
+> [!IMPORTANT]
+> Remix Utils requires **React Router v8**, which itself requires **React ≥19.2.7** and **Node ≥22.22.0**. If your app is still on React Router v7, stay on Remix Utils 9.x.
+
 ## Upgrade from Remix Utils v6
 
 Check the [v6 to v7 upgrade guide](./docs/v6-to-v7.md).

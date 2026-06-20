@@ -54,7 +54,7 @@
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Server/Preload Route Assets
  */
-import type { EntryContext } from "react-router";
+import type { EntryContext, LinkDescriptor } from "react-router";
 
 type Link = { href: string; as: string };
 
@@ -119,8 +119,19 @@ export function preloadLinkedAssets(context: EntryContext, headers: Headers) {
 		.flatMap((match) => {
 			let route = context.routeModules[match.route.id];
 			if (!route) return [];
-			if (route.links instanceof Function) return route.links();
-			return [];
+
+			let links: LinkDescriptor[] = [];
+			let routeDef = context.manifest.routes[match.route.id];
+
+			if (routeDef?.css?.length) {
+				links.push(...routeDef.css.map((href) => ({ rel: "stylesheet", href })));
+			}
+
+			if (route.links instanceof Function) {
+				links.push(...route.links());
+			}
+
+			return links;
 		})
 		.map((link) => {
 			if ("as" in link && "href" in link) {
