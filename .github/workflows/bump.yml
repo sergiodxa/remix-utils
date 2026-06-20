@@ -4,13 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Semver type of new version (major / minor / patch)'
+        description: "Semver type of new version (major / minor / patch)"
         required: true
         type: choice
         options:
-        - major
-        - minor
-        - patch
+          - major
+          - minor
+          - patch
+
+permissions:
+  contents: write
 
 jobs:
   bump-version:
@@ -21,8 +24,8 @@ jobs:
         with:
           ssh-key: ${{ secrets.DEPLOY_KEY }}
 
-      - uses: oven-sh/setup-bun@v1
-      - run: bun install
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
 
       - uses: actions/setup-node@v4
         with:

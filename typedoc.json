@@ -1,0 +1,20 @@
+{
+	"$schema": "https://typedoc.org/schema.json",
+	"name": "Remix Utils",
+	"includeVersion": true,
+	"entryPoints": ["./src/**/*.ts"],
+	"out": "pages",
+	"json": "pages/index.json",
+	"cleanOutputDir": true,
+	"projectDocuments": ["./docs/*.md"],
+	"exclude": [
+		"./src/test/*.ts",
+		"./src/**/*.test.ts",
+		"./src/react/handle-conventions.ts",
+		"./src/server/get-headers.ts",
+		"./src/server/middleware/test-helper.ts",
+		"./src/server/middleware/utils.ts"
+	],
+	"plugin": ["typedoc-plugin-mdn-links"],
+	"categorizeByGroup": false
+}

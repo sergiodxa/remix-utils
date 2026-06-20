@@ -1,0 +1,17 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rollingCookie Remix Cookie should do nothing if request and headers don't have the cookie: null 1`] = `null`;
+
+exports[`rollingCookie Remix Cookie should roll the cookie if the headers didn't set it: "name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax" 1`] = `"name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"`;
+
+exports[`rollingCookie Remix Cookie should do nothing i the headers came with set-cookie for this cookie: "name=InZhbHVlIGZyb20gaGVhZGVycyI%3D.bLpX1ehfp7NZe7E9yNSkd56WbnG3QdHLmfwxt%2BxfkfA; Path=/; SameSite=Lax" 1`] = `"name=InZhbHVlIGZyb20gaGVhZGVycyI%3D.bLpX1ehfp7NZe7E9yNSkd56WbnG3QdHLmfwxt%2BxfkfA; Path=/; SameSite=Lax"`;
+
+exports[`rollingCookie Remix Cookie should roll the cookie if the headers set another different cookie: "other=InZhbHVlIGZyb20gb3RoZXIgY29va2llIg%3D%3D.wn3PvV5dGwPg2Ql8wMy1Q%2B0v%2BU0UQjrI7SBgR6W51QQ; Path=/; SameSite=Lax, name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax" 1`] = `"other=InZhbHVlIGZyb20gb3RoZXIgY29va2llIg%3D%3D.wn3PvV5dGwPg2Ql8wMy1Q%2B0v%2BU0UQjrI7SBgR6W51QQ; Path=/; SameSite=Lax, name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"`;
+
+exports[`rollingCookie Typed Cookie should do nothing if request and headers don't have the cookie: null 1`] = `null`;
+
+exports[`rollingCookie Typed Cookie should roll the cookie if the headers didn't set it: "name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax" 1`] = `"name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"`;
+
+exports[`rollingCookie Typed Cookie should do nothing i the headers came with set-cookie for this cookie: "name=InZhbHVlIGZyb20gaGVhZGVycyI%3D.bLpX1ehfp7NZe7E9yNSkd56WbnG3QdHLmfwxt%2BxfkfA; Path=/; SameSite=Lax" 1`] = `"name=InZhbHVlIGZyb20gaGVhZGVycyI%3D.bLpX1ehfp7NZe7E9yNSkd56WbnG3QdHLmfwxt%2BxfkfA; Path=/; SameSite=Lax"`;
+
+exports[`rollingCookie Typed Cookie should roll the cookie if the headers set another different cookie: "other=InZhbHVlIGZyb20gb3RoZXIgY29va2llIg%3D%3D.wn3PvV5dGwPg2Ql8wMy1Q%2B0v%2BU0UQjrI7SBgR6W51QQ; Path=/; SameSite=Lax, name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax" 1`] = `"other=InZhbHVlIGZyb20gb3RoZXIgY29va2llIg%3D%3D.wn3PvV5dGwPg2Ql8wMy1Q%2B0v%2BU0UQjrI7SBgR6W51QQ; Path=/; SameSite=Lax, name=InZhbHVlIGZyb20gcmVxdWVzdCI%3D.aAWOIClnDL9RHt889ih6hgFjmuEkKI3hAbB1sMFrga4; Path=/; SameSite=Lax"`;
