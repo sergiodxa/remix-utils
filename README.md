@@ -1985,17 +1985,14 @@ function SomePublicForm() {
 > [!NOTE]
 > The label value above is the default one, use it to allow the label to be localized, or remove it if you don't want to change it.
 
-Hide the honeypot using a `externalClassName` in the main stylesheet to make it harder for bots to detect that inputs are hidden.
+Hide the honeypot using a `className` in the main stylesheet to make it harder for bots to detect that inputs are hidden.
 
 ```tsx
 function SomePublicForm() {
 	return (
 		<Form method="post">
-			<HoneypotInputs
-			label="Please leave this field blank"
-			externalClassName="your-css-class"
-			/>
-		{/* more inputs and some buttons */}
+			<HoneypotInputs label="Please leave this field blank" className="your-css-class" />
+			{/* more inputs and some buttons */}
 		</Form>
 	);
 }
@@ -2004,9 +2001,6 @@ function SomePublicForm() {
 ```CSS
 .your-css-class { display: none }
 ```
-
-
-
 
 Finally, in the action the form submits to, you can call `honeypot.check`.
 
