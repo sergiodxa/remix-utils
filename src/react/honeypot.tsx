@@ -102,10 +102,12 @@ type HoneypotContextType = Partial<HoneypotInputProps>;
 
 const HoneypotContext = React.createContext<HoneypotContextType>({});
 
+const DEFAULT_CLASSNAME = "__honeypot_inputs";
+
 export function HoneypotInputs({
 	label = "Please leave this field blank",
 	nonce,
-	className = "__honeypot_inputs",
+	className = DEFAULT_CLASSNAME,
 }: HoneypotInputs.Props) {
 	let context = React.useContext(HoneypotContext);
 
@@ -117,7 +119,12 @@ export function HoneypotInputs({
 
 	return (
 		<div id={`${nameFieldName}_wrap`} className={className} aria-hidden="true">
-			<style nonce={nonce}>{".__honeypot_inputs { display: none; }"}</style>
+			{className === DEFAULT_CLASSNAME ? (
+				<style
+					nonce={nonce}
+					dangerouslySetInnerHTML={{ __html: `.${DEFAULT_CLASSNAME} { display: none; }` }}
+				/>
+			) : null}
 			<label htmlFor={nameFieldName}>{label}</label>
 			<input
 				id={nameFieldName}
