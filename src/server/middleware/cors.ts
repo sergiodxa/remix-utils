@@ -1,5 +1,8 @@
 /**
- * The CORS middleware simplifies the setup of CORS headers. Internally it uses the same {@link cors | CORS} utils exported from `remix-utils/cors`.
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/middleware-cors`.
+ *
+ * The CORS middleware simplifies the setup of CORS headers. Internally it uses the same [CORS](#cors) utils exported from `remix-utils/cors`.
  *
  * To use it, first create a CORS middleware instance:
  *
@@ -27,16 +30,17 @@
  * import { createCorsMiddleware } from "remix-utils/middleware/cors";
  *
  * export const [corsMiddleware] = createCorsMiddleware({
- *   origin: "https://example.com",
- *   methods: ["GET", "POST"],
- *   allowedHeaders: ["Content-Type", "Authorization"],
- *   exposedHeaders: ["X-My-Custom-Header"],
- *   maxAge: 3600,
- *   credentials: true,
+ * 	origin: "https://example.com",
+ * 	methods: ["GET", "POST"],
+ * 	allowedHeaders: ["Content-Type", "Authorization"],
+ * 	exposedHeaders: ["X-My-Custom-Header"],
+ * 	maxAge: 3600,
+ * 	credentials: true,
  * });
  * ```
  *
- * The {@link cors.Options | accepted `options`} are the same as those accepted by the `cors` util.
+ * The [accepted `options`](#options) are the same as those accepted by the `cors` util.
+ *
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/CORS
  */

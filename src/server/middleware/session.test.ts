@@ -45,10 +45,7 @@ describe(createSessionMiddleware, () => {
 	});
 
 	test("the middleware doesn't commits the session if the shouldCommit function returns false", async () => {
-		let [middleware, getSession] = createSessionMiddleware(
-			sessionStorage,
-			() => false,
-		);
+		let [middleware, getSession] = createSessionMiddleware(sessionStorage, () => false);
 
 		let context = new RouterContextProvider();
 
@@ -102,9 +99,7 @@ describe(createSessionMiddleware, () => {
 			},
 		});
 
-		let session = await sessionStorage.getSession(
-			response.headers.get("set-cookie"),
-		);
+		let session = await sessionStorage.getSession(response.headers.get("set-cookie"));
 
 		expect(session.get("key")).toEqual("value");
 	});
@@ -123,9 +118,7 @@ describe(createSessionMiddleware, () => {
 			},
 		});
 
-		let session = await sessionStorage.getSession(
-			response.headers.get("set-cookie"),
-		);
+		let session = await sessionStorage.getSession(response.headers.get("set-cookie"));
 
 		expect(session.get("key")).toEqual("value");
 	});
@@ -144,9 +137,7 @@ describe(createSessionMiddleware, () => {
 			},
 		});
 
-		let session = await sessionStorage.getSession(
-			response.headers.get("set-cookie"),
-		);
+		let session = await sessionStorage.getSession(response.headers.get("set-cookie"));
 
 		expect(session.get("key")).toEqual("value");
 	});
@@ -165,9 +156,7 @@ describe(createSessionMiddleware, () => {
 			},
 		});
 
-		let session = await sessionStorage.getSession(
-			response.headers.get("set-cookie"),
-		);
+		let session = await sessionStorage.getSession(response.headers.get("set-cookie"));
 
 		expect(session.get("key")).toEqual("value");
 	});

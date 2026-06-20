@@ -1,3 +1,29 @@
+/**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/is-prefetch`.
+ *
+ * This function let you identify if a request was created because of a prefetch triggered by using `<Link prefetch="intent">` or `<Link prefetch="render">`.
+ *
+ * This will let you implement a short cache only for prefetch requests so you [avoid the double data request](https://sergiodxa.com/articles/fix-double-data-request-when-prefetching-in-remix).
+ *
+ * ```ts
+ * import { isPrefetch } from "remix-utils/is-prefetch";
+ *
+ * export async function loader({ request }: Route.LoaderArgs) {
+ * 	let data = await getData(request);
+ * 	let headers = new Headers();
+ *
+ * 	if (isPrefetch(request)) {
+ * 		headers.set("Cache-Control", "private, max-age=5, smax-age=0");
+ * 	}
+ *
+ * 	return json(data, { headers });
+ * }
+ * ```
+ *
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Server/Is Prefetch
+ */
 import { getHeaders } from "./get-headers.js";
 
 /**

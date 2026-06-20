@@ -21,7 +21,7 @@ describe(createRequestIDMiddleware, () => {
 		expect(requestId).toBe("test-request-id");
 	});
 
-	test("uses generator a new request id if there's nothing in the header", async () => {
+	test("uses generator if there's nothing in the header", async () => {
 		let [middleware, getRequestID] = createRequestIDMiddleware({
 			generator: () => "test-request-id",
 		});
@@ -35,7 +35,7 @@ describe(createRequestIDMiddleware, () => {
 		expect(requestId).toBe("test-request-id");
 	});
 
-	test("uses generator a new request id if the header is too long", async () => {
+	test("uses generator if the header is too long", async () => {
 		let [middleware, getRequestID] = createRequestIDMiddleware({
 			generator: () => "test-request-id",
 		});
@@ -55,7 +55,7 @@ describe(createRequestIDMiddleware, () => {
 		expect(requestId).toBe("test-request-id");
 	});
 
-	test("uses generator a new request id if the header contains invalid characters", async () => {
+	test("uses generator if the header contains invalid characters", async () => {
 		let [middleware, getRequestID] = createRequestIDMiddleware({
 			generator: () => "test-request-id",
 		});
@@ -73,6 +73,27 @@ describe(createRequestIDMiddleware, () => {
 		let requestId = getRequestID(context);
 
 		expect(requestId).toBe("test-request-id");
+	});
+
+	test("uses generator if header is disabled", async () => {
+		let [middleware, getRequestID] = createRequestIDMiddleware({
+			header: null,
+		});
+
+		let request = new Request("https://remix.run", {
+			headers: {
+				"X-Request-ID": "test-request-id",
+			},
+		});
+
+		let context = new RouterContextProvider();
+
+		await runMiddleware(middleware, { request, context });
+
+		let requestId = getRequestID(context);
+
+		expect(requestId).toBeString();
+		expect(requestId).not.toBe("test-request-id");
 	});
 
 	test("uses default generator if none is provided", async () => {

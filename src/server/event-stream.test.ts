@@ -80,9 +80,7 @@ describe(eventStream, () => {
 				{ headers: { "Content-Type": "text/html" } },
 			);
 
-			expect(spy).toHaveBeenCalledWith(
-				"Overriding Content-Type header to `text/event-stream`",
-			);
+			expect(spy).toHaveBeenCalledWith("Overriding Content-Type header to `text/event-stream`");
 
 			expect(response.headers.get("Content-Type")).toBe("text/event-stream");
 		});
@@ -99,9 +97,7 @@ describe(eventStream, () => {
 				{ headers: { "Cache-Control": "max-age=60" } },
 			);
 
-			expect(spy).toHaveBeenCalledWith(
-				"Overriding Cache-Control header to `no-cache`",
-			);
+			expect(spy).toHaveBeenCalledWith("Overriding Cache-Control header to `no-cache`");
 
 			expect(response.headers.get("Content-Type")).toBe("text/event-stream");
 		});
@@ -118,9 +114,7 @@ describe(eventStream, () => {
 				{ headers: { Connection: "close" } },
 			);
 
-			expect(spy).toHaveBeenCalledWith(
-				"Overriding Connection header to `keep-alive`",
-			);
+			expect(spy).toHaveBeenCalledWith("Overriding Connection header to `keep-alive`");
 
 			expect(response.headers.get("Content-Type")).toBe("text/event-stream");
 		});

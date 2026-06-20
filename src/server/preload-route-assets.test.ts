@@ -62,10 +62,7 @@ describe(preloadRouteAssets, () => {
 				links: undefined,
 			},
 		},
-		future: {
-			v8_middleware: true,
-			unstable_subResourceIntegrity: true,
-		},
+		future: {},
 		staticHandlerContext: {
 			actionData: {},
 			actionHeaders: {},
