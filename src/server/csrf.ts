@@ -355,6 +355,6 @@ export class CSRF {
 		if (!value || !signature) return false;
 		let expectedSignature = this.sign(value);
 		let decodedSignature = decodeBase64url(signature);
-		return constantTimeEqual(decodedSignature, expectedSignature);
+		return constantTimeEqual(decodedSignature, decodeBase64url(expectedSignature));
 	}
 }
