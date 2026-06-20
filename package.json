@@ -264,9 +264,6 @@
 		"quality:fix": "bun run lint:fix && bun run format:fix",
 		"exports": "bun run ./scripts/exports.ts"
 	},
-	"dependencies": {
-		"type-fest": "^5.4.4"
-	},
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.18.2",
 		"@edgefirst-dev/batcher": "^1.0.1",
