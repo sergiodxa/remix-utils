@@ -40,7 +40,7 @@ export function eventStream(
 			function send({ event = "message", data }: SendFunctionArgs) {
 				controller.enqueue(encoder.encode(`event: ${event}\n`));
 
-				const lines = data.split("\n");
+				const lines = data.replace(/\r\n?/g, "\n").split("\n");
 				const dataLines = lines.map((line) => `data: ${line}`).join("\n");
 
 				controller.enqueue(encoder.encode(`${dataLines}\n\n`));

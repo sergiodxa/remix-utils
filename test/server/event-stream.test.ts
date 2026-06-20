@@ -29,6 +29,7 @@ describe(eventStream, () => {
 		let response = eventStream(controller.signal, (send, _) => {
 			send({ data: "hello" });
 			send({ event: "multi-line", data: "hello\nworld" });
+			send({ event: "crlf", data: "hello\r\nworld" });
 			return () => {};
 		});
 
@@ -52,6 +53,12 @@ describe(eventStream, () => {
 		expect(decoder.decode(multiLineData)).toEqual(
 			"data: hello\ndata: world\n\n",
 		);
+
+		let { value: crlfEvent } = await reader.read();
+		expect(decoder.decode(crlfEvent)).toEqual("event: crlf\n");
+
+		let { value: crlfData } = await reader.read();
+		expect(decoder.decode(crlfData)).toEqual("data: hello\ndata: world\n\n");
 
 		let { done } = await reader.read();
 		expect(done).toBe(true);
