@@ -307,7 +307,7 @@ type GlobalAttributesDescriptor = {
 	/**
 	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/writingmode
 	 */
-	writingsuggestions?: boolean | null; // doesn't exist in React types yet.
+	writingSuggestions?: boolean;
 };
 
 export type ScriptDescriptor = {
@@ -491,7 +491,14 @@ export function ExternalScript({
 		};
 
 		for (let [key, value] of Object.entries(attributes)) {
-			if (value) $script.setAttribute(key, value.toString());
+			if (!value) continue;
+
+			if (key === "style" && typeof value === "object") {
+				Object.assign($script.style, value);
+				continue;
+			}
+
+			$script.setAttribute(key, value.toString());
 		}
 
 		document.body.appendChild($script);
