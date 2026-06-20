@@ -281,10 +281,10 @@ export function useExternalScripts() {
 
 			let result = scripts({
 				id: match.id,
-				data: match.data,
+				data: match.loaderData,
 				params: match.params,
 				location,
-				parentsData: matches.slice(0, index).map((match) => match.data),
+				parentsData: matches.slice(0, index).map((match) => match.loaderData),
 				matches,
 			});
 
