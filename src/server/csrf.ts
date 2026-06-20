@@ -242,7 +242,7 @@ export class CSRF {
 	generate(bytes = 32) {
 		let token = randomString(bytes);
 		if (!this.secret) return token;
-		let signature = encodeBase64url(this.sign(token));
+		let signature = this.sign(token);
 		return [token, signature].join(".");
 	}
 
