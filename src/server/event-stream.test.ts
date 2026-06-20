@@ -25,14 +25,14 @@ describe(eventStream, () => {
 		expect(done).toBe(true);
 	});
 
-		test("can send data to the client with the send function", async () => {
-			let controller = new AbortController();
-			let response = eventStream(controller.signal, (send, _) => {
-				send({ data: "hello" });
-				send({ event: "multi-line", data: "hello\nworld" });
-				send({ event: "crlf", data: "hello\r\nworld" });
-				return () => {};
-			});
+	test("can send data to the client with the send function", async () => {
+		let controller = new AbortController();
+		let response = eventStream(controller.signal, (send, _) => {
+			send({ data: "hello" });
+			send({ event: "multi-line", data: "hello\nworld" });
+			send({ event: "crlf", data: "hello\r\nworld" });
+			return () => {};
+		});
 
 		controller.abort();
 
@@ -51,9 +51,7 @@ describe(eventStream, () => {
 		expect(decoder.decode(multiLineEvent)).toEqual("event: multi-line\n");
 
 		let { value: multiLineData } = await reader.read();
-		expect(decoder.decode(multiLineData)).toEqual(
-			"data: hello\ndata: world\n\n",
-		);
+		expect(decoder.decode(multiLineData)).toEqual("data: hello\ndata: world\n\n");
 
 		let { value: crlfEvent } = await reader.read();
 		expect(decoder.decode(crlfEvent)).toEqual("event: crlf\n");
