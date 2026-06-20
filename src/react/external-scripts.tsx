@@ -87,6 +87,7 @@
  * type Props = { children: React.ReactNode; title?: string };
  *
  * export function Document({ children, title }: Props) {
+ * 	let nonce = useNonce();
  * 	return (
  * 		<html lang="en">
  * 			<head>
@@ -99,7 +100,7 @@
  * 			<body>
  * 				{children}
  * 				<ScrollRestoration />
- * 				<ExternalScripts />
+ * 				<ExternalScripts nonce={nonce} />
  * 				<Scripts />
  * 				<LiveReload />
  * 			</body>
@@ -384,6 +385,7 @@ export interface ExternalScriptsHandle<Data = unknown> {
 
 /**
  * Load scripts defined by each route in a single place, often in `root`.
+ * Pass a `nonce` if your app uses a CSP that requires it.
  * @example
  * // Defines a `scripts` function in a route `handle`
  * export const handle: ExternalScriptsHandle<SerializeFrom<typeof loader>> = {
@@ -394,7 +396,7 @@ export interface ExternalScriptsHandle<Data = unknown> {
  *   scripts: [...]
  * }
  * // Then render ExternalScripts in your root
- * return <ExternalScripts />
+ * return <ExternalScripts nonce={nonce} />
  */
 export function ExternalScripts({ nonce }: { nonce?: string }) {
 	let scripts = useExternalScripts();

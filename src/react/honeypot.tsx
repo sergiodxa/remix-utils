@@ -54,11 +54,14 @@
  * ```
  *
  * Now, in every public form you want protect against spam (like a login form), render the `HoneypotInputs` component.
+ * By default it uses the `__honeypot_inputs` class and injects a hidden CSS rule.
+ * If you pass your own `className`, you can hide it with external CSS instead.
  *
  * ```tsx
  * import { HoneypotInputs } from "remix-utils/honeypot/react";
  *
  * function SomePublicForm() {
+ * 	// Use the default class, or pass your own className and hide it in CSS.
  * 	return (
  * 		<Form method="post">
  * 			<HoneypotInputs label="Please leave this field blank" />
@@ -157,7 +160,11 @@ export namespace HoneypotInputs {
 		label?: string;
 		nonce?: string;
 		/**
-		 * The classname used to link the Honeypot input with the CSS that hides it.
+		 * The classname used to hide the honeypot inputs.
+		 *
+		 * When omitted, the component uses the default `__honeypot_inputs` class
+		 * and injects a matching hidden style tag. Pass your own class name if you
+		 * want to hide it from your app's stylesheet instead.
 		 * @default "__honeypot_inputs"
 		 */
 		className?: string;
