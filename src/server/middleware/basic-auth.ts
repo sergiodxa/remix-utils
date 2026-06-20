@@ -1,36 +1,153 @@
+/**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/middleware-basic-auth`.
+ *
+ * > [!NOTE]
+ * > This depends on `@oslojs/crypto`, and `@oslojs/encoding`.
+ *
+ * The Basic Auth middleware let's you add a basic authentication to your routes, this can be useful to protect routes that need to be private.
+ *
+ * > [!WARNING]
+ * > Basic Auth is not secure by itself, it should be used with HTTPS to ensure the username and password are encrypted. Do not use it to protect sensitive data, use a more secure method instead.
+ *
+ * ```ts
+ * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ *
+ * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
+ * 	user: { username: "admin", password: "password" },
+ * });
+ * ```
+ *
+ * To use it, you need to add it to the `middleware` array in the route where you want to use it.
+ *
+ * ```ts
+ * import { basicAuthMiddleware } from "~/middleware/basic-auth.server";
+ * export const middleware: Route.MiddlewareFunction[] = [basicAuthMiddleware];
+ * ```
+ *
+ * Now, when you access the route you will be prompted to enter the username and password.
+ *
+ * The `realm` option let's you set the realm for the authentication, this is the name of the protected area.
+ *
+ * ```ts
+ * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ *
+ * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
+ * 	realm: "My Realm",
+ * 	user: { username: "admin", password: "password" },
+ * });
+ * ```
+ *
+ * The `user` option let's you set the username and password to authenticate, you can also pass an array of users.
+ *
+ * ```ts
+ * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ *
+ * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
+ * 	user: [
+ * 		{ username: "admin", password: "password" },
+ * 		{ username: "user", password: "password" },
+ * 	],
+ * });
+ * ```
+ *
+ * The `verifyUser` option let's you pass a function to verify the user, this can be useful to check the user against a database.
+ *
+ * ```ts
+ * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ *
+ * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
+ * 	verifyUser(username, password) {
+ * 		let user = await getUser(username);
+ * 		if (!user) return false;
+ * 		return await verifyPassword(password, user.password);
+ * 	},
+ * });
+ * ```
+ *
+ * The `verifyUser` function should return `true` if the user is authenticated, and `false` otherwise.
+ *
+ * In case of an invalid username or password the middleware will return a `401` status code with a `WWW-Authenticate` header.
+ *
+ * ```http
+ * HTTP/1.1 401 Unauthorized
+ * WWW-Authenticate: Basic realm="My Realm"
+ *
+ * Unauthorized
+ * ```
+ *
+ * The `invalidUserMessage` option let's you customize the message sent when the user is invalid.
+ *
+ * ```ts
+ * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ *
+ * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
+ * 	invalidUserMessage: "Invalid username or password",
+ * 	user: { username: "admin", password: "password" },
+ * });
+ * ```
+ *
+ * And this will be the response when the user is invalid.
+ *
+ * ```http
+ * HTTP/1.1 401 Unauthorized
+ * WWW-Authenticate: Basic realm="My Realm"
+ *
+ * Invalid username or password
+ * ```
+ *
+ * You can also customize the `invalidUserMessage` by passing a function which will receive the Request and context objects.
+ *
+ * ```ts
+ * import { createBasicAuthMiddleware } from "remix-utils/middleware/basic-auth";
+ *
+ * export const [basicAuthMiddleware] = createBasicAuthMiddleware({
+ * 	invalidUserMessage({ request, context }) {
+ * 		// do something with request or context here
+ * 		return { message: `Invalid username or password for ${username}` };
+ * 	},
+ * 	user: { username: "admin", password: "password" },
+ * });
+ * ```
+ *
+ * In both cases, with a hard-coded value or a function, the invalid message can be a string or an object, if it's an object it will be converted to JSON.
+ *
+ * ```http
+ * HTTP/1.1 401 Unauthorized
+ * WWW-Authenticate: Basic realm="My Realm"
+ *
+ * {"message":"Invalid username or password"}
+ * ```
+ *
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Middleware/Basic Auth
+ */
 import { sha256 } from "@oslojs/crypto/sha2";
 import { decodeBase64 } from "@oslojs/encoding";
-import {
-	type unstable_MiddlewareFunction,
-	type unstable_RouterContextProvider,
-	unstable_createContext,
-} from "react-router";
-import type { unstable_MiddlewareGetter } from "./utils.js";
+import { createContext, type MiddlewareFunction, type RouterContextProvider } from "react-router";
+import type { MiddlewareGetter } from "./utils.js";
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
-const CREDENTIALS_REGEXP =
-	/^ *(?:[Bb][Aa][Ss][Ii][Cc]) +([A-Za-z0-9._~+/-]+=*) *$/;
+const CREDENTIALS_REGEXP = /^ *(?:[Bb][Aa][Ss][Ii][Cc]) +([A-Za-z0-9._~+/-]+=*) *$/;
 const USER_PASS_REGEXP = /^([^:]*):(.*)$/;
 
-export function unstable_createBasicAuthMiddleware(
-	options: unstable_createBasicAuthMiddleware.Options,
-): unstable_createBasicAuthMiddleware.ReturnType {
+export function createBasicAuthMiddleware(
+	options: createBasicAuthMiddleware.Options,
+): createBasicAuthMiddleware.ReturnType {
 	const userInOptions = "user" in options;
 	const verifyUserInOptions = "verifyUser" in options;
 
 	if (!(userInOptions || verifyUserInOptions)) {
 		throw new Error(
-			'unstable_createBasicAuthMiddleware requires options for "username and password" or "verifyUser"',
+			'createBasicAuthMiddleware requires options for "username and password" or "verifyUser"',
 		);
 	}
 
-	const realm = (options.realm ?? "Secure Area")
-		.replace(/\\/g, "\\\\")
-		.replace(/"/g, '\\"');
+	const realm = (options.realm ?? "Secure Area").replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 
-	const userContext = unstable_createContext<string>();
+	const userContext = createContext<string>();
 
 	return [
 		async function basicAuthMiddleware({ request, context }, next) {
@@ -78,7 +195,7 @@ export function unstable_createBasicAuthMiddleware(
 
 	async function getInvalidUserMessage(args: {
 		request: Request;
-		context: unstable_RouterContextProvider;
+		context: Readonly<RouterContextProvider>;
 	}): Promise<string | object> {
 		let invalidUserMessage = options.invalidUserMessage;
 		if (invalidUserMessage === undefined) return "Unauthorized";
@@ -90,7 +207,7 @@ export function unstable_createBasicAuthMiddleware(
 	}
 
 	async function validateCredentials(
-		user: unstable_createBasicAuthMiddleware.User,
+		user: createBasicAuthMiddleware.User,
 		username: string,
 		password: string,
 	) {
@@ -102,10 +219,7 @@ export function unstable_createBasicAuthMiddleware(
 		return usernameEqual && passwordEqual;
 	}
 
-	async function unauthorized(
-		request: Request,
-		context: unstable_RouterContextProvider,
-	) {
+	async function unauthorized(request: Request, context: Readonly<RouterContextProvider>) {
 		let message = await getInvalidUserMessage({ request, context });
 		return Response.json(message, {
 			status: 401,
@@ -115,15 +229,13 @@ export function unstable_createBasicAuthMiddleware(
 	}
 }
 
-export namespace unstable_createBasicAuthMiddleware {
+export namespace createBasicAuthMiddleware {
 	export type Args = {
 		request: Request;
-		context: unstable_RouterContextProvider;
+		context: Readonly<RouterContextProvider>;
 	};
 
-	export type MessageFunction = (
-		args: Args,
-	) => string | object | Promise<string | object>;
+	export type MessageFunction = (args: Args) => string | object | Promise<string | object>;
 
 	interface BaseOptions {
 		/**
@@ -153,19 +265,12 @@ export namespace unstable_createBasicAuthMiddleware {
 	}
 
 	export interface DynamicUserOptions extends BaseOptions {
-		verifyUser(
-			username: string,
-			password: string,
-			args: Args,
-		): boolean | Promise<boolean>;
+		verifyUser(username: string, password: string, args: Args): boolean | Promise<boolean>;
 	}
 
 	export type Options = HardCodedUserOptions | DynamicUserOptions;
 
-	export type ReturnType = [
-		unstable_MiddlewareFunction<Response>,
-		unstable_MiddlewareGetter<User["username"]>,
-	];
+	export type ReturnType = [MiddlewareFunction<Response>, MiddlewareGetter<User["username"]>];
 
 	export type HashFunction = (data: Uint8Array) => Uint8Array;
 }
@@ -173,9 +278,8 @@ export namespace unstable_createBasicAuthMiddleware {
 async function timingSafeEqual(
 	a: string | object | boolean,
 	b: string | object | boolean,
-	hashFunction?: unstable_createBasicAuthMiddleware.HashFunction,
+	hashFunction?: createBasicAuthMiddleware.HashFunction,
 ): Promise<boolean> {
-	// biome-ignore lint/style/noParameterAssign: This is ok
 	if (!hashFunction) hashFunction = sha256;
 
 	let [sa, sb] = await Promise.all([
@@ -190,12 +294,8 @@ async function timingSafeEqual(
 	return decoder.decode(sa) === decoder.decode(sb) && a === b;
 }
 
-function getAuthorization(
-	request: Request,
-): { username: string; password: string } | undefined {
-	let match = CREDENTIALS_REGEXP.exec(
-		request.headers.get("Authorization") || "",
-	);
+function getAuthorization(request: Request): { username: string; password: string } | undefined {
+	let match = CREDENTIALS_REGEXP.exec(request.headers.get("Authorization") || "");
 
 	if (!match) return undefined;
 
@@ -203,9 +303,7 @@ function getAuthorization(
 
 	// If an invalid string is passed to atob(), it throws a `DOMException`.
 	try {
-		userPass = USER_PASS_REGEXP.exec(
-			decoder.decode(decodeBase64(match[1] ?? "")),
-		);
+		userPass = USER_PASS_REGEXP.exec(decoder.decode(decodeBase64(match[1] ?? "")));
 	} catch {} // Do nothing
 
 	if (!userPass) return undefined;

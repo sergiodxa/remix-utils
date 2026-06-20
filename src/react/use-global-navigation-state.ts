@@ -1,3 +1,116 @@
+/**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/use-global-navigation-state`.
+ *
+ * > [!NOTE]
+ * > This depends on `react`, and `react-router`.
+ *
+ * This hook allows you to read the value of `transition.state`, every `fetcher.state` in the app, and `revalidator.state`.
+ *
+ * ```ts
+ * import { useGlobalNavigationState } from "remix-utils/use-global-navigation-state";
+ *
+ * export function GlobalPendingUI() {
+ * 	let states = useGlobalNavigationState();
+ *
+ * 	if (state.includes("loading")) {
+ * 		// The app is loading.
+ * 	}
+ *
+ * 	if (state.includes("submitting")) {
+ * 		// The app is submitting.
+ * 	}
+ *
+ * 	// The app is idle
+ * }
+ * ```
+ *
+ * The return value of `useGlobalNavigationState` can be `"idle"`, `"loading"` or `"submitting"`
+ *
+ * > [!NOTE]
+ * > This is used by the hooks below to determine if the app is loading, submitting or both (pending).
+ *
+ * ---
+ *
+ *
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/use-global-navigation-state`.
+ *
+ * > [!NOTE]
+ * > This depends on `react`, and `react-router`.
+ *
+ * This hook lets you know if the global navigation, if one of any active fetchers is either loading or submitting, or if the revalidator is running.
+ *
+ * ```ts
+ * import { useGlobalPendingState } from "remix-utils/use-global-navigation-state";
+ *
+ * export function GlobalPendingUI() {
+ *   let globalState = useGlobalPendingState();
+ *
+ *   if (globalState === "idle") return null;
+ *   return <Spinner />;
+ * }
+ * ```
+ *
+ * The return value of `useGlobalPendingState` is either `"idle"` or `"pending"`.
+ *
+ * > [!NOTE]
+ * > This hook combines the `useGlobalSubmittingState` and `useGlobalLoadingState` hooks to determine if the app is pending.
+ *
+ * > [!NOTE]
+ * > The `pending` state is a combination of the `loading` and `submitting` states introduced by this hook.
+ *
+ * ---
+ *
+ *
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/use-global-navigation-state`.
+ *
+ * > [!NOTE]
+ * > This depends on `react`, and `react-router`.
+ *
+ * This hook lets you know if the global transition or if one of any active fetchers is submitting.
+ *
+ * ```ts
+ * import { useGlobalSubmittingState } from "remix-utils/use-global-navigation-state";
+ *
+ * export function GlobalPendingUI() {
+ *   let globalState = useGlobalSubmittingState();
+ *
+ *   if (globalState === "idle") return null;
+ *   return <Spinner />;
+ * }
+ * ```
+ *
+ * The return value of `useGlobalSubmittingState` is either `"idle"` or `"submitting"`.
+ *
+ * ---
+ *
+ *
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/use-global-navigation-state`.
+ *
+ * > [!NOTE]
+ * > This depends on `react`, and `react-router`.
+ *
+ * This hook lets you know if the global transition, if one of any active fetchers is loading, or if the revalidator is running
+ *
+ * ```ts
+ * import { useGlobalLoadingState } from "remix-utils/use-global-navigation-state";
+ *
+ * export function GlobalPendingUI() {
+ *   let globalState = useGlobalLoadingState();
+ *
+ *   if (globalState === "idle") return null;
+ *   return <Spinner />;
+ * }
+ * ```
+ *
+ * The return value of `useGlobalLoadingState` is either `"idle"` or `"loading"`.
+ *
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Hook/Use Global Navigation State
+ */
 import { useMemo } from "react";
 import { useFetchers, useNavigation, useRevalidator } from "react-router";
 

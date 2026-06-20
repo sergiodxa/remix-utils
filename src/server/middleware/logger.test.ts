@@ -1,8 +1,8 @@
 import { describe, expect, mock, spyOn, test } from "bun:test";
-import { unstable_createLoggerMiddleware } from "./logger";
-import { runMiddleware } from "./test-helper";
+import { createLoggerMiddleware } from "./logger.js";
+import { runMiddleware } from "./test-helper.js";
 
-describe(unstable_createLoggerMiddleware.name, () => {
+describe(createLoggerMiddleware, () => {
 	spyOn(performance, "now").mockImplementation(() => 0);
 
 	const logger = {
@@ -13,12 +13,12 @@ describe(unstable_createLoggerMiddleware.name, () => {
 	};
 
 	test("returns a middleware function", () => {
-		let [middleware] = unstable_createLoggerMiddleware();
+		let [middleware] = createLoggerMiddleware();
 		expect(middleware).toBeFunction();
 	});
 
 	test("on a 2xx logs info of the request/response", async () => {
-		let [middleware] = unstable_createLoggerMiddleware({ logger });
+		let [middleware] = createLoggerMiddleware({ logger });
 
 		await runMiddleware(middleware);
 
@@ -26,10 +26,10 @@ describe(unstable_createLoggerMiddleware.name, () => {
 	});
 
 	test("on a 3xx logs debug of the redirect", async () => {
-		let [middleware] = unstable_createLoggerMiddleware({ logger });
+		let [middleware] = createLoggerMiddleware({ logger });
 
 		await runMiddleware(middleware, {
-			next() {
+			async next() {
 				return new Response(null, {
 					status: 301,
 					headers: { location: "/new" },
@@ -41,10 +41,10 @@ describe(unstable_createLoggerMiddleware.name, () => {
 	});
 
 	test("on a 4xx logs warn of the request/response", async () => {
-		let [middleware] = unstable_createLoggerMiddleware({ logger });
+		let [middleware] = createLoggerMiddleware({ logger });
 
 		await runMiddleware(middleware, {
-			next() {
+			async next() {
 				return new Response("Not Found", { status: 404 });
 			},
 		});
@@ -53,10 +53,10 @@ describe(unstable_createLoggerMiddleware.name, () => {
 	});
 
 	test("on a 5xx logs error of the request/response", async () => {
-		let [middleware] = unstable_createLoggerMiddleware({ logger });
+		let [middleware] = createLoggerMiddleware({ logger });
 
 		await runMiddleware(middleware, {
-			next() {
+			async next() {
 				return new Response("Internal Server Error", { status: 500 });
 			},
 		});
@@ -65,9 +65,9 @@ describe(unstable_createLoggerMiddleware.name, () => {
 	});
 
 	test("the logged message can be customized", async () => {
-		let [middleware] = unstable_createLoggerMiddleware({
+		let [middleware] = createLoggerMiddleware({
 			logger,
-			formatMessage(request, response, responseTime) {
+			formatMessage(request, _response, _responseTime) {
 				return `${request.method}`;
 			},
 		});

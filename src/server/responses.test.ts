@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
-	ImageType,
 	html,
+	type ImageType,
 	image,
 	javascript,
 	notModified,
@@ -9,10 +9,10 @@ import {
 	stylesheet,
 	txt,
 	xml,
-} from "./responses";
+} from "./responses.js";
 
 describe("Responses", () => {
-	describe(notModified.name, () => {
+	describe(notModified, () => {
 		test("Should return Response with status 304", async () => {
 			let response = notModified();
 			expect(response.text()).resolves.toBe("");
@@ -29,24 +29,20 @@ describe("Responses", () => {
 		});
 	});
 
-	describe(javascript.name, () => {
+	describe(javascript, () => {
 		let content = "console.log('hello world');";
 		test("Should return Response with status 200", async () => {
 			let response = javascript(content);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"application/javascript; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("application/javascript; charset=utf-8");
 		});
 
 		test("Should allow defining the status as second options", async () => {
 			let response = javascript(content, 201);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(201);
-			expect(response.headers.get("Content-Type")).toBe(
-				"application/javascript; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("application/javascript; charset=utf-8");
 		});
 
 		test("Should allow changing the Response headers", async () => {
@@ -55,31 +51,25 @@ describe("Responses", () => {
 			});
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"application/javascript; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("application/javascript; charset=utf-8");
 			expect(response.headers.get("X-Test")).toBe("it worked");
 		});
 	});
 
-	describe(stylesheet.name, () => {
+	describe(stylesheet, () => {
 		let content = "body { color: red; }";
 		test("Should return Response with status 200", async () => {
 			let response = stylesheet(content);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/css; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/css; charset=utf-8");
 		});
 
 		test("Should allow defining the status as second options", async () => {
 			let response = stylesheet(content, 201);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(201);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/css; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/css; charset=utf-8");
 		});
 
 		test("Should allow changing the Response headers", async () => {
@@ -88,14 +78,12 @@ describe("Responses", () => {
 			});
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/css; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/css; charset=utf-8");
 			expect(response.headers.get("X-Test")).toBe("it worked");
 		});
 	});
 
-	describe(pdf.name, () => {
+	describe(pdf, () => {
 		test("Should return Response with status 200", async () => {
 			let blob = new Blob();
 			let response = pdf(blob);
@@ -121,24 +109,20 @@ describe("Responses", () => {
 		});
 	});
 
-	describe(html.name, () => {
+	describe(html, () => {
 		let content = "<h1>Hello World</h1>";
 		test("Should return Response with status 200", async () => {
 			let response = html(content);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/html; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
 		});
 
 		test("Should allow defining the status as second options", async () => {
 			let response = html(content, 201);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(201);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/html; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
 		});
 
 		test("Should allow changing the Response headers", async () => {
@@ -147,31 +131,25 @@ describe("Responses", () => {
 			});
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/html; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
 			expect(response.headers.get("X-Test")).toBe("it worked");
 		});
 	});
 
-	describe(xml.name, () => {
+	describe(xml, () => {
 		let content = "<?xml version='1.0'?><catalog></catalog>";
 		test("Should return Response with status 200", async () => {
 			let response = xml(content);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"application/xml; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("application/xml; charset=utf-8");
 		});
 
 		test("Should allow defining the status as second options", async () => {
 			let response = xml(content, 201);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(201);
-			expect(response.headers.get("Content-Type")).toBe(
-				"application/xml; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("application/xml; charset=utf-8");
 		});
 
 		test("Should allow changing the Response headers", async () => {
@@ -180,14 +158,12 @@ describe("Responses", () => {
 			});
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"application/xml; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("application/xml; charset=utf-8");
 			expect(response.headers.get("X-Test")).toBe("it worked");
 		});
 	});
 
-	describe(txt.name, () => {
+	describe(txt, () => {
 		let content = `
       User-agent: *
       Allow: /
@@ -196,18 +172,14 @@ describe("Responses", () => {
 			let response = txt(content);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/plain; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/plain; charset=utf-8");
 		});
 
 		test("Should allow defining the status as second options", async () => {
 			let response = txt(content, 201);
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(201);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/plain; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/plain; charset=utf-8");
 		});
 
 		test("Should allow changing the Response headers", async () => {
@@ -216,14 +188,12 @@ describe("Responses", () => {
 			});
 			expect(response.text()).resolves.toBe(content);
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Type")).toBe(
-				"text/plain; charset=utf-8",
-			);
+			expect(response.headers.get("Content-Type")).toBe("text/plain; charset=utf-8");
 			expect(response.headers.get("X-Test")).toBe("it worked");
 		});
 	});
 
-	describe(image.name, () => {
+	describe(image, () => {
 		let content = new ArrayBuffer(0);
 		test.each([
 			"image/webp",

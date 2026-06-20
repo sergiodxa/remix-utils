@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test";
 import type { EntryContext } from "react-router";
-import { preloadRouteAssets } from "./preload-route-assets";
+import { preloadRouteAssets } from "./preload-route-assets.js";
 
 // TODO Fix this
-describe(preloadRouteAssets.name, () => {
+describe(preloadRouteAssets, () => {
 	let context: EntryContext = {
 		isSpaMode: false,
 		manifest: {
@@ -18,6 +18,11 @@ describe(preloadRouteAssets.name, () => {
 					id: "root",
 					module: "/root.js",
 					imports: ["/chunk-3.js", "/chunk-4.js"],
+					hasClientMiddleware: false,
+					clientActionModule: undefined,
+					clientLoaderModule: undefined,
+					clientMiddlewareModule: undefined,
+					hydrateFallbackModule: undefined,
 				},
 				"routes/index": {
 					hasAction: false,
@@ -28,6 +33,11 @@ describe(preloadRouteAssets.name, () => {
 					id: "routes/index",
 					imports: ["/chunk-5.js"],
 					module: "/routes/index.js",
+					hasClientMiddleware: false,
+					clientActionModule: undefined,
+					clientLoaderModule: undefined,
+					clientMiddlewareModule: undefined,
+					hydrateFallbackModule: undefined,
 				},
 			},
 			version: "latest",
@@ -52,16 +62,7 @@ describe(preloadRouteAssets.name, () => {
 				links: undefined,
 			},
 		},
-		future: {
-			v2_meta: false,
-			v2_dev: false,
-			v2_errorBoundary: false,
-			v2_headers: false,
-			v2_normalizeFormMethod: false,
-			v2_routeConvention: false,
-			unstable_postcss: false,
-			unstable_tailwind: false,
-		},
+		future: {},
 		staticHandlerContext: {
 			actionData: {},
 			actionHeaders: {},
@@ -98,6 +99,11 @@ describe(preloadRouteAssets.name, () => {
 		},
 		serializeError(error) {
 			return { message: error.message, stack: error.stack };
+		},
+		ssr: false,
+		routeDiscovery: {
+			mode: "lazy",
+			manifestPath: "",
 		},
 	};
 

@@ -1,8 +1,7 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
-import * as React from "react";
-import { Outlet, createRoutesStub } from "react-router";
-import { useLocales } from "./use-locales";
+import { createRoutesStub, Outlet } from "react-router";
+import { useLocales } from "./use-locales.js";
 
 // biome-ignore lint/suspicious/noSkippedTests: Test pass with happy-dom but using it globally breaks other tests, so we skip it for now
 describe.skip(useLocales.name, () => {
@@ -48,38 +47,26 @@ describe.skip(useLocales.name, () => {
 
 	test("should return undefined if locales is an array without only strings", () => {
 		const Stub = createStub();
-		render(
-			<Stub
-				hydrationData={{ loaderData: { root: { locales: ["en", 123] } } }}
-			/>,
-		);
+		render(<Stub hydrationData={{ loaderData: { root: { locales: ["en", 123] } } }} />);
 		expect(screen.getByRole("paragraph").innerText).toBe("");
 	});
 
 	describe("should return the locales value", () => {
 		test("Undefined", () => {
 			const Stub = createStub();
-			render(
-				<Stub
-					hydrationData={{ loaderData: { root: { locales: undefined } } }}
-				/>,
-			);
+			render(<Stub hydrationData={{ loaderData: { root: { locales: undefined } } }} />);
 			expect(screen.getByRole("paragraph").innerText).toBe("");
 		});
 
 		test("String", () => {
 			const Stub = createStub();
-			render(
-				<Stub hydrationData={{ loaderData: { root: { locales: "en" } } }} />,
-			);
+			render(<Stub hydrationData={{ loaderData: { root: { locales: "en" } } }} />);
 			expect(screen.getByRole("paragraph").innerHTML).toBe("en");
 		});
 
 		test("Array", () => {
 			const Stub = createStub();
-			render(
-				<Stub hydrationData={{ loaderData: { root: { locales: ["en"] } } }} />,
-			);
+			render(<Stub hydrationData={{ loaderData: { root: { locales: ["en"] } } }} />);
 			expect(screen.getByRole("paragraph").innerHTML).toBe("en");
 		});
 	});

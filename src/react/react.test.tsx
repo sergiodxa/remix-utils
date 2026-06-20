@@ -1,10 +1,6 @@
 import { describe, test } from "bun:test";
 import { render } from "@testing-library/react";
-import * as React from "react";
-import {
-	AuthenticityTokenInput,
-	AuthenticityTokenProvider,
-} from "./authenticity-token";
+import { AuthenticityTokenInput, AuthenticityTokenProvider } from "./authenticity-token.js";
 
 // biome-ignore lint/suspicious/noSkippedTests: Fix this
 describe.skip("React Utils", () => {

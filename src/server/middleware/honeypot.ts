@@ -1,12 +1,107 @@
-import type { unstable_MiddlewareFunction } from "react-router";
+/**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/middleware-honeypot`.
+ *
+ * > [!NOTE]
+ * > This depends on `react`, `@oslojs/crypto`, and `@oslojs/encoding`.
+ *
+ * The Honeypot middleware allows you to add a honeypot mechanism to your routes, providing a simple yet effective way to protect public forms from spam bots.
+ *
+ * To use the Honeypot middleware, first import and configure it:
+ *
+ * ```ts
+ * import { createHoneypotMiddleware } from "remix-utils/middleware/honeypot";
+ *
+ * export const [honeypotMiddleware, getHoneypotInputProps] = createHoneypotMiddleware({
+ * 	randomizeNameFieldName: false, // Randomize the honeypot field name
+ * 	nameFieldName: "name__confirm", // Default honeypot field name
+ * 	validFromFieldName: "from__confirm", // Optional timestamp field for validation
+ * 	encryptionSeed: undefined, // Unique seed for encryption (recommended for extra security)
+ *
+ * 	onSpam(error) {
+ * 		// Handle SpamError here and return a Response
+ * 		return new Response("Spam detected", { status: 400 });
+ * 	},
+ * });
+ * ```
+ *
+ * Add the `honeypotMiddleware` to the `middleware` array in the route where you want to enable spam protection, use it in your `app/root.tsx` file to apply it globally:
+ *
+ * ```ts
+ * import { honeypotMiddleware } from "~/middleware/honeypot";
+ *
+ * export const middleware: Route.MiddlewareFunction[] = [honeypotMiddleware];
+ * ```
+ *
+ * Use the `getHoneypotInputProps` function in your root loader to retrieve the honeypot input properties:
+ *
+ * ```ts
+ * import { getHoneypotInputProps } from "~/middleware/honeypot";
+ *
+ * export async function loader({ request }: Route.LoaderArgs) {
+ * 	let honeypotInputProps = await getHoneypotInputProps();
+ * 	return json({ honeypotInputProps });
+ * }
+ * ```
+ *
+ * Wrap your application in the `HoneypotProvider` component to make the honeypot input properties available throughout your app:
+ *
+ * ```tsx
+ * import { HoneypotProvider } from "remix-utils/honeypot/react";
+ *
+ * export default function RootComponent() {
+ * 	return (
+ * 		<HoneypotProvider {...honeypotInputProps}>
+ * 			<Outlet />
+ * 		</HoneypotProvider>
+ * 	);
+ * }
+ * ```
+ *
+ * In any public form, include the `HoneypotInputs` component to add the honeypot fields:
+ *
+ * ```tsx
+ * import { HoneypotInputs } from "remix-utils/honeypot/react";
+ *
+ * function PublicForm() {
+ * 	return (
+ * 		<Form method="post">
+ * 			<HoneypotInputs label="Please leave this field blank" />
+ * 			<input type="text" name="name" placeholder="Your Name" />
+ * 			<input type="email" name="email" placeholder="Your Email" />
+ * 			<button type="submit">Submit</button>
+ * 		</Form>
+ * 	);
+ * }
+ * ```
+ *
+ * For requests with a body (e.g., POST, PUT, DELETE) and a content type of `application/x-www-form-urlencoded` or `multipart/form-data`, the middleware validates the honeypot fields. If the request passes the honeypot check, it proceeds to the action handler. If the honeypot check fails, the `onSpam` handler is invoked, allowing you to handle spam requests appropriately.
+ *
+ * In your action handlers, you can process the form data as usual, without worrying about spam checks—they are already handled by the middleware:
+ *
+ * ```ts
+ * export async function action({ request }: Route.ActionArgs) {
+ * 	// If this code runs, the honeypot check passed
+ * 	let formData = await request.formData();
+ * 	let name = formData.get("name");
+ * 	let email = formData.get("email");
+ * 	// Process the form data
+ * }
+ * ```
+ *
+ * The honeypot middleware is designed to be lightweight and effective against basic spam bots. For advanced spam protection, consider combining this with other techniques like CAPTCHA or rate limiting.
+ *
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Middleware/Honeypot
+ */
+import type { MiddlewareFunction } from "react-router";
 import type { HoneypotConfig, HoneypotInputProps } from "../honeypot.js";
 import { Honeypot, SpamError } from "../honeypot.js";
-import type { unstable_MiddlewareGetter } from "./utils.js";
 
-export function unstable_createHoneypotMiddleware({
+export function createHoneypotMiddleware({
 	onSpam,
 	...options
-}: unstable_createHoneypotMiddleware.Options = {}): unstable_createHoneypotMiddleware.ReturnType {
+}: createHoneypotMiddleware.Options = {}): createHoneypotMiddleware.ReturnType {
 	let honeypot = new Honeypot(options);
 
 	return [
@@ -51,13 +146,10 @@ export function unstable_createHoneypotMiddleware({
 	}
 }
 
-export namespace unstable_createHoneypotMiddleware {
+export namespace createHoneypotMiddleware {
 	export interface Options extends HoneypotConfig {
 		onSpam?(error: SpamError): Response;
 	}
 
-	export type ReturnType = [
-		unstable_MiddlewareFunction<Response>,
-		() => Promise<HoneypotInputProps>,
-	];
+	export type ReturnType = [MiddlewareFunction<Response>, () => Promise<HoneypotInputProps>];
 }

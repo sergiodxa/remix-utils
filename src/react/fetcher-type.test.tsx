@@ -1,9 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { render, screen } from "@testing-library/react";
-import * as React from "react";
 import { createRoutesStub, useFetcher } from "react-router";
-
-import { getFetcherType, useFetcherType } from "./fetcher-type";
+import { getFetcherType, useFetcherType } from "./fetcher-type.js";
 
 // biome-ignore lint/suspicious/noSkippedTests: Test pass with happy-dom but using it globally breaks other tests, so we skip it for now
 describe.skip(getFetcherType.name, () => {
@@ -79,9 +77,7 @@ describe.skip(useFetcherType.name, () => {
 		return <h1>{fetcherType}</h1>;
 	}
 
-	let Stub = createRoutesStub([
-		{ id: "root", path: "/", index: true, Component },
-	]);
+	let Stub = createRoutesStub([{ id: "root", path: "/", index: true, Component }]);
 
 	test("renders init", () => {
 		render(<Stub initialEntries={["/"]} />);

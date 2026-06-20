@@ -1,10 +1,11 @@
 import { describe, expect, test } from "bun:test";
-import { getClientIPAddress } from "./get-client-ip-address";
+import { getClientIPAddress } from "./get-client-ip-address.js";
 
 const VALID_IP = "192.168.0.1";
 const INVALID_IP = "abc.def.ghi.jkl";
 
 const headerNames = [
+	"X-Azure-ClientIP" /** Azure Front Door */,
 	"X-Client-IP",
 	"X-Forwarded-For",
 	"HTTP-X-Forwarded-For",
@@ -21,7 +22,7 @@ const headerNames = [
 	"oxygen-buyer-ip" /** Shopify oxygen platform */,
 ];
 
-describe(getClientIPAddress.name, () => {
+describe(getClientIPAddress, () => {
 	describe("Get the IP if it's valid", () => {
 		test.each(headerNames)("%s", (headerName) => {
 			let headers = new Headers();
@@ -49,10 +50,7 @@ describe(getClientIPAddress.name, () => {
 					} else headers.set(header, VALID_IP);
 				}
 
-				for (let header of headerNames.slice(
-					0,
-					headerNames.indexOf(headerName),
-				)) {
+				for (let header of headerNames.slice(0, headerNames.indexOf(headerName))) {
 					headers.delete(header);
 				}
 				expect(getClientIPAddress(headers)).toBe(VALID_IP);

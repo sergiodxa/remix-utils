@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import { getClientLocales } from "./get-client-locales";
+import { getClientLocales } from "./get-client-locales.js";
 
-describe(getClientLocales.name, () => {
+describe(getClientLocales, () => {
 	test("should return undefined if no Accept-Language header is not present", () => {
 		let request = new Request("http://remix.utils/");
 		expect(getClientLocales(request)).toBeUndefined();
@@ -45,9 +45,7 @@ describe(getClientLocales.name, () => {
 
 		let date = new Date("1992-09-29T00:00:00.000Z");
 
-		expect(
-			new Intl.DateTimeFormat(locale, { timeZone: "UTC" }).format(date),
-		).toBe("9/29/1992");
+		expect(new Intl.DateTimeFormat(locale, { timeZone: "UTC" }).format(date)).toBe("9/29/1992");
 
 		// expect(date.toLocaleString(locale, { timeZone: "UTC" })).toBe(
 		//   "9/29/1992, 12:00:00 AM"

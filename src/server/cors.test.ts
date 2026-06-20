@@ -1,13 +1,13 @@
 import { describe, expect, test } from "bun:test";
 
-import { cors } from "./cors";
+import { cors } from "./cors.js";
 
 function createRequest(headers: Headers = new Headers()) {
 	headers.set("Origin", "http://remix.utils");
 	return new Request("http://remix.utils/test", { method: "OPTIONS", headers });
 }
 
-describe(cors.name, () => {
+describe(cors, () => {
 	test("change the Content-Length to 0 for preflight requests", async () => {
 		let request = createRequest();
 		let response = new Response("", { status: 204 });
@@ -45,18 +45,14 @@ describe(cors.name, () => {
 
 			await cors(request, response, { origin: "http://remix.utils" });
 
-			expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-				"http://remix.utils",
-			);
+			expect(response.headers.get("Access-Control-Allow-Origin")).toBe("http://remix.utils");
 		});
 
 		test("Allow request origin", async () => {
 			let request = createRequest();
 			let response = new Response("", { status: 200 });
 			await cors(request, response, { origin: true });
-			expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-				"http://remix.utils",
-			);
+			expect(response.headers.get("Access-Control-Allow-Origin")).toBe("http://remix.utils");
 		});
 
 		test("Use origin function", async () => {
@@ -70,9 +66,7 @@ describe(cors.name, () => {
 				},
 			});
 
-			expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-				"http://remix.utils",
-			);
+			expect(response.headers.get("Access-Control-Allow-Origin")).toBe("http://remix.utils");
 			expect(response.headers.get("Vary")?.includes("Origin")).toBeTruthy();
 		});
 
@@ -94,18 +88,14 @@ describe(cors.name, () => {
 			let request = createRequest();
 			let response = new Response("", { status: 200 });
 			await cors(request, response, { origin: /^http:\/\/remix.utils/ });
-			expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-				"http://remix.utils",
-			);
+			expect(response.headers.get("Access-Control-Allow-Origin")).toBe("http://remix.utils");
 		});
 
 		test("Allow a list of origins", async () => {
 			let request = createRequest();
 			let response = new Response("", { status: 200 });
 			await cors(request, response, { origin: ["http://remix.utils"] });
-			expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-				"http://remix.utils",
-			);
+			expect(response.headers.get("Access-Control-Allow-Origin")).toBe("http://remix.utils");
 		});
 
 		test("Allow a list of origins", async () => {
@@ -126,9 +116,7 @@ describe(cors.name, () => {
 				methods: ["OPTIONS", "GET"],
 			});
 
-			expect(response.headers.get("Access-Control-Allow-Methods")).toBe(
-				"OPTIONS,GET",
-			);
+			expect(response.headers.get("Access-Control-Allow-Methods")).toBe("OPTIONS,GET");
 		});
 	});
 
@@ -140,9 +128,7 @@ describe(cors.name, () => {
 
 			await cors(request, response, { credentials: true });
 
-			expect(response.headers.get("Access-Control-Allow-Credentials")).toBe(
-				"true",
-			);
+			expect(response.headers.get("Access-Control-Allow-Credentials")).toBe("true");
 		});
 	});
 
@@ -161,9 +147,7 @@ describe(cors.name, () => {
 			expect(response.headers.get("Access-Control-Allow-Headers")).toBe(
 				"X-Test-Header,X-Test-Header-2",
 			);
-			expect(response.headers.get("Vary")).toBe(
-				"Origin, Access-Control-Request-Headers",
-			);
+			expect(response.headers.get("Vary")).toBe("Origin, Access-Control-Request-Headers");
 		});
 
 		test("Allow only configured headers", async () => {

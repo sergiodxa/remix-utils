@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import { jsonHash } from "./json-hash";
+import { jsonHash } from "./json-hash.js";
 
-describe(jsonHash.name, () => {
+describe(jsonHash, () => {
 	test("should return a response with a status code", async () => {
 		let response = await jsonHash({}, 201);
 
@@ -11,9 +11,7 @@ describe(jsonHash.name, () => {
 
 	test("should return a response with custom headers", async () => {
 		let response = await jsonHash({}, { headers: { "Set-Cookie": "COOKIE" } });
-		expect(new Headers(response.init?.headers).get("Set-Cookie")).toBe(
-			"COOKIE",
-		);
+		expect(new Headers(response.init?.headers).get("Set-Cookie")).toBe("COOKIE");
 	});
 
 	test("should resolve loader data", async () => {

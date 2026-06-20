@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
-import { ActionFunctionArgs, data } from "react-router";
-import { namedAction } from "./named-action";
+import { type ActionFunctionArgs, data } from "react-router";
+import { namedAction } from "./named-action.js";
 
-describe(namedAction.name, () => {
+describe(namedAction, () => {
 	test("FormData - Convention intent", async () => {
 		let formData = new FormData();
 		formData.append("intent", "update");
@@ -60,9 +60,7 @@ describe(namedAction.name, () => {
 			});
 		}
 
-		expect(action({ request, params: {}, context: {} })).rejects.toThrow(
-			"Action name not found",
-		);
+		expect(action({ request, params: {}, context: {} })).rejects.toThrow("Action name not found");
 	});
 
 	test("Typed Response", async () => {
