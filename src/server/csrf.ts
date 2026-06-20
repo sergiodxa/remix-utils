@@ -175,21 +175,11 @@
  */
 import { hmac } from "@oslojs/crypto/hmac";
 import { SHA256 } from "@oslojs/crypto/sha2";
-import { encodeBase64url } from "@oslojs/encoding";
+import { constantTimeEqual } from "@oslojs/crypto/subtle";
+import { decodeBase64url, encodeBase64url } from "@oslojs/encoding";
 import type { Cookie } from "react-router";
 import { randomString } from "../common/crypto.js";
 import { getHeaders } from "./get-headers.js";
-
-function timingSafeEqual(a: string, b: string) {
-	let mismatch = a.length ^ b.length;
-	let maxLength = Math.max(a.length, b.length);
-
-	for (let index = 0; index < maxLength; index++) {
-		mismatch |= (a.charCodeAt(index) || 0) ^ (b.charCodeAt(index) || 0);
-	}
-
-	return mismatch === 0;
-}
 
 export type CSRFErrorCode =
 	| "missing_token_in_cookie"
@@ -364,6 +354,7 @@ export class CSRF {
 		let [value, signature] = token.split(".");
 		if (!value || !signature) return false;
 		let expectedSignature = this.sign(value);
-		return timingSafeEqual(signature, expectedSignature);
+		let decodedSignature = decodeBase64url(signature);
+		return constantTimeEqual(decodedSignature, expectedSignature);
 	}
 }
