@@ -45,18 +45,14 @@ describe(cors, () => {
 
 			await cors(request, response, { origin: "http://remix.utils" });
 
-			expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-				"http://remix.utils",
-			);
+			expect(response.headers.get("Access-Control-Allow-Origin")).toBe("http://remix.utils");
 		});
 
 		test("Allow request origin", async () => {
 			let request = createRequest();
 			let response = new Response("", { status: 200 });
 			await cors(request, response, { origin: true });
-			expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-				"http://remix.utils",
-			);
+			expect(response.headers.get("Access-Control-Allow-Origin")).toBe("http://remix.utils");
 		});
 
 		test("Use origin function", async () => {
@@ -70,9 +66,7 @@ describe(cors, () => {
 				},
 			});
 
-			expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-				"http://remix.utils",
-			);
+			expect(response.headers.get("Access-Control-Allow-Origin")).toBe("http://remix.utils");
 			expect(response.headers.get("Vary")?.includes("Origin")).toBeTruthy();
 		});
 
@@ -94,18 +88,14 @@ describe(cors, () => {
 			let request = createRequest();
 			let response = new Response("", { status: 200 });
 			await cors(request, response, { origin: /^http:\/\/remix.utils/ });
-			expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-				"http://remix.utils",
-			);
+			expect(response.headers.get("Access-Control-Allow-Origin")).toBe("http://remix.utils");
 		});
 
 		test("Allow a list of origins", async () => {
 			let request = createRequest();
 			let response = new Response("", { status: 200 });
 			await cors(request, response, { origin: ["http://remix.utils"] });
-			expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-				"http://remix.utils",
-			);
+			expect(response.headers.get("Access-Control-Allow-Origin")).toBe("http://remix.utils");
 		});
 
 		test("Allow a list of origins", async () => {
@@ -126,9 +116,7 @@ describe(cors, () => {
 				methods: ["OPTIONS", "GET"],
 			});
 
-			expect(response.headers.get("Access-Control-Allow-Methods")).toBe(
-				"OPTIONS,GET",
-			);
+			expect(response.headers.get("Access-Control-Allow-Methods")).toBe("OPTIONS,GET");
 		});
 	});
 
@@ -140,9 +128,7 @@ describe(cors, () => {
 
 			await cors(request, response, { credentials: true });
 
-			expect(response.headers.get("Access-Control-Allow-Credentials")).toBe(
-				"true",
-			);
+			expect(response.headers.get("Access-Control-Allow-Credentials")).toBe("true");
 		});
 	});
 
@@ -161,9 +147,7 @@ describe(cors, () => {
 			expect(response.headers.get("Access-Control-Allow-Headers")).toBe(
 				"X-Test-Header,X-Test-Header-2",
 			);
-			expect(response.headers.get("Vary")).toBe(
-				"Origin, Access-Control-Request-Headers",
-			);
+			expect(response.headers.get("Vary")).toBe("Origin, Access-Control-Request-Headers");
 		});
 
 		test("Allow only configured headers", async () => {

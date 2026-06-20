@@ -77,9 +77,7 @@ describe.skip(useFetcherType.name, () => {
 		return <h1>{fetcherType}</h1>;
 	}
 
-	let Stub = createRoutesStub([
-		{ id: "root", path: "/", index: true, Component },
-	]);
+	let Stub = createRoutesStub([{ id: "root", path: "/", index: true, Component }]);
 
 	test("renders init", () => {
 		render(<Stub initialEntries={["/"]} />);

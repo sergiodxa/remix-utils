@@ -61,9 +61,7 @@ describe(createSingletonMiddleware, () => {
 			instantiator: () => new Test(),
 		});
 
-		expect(() => getInstance(context)).toThrowError(
-			"Singleton instance not found",
-		);
+		expect(() => getInstance(context)).toThrowError("Singleton instance not found");
 	});
 
 	test("instantiator can access request and context", async () => {

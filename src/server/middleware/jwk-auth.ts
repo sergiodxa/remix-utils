@@ -1,17 +1,22 @@
 /**
+ *
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/middleware-jwk-auth`.
+ *
+ * > [!NOTE]
  * > This depends on `@edgefirst-dev/jwt`.
  *
  * The JWK Auth middleware let's you add a JSON Web Key authentication to your routes, this can be useful to protect routes that need to be private and will be accessed by other services.
  *
- * > **Warning**: JWK Auth is more secure than Basic Auth, but it should be used with HTTPS to ensure the token is encrypted.
+ * > [!WARNING]
+ * > JWK Auth is more secure than Basic Auth, but it should be used with HTTPS to ensure the token is encrypted.
  *
  * ```ts
  * import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
  *
- * export const [jwkAuthMiddleware, getJWTPayload] =
- *   createJWKAuthMiddleware({
- *     jwksUri: "https://auth.example.com/.well-known/jwks.json",
- *   });
+ * export const [jwkAuthMiddleware, getJWTPayload] = createJWKAuthMiddleware({
+ * 	jwksUri: "https://auth.example.com/.well-known/jwks.json",
+ * });
  * ```
  *
  * The `jwksUri` option let's you set the URL to the JWKS endpoint, this is the URL where the public keys are stored.
@@ -40,8 +45,8 @@
  * import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
  *
  * export const [jwkAuthMiddleware] = createJWKAuthMiddleware({
- *   realm: "My Realm",
- *   jwksUri: "https://auth.example.com/.well-known/jwks.json",
+ * 	realm: "My Realm",
+ * 	jwksUri: "https://auth.example.com/.well-known/jwks.json",
  * });
  * ```
  *
@@ -51,8 +56,8 @@
  * import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
  *
  * export const [jwkAuthMiddleware] = createJWKAuthMiddleware({
- *   invalidTokenMessage: "Invalid token",
- *   jwksUri: "https://auth.example.com/.well-known/jwks.json",
+ * 	invalidTokenMessage: "Invalid token",
+ * 	jwksUri: "https://auth.example.com/.well-known/jwks.json",
  * });
  * ```
  *
@@ -71,11 +76,11 @@
  * import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
  *
  * export const [jwkAuthMiddleware] = createJWKAuthMiddleware({
- *   invalidTokenMessage({ request, context }) {
- *     // do something with request or context here
- *     return { message: `Invalid token` };
- *   },
- *   jwksUri: "https://auth.example.com/.well-known/jwks.json",
+ * 	invalidTokenMessage({ request, context }) {
+ * 		// do something with request or context here
+ * 		return { message: `Invalid token` };
+ * 	},
+ * 	jwksUri: "https://auth.example.com/.well-known/jwks.json",
  * });
  * ```
  *
@@ -94,22 +99,23 @@
  * import { getJWTPayload } from "~/middleware/jwk-auth.server";
  *
  * export async function loader({ request }: Route.LoaderArgs) {
- *   let payload = getJWTPayload();
- *   // ...
+ * 	let payload = getJWTPayload();
+ * 	// ...
  * }
  * ```
  *
  * And you can use the payload to get the subject, scope, issuer, audience, or any other information stored in the token.
  *
- * ## With a Custom Header
+ * ##### With a Custom Header
  *
  * If your app receives the JWT in a custom header instead of the `Authorization` header you can tell the middleware to look for the token in that header.
  *
  * ```ts
  * import { createJWKAuthMiddleware } from "remix-utils/middleware/jwk-auth";
  *
- * export const [jwkAuthMiddleware, getJWTPayload] =
- *   createJWKAuthMiddleware({ header: "X-API-Key" });
+ * export const [jwkAuthMiddleware, getJWTPayload] = createJWKAuthMiddleware({
+ * 	header: "X-API-Key",
+ * });
  * ```
  *
  * Now use the middleware as usual, but now instead of looking for the token in the `Authorization` header it will look for it in the `X-API-Key` header.
@@ -120,7 +126,7 @@
  * export const middleware: Route.MiddlewareFunction[] = [jwkAuthMiddleware];
  * ```
  *
- * ## With a Cookie
+ * ##### With a Cookie
  *
  * If you save a JWT in a cookie using React Router's Cookie API, you can tell the middleware to look for the token in the cookie instead of the `Authorization` header.
  *
@@ -129,14 +135,15 @@
  * import { createCookie } from "react-router";
  *
  * export const cookie = createCookie("jwt", {
- *   path: "/",
- *   sameSite: "lax",
- *   httpOnly: true,
- *   secure: process.env.NODE_ENV === "true",
+ * 	path: "/",
+ * 	sameSite: "lax",
+ * 	httpOnly: true,
+ * 	secure: process.env.NODE_ENV === "true",
  * });
  *
- * export const [jwkAuthMiddleware, getJWTPayload] =
- *   createJWKAuthMiddleware({ cookie });
+ * export const [jwkAuthMiddleware, getJWTPayload] = createJWKAuthMiddleware({
+ * 	cookie,
+ * });
  * ```
  *
  * Then use the middleware as usual, but now instead of looking for the token in the `Authorization` header it will look for it in the cookie.
@@ -146,6 +153,7 @@
  *
  * export const middleware: Route.MiddlewareFunction[] = [jwkAuthMiddleware];
  * ```
+ *
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/JWK Auth
  */
@@ -179,9 +187,7 @@ export function createJWKAuthMiddleware({
 			}
 
 			if (!cookieInOptions) {
-				let authorization = request.headers.get(
-					options.headerName ?? "Authorization",
-				);
+				let authorization = request.headers.get(options.headerName ?? "Authorization");
 
 				if (!authorization) throw await unauthorized(request, context);
 
@@ -197,10 +203,7 @@ export function createJWKAuthMiddleware({
 			if (!token) throw await unauthorized(request, context);
 
 			try {
-				context.set(
-					tokenContext,
-					await JWT.verify(token, await remote, options.verifyOptions),
-				);
+				context.set(tokenContext, await JWT.verify(token, await remote, options.verifyOptions));
 			} catch {
 				throw await unauthorized(request, context);
 			}
@@ -225,10 +228,7 @@ export function createJWKAuthMiddleware({
 		return invalidUserMessage;
 	}
 
-	async function unauthorized(
-		request: Request,
-		context: Readonly<RouterContextProvider>,
-	) {
+	async function unauthorized(request: Request, context: Readonly<RouterContextProvider>) {
 		let message = await getInvalidUserMessage({ request, context });
 		return Response.json(message, {
 			status: 401,
@@ -244,9 +244,7 @@ export namespace createBearerAuthMiddleware {
 		context: Readonly<RouterContextProvider>;
 	};
 
-	export type MessageFunction = (
-		args: Args,
-	) => string | object | Promise<string | object>;
+	export type MessageFunction = (args: Args) => string | object | Promise<string | object>;
 
 	export interface BaseOptions {
 		/**
@@ -322,8 +320,5 @@ export namespace createBearerAuthMiddleware {
 
 	export type Options = HeaderOptions | CookieOptions;
 
-	export type ReturnType = [
-		MiddlewareFunction<Response>,
-		MiddlewareGetter<JWT>,
-	];
+	export type ReturnType = [MiddlewareFunction<Response>, MiddlewareGetter<JWT>];
 }

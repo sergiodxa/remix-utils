@@ -58,9 +58,7 @@ describe(Honeypot, () => {
 		let formData = new FormData();
 		formData.set(props.validFromFieldName, props.encryptedValidFrom);
 
-		expect(() => honeypot.check(formData)).toThrowError(
-			new SpamError("Missing honeypot input"),
-		);
+		expect(() => honeypot.check(formData)).toThrowError(new SpamError("Missing honeypot input"));
 	});
 
 	test("fails validity check if input is not empty", async () => {
@@ -70,9 +68,7 @@ describe(Honeypot, () => {
 		let formData = new FormData();
 		formData.set(props.nameFieldName, "not empty");
 
-		expect(() => honeypot.check(formData)).toThrowError(
-			new SpamError("Honeypot input not empty"),
-		);
+		expect(() => honeypot.check(formData)).toThrowError(new SpamError("Honeypot input not empty"));
 	});
 
 	test("fails if valid from timestamp is missing", async () => {
@@ -113,10 +109,7 @@ describe(Honeypot, () => {
 
 		let formData = new FormData();
 		formData.set(props.nameFieldName, "");
-		formData.set(
-			props.validFromFieldName,
-			await encrypt((Date.now() + 10_000).toString(), "SEED"),
-		);
+		formData.set(props.validFromFieldName, await encrypt((Date.now() + 10_000).toString(), "SEED"));
 
 		expect(honeypot.check(formData)).rejects.toThrowError(
 			new SpamError("Honeypot valid from is in future"),

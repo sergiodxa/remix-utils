@@ -1,4 +1,8 @@
 /**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/middleware-batcher`.
+ *
+ * > [!NOTE]
  * > This depends on `@edgefirst-dev/batcher`.
  *
  * The batcher middleware let's you get a per request instance of a batcher object that will dedupe and batch multiple calls to the same function.
@@ -8,8 +12,7 @@
  * ```ts
  * import { createBatcherMiddleware } from "remix-utils/middleware/batcher";
  *
- * export const [batcherMiddleware, getBatcher] =
- *   createBatcherMiddleware();
+ * export const [batcherMiddleware, getBatcher] = createBatcherMiddleware();
  * ```
  *
  * To use it, you need to add it to the `middleware` array in the route where you want to use it.
@@ -25,11 +28,11 @@
  * import { getBatcher } from "~/middleware/batcher.server";
  *
  * export async function loader({ context }: Route.LoaderArgs) {
- *   let batcher = getBatcher(context);
- *   let result = await batcher.batch("key", async () => {
- *     return await getData();
- *   });
- *   // ...
+ * 	let batcher = getBatcher(context);
+ * 	let result = await batcher.batch("key", async () => {
+ * 		return await getData();
+ * 	});
+ * 	// ...
  * }
  * ```
  *
@@ -40,9 +43,9 @@
  * import { getData } from "~/data";
  *
  * export function getDataBatched(batcher: Batcher) {
- *   return batcher.batch("key", async () => {
- *     return await getData();
- *   });
+ * 	return batcher.batch("key", async () => {
+ * 		return await getData();
+ * 	});
  * }
  * ```
  *
@@ -53,11 +56,12 @@
  * import { getDataBatched } from "~/data";
  *
  * export async function loader({ context }: Route.LoaderArgs) {
- *   let batcher = getBatcher(context);
- *   let result = await getDataBatched(batcher);
- *   // ...
+ * 	let batcher = getBatcher(context);
+ * 	let result = await getDataBatched(batcher);
+ * 	// ...
  * }
  * ```
+ *
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Batcher
  */

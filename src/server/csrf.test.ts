@@ -68,10 +68,7 @@ describe("CSRF", () => {
 		formData.set("csrf", "token");
 
 		expect(csrf.validate(formData, headers)).rejects.toThrow(
-			new CSRFError(
-				"missing_token_in_cookie",
-				"Can't find CSRF token in cookie.",
-			),
+			new CSRFError("missing_token_in_cookie", "Can't find CSRF token in cookie."),
 		);
 	});
 
@@ -113,10 +110,7 @@ describe("CSRF", () => {
 		formData.set("csrf", "wrong token");
 
 		expect(csrf.validate(formData, headers)).rejects.toThrow(
-			new CSRFError(
-				"mismatched_token",
-				"Can't verify CSRF token authenticity.",
-			),
+			new CSRFError("mismatched_token", "Can't verify CSRF token authenticity."),
 		);
 	});
 
@@ -129,17 +123,27 @@ describe("CSRF", () => {
 		formData.set("csrf", token);
 
 		let headers = new Headers({
-			cookie: await cookie.serialize(
-				[csrf.generate(), token.split(".").at(1)].join("."),
-			),
+			cookie: await cookie.serialize([csrf.generate(), token.split(".").at(1)].join(".")),
 		});
 
 		expect(securetCSRF.validate(formData, headers)).rejects.toThrow(
-			new CSRFError(
-				"tampered_token_in_cookie",
-				"Tampered CSRF token in cookie.",
-			),
+			new CSRFError("tampered_token_in_cookie", "Tampered CSRF token in cookie."),
 		);
+	});
+
+	test("rejects CSRF tokens signed with a different secret", async () => {
+		let token = new CSRF({ cookie, secret: "my-secret" }).generate();
+
+		let formData = new FormData();
+		formData.set("csrf", token);
+
+		let headers = new Headers({
+			cookie: await cookie.serialize(token),
+		});
+
+		expect(
+			new CSRF({ cookie, secret: "different-secret" }).validate(formData, headers),
+		).rejects.toThrow(new CSRFError("tampered_token_in_cookie", "Tampered CSRF token in cookie."));
 	});
 
 	test("commits the token to a cookie", async () => {

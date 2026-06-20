@@ -60,9 +60,7 @@ describe(namedAction, () => {
 			});
 		}
 
-		expect(action({ request, params: {}, context: {} })).rejects.toThrow(
-			"Action name not found",
-		);
+		expect(action({ request, params: {}, context: {} })).rejects.toThrow("Action name not found");
 	});
 
 	test("Typed Response", async () => {

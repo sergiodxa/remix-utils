@@ -36,15 +36,11 @@ describe(createBasicAuthMiddleware, () => {
 			user: { username, password },
 		});
 
-		let response = await catchResponse(
-			runMiddleware(middleware, { request: unauthorizedRequest }),
-		);
+		let response = await catchResponse(runMiddleware(middleware, { request: unauthorizedRequest }));
 
 		expect(response.status).toBe(401);
 		expect(response.statusText).toBe("Unauthorized");
-		expect(response.headers.get("WWW-Authenticate")).toBe(
-			'Basic realm="Secure Area"',
-		);
+		expect(response.headers.get("WWW-Authenticate")).toBe('Basic realm="Secure Area"');
 	});
 
 	test("the Realm is customizable", async () => {
@@ -53,14 +49,10 @@ describe(createBasicAuthMiddleware, () => {
 			realm: "Custom Realm",
 		});
 
-		let response = await catchResponse(
-			runMiddleware(middleware, { request: unauthorizedRequest }),
-		);
+		let response = await catchResponse(runMiddleware(middleware, { request: unauthorizedRequest }));
 
 		expect(response.status).toBe(401);
-		expect(response.headers.get("WWW-Authenticate")).toBe(
-			'Basic realm="Custom Realm"',
-		);
+		expect(response.headers.get("WWW-Authenticate")).toBe('Basic realm="Custom Realm"');
 	});
 
 	test("the response body is customizable", async () => {
@@ -69,9 +61,7 @@ describe(createBasicAuthMiddleware, () => {
 			invalidUserMessage: "Custom Message",
 		});
 
-		let response = await catchResponse(
-			runMiddleware(middleware, { request: unauthorizedRequest }),
-		);
+		let response = await catchResponse(runMiddleware(middleware, { request: unauthorizedRequest }));
 
 		expect(response.json()).resolves.toEqual("Custom Message");
 	});
@@ -82,20 +72,17 @@ describe(createBasicAuthMiddleware, () => {
 			invalidUserMessage: { message: "Custom Message" },
 		});
 
-		let response = await catchResponse(
-			runMiddleware(middleware, { request: unauthorizedRequest }),
-		);
+		let response = await catchResponse(runMiddleware(middleware, { request: unauthorizedRequest }));
 
 		expect(response.json()).resolves.toEqual({ message: "Custom Message" });
 	});
 
 	test("the response body can be customized with a function", async () => {
-		let invalidUserMessage =
-			mock<createBasicAuthMiddleware.MessageFunction>().mockImplementation(
-				({ request }) => {
-					return `Custom Message: ${request.url}`;
-				},
-			);
+		let invalidUserMessage = mock<createBasicAuthMiddleware.MessageFunction>().mockImplementation(
+			({ request }) => {
+				return `Custom Message: ${request.url}`;
+			},
+		);
 
 		let [middleware] = createBasicAuthMiddleware({
 			user: { username, password },
@@ -113,9 +100,7 @@ describe(createBasicAuthMiddleware, () => {
 			context,
 		});
 
-		expect(response.json()).resolves.toEqual(
-			"Custom Message: https://remix.utils/",
-		);
+		expect(response.json()).resolves.toEqual("Custom Message: https://remix.utils/");
 	});
 
 	test("creates a basic auth middleware with username and password", async () => {
@@ -171,9 +156,7 @@ describe(createBasicAuthMiddleware, () => {
 		});
 
 		expect(response.status).toBe(401);
-		expect(response.headers.get("WWW-Authenticate")).toBe(
-			'Basic realm="Secure Area"',
-		);
+		expect(response.headers.get("WWW-Authenticate")).toBe('Basic realm="Secure Area"');
 	});
 
 	test("create a basic auth middleware with a list of users", async () => {
@@ -212,14 +195,11 @@ describe(createBasicAuthMiddleware, () => {
 		);
 
 		expect(response.status).toBe(401);
-		expect(response.headers.get("WWW-Authenticate")).toBe(
-			'Basic realm="Secure Area"',
-		);
+		expect(response.headers.get("WWW-Authenticate")).toBe('Basic realm="Secure Area"');
 	});
 
 	test("allows customizing the HashFunction", async () => {
-		let hashFunction =
-			mock<createBasicAuthMiddleware.HashFunction>().mockImplementation(sha256);
+		let hashFunction = mock<createBasicAuthMiddleware.HashFunction>().mockImplementation(sha256);
 
 		let [middleware] = createBasicAuthMiddleware({
 			user: { username, password },

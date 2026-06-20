@@ -15,17 +15,14 @@ describe(fetchDest, () => {
 		expect(fetchDest(request)).toBeNull();
 	});
 
-	test.each(FetchDestValues)(
-		"returns the correct FetchDest value '%s'",
-		(value) => {
-			let request = new Request("http://example.com", {
-				headers: {
-					"Sec-Fetch-Dest": value,
-				},
-			});
-			expect(fetchDest(request)).toBe(value);
-		},
-	);
+	test.each(FetchDestValues)("returns the correct FetchDest value '%s'", (value) => {
+		let request = new Request("http://example.com", {
+			headers: {
+				"Sec-Fetch-Dest": value,
+			},
+		});
+		expect(fetchDest(request)).toBe(value);
+	});
 });
 
 describe(fetchMode, () => {
@@ -34,17 +31,14 @@ describe(fetchMode, () => {
 		expect(fetchMode(request)).toBeNull();
 	});
 
-	test.each(FetchModeValues)(
-		"returns the correct FetchMode value '%s'",
-		(value) => {
-			let request = new Request("http://example.com", {
-				headers: {
-					"Sec-Fetch-Mode": value,
-				},
-			});
-			expect(fetchMode(request)).toBe(value);
-		},
-	);
+	test.each(FetchModeValues)("returns the correct FetchMode value '%s'", (value) => {
+		let request = new Request("http://example.com", {
+			headers: {
+				"Sec-Fetch-Mode": value,
+			},
+		});
+		expect(fetchMode(request)).toBe(value);
+	});
 });
 
 describe(fetchSite, () => {
@@ -53,18 +47,15 @@ describe(fetchSite, () => {
 		expect(fetchSite(request)).toBeNull();
 	});
 
-	test.each(FetchSiteValues)(
-		"returns the correct FetchSite value '%s'",
-		(value) => {
-			let request = new Request("http://example.com", {
-				headers: {
-					"Sec-Fetch-Site": value,
-				},
-			});
+	test.each(FetchSiteValues)("returns the correct FetchSite value '%s'", (value) => {
+		let request = new Request("http://example.com", {
+			headers: {
+				"Sec-Fetch-Site": value,
+			},
+		});
 
-			expect(fetchSite(request)).toBe(value);
-		},
-	);
+		expect(fetchSite(request)).toBe(value);
+	});
 });
 
 describe(isUserInitiated, () => {
