@@ -1,6 +1,7 @@
-*.log
-.DS_Store
-node_modules
-
 /build
 /coverage
+/pages
+/node_modules
+
+*.log
+.DS_Store

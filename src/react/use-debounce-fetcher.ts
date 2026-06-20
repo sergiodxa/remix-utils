@@ -1,10 +1,72 @@
-import type {
-	SubmitOptions,
-	FetcherWithComponents,
-	SubmitFunction,
-} from "@remix-run/react";
-import { useFetcher } from "@remix-run/react";
+/**
+ * > [!NOTE]
+ * > Install using `bunx shadcn@latest add @remix-utils/use-debounce-fetcher` and `bunx shadcn@latest add @remix-utils/use-debounce-submit`.
+ *
+ * > [!NOTE]
+ * > This depends on `react`, and `react-router`.
+ *
+ * > [!WARN]
+ * > These hooks are marked as deprecated, instead of debouncing at the component-level, do it at the route-level. See https://sergiodxa.com/tutorials/debounce-loaders-and-actions-in-react-router.
+ *
+ * `useDebounceFetcher` and `useDebounceSubmit` are wrappers of `useFetcher` and `useSubmit` that add debounce support.
+ *
+ * These hooks are based on [@JacobParis](https://github.com/JacobParis)' [article](https://www.jacobparis.com/content/use-debounce-fetcher).
+ *
+ * ```tsx
+ * import { useDebounceFetcher } from "remix-utils/use-debounce-fetcher";
+ *
+ * export function Component({ data }) {
+ * 	let fetcher = useDebounceFetcher<Type>();
+ *
+ * 	function handleClick() {
+ * 		fetcher.submit(data, { debounceTimeout: 1000 });
+ * 	}
+ *
+ * 	return (
+ * 		<button type="button" onClick={handleClick}>
+ * 			Do Something
+ * 		</button>
+ * 	);
+ * }
+ * ```
+ *
+ * Usage with `useDebounceSubmit` is similar.
+ *
+ * ```tsx
+ * import { useDebounceSubmit } from "remix-utils/use-debounce-submit";
+ *
+ * export function Component({ name }) {
+ * 	let submit = useDebounceSubmit();
+ *
+ * 	return (
+ * 		<input
+ * 			name={name}
+ * 			type="text"
+ * 			onChange={(event) => {
+ * 				submit(event.target.form, {
+ * 					navigate: false, // use a fetcher instead of a page navigation
+ * 					fetcherKey: name, // cancel any previous fetcher with the same key
+ * 					debounceTimeout: 1000,
+ * 				});
+ * 			}}
+ * 			onBlur={() => {
+ * 				submit(event.target.form, {
+ * 					navigate: false,
+ * 					fetcherKey: name,
+ * 					debounceTimeout: 0, // submit immediately, canceling any pending fetcher
+ * 				});
+ * 			}}
+ * 		/>
+ * 	);
+ * }
+ * ```
+ *
+ * @author [Sergio Xalambrí](https://sergiodxa.com)
+ * @module Hook/Use Debounce Fetcher
+ */
 import { useCallback, useEffect, useRef } from "react";
+import type { FetcherWithComponents, SubmitFunction, SubmitOptions } from "react-router";
+import { useFetcher } from "react-router";
 
 type SubmitTarget = Parameters<SubmitFunction>["0"];
 
@@ -29,13 +91,16 @@ type DebounceSubmitFunction = (
 	options?: SubmitOptions & { debounceTimeout?: number },
 ) => void;
 
-type DebouncedFetcher<Data = unknown> = Omit<
-	FetcherWithComponents<Data>,
-	"submit"
-> & { submit: DebounceSubmitFunction };
+type DebouncedFetcher<Data = unknown> = Omit<FetcherWithComponents<Data>, "submit"> & {
+	submit: DebounceSubmitFunction;
+};
 
-export function useDebounceFetcher<Data>() {
-	let timeoutRef = useRef<NodeJS.Timeout | undefined>();
+/**
+ * @deprecated Debounce at the route level instead of the component level.
+ * @see https://sergiodxa.com/tutorials/debounce-loaders-and-actions-in-react-router
+ */
+export function useDebounceFetcher<Data>(opts?: Parameters<typeof useFetcher>[0]) {
+	let timeoutRef = useRef<Timer>(null);
 
 	useEffect(() => {
 		// no initialize step required since timeoutRef defaults undefined
@@ -43,22 +108,25 @@ export function useDebounceFetcher<Data>() {
 		return () => {
 			if (timeout) clearTimeout(timeout);
 		};
-	}, [timeoutRef]);
+	}, []);
 
-	let fetcher = useFetcher<Data>() as DebouncedFetcher<Data>;
+	let fetcher = useFetcher<Data>(opts) as DebouncedFetcher<Data>;
+
+	// Clone the original submit to avoid a recursive loop
+	const originalSubmit = fetcher.submit;
 
 	fetcher.submit = useCallback(
 		(target, { debounceTimeout = 0, ...options } = {}) => {
 			if (timeoutRef.current) clearTimeout(timeoutRef.current);
 			if (!debounceTimeout || debounceTimeout <= 0) {
-				return fetcher.submit(target, options);
+				return originalSubmit(target, options);
 			}
 
 			timeoutRef.current = setTimeout(() => {
-				fetcher.submit(target, options);
+				originalSubmit(target, options);
 			}, debounceTimeout);
 		},
-		[fetcher],
+		[originalSubmit],
 	);
 
 	return fetcher;

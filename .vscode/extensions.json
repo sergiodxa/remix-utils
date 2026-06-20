@@ -1,0 +1,14 @@
+{
+	"recommendations": [
+		"bierner.jsdoc-markdown-highlighting",
+		"oxc.oxc-vscode",
+		"bradlc.vscode-tailwindcss",
+		"csstools.postcss",
+		"formulahendry.auto-close-tag",
+		"formulahendry.auto-rename-tag",
+		"github.vscode-github-actions",
+		"vscode-icons-team.vscode-icons",
+		"waderyan.gitblame",
+		"oven.bun-vscode"
+	]
+}
