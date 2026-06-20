@@ -677,15 +677,18 @@ export let handle: AppHandle<LoaderData> = {
 
 Then, in the root route, add the `ExternalScripts` component somewhere, usually you want to load it either inside `<head>` or at the bottom of `<body>`, either before or after the Remix's `<Scripts>` component.
 
+If your app uses a CSP, pass a `nonce` prop to `ExternalScripts`.
+
 Where exactly to place `<ExternalScripts />` will depend on your app, but a safe place is at the end of `<body>`.
 
 ```tsx
-import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
+ import { Links, LiveReload, Meta, Scripts, ScrollRestoration, useNonce } from "remix";
 import { ExternalScripts } from "remix-utils/external-scripts";
 
 type Props = { children: React.ReactNode; title?: string };
 
 export function Document({ children, title }: Props) {
+	let nonce = useNonce();
 	return (
 		<html lang="en">
 			<head>
@@ -698,7 +701,7 @@ export function Document({ children, title }: Props) {
 			<body>
 				{children}
 				<ScrollRestoration />
-				<ExternalScripts />
+				<ExternalScripts nonce={nonce} />
 				<Scripts />
 				<LiveReload />
 			</body>
@@ -712,7 +715,8 @@ Now, any script you defined in the ScriptsFunction will be added to the HTML.
 You could use this util together with `useShouldHydrate` to disable Remix scripts in certain routes but still load scripts for analytics or small features that need JS but don't need the full app JS to be enabled.
 
 ```tsx
-let shouldHydrate = useShouldHydrate();
+ let nonce = useNonce();
+ let shouldHydrate = useShouldHydrate();
 
 return (
 	<html lang="en">
@@ -726,7 +730,7 @@ return (
 		<body>
 			{children}
 			<ScrollRestoration />
-			{shouldHydrate ? <Scripts /> : <ExternalScripts />}
+			{shouldHydrate ? <Scripts /> : <ExternalScripts nonce={nonce} />}
 			<LiveReload />
 		</body>
 	</html>
