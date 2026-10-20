@@ -99,7 +99,7 @@ export function getFetcherType(
 	fetcher: Pick<FetcherWithComponents<unknown>, "state" | "data" | "formMethod">,
 	navigation: Pick<Navigation, "formMethod" | "state">,
 ): FetcherType {
-	if (fetcher.state === "idle" && fetcher.data != null) return "done";
+	if (fetcher.state === "idle" && fetcher.data !== undefined) return "done";
 
 	if (fetcher.state === "submitting") return "actionSubmission";
 

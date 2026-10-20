@@ -3,6 +3,26 @@ import { render, screen } from "@testing-library/react";
 import { createRoutesStub, useFetcher } from "react-router";
 import { getFetcherType, useFetcherType } from "./fetcher-type.js";
 
+describe("getFetcherType null action data", () => {
+	test("returns done when an idle fetcher has a null action result", () => {
+		expect(
+			getFetcherType(
+				{ state: "idle", data: null, formMethod: undefined },
+				{ state: "idle", formMethod: undefined },
+			),
+		).toBe("done");
+	});
+
+	test("returns init when an idle fetcher has no data", () => {
+		expect(
+			getFetcherType(
+				{ state: "idle", data: undefined, formMethod: undefined },
+				{ state: "idle", formMethod: undefined },
+			),
+		).toBe("init");
+	});
+});
+
 // biome-ignore lint/suspicious/noSkippedTests: Test pass with happy-dom but using it globally breaks other tests, so we skip it for now
 describe.skip(getFetcherType.name, () => {
 	test("returns done", () => {
@@ -62,7 +82,7 @@ describe.skip(getFetcherType.name, () => {
 	test("returns init", () => {
 		expect(
 			getFetcherType(
-				{ state: "idle", data: null, formMethod: undefined },
+				{ state: "idle", data: undefined, formMethod: undefined },
 				{ state: "idle", formMethod: undefined },
 			),
 		).toBe("init");
