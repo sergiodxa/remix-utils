@@ -139,7 +139,7 @@ export function createHoneypotMiddleware({
 	// to prevent unnecessarily parsing of the request body for other types of
 	// requests.
 	function isFormData(request: Request) {
-		let contentType = request.headers.get("content-type") ?? "";
+		let contentType = (request.headers.get("content-type") ?? "").toLowerCase();
 		if (contentType.includes("multipart/form-data")) return true;
 		if (contentType.includes("application/x-www-form-urlencoded")) return true;
 		return false;
