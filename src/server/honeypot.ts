@@ -142,6 +142,11 @@ export class SpamError extends Error {
 
 const DEFAULT_NAME_FIELD_NAME = "name__confirm";
 const DEFAULT_VALID_FROM_FIELD_NAME = "from__confirm";
+/**
+ * Tokens from `encrypt()` are `IV (12 bytes) || ciphertext || GCM tag (16 bytes)`.
+ * Anything shorter cannot be a value this server issued.
+ */
+const MIN_ENCRYPTED_VALUE_BYTES = 12 + 16;
 
 /**
  * Module used to implement a Honeypot.
@@ -195,8 +200,23 @@ export class Honeypot {
 		let validFrom = formData.get(this.validFromFieldName);
 
 		if (!validFrom) throw new SpamError("Missing honeypot valid from input");
+		if (!this.isValidEncryptedValue(validFrom)) {
+			throw new SpamError("Invalid honeypot valid from input");
+		}
 
-		let time = await this.decrypt(validFrom as string);
+		let time: string;
+		try {
+			time = await this.decrypt(validFrom);
+		} catch (error) {
+			// A token that passes the shape check can still fail AES-GCM (forged
+			// tag, or one issued before `encryptionSeed` changed). That is not a
+			// server fault: the field is attacker-controlled and the only
+			// documented failure of `check()` is SpamError.
+			if (error instanceof DOMException && error.name === "OperationError") {
+				throw new SpamError("Invalid honeypot valid from input");
+			}
+			throw error;
+		}
 		if (!time) throw new SpamError("Invalid honeypot valid from input");
 		if (!this.isValidTimeStamp(Number(time))) {
 			throw new SpamError("Invalid honeypot valid from input");
@@ -251,6 +271,20 @@ export class Honeypot {
 
 	protected decrypt(value: string) {
 		return decrypt(value, this.encryptionSeed);
+	}
+
+	/**
+	 * True when `value` is base64 that decodes to at least an AES-GCM IV and tag.
+	 * `atob` throws `InvalidCharacterError` for malformed base64; that is a bad
+	 * submission, not an unexpected failure.
+	 */
+	protected isValidEncryptedValue(value: FormDataEntryValue): value is string {
+		if (typeof value !== "string") return false;
+		try {
+			return atob(value).length >= MIN_ENCRYPTED_VALUE_BYTES;
+		} catch {
+			return false;
+		}
 	}
 
 	protected isFuture(timestamp: number) {
