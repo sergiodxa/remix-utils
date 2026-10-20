@@ -21,6 +21,24 @@ describe("getFetcherType null action data", () => {
 			),
 		).toBe("init");
 	});
+
+	test("returns actionReload when loading with a null action result", () => {
+		expect(
+			getFetcherType(
+				{ state: "loading", data: null, formMethod: "POST" },
+				{ state: "idle", formMethod: "POST" },
+			),
+		).toBe("actionReload");
+	});
+
+	test("returns actionRedirect when loading after a redirect", () => {
+		expect(
+			getFetcherType(
+				{ state: "loading", data: undefined, formMethod: "POST" },
+				{ state: "idle", formMethod: "POST" },
+			),
+		).toBe("actionRedirect");
+	});
 });
 
 // biome-ignore lint/suspicious/noSkippedTests: Test pass with happy-dom but using it globally breaks other tests, so we skip it for now
@@ -55,7 +73,7 @@ describe.skip(getFetcherType.name, () => {
 	test("returns actionRedirect", () => {
 		expect(
 			getFetcherType(
-				{ state: "loading", data: null, formMethod: "POST" },
+				{ state: "loading", data: undefined, formMethod: "POST" },
 				{ state: "idle", formMethod: "POST" },
 			),
 		).toBe("actionRedirect");
@@ -64,7 +82,7 @@ describe.skip(getFetcherType.name, () => {
 	test("returns loaderSubmission", () => {
 		expect(
 			getFetcherType(
-				{ state: "loading", data: null, formMethod: undefined },
+				{ state: "loading", data: undefined, formMethod: undefined },
 				{ state: "loading", formMethod: "GET" },
 			),
 		).toBe("loaderSubmission");
@@ -73,7 +91,7 @@ describe.skip(getFetcherType.name, () => {
 	test("returns normalLoad", () => {
 		expect(
 			getFetcherType(
-				{ state: "idle", data: null, formMethod: undefined },
+				{ state: "idle", data: undefined, formMethod: undefined },
 				{ state: "loading", formMethod: undefined },
 			),
 		).toBe("normalLoad");
