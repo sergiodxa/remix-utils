@@ -106,36 +106,55 @@ export function eventStream(
 	options: ResponseInit = {},
 	strategy?: QueuingStrategy,
 ) {
-	let stream = new ReadableStream(
+	let encoder = new TextEncoder();
+	let closed = false;
+	let cleanup: CleanupFunction = () => {};
+	let streamController: ReadableStreamDefaultController<Uint8Array> | undefined;
+
+	function close() {
+		if (closed) return;
+		closed = true;
+		signal.removeEventListener("abort", close);
+		cleanup();
+		try {
+			streamController?.close();
+		} catch {}
+	}
+
+	let stream = new ReadableStream<Uint8Array>(
 		{
 			start(controller) {
-				let encoder = new TextEncoder();
-				let closed = false;
+				streamController = controller;
 
 				function send({ event = "message", data, id }: SendFunctionArgs) {
-					if (closed) return; // If already closed, not enqueue anything
-					if (id) controller.enqueue(encoder.encode(`id: ${id}\n`));
-					controller.enqueue(encoder.encode(`event: ${event}\n`));
-
-					const lines = data.replace(/\r\n?/g, "\n").split("\n");
-					const dataLines = lines.map((line) => `data: ${line}`).join("\n");
-
-					controller.enqueue(encoder.encode(`${dataLines}\n\n`));
-				}
-
-				let cleanup = init(send, close);
-
-				function close() {
 					if (closed) return;
-					cleanup();
-					closed = true;
-					signal.removeEventListener("abort", close);
-					controller.close();
+					if (controller.desiredSize !== null && controller.desiredSize <= 0) {
+						return;
+					}
+
+					let lines = data.replace(/\r\n?/g, "\n").split("\n");
+					let dataLines = lines.map((line) => `data: ${line}`).join("\n");
+
+					let payload = "";
+					if (id) payload += `id: ${id}\n`;
+					payload += `event: ${event}\n`;
+					payload += `${dataLines}\n\n`;
+
+					try {
+						controller.enqueue(encoder.encode(payload));
+					} catch {
+						close();
+					}
 				}
+
+				cleanup = init(send, close);
 
 				signal.addEventListener("abort", close);
 
-				if (signal.aborted) return close();
+				if (signal.aborted) close();
+			},
+			cancel() {
+				close();
 			},
 		},
 		strategy,

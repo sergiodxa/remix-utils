@@ -27,12 +27,17 @@ describe(eventStream, () => {
 
 	test("can send data to the client with the send function", async () => {
 		let controller = new AbortController();
-		let response = eventStream(controller.signal, (send, _) => {
-			send({ data: "hello" });
-			send({ event: "multi-line", data: "hello\nworld" });
-			send({ event: "crlf", data: "hello\r\nworld" });
-			return () => {};
-		});
+		let response = eventStream(
+			controller.signal,
+			(send, _) => {
+				send({ data: "hello" });
+				send({ event: "multi-line", data: "hello\nworld" });
+				send({ event: "crlf", data: "hello\r\nworld" });
+				return () => {};
+			},
+			undefined,
+			new CountQueuingStrategy({ highWaterMark: 10 }),
+		);
 
 		controller.abort();
 
@@ -41,23 +46,14 @@ describe(eventStream, () => {
 		let reader = response.body.getReader();
 		let decoder = new TextDecoder();
 
-		let { value: event } = await reader.read();
-		expect(decoder.decode(event)).toEqual("event: message\n");
+		let { value: hello } = await reader.read();
+		expect(decoder.decode(hello)).toEqual("event: message\ndata: hello\n\n");
 
-		let { value: data } = await reader.read();
-		expect(decoder.decode(data)).toEqual("data: hello\n\n");
+		let { value: multiLine } = await reader.read();
+		expect(decoder.decode(multiLine)).toEqual("event: multi-line\ndata: hello\ndata: world\n\n");
 
-		let { value: multiLineEvent } = await reader.read();
-		expect(decoder.decode(multiLineEvent)).toEqual("event: multi-line\n");
-
-		let { value: multiLineData } = await reader.read();
-		expect(decoder.decode(multiLineData)).toEqual("data: hello\ndata: world\n\n");
-
-		let { value: crlfEvent } = await reader.read();
-		expect(decoder.decode(crlfEvent)).toEqual("event: crlf\n");
-
-		let { value: crlfData } = await reader.read();
-		expect(decoder.decode(crlfData)).toEqual("data: hello\ndata: world\n\n");
+		let { value: crlf } = await reader.read();
+		expect(decoder.decode(crlf)).toEqual("event: crlf\ndata: hello\ndata: world\n\n");
 
 		let { done } = await reader.read();
 		expect(done).toBe(true);
@@ -74,6 +70,63 @@ describe(eventStream, () => {
 				new CountQueuingStrategy({ highWaterMark: 2 }),
 			),
 		).not.toThrow();
+	});
+
+	test("calls cleanup when the reader cancels without aborting the signal", async () => {
+		let cleaned = false;
+		let sends = 0;
+		let controller = new AbortController();
+
+		let response = eventStream(controller.signal, (send) => {
+			let intervalId = setInterval(() => {
+				send({ data: "tick" });
+				sends++;
+			}, 5);
+			return () => {
+				cleaned = true;
+				clearInterval(intervalId);
+			};
+		});
+
+		if (!response.body) throw new Error("Response body is undefined");
+		let reader = response.body.getReader();
+		await reader.read();
+		await reader.cancel("client disconnected");
+
+		await Bun.sleep(30);
+
+		expect(cleaned).toBe(true);
+		expect(controller.signal.aborted).toBe(false);
+
+		let sendsAfterCleanup = sends;
+		await Bun.sleep(30);
+		expect(sends).toBe(sendsAfterCleanup);
+	});
+
+	test("drops events while the stream is under backpressure", async () => {
+		let controller = new AbortController();
+		let response = eventStream(
+			controller.signal,
+			(send) => {
+				send({ data: "first" });
+				send({ data: "second" });
+				return () => {};
+			},
+			undefined,
+			new CountQueuingStrategy({ highWaterMark: 1 }),
+		);
+
+		controller.abort();
+
+		if (!response.body) throw new Error("Response body is undefined");
+		let reader = response.body.getReader();
+		let decoder = new TextDecoder();
+
+		let { value } = await reader.read();
+		expect(decoder.decode(value)).toEqual("event: message\ndata: first\n\n");
+
+		let { done } = await reader.read();
+		expect(done).toBe(true);
 	});
 
 	describe("Headers Overrides", () => {
