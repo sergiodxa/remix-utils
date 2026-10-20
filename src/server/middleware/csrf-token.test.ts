@@ -160,6 +160,64 @@ describe(createCsrfTokenMiddleware, () => {
 		expect(response.status).toBe(200);
 	});
 
+	test.each(["Application/X-WWW-Form-Urlencoded", "APPLICATION/X-WWW-FORM-URLENCODED"])(
+		"rejects form POST with case-variant Content-Type %s without CSRF token",
+		async (contentType) => {
+			let [middleware] = createCsrfTokenMiddleware({ cookie });
+
+			let next = mock(async () => new Response("ok"));
+
+			let request = new Request("https://remix.utils", {
+				method: "POST",
+				headers: { "Content-Type": contentType },
+				body: "email=attacker%40example.com",
+			});
+
+			let response = await catchResponse(runMiddleware(middleware, { request, next }));
+			expect(response.status).toBe(403);
+			expect(next).not.toHaveBeenCalled();
+		},
+	);
+
+	test("rejects multipart POST with case-variant Content-Type without CSRF token", async () => {
+		let [middleware] = createCsrfTokenMiddleware({ cookie });
+
+		let next = mock(async () => new Response("ok"));
+
+		let request = new Request("https://remix.utils", {
+			method: "POST",
+			headers: { "Content-Type": "Multipart/Form-Data; boundary=----boundary" },
+			body: [
+				"------boundary",
+				'Content-Disposition: form-data; name="email"',
+				"",
+				"attacker@example.com",
+				"------boundary--",
+				"",
+			].join("\r\n"),
+		});
+
+		let response = await catchResponse(runMiddleware(middleware, { request, next }));
+		expect(response.status).toBe(403);
+		expect(next).not.toHaveBeenCalled();
+	});
+
+	test("rejects urlencoded POST with invalid csrf field regardless of Content-Type case", async () => {
+		let [middleware] = createCsrfTokenMiddleware({ cookie });
+
+		let next = mock(async () => new Response("ok"));
+
+		let request = new Request("https://remix.utils", {
+			method: "POST",
+			headers: { "Content-Type": "APPLICATION/X-WWW-FORM-URLENCODED" },
+			body: "csrf=garbage&email=attacker%40example.com",
+		});
+
+		let response = await catchResponse(runMiddleware(middleware, { request, next }));
+		expect(response.status).toBe(403);
+		expect(next).not.toHaveBeenCalled();
+	});
+
 	test("uses custom formDataKey", async () => {
 		let [middleware, getToken] = createCsrfTokenMiddleware({
 			cookie,
