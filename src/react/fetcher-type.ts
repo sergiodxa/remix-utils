@@ -107,7 +107,7 @@ export function getFetcherType(
 		fetcher.state === "loading" &&
 		fetcher.formMethod != null &&
 		navigation.formMethod !== "GET" &&
-		fetcher.data != null
+		fetcher.data !== undefined
 	) {
 		return "actionReload";
 	}
@@ -116,7 +116,7 @@ export function getFetcherType(
 		fetcher.state === "loading" &&
 		fetcher.formMethod != null &&
 		navigation.formMethod !== "GET" &&
-		fetcher.data == null
+		fetcher.data === undefined
 	) {
 		return "actionRedirect";
 	}
