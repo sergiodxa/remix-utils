@@ -36,7 +36,6 @@ describe(eventStream, () => {
 				return () => {};
 			},
 			undefined,
-			// Allow the synchronous burst in setup without tripping backpressure.
 			new CountQueuingStrategy({ highWaterMark: 10 }),
 		);
 
@@ -110,7 +109,7 @@ describe(eventStream, () => {
 			controller.signal,
 			(send) => {
 				send({ data: "first" });
-				send({ data: "second" }); // dropped: default highWaterMark is 1
+				send({ data: "second" });
 				return () => {};
 			},
 			undefined,

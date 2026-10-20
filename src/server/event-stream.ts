@@ -113,15 +113,12 @@ export function eventStream(
 
 	function close() {
 		if (closed) return;
-		// Mark closed first so in-flight send() calls become no-ops before cleanup runs.
 		closed = true;
 		signal.removeEventListener("abort", close);
 		cleanup();
 		try {
 			streamController?.close();
-		} catch {
-			// Already closed/cancelled by the consumer.
-		}
+		} catch {}
 	}
 
 	let stream = new ReadableStream<Uint8Array>(
@@ -131,8 +128,6 @@ export function eventStream(
 
 				function send({ event = "message", data, id }: SendFunctionArgs) {
 					if (closed) return;
-					// Honor backpressure so a slow or absent consumer cannot grow an unbounded queue.
-					// See https://github.com/sergiodxa/remix-utils/issues/560
 					if (controller.desiredSize !== null && controller.desiredSize <= 0) {
 						return;
 					}
@@ -140,7 +135,6 @@ export function eventStream(
 					let lines = data.replace(/\r\n?/g, "\n").split("\n");
 					let dataLines = lines.map((line) => `data: ${line}`).join("\n");
 
-					// Enqueue one chunk per event so the queue holds events, not frame fragments.
 					let payload = "";
 					if (id) payload += `id: ${id}\n`;
 					payload += `event: ${event}\n`;
@@ -160,7 +154,6 @@ export function eventStream(
 				if (signal.aborted) close();
 			},
 			cancel() {
-				// Client disconnected / body cancelled — cleanup even when AbortSignal did not fire.
 				close();
 			},
 		},
