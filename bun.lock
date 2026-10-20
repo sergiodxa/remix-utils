@@ -12,7 +12,7 @@
         "@happy-dom/global-registrator": "^20.8.3",
         "@oslojs/crypto": "^1.0.1",
         "@oslojs/encoding": "^1.1.0",
-        "@remix-run/file-storage": "^0.13.3",
+        "@remix-run/file-storage": "^0.13.7",
         "@standard-schema/spec": "^1.1.0",
         "@testing-library/jest-dom": "^6.9.1",
         "@testing-library/react": "^16.3.2",
@@ -284,13 +284,13 @@
 
     "@oxlint/binding-win32-x64-msvc": ["@oxlint/binding-win32-x64-msvc@1.72.0", "", { "os": "win32", "cpu": "x64" }, "sha512-b2eKFD2hX7tIwmo/cyH6TDq8vzWRZ2qNHrzoGntUTmq0h3zQh/uX3eTSHCwI8OB/ADQfJCRelLItK8BsxuucDA=="],
 
-    "@remix-run/file-storage": ["@remix-run/file-storage@0.13.6", "", { "dependencies": { "@remix-run/fs": "^0.4.5", "@remix-run/lazy-file": "^5.0.5" } }, "sha512-dXX7gcoPPWFa/041U/fCW9jHS11v8oC8UCrMRpbkyltz+tI55KvJ60oHYPUqnu75b9Ep60lZHvNviqlSn1Iv4w=="],
+    "@remix-run/file-storage": ["@remix-run/file-storage@0.13.7", "", { "dependencies": { "@remix-run/fs": "^0.4.6", "@remix-run/lazy-file": "^5.0.6" } }, "sha512-7tDgyzs1v0dQgfMt+lpbIzEVkrgrcKJLGbBeXrpJITuCeWoc0XgFfDTp6gghS3s8aWQTm5XHbgnldLoQCEU9Mw=="],
 
-    "@remix-run/fs": ["@remix-run/fs@0.4.5", "", { "dependencies": { "@remix-run/lazy-file": "^5.0.5", "@remix-run/mime": "^0.4.1" } }, "sha512-aruAQN2R//NQBeKg3YnovJ4JMZRmJ0pVWq3xoUMTeO16L6dCP82Al+dSizwGHy7ZavPfJwnlJHp5exTAhX5yCQ=="],
+    "@remix-run/fs": ["@remix-run/fs@0.4.6", "", { "dependencies": { "@remix-run/lazy-file": "^5.0.6", "@remix-run/mime": "^0.4.2" } }, "sha512-xxvixX/WyufRr6YrjPLGXvyE5Lzb5G/Y4tygk6McJ6nr59f3hO9w3aVc/lvsVPD7liYfM1EyMnmd4qIByJq9bg=="],
 
-    "@remix-run/lazy-file": ["@remix-run/lazy-file@5.0.5", "", { "dependencies": { "@remix-run/mime": "^0.4.1" } }, "sha512-PhjTgR266T2qDKki6lQnlOtgZv4VB8Dqeu1sBUu2pBazgi2nZA2n7lvDpNiegKozBgGfUXS8ScdIQ6FPuNvtcw=="],
+    "@remix-run/lazy-file": ["@remix-run/lazy-file@5.0.6", "", { "dependencies": { "@remix-run/mime": "^0.4.2" } }, "sha512-jIeeqkqR+AgTEKls5WMPbiGyXhrkAJugN4ot/K9X74CLzO9uMbcFDKef7CWCfjN1s+551u+5LxNWLJx1nztuVg=="],
 
-    "@remix-run/mime": ["@remix-run/mime@0.4.1", "", {}, "sha512-n0DUUwpHiDrtHCSw6YFbjeMjajj7STqwzK9PMJkQOHbvOarfPdQdRRMkRqYPBmhu6ABzb6sAdYRSrxPx50I5VQ=="],
+    "@remix-run/mime": ["@remix-run/mime@0.4.2", "", {}, "sha512-KpZZxBYIrLsvUtt2ZdwK+E2ClVmyvW11Nej6fPgwJpohBMpbCHtR78wtCTv0vqvK5ckLZ7ks2q4pV5dMYFypiA=="],
 
     "@sec-ant/readable-stream": ["@sec-ant/readable-stream@0.4.1", "", {}, "sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg=="],
 
