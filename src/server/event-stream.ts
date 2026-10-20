@@ -106,36 +106,62 @@ export function eventStream(
 	options: ResponseInit = {},
 	strategy?: QueuingStrategy,
 ) {
-	let stream = new ReadableStream(
+	let encoder = new TextEncoder();
+	let closed = false;
+	let cleanup: CleanupFunction = () => {};
+	let streamController: ReadableStreamDefaultController<Uint8Array> | undefined;
+
+	function close() {
+		if (closed) return;
+		// Mark closed first so in-flight send() calls become no-ops before cleanup runs.
+		closed = true;
+		signal.removeEventListener("abort", close);
+		cleanup();
+		try {
+			streamController?.close();
+		} catch {
+			// Already closed/cancelled by the consumer.
+		}
+	}
+
+	let stream = new ReadableStream<Uint8Array>(
 		{
 			start(controller) {
-				let encoder = new TextEncoder();
-				let closed = false;
+				streamController = controller;
 
 				function send({ event = "message", data, id }: SendFunctionArgs) {
-					if (closed) return; // If already closed, not enqueue anything
-					if (id) controller.enqueue(encoder.encode(`id: ${id}\n`));
-					controller.enqueue(encoder.encode(`event: ${event}\n`));
-
-					const lines = data.replace(/\r\n?/g, "\n").split("\n");
-					const dataLines = lines.map((line) => `data: ${line}`).join("\n");
-
-					controller.enqueue(encoder.encode(`${dataLines}\n\n`));
-				}
-
-				let cleanup = init(send, close);
-
-				function close() {
 					if (closed) return;
-					cleanup();
-					closed = true;
-					signal.removeEventListener("abort", close);
-					controller.close();
+					// Honor backpressure so a slow or absent consumer cannot grow an unbounded queue.
+					// See https://github.com/sergiodxa/remix-utils/issues/560
+					if (controller.desiredSize !== null && controller.desiredSize <= 0) {
+						return;
+					}
+
+					let lines = data.replace(/\r\n?/g, "\n").split("\n");
+					let dataLines = lines.map((line) => `data: ${line}`).join("\n");
+
+					// Enqueue one chunk per event so the queue holds events, not frame fragments.
+					let payload = "";
+					if (id) payload += `id: ${id}\n`;
+					payload += `event: ${event}\n`;
+					payload += `${dataLines}\n\n`;
+
+					try {
+						controller.enqueue(encoder.encode(payload));
+					} catch {
+						close();
+					}
 				}
+
+				cleanup = init(send, close);
 
 				signal.addEventListener("abort", close);
 
-				if (signal.aborted) return close();
+				if (signal.aborted) close();
+			},
+			cancel() {
+				// Client disconnected / body cancelled — cleanup even when AbortSignal did not fire.
+				close();
 			},
 		},
 		strategy,
