@@ -73,6 +73,31 @@ describe(createHoneypotMiddleware, () => {
 		expect(response.json()).resolves.toBeNull();
 	});
 
+	test("if the request is a case-variant form Content-Type the spam check still runs", async () => {
+		let onSpam = mock().mockImplementation(() => redirect("/"));
+		let next = mock().mockImplementation(() => Response.json(null));
+
+		let [middleware, getInputProps] = createHoneypotMiddleware({ onSpam });
+		let inputProps = await getInputProps();
+
+		let body = new URLSearchParams();
+		body.set(inputProps.nameFieldName, "spam");
+		if (inputProps.validFromFieldName) {
+			body.set(inputProps.validFromFieldName, inputProps.encryptedValidFrom);
+		}
+
+		let request = new Request("https://remix.utils", {
+			method: "POST",
+			body,
+			headers: { "Content-Type": "Application/X-WWW-Form-Urlencoded" },
+		});
+		let response = await runMiddleware(middleware, { request, next });
+
+		expect(response).toEqual(redirect("/"));
+		expect(onSpam).toHaveBeenCalledTimes(1);
+		expect(next).not.toHaveBeenCalled();
+	});
+
 	test("if the request is multipart/form-data the spam check runs", async () => {
 		let [middleware, getInputProps] = createHoneypotMiddleware();
 		let inputProps = await getInputProps();
