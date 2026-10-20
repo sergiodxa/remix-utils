@@ -142,6 +142,7 @@ export class SpamError extends Error {
 
 const DEFAULT_NAME_FIELD_NAME = "name__confirm";
 const DEFAULT_VALID_FROM_FIELD_NAME = "from__confirm";
+const MIN_ENCRYPTED_VALUE_BYTES = 12 + 16;
 
 /**
  * Module used to implement a Honeypot.
@@ -195,8 +196,19 @@ export class Honeypot {
 		let validFrom = formData.get(this.validFromFieldName);
 
 		if (!validFrom) throw new SpamError("Missing honeypot valid from input");
+		if (!this.isValidEncryptedValue(validFrom)) {
+			throw new SpamError("Invalid honeypot valid from input");
+		}
 
-		let time = await this.decrypt(validFrom as string);
+		let time: string;
+		try {
+			time = await this.decrypt(validFrom);
+		} catch (error) {
+			if (error instanceof DOMException && error.name === "OperationError") {
+				throw new SpamError("Invalid honeypot valid from input");
+			}
+			throw error;
+		}
 		if (!time) throw new SpamError("Invalid honeypot valid from input");
 		if (!this.isValidTimeStamp(Number(time))) {
 			throw new SpamError("Invalid honeypot valid from input");
@@ -251,6 +263,15 @@ export class Honeypot {
 
 	protected decrypt(value: string) {
 		return decrypt(value, this.encryptionSeed);
+	}
+
+	protected isValidEncryptedValue(value: FormDataEntryValue): value is string {
+		if (typeof value !== "string") return false;
+		try {
+			return atob(value).length >= MIN_ENCRYPTED_VALUE_BYTES;
+		} catch {
+			return false;
+		}
 	}
 
 	protected isFuture(timestamp: number) {

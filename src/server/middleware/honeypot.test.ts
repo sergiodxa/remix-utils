@@ -95,6 +95,34 @@ describe(createHoneypotMiddleware, () => {
 		expect(response.json()).resolves.toBeNull();
 	});
 
+	test("if the valid from field is malformed the middleware runs the onSpam helper", async () => {
+		let onSpam = mock().mockImplementation(() => redirect("/"));
+		let next = mock().mockImplementation(() => Response.json(null));
+
+		let [middleware, getInputProps] = createHoneypotMiddleware({
+			onSpam,
+		});
+
+		let inputProps = await getInputProps();
+
+		let body = new URLSearchParams();
+		body.set(inputProps.nameFieldName, "");
+		if (inputProps.validFromFieldName) {
+			body.set(inputProps.validFromFieldName, "!!!not base64!!!");
+		}
+
+		let request = new Request("https://remix.utils", {
+			method: "POST",
+			body,
+			headers: { "Content-Type": "application/x-www-form-urlencoded" },
+		});
+		let response = await runMiddleware(middleware, { request, next });
+
+		expect(response).toEqual(redirect("/"));
+		expect(onSpam).toHaveBeenCalledTimes(1);
+		expect(next).not.toHaveBeenCalled();
+	});
+
 	test("if the request is spam the middleware runs the onSpam helper", async () => {
 		let onSpam = mock().mockImplementation(() => redirect("/"));
 		let next = mock().mockImplementation(() => Response.json(null));

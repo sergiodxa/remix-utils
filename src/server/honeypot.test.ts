@@ -83,6 +83,40 @@ describe(Honeypot, () => {
 		);
 	});
 
+	test("fails if the valid from field is not a token this server issued", async () => {
+		let honeypot = new Honeypot({
+			encryptionSeed: "SEED",
+		});
+		let props = await honeypot.getInputProps();
+		invariant(props.validFromFieldName, "validFromFieldName is null");
+
+		let malformed = [
+			"!!!not base64!!!",
+			"aa",
+			btoa("x".repeat(12)),
+			btoa("x".repeat(28)),
+			await encrypt(Date.now().toString(), "OTHER-SEED"),
+		];
+
+		for (let validFrom of malformed) {
+			let formData = new FormData();
+			formData.set(props.nameFieldName, "");
+			formData.set(props.validFromFieldName, validFrom);
+
+			await expect(honeypot.check(formData)).rejects.toThrowError(
+				new SpamError("Invalid honeypot valid from input"),
+			);
+		}
+
+		let fileFormData = new FormData();
+		fileFormData.set(props.nameFieldName, "");
+		fileFormData.set(props.validFromFieldName, new File(["nope"], "note.txt"));
+
+		await expect(honeypot.check(fileFormData)).rejects.toThrowError(
+			new SpamError("Invalid honeypot valid from input"),
+		);
+	});
+
 	test("fails if the timestamp is not valid", async () => {
 		let honeypot = new Honeypot({
 			encryptionSeed: "SEED",
