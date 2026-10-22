@@ -28,8 +28,8 @@ Additional optional dependencies may be needed, all optional dependencies are:
 - `@edgefirst-dev/batcher`
 - `@edgefirst-dev/jwt`
 - `@edgefirst-dev/server-timing`
-- `@oslojs/crypto`
-- `@oslojs/encoding`
+- `@sdxc/crypto@2026.10.21`
+- `@sdxc/result@2026.10.13`
 - `is-ip`
 - `intl-parse-accept-language`
 - `react`
@@ -42,7 +42,7 @@ The utils that require an extra optional dependency mention it in their document
 If you want to install them all run:
 
 ```sh
-npm add @edgefirst-dev/batcher @edgefirst-dev/jwt @edgefirst-dev/server-timing @oslojs/crypto @oslojs/encoding is-ip intl-parse-accept-language
+npm add @edgefirst-dev/batcher @edgefirst-dev/jwt @edgefirst-dev/server-timing @sdxc/crypto@2026.10.21 @sdxc/result@2026.10.13 is-ip intl-parse-accept-language
 ```
 
 React and React Router packages should be already installed in your project.
@@ -383,7 +383,7 @@ Additionally, the `cors` function accepts a `options` object as a third optional
 > Install using `bunx shadcn@latest add @remix-utils/csrf-server` and `bunx shadcn@latest add @remix-utils/csrf-react`.
 
 > [!NOTE]
-> This depends on `react`, `@oslojs/crypto`, `@oslojs/encoding`, and React Router.
+> This depends on `react`, `@sdxc/crypto`, `@sdxc/result`, and React Router.
 
 The CSRF related functions let you implement CSRF protection on your application.
 
@@ -419,14 +419,14 @@ Then you can use `csrf` to generate a new token.
 import { csrf } from "~/utils/csrf.server";
 
 export async function loader({ request }: Route.LoaderArgs) {
-	let token = csrf.generate();
+	let token = await csrf.generate();
 }
 ```
 
-You can customize the token size by passing the byte size, the default one is 32 bytes which will give you a string with a length of 43 after encoding.
+You can customize the token size by passing the character length, the default one is 32.
 
 ```ts
-let token = csrf.generate(64); // customize token length
+let token = await csrf.generate(64); // customize token length
 ```
 
 You will need to save this token in a cookie and also return it from the loader. For convenience, you can use the `CSRF#commitToken` helper.
@@ -1921,7 +1921,7 @@ This means that the `respondTo` helper will prioritize any handler that match `t
 > Install using `bunx shadcn@latest add @remix-utils/honeypot-server` and `bunx shadcn@latest add @remix-utils/honeypot-react`.
 
 > [!NOTE]
-> This depends on `react` and `@oslojs/crypto`, and `@oslojs/encoding`.
+> This depends on `react` and `@sdxc/crypto`.
 
 Honeypot is a simple technique to prevent spam bots from submitting forms. It works by adding a hidden field to the form that bots will fill, but humans won't.
 
@@ -2558,7 +2558,7 @@ export const [requestIDMiddleware, getRequestID] = createRequestIDMiddleware({
 > Install using `bunx shadcn@latest add @remix-utils/middleware-basic-auth`.
 
 > [!NOTE]
-> This depends on `@oslojs/crypto`, and `@oslojs/encoding`.
+> This depends on `@sdxc/crypto` and `@sdxc/result`.
 
 The Basic Auth middleware let's you add a basic authentication to your routes, this can be useful to protect routes that need to be private.
 
@@ -2836,7 +2836,7 @@ export const middleware: Route.MiddlewareFunction[] = [jwkAuthMiddleware];
 > Install using `bunx shadcn@latest add @remix-utils/middleware-honeypot`.
 
 > [!NOTE]
-> This depends on `react`, `@oslojs/crypto`, and `@oslojs/encoding`.
+> This depends on `react` and `@sdxc/crypto`.
 
 The Honeypot middleware allows you to add a honeypot mechanism to your routes, providing a simple yet effective way to protect public forms from spam bots.
 
@@ -3115,7 +3115,7 @@ By default, untrusted requests will receive a 403 Forbidden response.
 > Install using `bunx shadcn@latest add @remix-utils/middleware-csrf-token`.
 
 > [!NOTE]
-> This depends on `@oslojs/crypto`, `@oslojs/encoding`, and React Router.
+> This depends on `@sdxc/crypto`, `@sdxc/result`, and React Router.
 
 The CSRF Token middleware protects your application from Cross-Site Request Forgery attacks using a token-based approach where a random token is stored in a cookie and must be included in form submissions.
 

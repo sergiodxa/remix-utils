@@ -3,7 +3,7 @@
  * > Install using `bunx shadcn@latest add @remix-utils/middleware-honeypot`.
  *
  * > [!NOTE]
- * > This depends on `react`, `@oslojs/crypto`, and `@oslojs/encoding`.
+ * > This depends on `react` and `@sdxc/crypto`.
  *
  * The Honeypot middleware allows you to add a honeypot mechanism to your routes, providing a simple yet effective way to protect public forms from spam bots.
  *

@@ -1,6 +1,6 @@
 import { describe, expect, mock, test } from "bun:test";
-import { sha256 } from "@oslojs/crypto/sha2";
-import { encodeBase64 } from "@oslojs/encoding";
+import { Base64, sha256 } from "@sdxc/crypto";
+import { unwrap } from "@sdxc/result";
 import { RouterContextProvider } from "react-router";
 import { createBasicAuthMiddleware } from "./basic-auth.js";
 import { catchResponse, runMiddleware } from "./test-helper.js";
@@ -9,10 +9,9 @@ describe(createBasicAuthMiddleware, () => {
 	const username = "test";
 	const password = "password";
 
-	const encoder = new TextEncoder();
-	const credentials = encodeBase64(encoder.encode(`${username}:${password}`));
+	const credentials = Base64.encode(`${username}:${password}`);
 
-	const invalidCredentials = encodeBase64(encoder.encode("invalid:invalid"));
+	const invalidCredentials = Base64.encode("invalid:invalid");
 
 	const authorizedRequest = new Request("https://remix.utils", {
 		headers: { Authorization: `Basic ${credentials}` },
@@ -199,7 +198,9 @@ describe(createBasicAuthMiddleware, () => {
 	});
 
 	test("allows customizing the HashFunction", async () => {
-		let hashFunction = mock<createBasicAuthMiddleware.HashFunction>().mockImplementation(sha256);
+		let hashFunction = mock<createBasicAuthMiddleware.HashFunction>().mockImplementation(
+			async (data) => unwrap(await sha256(data)),
+		);
 
 		let [middleware] = createBasicAuthMiddleware({
 			user: { username, password },

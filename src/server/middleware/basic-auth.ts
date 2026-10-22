@@ -3,7 +3,7 @@
  * > Install using `bunx shadcn@latest add @remix-utils/middleware-basic-auth`.
  *
  * > [!NOTE]
- * > This depends on `@oslojs/crypto`, and `@oslojs/encoding`.
+ * > This depends on `@sdxc/crypto` and `@sdxc/result`.
  *
  * The Basic Auth middleware let's you add a basic authentication to your routes, this can be useful to protect routes that need to be private.
  *
@@ -122,8 +122,8 @@
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Basic Auth
  */
-import { sha256 } from "@oslojs/crypto/sha2";
-import { decodeBase64 } from "@oslojs/encoding";
+import { Base64, sha256 } from "@sdxc/crypto";
+import { isFailure, unwrap } from "@sdxc/result";
 import { createContext, type MiddlewareFunction, type RouterContextProvider } from "react-router";
 import type { MiddlewareGetter } from "./utils.js";
 
@@ -272,16 +272,18 @@ export namespace createBasicAuthMiddleware {
 
 	export type ReturnType = [MiddlewareFunction<Response>, MiddlewareGetter<User["username"]>];
 
-	export type HashFunction = (data: Uint8Array) => Uint8Array;
+	export type HashFunction = (data: Uint8Array) => Uint8Array | Promise<Uint8Array>;
+}
+
+async function defaultHashFunction(data: Uint8Array) {
+	return unwrap(await sha256(data));
 }
 
 async function timingSafeEqual(
 	a: string | object | boolean,
 	b: string | object | boolean,
-	hashFunction?: createBasicAuthMiddleware.HashFunction,
+	hashFunction: createBasicAuthMiddleware.HashFunction = defaultHashFunction,
 ): Promise<boolean> {
-	if (!hashFunction) hashFunction = sha256;
-
 	let [sa, sb] = await Promise.all([
 		hashFunction(encoder.encode(a.toString())),
 		hashFunction(encoder.encode(b.toString())),
@@ -299,12 +301,10 @@ function getAuthorization(request: Request): { username: string; password: strin
 
 	if (!match) return undefined;
 
-	let userPass: RegExpExecArray | null = null;
+	let decoded = Base64.decode(match[1] ?? "");
+	if (isFailure(decoded)) return undefined;
 
-	// If an invalid string is passed to atob(), it throws a `DOMException`.
-	try {
-		userPass = USER_PASS_REGEXP.exec(decoder.decode(decodeBase64(match[1] ?? "")));
-	} catch {} // Do nothing
+	let userPass = USER_PASS_REGEXP.exec(decoder.decode(decoded.data));
 
 	if (!userPass) return undefined;
 

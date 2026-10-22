@@ -16,7 +16,7 @@
 					"type": "registry:lib"
 				}
 			],
-			"dependencies": ["@oslojs/crypto", "@oslojs/encoding", "react-router"]
+			"dependencies": ["@sdxc/crypto@2026.10.21", "@sdxc/result@2026.10.13", "react-router"]
 		},
 		{
 			"name": "middleware-batcher",
@@ -563,7 +563,7 @@
 					"type": "registry:lib"
 				}
 			],
-			"dependencies": ["@oslojs/crypto"]
+			"dependencies": ["@sdxc/crypto@2026.10.21"]
 		},
 		{
 			"name": "honeypot-react",
@@ -594,7 +594,7 @@
 					"type": "registry:lib"
 				}
 			],
-			"dependencies": ["@oslojs/crypto", "@oslojs/encoding", "react-router"]
+			"dependencies": ["@sdxc/crypto@2026.10.21", "@sdxc/result@2026.10.13", "react-router"]
 		},
 		{
 			"name": "csrf-react",

@@ -6,31 +6,31 @@ describe("CSRF", () => {
 	let cookie = createCookie("csrf", { secrets: ["s3cr3t"] });
 	let csrf = new CSRF({ cookie });
 
-	test("generates a new authenticity token with the default size", () => {
-		let token = csrf.generate();
+	test("generates a new authenticity token with the default size", async () => {
+		let token = await csrf.generate();
 		expect(token).toStrictEqual(expect.any(String));
 		expect(token).toHaveLength(32);
 	});
 
-	test("generates a new authenticity token with the given size", () => {
-		let token = csrf.generate(64);
+	test("generates a new authenticity token with the given size", async () => {
+		let token = await csrf.generate(64);
 		expect(token).toStrictEqual(expect.any(String));
 		expect(token).toHaveLength(64);
 	});
 
-	test("generates a new signed authenticity token", () => {
+	test("generates a new signed authenticity token", async () => {
 		let csrf = new CSRF({ cookie, secret: "my-secret" });
 
-		let token = csrf.generate();
+		let token = await csrf.generate();
 		let [value, signature] = token.split(".");
 
-		expect(token).toHaveLength(77);
+		expect(token).toHaveLength(76);
 		expect(value).toHaveLength(32);
-		expect(signature).toHaveLength(44);
+		expect(signature).toHaveLength(43);
 	});
 
 	test("verify tokens using FormData and Headers", async () => {
-		let token = csrf.generate();
+		let token = await csrf.generate();
 
 		let headers = new Headers({
 			cookie: await cookie.serialize(token),
@@ -43,7 +43,7 @@ describe("CSRF", () => {
 	});
 
 	test("verify tokens using Request", async () => {
-		let token = csrf.generate();
+		let token = await csrf.generate();
 
 		let headers = new Headers({
 			cookie: await cookie.serialize(token),
@@ -86,7 +86,7 @@ describe("CSRF", () => {
 	});
 
 	test('throws "Can\'t find CSRF token in body" if CSRF token is not in body', async () => {
-		let token = csrf.generate();
+		let token = await csrf.generate();
 
 		let headers = new Headers({
 			cookie: await cookie.serialize(token),
@@ -100,7 +100,7 @@ describe("CSRF", () => {
 	});
 
 	test("throws \"Can't verify CSRF token authenticity\" if CSRF token in body doesn't match CSRF token in cookie", async () => {
-		let token = csrf.generate();
+		let token = await csrf.generate();
 
 		let headers = new Headers({
 			cookie: await cookie.serialize(token),
@@ -117,13 +117,13 @@ describe("CSRF", () => {
 	test('throws "Tampered CSRF token in cookie" if the CSRF token in cookie is changed', async () => {
 		let securetCSRF = new CSRF({ cookie, secret: "my-secret" });
 
-		let token = securetCSRF.generate();
+		let token = await securetCSRF.generate();
 
 		let formData = new FormData();
 		formData.set("csrf", token);
 
 		let headers = new Headers({
-			cookie: await cookie.serialize([csrf.generate(), token.split(".").at(1)].join(".")),
+			cookie: await cookie.serialize([await csrf.generate(), token.split(".").at(1)].join(".")),
 		});
 
 		expect(securetCSRF.validate(formData, headers)).rejects.toThrow(
@@ -132,7 +132,7 @@ describe("CSRF", () => {
 	});
 
 	test("rejects CSRF tokens signed with a different secret", async () => {
-		let token = new CSRF({ cookie, secret: "my-secret" }).generate();
+		let token = await new CSRF({ cookie, secret: "my-secret" }).generate();
 
 		let formData = new FormData();
 		formData.set("csrf", token);
@@ -146,6 +146,22 @@ describe("CSRF", () => {
 		).rejects.toThrow(new CSRFError("tampered_token_in_cookie", "Tampered CSRF token in cookie."));
 	});
 
+	test("accepts legacy Oslo-padded base64url signatures", async () => {
+		let secureCSRF = new CSRF({ cookie, secret: "my-secret" });
+		let token = await secureCSRF.generate();
+		let [value, signature] = token.split(".");
+		let paddedToken = `${value}.${signature}=`;
+
+		let formData = new FormData();
+		formData.set("csrf", paddedToken);
+
+		let headers = new Headers({
+			cookie: await cookie.serialize(paddedToken),
+		});
+
+		await expect(secureCSRF.validate(formData, headers)).resolves.toBeUndefined();
+	});
+
 	test("commits the token to a cookie", async () => {
 		let [token, cookieHeader] = await csrf.commitToken();
 		let parsedCookie = await cookie.parse(cookieHeader);
@@ -156,7 +172,7 @@ describe("CSRF", () => {
 	});
 
 	test("does not return a cookie header if there's already a value", async () => {
-		let originalToken = csrf.generate();
+		let originalToken = await csrf.generate();
 		let headers = new Headers({
 			cookie: await cookie.serialize(originalToken),
 		});

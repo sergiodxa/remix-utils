@@ -3,7 +3,7 @@
  * > Install using `bunx shadcn@latest add @remix-utils/middleware-csrf-token`.
  *
  * > [!NOTE]
- * > This depends on `@oslojs/crypto`, `@oslojs/encoding`, and React Router.
+ * > This depends on `@sdxc/crypto`, `@sdxc/result`, and React Router.
  *
  * The CSRF Token middleware protects your application from Cross-Site Request Forgery attacks using a token-based approach where a random token is stored in a cookie and must be included in form submissions.
  *

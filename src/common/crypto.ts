@@ -3,7 +3,7 @@
  * > Install using `bunx shadcn@latest add @remix-utils/csrf-server` and `bunx shadcn@latest add @remix-utils/csrf-react`.
  *
  * > [!NOTE]
- * > This depends on `react`, `@oslojs/crypto`, `@oslojs/encoding`, and React Router.
+ * > This depends on `react`, `@sdxc/crypto`, `@sdxc/result`, and React Router.
  *
  * The CSRF related functions let you implement CSRF protection on your application.
  *
@@ -39,14 +39,14 @@
  * import { csrf } from "~/utils/csrf.server";
  *
  * export async function loader({ request }: Route.LoaderArgs) {
- * 	let token = csrf.generate();
+ * 	let token = await csrf.generate();
  * }
  * ```
  *
- * You can customize the token size by passing the byte size, the default one is 32 bytes which will give you a string with a length of 43 after encoding.
+ * You can customize the token size by passing the character length, the default one is 32.
  *
  * ```ts
- * let token = csrf.generate(64); // customize token length
+ * let token = await csrf.generate(64); // customize token length
  * ```
  *
  * You will need to save this token in a cookie and also return it from the loader. For convenience, you can use the `CSRF#commitToken` helper.
@@ -177,7 +177,7 @@
  * > Install using `bunx shadcn@latest add @remix-utils/honeypot-server` and `bunx shadcn@latest add @remix-utils/honeypot-react`.
  *
  * > [!NOTE]
- * > This depends on `react` and `@oslojs/crypto`, and `@oslojs/encoding`.
+ * > This depends on `react` and `@sdxc/crypto`.
  *
  * Honeypot is a simple technique to prevent spam bots from submitting forms. It works by adding a hidden field to the form that bots will fill, but humans won't.
  *
@@ -269,7 +269,13 @@
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Common/Crypto
  */
-import { generateRandomString, type RandomReader } from "@oslojs/crypto/random";
+import { randomString as sdxcRandomString } from "@sdxc/crypto";
+
+/**
+ * Alphabet used for CSRF tokens and honeypot field names.
+ */
+const RANDOM_STRING_ALPHABET =
+	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
 
 /**
  * Uses Web Crypto API to encrypt a string using AES encryption.
@@ -314,19 +320,8 @@ export async function decrypt(value: string, seed: string) {
 	return new TextDecoder().decode(decrypted);
 }
 
-export function randomString(bytes = 10) {
-	let random: RandomReader = {
-		read(bytes) {
-			crypto.getRandomValues(bytes);
-		},
-	};
-
-	/**
-	 * List of characters in upper, lower, digits and special characters.
-	 */
-	let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
-
-	return generateRandomString(random, alphabet, bytes);
+export function randomString(length = 10) {
+	return sdxcRandomString({ length, alphabet: RANDOM_STRING_ALPHABET });
 }
 
 // Convert a string to an ArrayBuffer
