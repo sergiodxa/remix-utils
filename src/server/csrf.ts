@@ -3,7 +3,7 @@
  * > Install using `bunx shadcn@latest add @remix-utils/csrf-server` and `bunx shadcn@latest add @remix-utils/csrf-react`.
  *
  * > [!NOTE]
- * > This depends on `react`, `@oslojs/crypto`, `@oslojs/encoding`, and React Router.
+ * > This depends on `react`, `@sdxc/crypto`, `@sdxc/result`, and React Router.
  *
  * The CSRF related functions let you implement CSRF protection on your application.
  *
@@ -39,14 +39,14 @@
  * import { csrf } from "~/utils/csrf.server";
  *
  * export async function loader({ request }: Route.LoaderArgs) {
- * 	let token = csrf.generate();
+ * 	let token = await csrf.generate();
  * }
  * ```
  *
- * You can customize the token size by passing the byte size, the default one is 32 bytes which will give you a string with a length of 43 after encoding.
+ * You can customize the token size by passing the character length, the default one is 32.
  *
  * ```ts
- * let token = csrf.generate(64); // customize token length
+ * let token = await csrf.generate(64); // customize token length
  * ```
  *
  * You will need to save this token in a cookie and also return it from the loader. For convenience, you can use the `CSRF#commitToken` helper.
@@ -173,10 +173,8 @@
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Server/CSRF
  */
-import { hmac } from "@oslojs/crypto/hmac";
-import { SHA256 } from "@oslojs/crypto/sha2";
-import { constantTimeEqual } from "@oslojs/crypto/subtle";
-import { decodeBase64url, encodeBase64url } from "@oslojs/encoding";
+import { Base64Url, hmac, timingSafeEqual } from "@sdxc/crypto";
+import { isFailure, unwrap } from "@sdxc/result";
 import type { Cookie } from "react-router";
 import { randomString } from "../common/crypto.js";
 import { getHeaders } from "./get-headers.js";
@@ -224,15 +222,15 @@ export class CSRF {
 	}
 
 	/**
-	 * Generates a random string in Base64URL to be used as an authenticity token
-	 * for CSRF protection.
-	 * @param bytes The number of bytes used to generate the token
-	 * @returns A random string in Base64URL
+	 * Generates a random string to be used as an authenticity token for CSRF
+	 * protection. When a secret is configured the token is HMAC-SHA256 signed.
+	 * @param length The number of characters used to generate the token
+	 * @returns A random authenticity token, optionally signed
 	 */
-	generate(bytes = 32) {
-		let token = randomString(bytes);
+	async generate(length = 32) {
+		let token = randomString(length);
 		if (!this.secret) return token;
-		let signature = this.sign(token);
+		let signature = await this.sign(token);
 		return [token, signature].join(".");
 	}
 
@@ -241,14 +239,14 @@ export class CSRF {
 	 * exist.
 	 * @param requestOrHeaders A request or headers object from which we can
 	 * get the cookie to get the existing token.
-	 * @param bytes The number of bytes used to generate the token.
+	 * @param length The number of characters used to generate the token.
 	 * @returns The existing token if it exists in the cookie, otherwise a new
 	 * token.
 	 */
-	async getToken(requestOrHeaders: Request | Headers = new Headers(), bytes = 32) {
+	async getToken(requestOrHeaders: Request | Headers = new Headers(), length = 32) {
 		let headers = getHeaders(requestOrHeaders);
 		let existingToken = await this.cookie.parse(headers.get("cookie"));
-		let token = typeof existingToken === "string" ? existingToken : this.generate(bytes);
+		let token = typeof existingToken === "string" ? existingToken : await this.generate(length);
 		return token;
 	}
 
@@ -256,7 +254,7 @@ export class CSRF {
 	 * Generates a token and serialize it into the cookie.
 	 * @param requestOrHeaders A request or headers object from which we can
 	 * get the cookie to get the existing token.
-	 * @param bytes The number of bytes used to generate the token
+	 * @param length The number of characters used to generate the token
 	 * @returns A tuple with the token and the string to send in Set-Cookie
 	 * If there's already a csrf value in the cookie then the token will
 	 * be the same and the cookie will be null.
@@ -266,10 +264,10 @@ export class CSRF {
 	 *   headers: { "set-cookie": cookie }
 	 * })
 	 */
-	async commitToken(requestOrHeaders: Request | Headers = new Headers(), bytes = 32) {
+	async commitToken(requestOrHeaders: Request | Headers = new Headers(), length = 32) {
 		let headers = getHeaders(requestOrHeaders);
 		let existingToken = await this.cookie.parse(headers.get("cookie"));
-		let token = typeof existingToken === "string" ? existingToken : this.generate(bytes);
+		let token = typeof existingToken === "string" ? existingToken : await this.generate(length);
 		let cookie = existingToken ? null : await this.cookie.serialize(token);
 		return [token, cookie] as const;
 	}
@@ -316,7 +314,7 @@ export class CSRF {
 			throw new CSRFError("invalid_token_in_cookie", "Invalid CSRF token in cookie.");
 		}
 
-		if (this.verifySignature(cookie) === false) {
+		if ((await this.verifySignature(cookie)) === false) {
 			throw new CSRFError("tampered_token_in_cookie", "Tampered CSRF token in cookie.");
 		}
 
@@ -343,18 +341,19 @@ export class CSRF {
 		return this.cookie.parse(_headers.get("cookie"));
 	}
 
-	private sign(token: string) {
+	private async sign(token: string) {
 		if (!this.secret) return token;
-		let encoder = new TextEncoder();
-		return encodeBase64url(hmac(SHA256, encoder.encode(this.secret), encoder.encode(token)));
+		return Base64Url.encode(unwrap(await hmac.sign(this.secret, token)));
 	}
 
-	private verifySignature(token: string) {
+	private async verifySignature(token: string) {
 		if (!this.secret) return true;
 		let [value, signature] = token.split(".");
 		if (!value || !signature) return false;
-		let expectedSignature = this.sign(value);
-		let decodedSignature = decodeBase64url(signature);
-		return constantTimeEqual(decodedSignature, decodeBase64url(expectedSignature));
+		let expectedSignature = await this.sign(value);
+		let decodedSignature = Base64Url.decode(signature);
+		let decodedExpected = Base64Url.decode(expectedSignature);
+		if (isFailure(decodedSignature) || isFailure(decodedExpected)) return false;
+		return timingSafeEqual(decodedSignature.data, decodedExpected.data);
 	}
 }

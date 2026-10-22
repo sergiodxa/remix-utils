@@ -10,9 +10,9 @@
         "@edgefirst-dev/jwt": "^1.3.0",
         "@edgefirst-dev/server-timing": "^0.0.1",
         "@happy-dom/global-registrator": "^20.8.3",
-        "@oslojs/crypto": "^1.0.1",
-        "@oslojs/encoding": "^1.1.0",
         "@remix-run/file-storage": "^0.13.3",
+        "@sdxc/crypto": "2026.10.21",
+        "@sdxc/result": "2026.10.13",
         "@standard-schema/spec": "^1.1.0",
         "@testing-library/jest-dom": "^6.9.1",
         "@testing-library/react": "^16.3.2",
@@ -39,8 +39,8 @@
         "@edgefirst-dev/batcher": "^1.0.0",
         "@edgefirst-dev/jwt": "^1.2.0",
         "@edgefirst-dev/server-timing": "^0.0.1",
-        "@oslojs/crypto": "^1.0.1",
-        "@oslojs/encoding": "^1.1.0",
+        "@sdxc/crypto": "2026.10.21",
+        "@sdxc/result": "2026.10.13",
         "@standard-schema/spec": "^1.0.0",
         "intl-parse-accept-language": "^1.0.0",
         "is-ip": "^5.0.1",
@@ -51,8 +51,8 @@
         "@edgefirst-dev/batcher",
         "@edgefirst-dev/jwt",
         "@edgefirst-dev/server-timing",
-        "@oslojs/crypto",
-        "@oslojs/encoding",
+        "@sdxc/crypto",
+        "@sdxc/result",
         "@standard-schema/spec",
         "intl-parse-accept-language",
         "is-ip",
@@ -200,14 +200,6 @@
 
     "@open-draft/until": ["@open-draft/until@2.1.0", "", {}, "sha512-U69T3ItWHvLwGg5eJ0n3I62nWuE6ilHlmz7zM0npLBRvPRd7e6NYmg54vvRtP5mZG7kZqZCFVdsTWo7BPtBujg=="],
 
-    "@oslojs/asn1": ["@oslojs/asn1@1.0.0", "", { "dependencies": { "@oslojs/binary": "1.0.0" } }, "sha512-zw/wn0sj0j0QKbIXfIlnEcTviaCzYOY3V5rAyjR6YtOByFtJiT574+8p9Wlach0lZH9fddD4yb9laEAIl4vXQA=="],
-
-    "@oslojs/binary": ["@oslojs/binary@1.0.0", "", {}, "sha512-9RCU6OwXU6p67H4NODbuxv2S3eenuQ4/WFLrsq+K/k682xrznH5EVWA7N4VFk9VYVcbFtKqur5YQQZc0ySGhsQ=="],
-
-    "@oslojs/crypto": ["@oslojs/crypto@1.0.1", "", { "dependencies": { "@oslojs/asn1": "1.0.0", "@oslojs/binary": "1.0.0" } }, "sha512-7n08G8nWjAr/Yu3vu9zzrd0L9XnrJfpMioQcvCMxBIiF5orECHe5/3J0jmXRVvgfqMm/+4oxlQ+Sq39COYLcNQ=="],
-
-    "@oslojs/encoding": ["@oslojs/encoding@1.1.0", "", {}, "sha512-70wQhgYmndg4GCPxPPxPGevRKqTIJ2Nh4OkiMWmDAVYsTQ+Ta7Sq+rPevXyXGdzr30/qZBnyOalCszoMxlyldQ=="],
-
     "@oxfmt/binding-android-arm-eabi": ["@oxfmt/binding-android-arm-eabi@0.57.0", "", { "os": "android", "cpu": "arm" }, "sha512-qVBsEO+KugOsCmUHcO8iqNnqc65p7PCKpCs8M66mPZ+Ri+CWbcpoQOEJBg2OTu03+0qu++NK1jj6IzvQVs0Sig=="],
 
     "@oxfmt/binding-android-arm64": ["@oxfmt/binding-android-arm64@0.57.0", "", { "os": "android", "cpu": "arm64" }, "sha512-mp6PibWbao3aizijcheOeHQaYEhcUAt8pwLniYbtLfHxL/psFF0BykAwCj+s3c6qIpa8yN8keZICWrqtZ70w8g=="],
@@ -291,6 +283,12 @@
     "@remix-run/lazy-file": ["@remix-run/lazy-file@5.0.5", "", { "dependencies": { "@remix-run/mime": "^0.4.1" } }, "sha512-PhjTgR266T2qDKki6lQnlOtgZv4VB8Dqeu1sBUu2pBazgi2nZA2n7lvDpNiegKozBgGfUXS8ScdIQ6FPuNvtcw=="],
 
     "@remix-run/mime": ["@remix-run/mime@0.4.1", "", {}, "sha512-n0DUUwpHiDrtHCSw6YFbjeMjajj7STqwzK9PMJkQOHbvOarfPdQdRRMkRqYPBmhu6ABzb6sAdYRSrxPx50I5VQ=="],
+
+    "@sdxc/crypto": ["@sdxc/crypto@2026.10.21", "", { "dependencies": { "@sdxc/result": "2026.10.13" } }, "sha512-dyY9K1pIo84+Obrn4E+2lNDFMzEIvQCNEKvQlqRRhnd1TeFN3XjspOlm4T2UXHLph+bbizZco4wj0Lgo7ivNrw=="],
+
+    "@sdxc/result": ["@sdxc/result@2026.10.13", "", { "dependencies": { "@sdxc/types": "2026.10.13" } }, "sha512-aX/mBXFIYiSCeFedO5aymHRRg4ivP21+qUs6eXH4JH0QjiOwTowl2Mi6NgN+nhbCd+0i6xO0qN45+7Hq69JfTA=="],
+
+    "@sdxc/types": ["@sdxc/types@2026.10.13", "", {}, "sha512-sYYHJLV1KItcqGPXi0qqilAz5vnLHgcBYwzDd6fqcCPss+sWr6CDNdps7z+Urtk/fRYMskIKpbzXCsGIMQhCAA=="],
 
     "@sec-ant/readable-stream": ["@sec-ant/readable-stream@0.4.1", "", {}, "sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg=="],
 

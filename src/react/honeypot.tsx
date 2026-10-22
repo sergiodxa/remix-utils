@@ -3,7 +3,7 @@
  * > Install using `bunx shadcn@latest add @remix-utils/honeypot-server` and `bunx shadcn@latest add @remix-utils/honeypot-react`.
  *
  * > [!NOTE]
- * > This depends on `react` and `@oslojs/crypto`, and `@oslojs/encoding`.
+ * > This depends on `react` and `@sdxc/crypto`.
  *
  * Honeypot is a simple technique to prevent spam bots from submitting forms. It works by adding a hidden field to the form that bots will fill, but humans won't.
  *

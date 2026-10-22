@@ -420,7 +420,7 @@
  * > Install using `bunx shadcn@latest add @remix-utils/middleware-basic-auth`.
  *
  * > [!NOTE]
- * > This depends on `@oslojs/crypto`, and `@oslojs/encoding`.
+ * > This depends on `@sdxc/crypto` and `@sdxc/result`.
  *
  * The Basic Auth middleware let's you add a basic authentication to your routes, this can be useful to protect routes that need to be private.
  *
@@ -696,7 +696,7 @@
  * > Install using `bunx shadcn@latest add @remix-utils/middleware-honeypot`.
  *
  * > [!NOTE]
- * > This depends on `react`, `@oslojs/crypto`, and `@oslojs/encoding`.
+ * > This depends on `react` and `@sdxc/crypto`.
  *
  * The Honeypot middleware allows you to add a honeypot mechanism to your routes, providing a simple yet effective way to protect public forms from spam bots.
  *
@@ -971,7 +971,7 @@
  * > Install using `bunx shadcn@latest add @remix-utils/middleware-csrf-token`.
  *
  * > [!NOTE]
- * > This depends on `@oslojs/crypto`, `@oslojs/encoding`, and React Router.
+ * > This depends on `@sdxc/crypto`, `@sdxc/result`, and React Router.
  *
  * The CSRF Token middleware protects your application from Cross-Site Request Forgery attacks using a token-based approach where a random token is stored in a cookie and must be included in form submissions.
  *

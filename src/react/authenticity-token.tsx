@@ -3,7 +3,7 @@
  * > Install using `bunx shadcn@latest add @remix-utils/csrf-server` and `bunx shadcn@latest add @remix-utils/csrf-react`.
  *
  * > [!NOTE]
- * > This depends on `react`, `@oslojs/crypto`, `@oslojs/encoding`, and React Router.
+ * > This depends on `react`, `@sdxc/crypto`, `@sdxc/result`, and React Router.
  *
  * The CSRF related functions let you implement CSRF protection on your application.
  *
@@ -39,14 +39,14 @@
  * import { csrf } from "~/utils/csrf.server";
  *
  * export async function loader({ request }: Route.LoaderArgs) {
- * 	let token = csrf.generate();
+ * 	let token = await csrf.generate();
  * }
  * ```
  *
- * You can customize the token size by passing the byte size, the default one is 32 bytes which will give you a string with a length of 43 after encoding.
+ * You can customize the token size by passing the character length, the default one is 32.
  *
  * ```ts
- * let token = csrf.generate(64); // customize token length
+ * let token = await csrf.generate(64); // customize token length
  * ```
  *
  * You will need to save this token in a cookie and also return it from the loader. For convenience, you can use the `CSRF#commitToken` helper.
