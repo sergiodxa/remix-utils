@@ -26,10 +26,10 @@ Additional optional dependencies may be needed, all optional dependencies are:
 
 - `react-router`
 - `@edgefirst-dev/batcher`
-- `@edgefirst-dev/jwt`
-- `@edgefirst-dev/server-timing`
 - `@sdxc/crypto@2026.10.21`
+- `@sdxc/jwt@2026.10.13`
 - `@sdxc/result@2026.10.13`
+- `@sdxc/server-timing@2026.10.13`
 - `is-ip`
 - `intl-parse-accept-language`
 - `react`
@@ -42,7 +42,7 @@ The utils that require an extra optional dependency mention it in their document
 If you want to install them all run:
 
 ```sh
-npm add @edgefirst-dev/batcher @edgefirst-dev/jwt @edgefirst-dev/server-timing @sdxc/crypto@2026.10.21 @sdxc/result@2026.10.13 is-ip intl-parse-accept-language
+npm add @edgefirst-dev/batcher @sdxc/crypto@2026.10.21 @sdxc/jwt@2026.10.13 @sdxc/result@2026.10.13 @sdxc/server-timing@2026.10.13 is-ip intl-parse-accept-language
 ```
 
 React and React Router packages should be already installed in your project.
@@ -2247,7 +2247,7 @@ The `logger` option let's you pass a custom logger, the `precision` option let's
 > Install using `bunx shadcn@latest add @remix-utils/middleware-server-timing`.
 
 > [!NOTE]
-> This depends on `@edgefirst-dev/server-timing`.
+> This depends on `@sdxc/server-timing`.
 
 The server timing middleware let's you add a `Server-Timing` header to the response with the time it took to run the loaders and actions.
 
@@ -2680,7 +2680,7 @@ WWW-Authenticate: Basic realm="My Realm"
 > Install using `bunx shadcn@latest add @remix-utils/middleware-jwk-auth`.
 
 > [!NOTE]
-> This depends on `@edgefirst-dev/jwt`.
+> This depends on `@sdxc/jwt`.
 
 The JWK Auth middleware let's you add a JSON Web Key authentication to your routes, this can be useful to protect routes that need to be private and will be accessed by other services.
 
