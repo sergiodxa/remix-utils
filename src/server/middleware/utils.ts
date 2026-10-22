@@ -114,7 +114,7 @@
  * > Install using `bunx shadcn@latest add @remix-utils/middleware-server-timing`.
  *
  * > [!NOTE]
- * > This depends on `@edgefirst-dev/server-timing`.
+ * > This depends on `@sdxc/server-timing`.
  *
  * The server timing middleware let's you add a `Server-Timing` header to the response with the time it took to run the loaders and actions.
  *
@@ -541,7 +541,7 @@
  * > Install using `bunx shadcn@latest add @remix-utils/middleware-jwk-auth`.
  *
  * > [!NOTE]
- * > This depends on `@edgefirst-dev/jwt`.
+ * > This depends on `@sdxc/jwt`.
  *
  * The JWK Auth middleware let's you add a JSON Web Key authentication to your routes, this can be useful to protect routes that need to be private and will be accessed by other services.
  *

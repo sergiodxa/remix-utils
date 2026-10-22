@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { TimingCollector } from "@edgefirst-dev/server-timing";
+import { TimingCollector } from "@sdxc/server-timing";
 import { RouterContextProvider } from "react-router";
 import { createServerTimingMiddleware } from "./server-timing.js";
 import { runMiddleware } from "./test-helper.js";
@@ -16,7 +16,7 @@ describe(createServerTimingMiddleware, () => {
 			context,
 			async next() {
 				let collector = getTimingCollector(context);
-				await collector.measure("api", () => {
+				await collector.measure("api", "sleep", () => {
 					return new Promise((resolve) => {
 						setTimeout(resolve, 100);
 					});

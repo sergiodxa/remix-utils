@@ -4,7 +4,7 @@
  * > Install using `bunx shadcn@latest add @remix-utils/middleware-jwk-auth`.
  *
  * > [!NOTE]
- * > This depends on `@edgefirst-dev/jwt`.
+ * > This depends on `@sdxc/jwt`.
  *
  * The JWK Auth middleware let's you add a JSON Web Key authentication to your routes, this can be useful to protect routes that need to be private and will be accessed by other services.
  *
@@ -157,7 +157,7 @@
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/JWK Auth
  */
-import { JWK, JWT } from "@edgefirst-dev/jwt";
+import { JWK, JWT } from "@sdxc/jwt";
 import {
 	type Cookie,
 	createContext,
@@ -169,12 +169,12 @@ import type { MiddlewareGetter } from "./utils.js";
 export function createJWKAuthMiddleware({
 	jwksUri,
 	realm = "Secure Area",
-	alg = JWK.Algoritm.ES256,
+	alg = JWK.Algorithm.ES256,
 	invalidUserMessage = "Unauthorized",
 	...options
 }: createBearerAuthMiddleware.Options): createBearerAuthMiddleware.ReturnType {
 	const tokenContext = createContext<JWT>();
-	const remote = JWK.importRemote(new URL(jwksUri), { alg });
+	const remote = JWK.importRemote(new URL(jwksUri));
 
 	const cookieInOptions = "cookie" in options;
 
@@ -203,7 +203,13 @@ export function createJWKAuthMiddleware({
 			if (!token) throw await unauthorized(request, context);
 
 			try {
-				context.set(tokenContext, await JWT.verify(token, await remote, options.verifyOptions));
+				context.set(
+					tokenContext,
+					await JWT.verify(token, await remote, {
+						...options.verifyOptions,
+						algorithms: options.verifyOptions?.algorithms ?? [alg],
+					}),
+				);
 			} catch {
 				throw await unauthorized(request, context);
 			}
@@ -258,7 +264,7 @@ export namespace createBearerAuthMiddleware {
 		 * The algorithm to use for verifying the JWT signature.
 		 * @default "ES256"
 		 */
-		alg?: JWK.Algoritm;
+		alg?: JWK.Algorithm;
 
 		/**
 		 * The message to return when the user is invalid.

@@ -1,13 +1,23 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
-import { JWK, JWT } from "@edgefirst-dev/jwt";
-import { createMemoryFileStorage } from "@remix-run/file-storage/memory";
+import { JWK, JWT, type KeyStorage } from "@sdxc/jwt";
 import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/native";
 import { createCookie, RouterContextProvider } from "react-router";
 import { createJWKAuthMiddleware } from "./jwk-auth.js";
 import { catchResponse, runMiddleware } from "./test-helper.js";
 
-const storage = createMemoryFileStorage();
+function memoryStorage(): KeyStorage {
+	let files = new Map<string, File>();
+	return {
+		get: (key) => files.get(key) ?? null,
+		list: ({ prefix = "" } = {}) => ({
+			files: [...files.keys()].filter((key) => key.startsWith(prefix)).map((key) => ({ key })),
+		}),
+		set: (key, file) => void files.set(key, file),
+	};
+}
+
+const storage = memoryStorage();
 const signingKeys = await JWK.signingKeys(storage);
 const server = setupServer(
 	http.get(new URL("https://remix.utils/.well-known/jwks.json").toString(), () =>
@@ -26,7 +36,7 @@ describe(createJWKAuthMiddleware, () => {
 			aud: "api.remix.utils",
 		});
 
-		let token = await jwt.sign(JWK.Algoritm.ES256, signingKeys);
+		let token = await jwt.sign(JWK.Algorithm.ES256, signingKeys);
 
 		let [middleware, getJWTPayload] = createJWKAuthMiddleware({
 			jwksUri: "https://remix.utils/.well-known/jwks.json",
@@ -44,7 +54,7 @@ describe(createJWKAuthMiddleware, () => {
 
 		await runMiddleware(middleware, { request, context });
 
-		expect(getJWTPayload(context)).toEqual(jwt);
+		expect(getJWTPayload(context).payload).toEqual(jwt.payload);
 	});
 
 	test("sets the JWT payload into context when the token comes from the cookie", async () => {
@@ -54,7 +64,7 @@ describe(createJWKAuthMiddleware, () => {
 			aud: "api.remix.utils",
 		});
 
-		let token = await jwt.sign(JWK.Algoritm.ES256, signingKeys);
+		let token = await jwt.sign(JWK.Algorithm.ES256, signingKeys);
 
 		let cookie = createCookie("token", { path: "/" });
 
@@ -75,7 +85,7 @@ describe(createJWKAuthMiddleware, () => {
 
 		await runMiddleware(middleware, { request, context });
 
-		expect(getJWTPayload(context)).toEqual(jwt);
+		expect(getJWTPayload(context).payload).toEqual(jwt.payload);
 	});
 
 	test("throw an error if there's no token in the cookie", async () => {

@@ -106,7 +106,7 @@
 					"type": "registry:lib"
 				}
 			],
-			"dependencies": ["@edgefirst-dev/jwt", "react-router"]
+			"dependencies": ["@sdxc/jwt@2026.10.13", "react-router"]
 		},
 		{
 			"name": "middleware-logger",
@@ -170,7 +170,7 @@
 					"type": "registry:lib"
 				}
 			],
-			"dependencies": ["@edgefirst-dev/server-timing", "react-router"]
+			"dependencies": ["@sdxc/server-timing@2026.10.13", "react-router"]
 		},
 		{
 			"name": "middleware-session",

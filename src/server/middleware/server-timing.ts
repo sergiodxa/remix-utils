@@ -3,7 +3,7 @@
  * > Install using `bunx shadcn@latest add @remix-utils/middleware-server-timing`.
  *
  * > [!NOTE]
- * > This depends on `@edgefirst-dev/server-timing`.
+ * > This depends on `@sdxc/server-timing`.
  *
  * The server timing middleware let's you add a `Server-Timing` header to the response with the time it took to run the loaders and actions.
  *
@@ -39,7 +39,7 @@
  * @author [Sergio Xalambrí](https://sergiodxa.com)
  * @module Middleware/Server Timing
  */
-import { TimingCollector } from "@edgefirst-dev/server-timing";
+import { TimingCollector } from "@sdxc/server-timing";
 import type { MiddlewareFunction } from "react-router";
 import { createContext } from "react-router";
 import type { MiddlewareGetter } from "./utils.js";
