@@ -286,7 +286,7 @@
 		"oxlint": "^1.72.0",
 		"react": "^19.2.7",
 		"react-dom": "^19.2.7",
-		"react-router": "^8.0.0",
+		"react-router": "^8.5.0",
 		"shadcn": "^4.13.0",
 		"ts-node": "^10.9.2",
 		"typedoc": "^0.28.20",
@@ -304,7 +304,7 @@
 		"intl-parse-accept-language": "^1.0.0",
 		"is-ip": "^5.0.1",
 		"react": ">=19.2.7",
-		"react-router": "^8.0.0"
+		"react-router": "^8.5.0"
 	},
 	"peerDependenciesMeta": {
 		"@edgefirst-dev/batcher": {
