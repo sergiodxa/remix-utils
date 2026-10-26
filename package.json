@@ -265,7 +265,7 @@
 		"exports": "bun run ./scripts/exports.ts"
 	},
 	"devDependencies": {
-		"@arethetypeswrong/cli": "^0.18.4",
+		"@arethetypeswrong/cli": "^0.18.5",
 		"@edgefirst-dev/batcher": "^1.0.1",
 		"@happy-dom/global-registrator": "^20.8.3",
 		"@sdxc/crypto": "2026.10.21",
